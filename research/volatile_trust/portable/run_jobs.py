@@ -25,6 +25,7 @@ def main():
     ap.add_argument('--gpus', nargs='+', required=True)
     ap.add_argument('--models', nargs='+')
     ap.add_argument('--only', nargs='+', help='substring filters on job id')
+    ap.add_argument('--tier', type=int, nargs='+', help='run only these tiers (1 = core evidence chain first)')
     ap.add_argument('--python', default=sys.executable)
     ap.add_argument('--model-root', type=Path, default=ROOT / '.cache/models')
     ap.add_argument('--dry-run', action='store_true')
@@ -35,6 +36,8 @@ def main():
         jobs = [j for j in jobs if j['model'] in a.models]
     if a.only:
         jobs = [j for j in jobs if any(s in j['id'] for s in a.only)]
+    if a.tier:
+        jobs = [j for j in jobs if j.get('tier', 2) in a.tier]
     def complete(j):
         return any((ROOT / j['output']).glob('_COMPLETE*'))
 

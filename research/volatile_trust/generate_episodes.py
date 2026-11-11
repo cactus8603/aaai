@@ -76,7 +76,7 @@ def load_pools():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--out', type=Path, default=Path(__file__).parent / 'episodes_v2')
+    ap.add_argument('--out', type=Path, default=Path(__file__).parent / 'episodes_v3')
     ap.add_argument('--dev', type=int, default=16)
     ap.add_argument('--heldout', type=int, default=48)
     ap.add_argument('--seed', type=int, default=20261111)
@@ -95,6 +95,10 @@ def main():
             # Which name the instructions introduce first; balanced within each order, flipped in twins.
             if not LEGACY_V1:
                 ep['header_a_first'] = (i // 2) % 2 == 0
+                # cover story: blocks of 4 episodes (both orders x both header orders) share a scenario,
+                # so scenario is crossed with order and header order rather than confounded with them
+                from scenarios import TEXT_SCENARIOS
+                ep['scenario'] = TEXT_SCENARIOS[(i // 4) % len(TEXT_SCENARIOS)]
             rows.append(ep)
     # Image-record lookup (paths and hashes) so the runner never touches the pools by index.
     image_index = {r['id']: dict(label=r['label'], path224=r['images']['224']['path'],
@@ -141,7 +145,8 @@ def main():
                            'Realized A accuracy stratified per 10-trial window; truth balanced per window.',
                            'Reporter A = favoured at trial 1. Within-trial listing order randomized.',
                            'Pet images: development from trainval pool, held_out from test pool.',
-                           'header_a_first: which name the instructions mention first; balanced, flipped in twins.'])
+                           'header_a_first: which name the instructions mention first; balanced, flipped in twins.',
+                           'scenario (v3): cover story, blocks of 4 episodes per scenario; twins share it.'])
     (args.out / 'protocol.json').write_text(json.dumps(protocol, indent=1))
     print(json.dumps(dict(episodes=len(rows), sha256=digest)))
 

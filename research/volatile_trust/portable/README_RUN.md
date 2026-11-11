@@ -26,17 +26,35 @@ bash research/volatile_trust/portable/setup_data.sh
 
 ## 4. 下載模型（版本已固定）
 ```bash
-python research/volatile_trust/portable/download_models.py --models qwen3vl8b internvl8b qwen3vl32b internvl38b qwen25vl72b
+export HF_TOKEN=<你的 HF read token>   # 或先執行 `hf auth login`
+python research/volatile_trust/portable/download_models.py --models qwen3vl8b internvl8b qwen3vl32b internvl38b gemma3_27b qwen25vl72b qwen3vl8b_thinking qwen3vl32b_thinking
 ```
-合計約 325 GB。另外兩個選配模型 `qwen3vl235b` 和 `internvl241b` 各約 470 GB，每個需要 4 張 MI300X。
+- **Gemma-3 是 gated 模型**：先用同一個 HF 帳號在 https://huggingface.co/google/gemma-3-27b-it 同意授權，再設定 `HF_TOKEN`（read 權限即可）。沒有授權或沒有 token 時，`download_models.py` 會停下來並提示。授權沒通過就先回報，替代方案（Mistral-Small-3.2-24B）見 `EXPERIMENTS.md` §7。
+- 合計約 470 GB。另外兩個選配模型 `qwen3vl235b` 和 `internvl241b` 各約 470 GB，每個需要 4 張 MI300X。
 
 ## 5. 執行
 ```bash
-python research/volatile_trust/portable/make_jobs.py                       # 產生工作清單（177 個工作）
-python research/volatile_trust/portable/run_jobs.py --gpus 0 1 --only xcheck    # 先跑跨平台檢查，結果傳回來比對
-nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 > launcher.out 2>&1 &
+python research/volatile_trust/portable/make_jobs.py      # 產生工作清單：266 個工作（tier 1：69、tier 2：99、tier 3：98）
 ```
-- 只跑部分工作時，可以加 `--models qwen3vl32b` 或 `--only dev_`。加 `--dry-run` 會列出要執行的指令，但不真的執行。
+每個工作都有 `tier` 欄位。`run_jobs.py --tier 1`（可給多個，例如 `--tier 2 3`）只跑指定 tier 的工作，可以和 `--models`、`--only`（工作 id 的子字串）合併使用。加 `--dry-run` 會列出要執行的指令，但不真的執行。
+
+**建議順序（W02；不要一開始就全量執行）：**
+1. **tier 1 的 dev 和跨平台檢查**，結果傳回來核對：
+   ```bash
+   python research/volatile_trust/portable/run_jobs.py --gpus 0 1 --tier 1 --only xcheck        # 跨平台檢查，先傳回比對
+   nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 --tier 1 --only dev_ > launcher_t1_dev.out 2>&1 &
+   ```
+2. **確認 dev 的核心鏈可用之後**（E1 對照、A／A+／B／C 的 dev 結果都能被分析程式讀入並通過完整性檢查，而且規格已打 tag `prereg-v3`），才跑 tier 1 的 held-out 和 robust：
+   ```bash
+   nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 --tier 1 --only ho_ rob_ > launcher_t1_ho.out 2>&1 &
+   ```
+3. 之後再跑 **tier 2**，最後是 **tier 3**：
+   ```bash
+   nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 --tier 2 > launcher_t2.out 2>&1 &
+   nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 --tier 3 > launcher_t3.out 2>&1 &
+   ```
+
+- **E9 推理工作很長**（tier 2，24 個 `*__e9_*` 工作）：每題自由生成，`--max-new-tokens 16384`，每題可能產生上萬個 token，比單一 token 讀出的工作慢好幾個數量級。每個模型 × 歷史分成 4 個 shard，可以中斷後續跑；建議放在 tier 2 的最後，或單獨用 `--only e9_` 執行。
 - 每個 runner 跑完會先核對列數，正確才寫入 `_COMPLETE*` 標記。沒有標記的工作，重新啟動時會從中斷處續跑。
 - 正在執行中的工作有 `_LOCK` 檔，啟動器不會重複啟動它。
 
@@ -47,5 +65,5 @@ tar czf results_mi300x.tar.gz research/volatile_trust/runs_mi300x
 
 ## 注意
 - 同一個模型的所有條件，都要在同一個平台上跑完。
-- `episodes_v2` 是正式資料；`episodes_v1` 只用於跨平台檢查。
+- `episodes_v3` 是正式資料；`episodes_v1` 只用於跨平台檢查。
 - 如果環境預先設了 `ROCR_VISIBLE_DEVICES`（例如在 SLURM 或 docker 裡），啟動器會自動把它清掉，以免 GPU 編號錯位。

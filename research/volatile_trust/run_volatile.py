@@ -19,20 +19,27 @@ from model_backends import FrozenVLM  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from controller import history_window  # noqa: E402
 
-DOMAINS = {'color': ('red', 'blue'), 'pet': ('cat', 'dog')}
-NOUN = {'color': 'color', 'pet': 'animal'}
-COLOR_RGB = {'red': (220, 30, 30), 'blue': (30, 60, 220)}
+from scenarios import SCENARIOS, icon, plural  # noqa: E402
+
+DOMAINS = {k: v['labels'] for k, v in SCENARIOS.items()}
+NOUN = {k: v['noun'] for k, v in SCENARIOS.items()}
+HISTORY_FORMATS = ('raw', 'coded', 'raw_coded')   # raw_coded = A+: raw records plus the correctness statement
+
+
+def resolve_domain(domain, ep):
+    """'scenario' means the episode's own cover story (v3 data); other values are literal."""
+    return ep['scenario'] if domain == 'scenario' else domain
 
 
 def header(ep, domain, hint=True):
-    n = NOUN[domain]
+    S = SCENARIOS[domain]
     first, second = ((ep['a_name'], ep['b_name']) if ep.get('header_a_first', True)
                      else (ep['b_name'], ep['a_name']))
-    s = (f"You are observing a sequence of trials. On every trial, two reporters, {first} and "
-         f"{second}, give conflicting reports about a hidden {n}. After each trial, the true {n} "
-         f"is revealed.")
+    s = (f"You are observing a sequence of {plural(S['unit'])}. On every {S['unit']}, two {S['roles']}, "
+         f"{first} and {second}, {S['setup']}. After each {S['unit']}, {S['reveal']}.")
     if hint:
-        s += " A reporter's accuracy may change over time."
+        art = 'An' if S['role'][0].lower() in 'aeiou' else 'A'
+        s += f" {art} {S['role']}'s accuracy may change over time."
     return s + '\n'
 
 
@@ -40,35 +47,54 @@ def label(domain, bit, polarity):
     return DOMAINS[domain][bit ^ polarity]
 
 
-def history(ep, domain, t, start=1, marker=None, as_summary=False):
+def history(ep, domain, t, start=1, marker=None, as_summary=False, fmt='raw'):
+    """History of trials start..t-1.
+    fmt='raw'  : who reported what + the revealed outcome (the model must work out who was correct).
+    fmt='coded': only who was correct / wrong on each trial (no labels, no outcome).
+    fmt='raw_coded' (A+): the raw record followed by who was correct (both kinds of information)."""
+    S = SCENARIOS[domain]
+    U, Us = S['unit'], plural(S['unit'])
     if as_summary:
-        return summary(ep, t, start)
+        return summary(ep, t, start, domain)
     if t == 1 or start >= t:
-        return 'Past trials: none yet.\n'
-    lines = ['Past trials:' if start == 1 else f'Recent past trials (trials {start}-{t - 1}):']
+        return f'Past {Us}: none yet.\n'
+    lines = [f'Past {Us}:' if start == 1 else f'Recent past {Us} ({Us} {start}-{t - 1}):']
     pol = ep['label_polarity']
     for tr in ep['trials'][start - 1:t - 1]:
         if marker is not None and tr['t'] == marker:
-            lines.append('--- Note: reporter accuracy probably changed around here ---')
-        a = f"{ep['a_name']} reports {label(domain, tr['a_report_bit'], pol)}"
-        b = f"{ep['b_name']} reports {label(domain, tr['b_report_bit'], pol)}"
-        first, second = (a, b) if tr['a_listed_first'] else (b, a)
-        lines.append(f"Trial {tr['t']}: {first}; {second}. True {NOUN[domain]}: "
-                     f"{label(domain, tr['truth_bit'], pol)}.")
+            lines.append(f"--- Note: {S['role']} accuracy probably changed around here ---")
+        if fmt == 'coded':
+            a = f"{ep['a_name']} was {'correct' if tr['a_correct'] else 'wrong'}"
+            b = f"{ep['b_name']} was {'wrong' if tr['a_correct'] else 'correct'}"
+            first, second = (a, b) if tr['a_listed_first'] else (b, a)
+            lines.append(f"{U.capitalize()} {tr['t']}: {first}; {second}.")
+        else:
+            a = f"{ep['a_name']} {S['verb']} {label(domain, tr['a_report_bit'], pol)}"
+            b = f"{ep['b_name']} {S['verb']} {label(domain, tr['b_report_bit'], pol)}"
+            first, second = (a, b) if tr['a_listed_first'] else (b, a)
+            line = (f"{U.capitalize()} {tr['t']}: {first}; {second}. {S['outcome']}: "
+                    f"{label(domain, tr['truth_bit'], pol)}.")
+            if fmt == 'raw_coded':
+                ca = f"{ep['a_name']} was {'correct' if tr['a_correct'] else 'wrong'}"
+                cb = f"{ep['b_name']} was {'wrong' if tr['a_correct'] else 'correct'}"
+                c1, c2 = (ca, cb) if tr['a_listed_first'] else (cb, ca)
+                line += f" ({c1}; {c2}.)"
+            lines.append(line)
     return '\n'.join(lines) + '\n'
 
 
-def summary(ep, t, start):
+def summary(ep, t, start, domain='color'):
     """Explicit counts over trials start..t-1 (controller-computed accumulator)."""
+    Us = plural(SCENARIOS[domain]['unit'])
     if t == 1 or start >= t:
-        return 'Past trials: none yet.\n'
+        return f'Past {Us}: none yet.\n'
     seg = ep['trials'][start - 1:t - 1]
     a = sum(x['a_correct'] for x in seg)
     n = len(seg)
     names = [(ep['a_name'], a), (ep['b_name'], n - a)]
     if not ep['trials'][t - 1]['a_listed_first']:
         names.reverse()
-    rng = f'all {n} past trials' if start == 1 else f'the last {n} trials (trials {start}-{t - 1})'
+    rng = f'all {n} past {Us}' if start == 1 else f'the last {n} {Us} ({Us} {start}-{t - 1})'
     return (f'Summary of {rng}: {names[0][0]} was correct {names[0][1]} times; '
             f'{names[1][0]} was correct {names[1][1]} times.\n')
 
@@ -78,10 +104,10 @@ class Renderer:
         self.index, self.pixels, self.cache = image_index, pixels, {}
 
     def image(self, domain, lab, ep, t):
-        if domain == 'color':
-            key = ('color', lab)
+        if domain != 'pet':
+            key = (domain, lab)
             if key not in self.cache:
-                self.cache[key] = Image.new('RGB', (self.pixels, self.pixels), COLOR_RGB[lab])
+                self.cache[key] = icon(domain, lab, self.pixels)
             return self.cache[key]
         iid = ep['pet_image_ids'][str(t)][lab]
         rec = self.index[iid]
@@ -147,11 +173,12 @@ class Renderer:
                                     fill=(40, 170, 60) if correct else (190, 190, 190))
                     else:
                         d.rectangle([x, y + 2, x + cw - 3, y + ch - 3], outline=(230, 230, 230))
-            d.text((left, y0 + 2 * ch + 2), f'trials {L * per_line + 1}-{(L + 1) * per_line}',
+            d.text((left, y0 + 2 * ch + 2), f'{L * per_line + 1}-{(L + 1) * per_line}',
                    fill='black', font=fs)
         return img
 
-    def choice(self, ep, domain, fmt, t, hint=True, window=(1, None, False)):
+    def choice(self, ep, domain, fmt, t, hint=True, window=(1, None, False), hfmt='raw'):
+        S = SCENARIOS[domain]
         tr = ep['trials'][t - 1]
         pol = ep['label_polarity']
         labels = DOMAINS[domain]
@@ -159,50 +186,52 @@ class Renderer:
                 (ep['b_name'], label(domain, tr['b_report_bit'], pol))]
         if not tr['a_listed_first']:
             reps.reverse()
-        content = [{'type': 'text', 'text': header(ep, domain, hint) + history(ep, domain, t, *window) +
-                    f"Current trial {t} (true {NOUN[domain]} not yet revealed):\n"}]
+        content = [{'type': 'text', 'text': header(ep, domain, hint) + history(ep, domain, t, *window, fmt=hfmt) +
+                    f"Current {S['unit']} {t} ({S['pending']}):\n"}]
         images = []
         if fmt == 'chart':   # method 2: history as one raster chart; current reports as text
             content = [{'type': 'text', 'text': header(ep, domain, hint) +
-                        ('Past trials: none yet.\n' if t == 1 else
-                         f'Past trials 1-{t - 1} are summarized in this chart (trials run left to right in '
-                         'four lines of 20; for each trial, a green square means that reporter was correct, '
-                         'a gray square means that reporter was wrong, an empty square means not yet played):\n')}]
+                        (f"Past {plural(S['unit'])}: none yet.\n" if t == 1 else
+                         f"Past {plural(S['unit'])} 1-{t - 1} are summarized in this chart ({plural(S['unit'])} run "
+                         f"left to right in four lines of 20; for each {S['unit']}, a green square means that "
+                         f"{S['role']} was correct, a gray square means that {S['role']} was wrong, an empty square "
+                         "means not yet played):\n")}]
             if t > 1:
                 content.append({'type': 'image'})
                 images.append(self.chart(ep, t))
-            content.append({'type': 'text', 'text': f"\nCurrent trial {t} (true {NOUN[domain]} not yet revealed):\n"})
+            content.append({'type': 'text', 'text': f"\nCurrent {S['unit']} {t} ({S['pending']}):\n"})
         if fmt == 'image_composite':   # binding control: one image, two labelled panels
-            content.append({'type': 'text', 'text': 'Reports (one panel per reporter, name above each panel): '})
+            content.append({'type': 'text', 'text': f"Reports (one panel per {S['role']}, name above each panel): "})
             content.append({'type': 'image'})
             content.append({'type': 'text', 'text': '\n'})
             images.append(self.composite(domain, reps, ep, t))
         for name, lab in ([] if fmt == 'image_composite' else reps):
             if fmt in ('text', 'chart'):
-                content.append({'type': 'text', 'text': f'{name} reports: {lab}\n'})
+                content.append({'type': 'text', 'text': f"{name} {S['verb']}: {lab}\n"})
             elif fmt == 'image_after':    # binding control: image first, then attribution
                 content.append({'type': 'image'})
                 content.append({'type': 'text', 'text': f' (the image above was reported by {name})\n'})
                 images.append(self.image(domain, lab, ep, t))
             else:                          # 'image' or 'image_named' (name printed on the image)
-                content.append({'type': 'text', 'text': f'{name} reports: '})
+                content.append({'type': 'text', 'text': f"{name} {S['verb']}: "})
                 content.append({'type': 'image'})
                 content.append({'type': 'text', 'text': '\n'})
                 img = self.image(domain, lab, ep, t)
                 images.append(self.banner(img, name) if fmt == 'image_named' else img)
         content.append({'type': 'text', 'text':
-                        f"Predict the true {NOUN[domain]} on the current trial. "
+                        f"{S['question']} "
                         f"Answer with exactly one lowercase word: {labels[0]} or {labels[1]}."})
         a_label = label(domain, tr['a_report_bit'], pol)
         return dict(content=content, images=images), list(labels), a_label
 
-    def judgment(self, ep, domain, t, hint=True, window=(1, None, False)):
+    def judgment(self, ep, domain, t, hint=True, window=(1, None, False), hfmt='raw'):
+        S = SCENARIOS[domain]
         tr = ep['trials'][t - 1]
         names = [ep['a_name'], ep['b_name']]
         if not tr['a_listed_first']:
             names.reverse()
-        text = (header(ep, domain, hint) + history(ep, domain, t, *window) +
-                f"Before trial {t}: which reporter is currently more likely to be correct? "
+        text = (header(ep, domain, hint) + history(ep, domain, t, *window, fmt=hfmt) +
+                f"Before {S['unit']} {t}: which {S['role']} is currently more likely to be correct? "
                 f"Answer with exactly one name: {names[0]} or {names[1]}.")
         return dict(content=[{'type': 'text', 'text': text}], images=[]), names, ep['a_name']
 
@@ -217,7 +246,10 @@ def main():
     ap.add_argument('--shard', default='0/1')
     ap.add_argument('--pixels', type=int, choices=(224, 448), default=224)
     ap.add_argument('--readouts', nargs='+', default=['choice', 'judgment'])
-    ap.add_argument('--domains', nargs='+', default=['color', 'pet'])
+    ap.add_argument('--domains', nargs='+', default=['color', 'pet'],
+                    help="scenario names, or 'scenario' = the episode's own cover story (v3 data)")
+    ap.add_argument('--history-format', choices=HISTORY_FORMATS, default='raw',
+                    help='raw = reports + outcome per trial; coded = who was correct per trial')
     ap.add_argument('--formats', nargs='+', default=['text', 'image'])
     ap.add_argument('--max-episodes', type=int)
     ap.add_argument('--trials', type=int, nargs='+', help='subset of trial indices (debug)')
@@ -234,13 +266,44 @@ def main():
     renderer = Renderer(json.loads((args.data_dir / 'image_index.json').read_text()), args.pixels)
     args.output.mkdir(parents=True, exist_ok=True)
     out_path = args.output / f'results_shard{i}of{n}.jsonl'
+    # Run fingerprint: refuse to append rows produced under a different configuration (A02).
+    import hashlib
+    def _sha(p):
+        return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+    here = Path(__file__).resolve().parent
+    fingerprint = dict(model_id=args.model_id, model_revision=Path(args.model_dir).name,
+                       data_sha256=_sha(args.data_dir / 'episodes.jsonl'),
+                       renderer_sha256=hashlib.sha256(b''.join(Path(here / f).read_bytes() for f in
+                                                              ('run_volatile.py', 'scenarios.py', 'controller.py'))).hexdigest(),
+                       split=args.split, pixels=args.pixels, hazard=args.hazard, history_mode=args.history_mode,
+                       history_format=args.history_format, hint=not args.no_hint, readouts=sorted(args.readouts),
+                       domains=sorted(args.domains), formats=sorted(args.formats),
+                       trials=args.trials, max_episodes=args.max_episodes)
+    (args.output / f'_COMPLETE_shard{i}of{n}').unlink(missing_ok=True)   # never keep a stale marker
+    fp_path = args.output / f'_FINGERPRINT_shard{i}of{n}.json'
+    if fp_path.exists():
+        old = json.loads(fp_path.read_text())
+        diff = {k: (old.get(k), v) for k, v in fingerprint.items() if old.get(k) != v and k != 'renderer_sha256'}
+        if diff:
+            sys.exit(f'Refusing to resume: fingerprint differs from existing output: {diff}')
+        if old.get('renderer_sha256') != fingerprint['renderer_sha256']:
+            print('WARNING: renderer code changed since this output was started (prompt hashes are stored per row).')
+    else:
+        fp_path.write_text(json.dumps(fingerprint, indent=1))
+    # Drop an incomplete trailing line (crash mid-write) before appending (I05).
+    if out_path.exists():
+        raw = out_path.read_bytes()
+        if raw and not raw.endswith(b'\n'):
+            out_path.write_bytes(raw[:raw.rfind(b'\n') + 1])
+            print('Truncated an incomplete trailing line before resuming.')
     done = set()
     if out_path.exists():
         for line in open(out_path):
             try:
                 r = json.loads(line)
-                done.add((r['episode_id'], r['t'], r['readout'], r['domain'], r['format'],
-                          r.get('history_mode', 'full'), r.get('hint', True), r.get('pixels', args.pixels)))
+                done.add((r['episode_id'], r['t'], r['readout'], r.get('domain_slot', r['domain']), r['format'],
+                          r.get('history_mode', 'full'), r.get('hint', True), r.get('pixels', args.pixels),
+                          r.get('history_format', 'raw')))
             except json.JSONDecodeError:
                 pass
     if args.sharded:
@@ -274,24 +337,30 @@ def main():
                 if 'judgment' in args.readouts:
                     jobs += [('judgment', d, 'text') for d in args.domains]
                 for readout, domain, fmt in jobs:
-                    key = (ep['episode_id'], t, readout, domain, fmt, args.history_mode, hint, args.pixels)
+                    key = (ep['episode_id'], t, readout, domain, fmt, args.history_mode, hint, args.pixels,
+                           args.history_format)
+                    dom = resolve_domain(domain, ep)
                     if key in done:
                         continue
                     if readout == 'choice':
-                        rendered, labels, target = renderer.choice(ep, domain, fmt, t, hint, window)
+                        rendered, labels, target = renderer.choice(ep, dom, fmt, t, hint, window, args.history_format)
                     else:
-                        rendered, labels, target = renderer.judgment(ep, domain, t, hint, window)
+                        rendered, labels, target = renderer.judgment(ep, dom, t, hint, window, args.history_format)
                     row = backend.score(rendered, labels, max_new_tokens=1)
                     tr = ep['trials'][t - 1]
                     rec = dict(episode_id=ep['episode_id'], order=ep['order'], t=t, readout=readout,
-                               domain=domain, format=fmt, p_a=tr['p_a'], phase=tr['phase'],
+                               domain=dom, domain_slot=domain, format=fmt, p_a=tr['p_a'], phase=tr['phase'],
                                a_correct=tr['a_correct'], y=row['probabilities'][target],
+                               logit_a=row['logits'][target],
+                               logit_other=[v for k, v in row['logits'].items() if k != target][0],
+                               logit_diff=row['logits'][target] - [v for k, v in row['logits'].items() if k != target][0],
                                candidate_mass=row['canonical_candidate_mass'],
                                greedy=row['greedy_answer'], target=target,
                                input_tokens=row['input_tokens'], prompt_sha256=row['prompt_sha256'],
                                model_id=args.model_id, hint=hint, history_mode=args.history_mode,
                                pixels=args.pixels, argmax=row.get('argmax_label'),
-                               window_start=window[0], marker=window[1], summary=window[2])
+                               window_start=window[0], marker=window[1], summary=window[2],
+                               history_format=args.history_format)
                     out.write(json.dumps(rec) + '\n')
                     count += 1
                 out.flush()
@@ -307,9 +376,9 @@ def main():
             r = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if (r.get('history_mode', 'full'), r.get('hint', True), r.get('pixels', args.pixels)) == \
-                (args.history_mode, hint, args.pixels):
-            keys.append((r['episode_id'], r['t'], r['readout'], r['domain'], r['format']))
+        if (r.get('history_mode', 'full'), r.get('hint', True), r.get('pixels', args.pixels),
+                r.get('history_format', 'raw')) == (args.history_mode, hint, args.pixels, args.history_format):
+            keys.append((r['episode_id'], r['t'], r['readout'], r.get('domain_slot', r['domain']), r['format']))
     if len(set(keys)) == expected and len(keys) == expected and expected > 0:
         (args.output / f'_COMPLETE_shard{i}of{n}').write_text(json.dumps(dict(rows=expected, at=time.strftime('%F %T'))))
         print(f'COMPLETE {expected} rows', flush=True)

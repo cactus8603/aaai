@@ -24,15 +24,16 @@ def jobs_for(key, m, split_sets=('dev', 'held_out', 'robust', 'psych101')):
     base = dict(model=key, gpus=m['gpus_mi300x'])
     out = []
 
-    def vol(name, split, data, mode, formats, readouts=('choice',), extra=(), pixels=None):
+    def vol(name, split, data, mode, formats, readouts=('choice',), extra=(), pixels=None, hfmt='raw'):
         p = ['--pixels', str(pixels)] if pixels else px
         out.append(dict(base, id=f'{key}__{name}', script=f'{VT}/run_volatile.py',
                         args=['--split', split, '--data-dir', f'{VT}/{data}', '--history-mode', mode,
+                              '--history-format', hfmt, '--domains', 'pet', 'scenario',
                               '--formats', *formats, '--readouts', *readouts, *p, *extra],
                         output=f'{VT}/runs_mi300x/{key}/{name}'))
 
     if 'dev' in split_sets:
-        dv = ['--data-dir', f'{VT}/episodes_v2']
+        dv = ['--data-dir', f'{VT}/episodes_v3']
         out.append(dict(base, id=f'{key}__dev_controls', script=f'{VT}/run_controls.py', args=[*dv, *px],
                         output=f'{VT}/runs_mi300x/{key}/dev_controls'))
         out.append(dict(base, id=f'{key}__dev_binding', script=f'{VT}/run_controls.py',
@@ -45,28 +46,35 @@ def jobs_for(key, m, split_sets=('dev', 'held_out', 'robust', 'psych101')):
     for split, tag in (('development', 'dev'), ('held_out', 'ho')):
         if tag not in split_sets and not (tag == 'ho' and 'held_out' in split_sets):
             continue
-        vol(f'{tag}_full_text', split, 'episodes_v2', 'full', ['text'], ('choice', 'judgment'))
-        vol(f'{tag}_full_image', split, 'episodes_v2', 'full', ['image'])
-        vol(f'{tag}_full_chart', split, 'episodes_v2', 'full', ['chart'], pixels=448)
+        vol(f'{tag}_full_text', split, 'episodes_v3', 'full', ['text'], ('choice', 'judgment'))
+        vol(f'{tag}_full_image', split, 'episodes_v3', 'full', ['image'])
+        vol(f'{tag}_full_chart', split, 'episodes_v3', 'full', ['chart'], pixels=448)
+        # history format B: per-trial correctness stated (removes the "who was correct" step)
+        vol(f'{tag}_full_coded', split, 'episodes_v3', 'full', ['text', 'image'], hfmt='coded')
+        # A+: raw records plus the correctness statement (separates "adding correctness" from "removing distractors")
+        vol(f'{tag}_full_rawcoded', split, 'episodes_v3', 'full', ['text'], hfmt='raw_coded')
         for arm in ARMS_TEXT_IMAGE:
-            vol(f'{tag}_{arm.replace(":", "")}', split, 'episodes_v2', arm, ['text', 'image'])
+            vol(f'{tag}_{arm.replace(":", "")}', split, 'episodes_v3', arm, ['text', 'image'])
         for arm in ARMS_TEXT:
-            vol(f'{tag}_{arm.replace(":", "")}', split, 'episodes_v2', arm, ['text'])
+            vol(f'{tag}_{arm.replace(":", "")}', split, 'episodes_v3', arm, ['text'])
     if 'psych101' in split_sets:   # external task: Psych-101 xiong2023 (human comparison)
-        for fmt, hz in (('text', 'told'), ('text', 'hidden'), ('image_outcome', 'told'), ('chart', 'told'),
-                        ('perc_outcome', 'told'), ('perc_chart', 'told')):
+        # hidden (hazard not stated) is primary; told is the secondary description contrast (text only)
+        for fmt, hz in (('text', 'hidden'), ('text', 'told'), ('image_outcome', 'hidden'), ('chart', 'hidden'),
+                        ('perc_outcome', 'hidden'), ('perc_chart', 'hidden')):
             out.append(dict(base, id=f'{key}__psy_{fmt}_{hz}', script=f'{VT}/psych101/run_xiong.py',
                             args=['--format', fmt, '--hazard-info', hz],
                             output=f'{VT}/runs_mi300x/{key}/psy_{fmt}_{hz}'))
     if 'robust' in split_sets:
         for arm in ['full', 'sum_cp', 'sum_all', 'sum_window:10']:
-            vol(f'rob_{arm.replace(":", "")}', 'held_out', 'episodes_robust_v2', arm, ['text'])
+            vol(f'rob_{arm.replace(":", "")}', 'held_out', 'episodes_robust_v3', arm, ['text'])
+        vol('rob_full_coded', 'held_out', 'episodes_robust_v3', 'full', ['text'], hfmt='coded')
     return out
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--models', nargs='+', default=['qwen3vl8b', 'internvl8b', 'qwen3vl32b', 'internvl38b', 'qwen25vl72b'])
+    ap.add_argument('--models', nargs='+', default=['qwen3vl8b', 'internvl8b', 'qwen3vl32b', 'internvl38b',
+                                                   'gemma3_27b', 'qwen25vl72b'])
     ap.add_argument('--out', type=Path, default=HERE / 'jobs.jsonl')
     a = ap.parse_args()
     reg = json.loads((HERE / 'models.json').read_text())
@@ -82,6 +90,39 @@ def main():
                                    '--max-episodes', '2', '--formats', 'text',
                                    '--readouts', 'choice', '--pixels', str(m['pixels'])],
                              output=f'{VT}/runs_mi300x/{key}/xcheck'))
+    # E9 reasoning mode (subset; long generations): Thinking models + CoT prompt on the instruct 32B
+    for key, mode in (('qwen3vl8b_thinking', 'thinking'), ('qwen3vl32b_thinking', 'thinking'), ('qwen3vl32b', 'cot')):
+        if key not in reg:
+            continue
+        m = reg[key]
+        for hname, hargs in (('raw', ['--history-mode', 'full', '--history-format', 'raw']),
+                             ('summ', ['--history-mode', 'sum_all', '--controls'])):
+            for i in range(4):
+                args = ['--data-dir', f'{VT}/episodes_v3', '--split', 'development', '--domain', 'scenario',
+                        '--mode', mode, '--max-new-tokens', '16384', '--shard', f'{i}/4',
+                        '--control-t', '40', '80', '--main-trials', '20', '40', '60', '80',
+                        '--pixels', str(m['pixels'])]
+                if hname == 'raw':   # controls (incl. coded variants) are run once, with the raw-history job
+                    args += hargs + ['--controls', 'explicit_rel', 'easy_short', 'easy_short_coded',
+                                     'easy_long', 'easy_long_coded']
+                else:
+                    args += hargs      # '--controls' with no values = main task only
+                jobs.append(dict(model=key, gpus=m['gpus_mi300x'], id=f'{key}__e9_{mode}_{hname}_s{i}',
+                                 script=f'{VT}/run_thinking.py', args=args,
+                                 output=f'{VT}/runs_mi300x/{key}/e9_{mode}_{hname}/s{i}'))
+    # Tiers (run tier 1 first): 1 = core evidence chain, 2 = secondary/explanatory, 3 = exploratory/extra.
+    T1 = ('dev_controls', 'dev_binding', 'dev_chartread', 'xcheck', '_full_text', '_full_coded', '_full_rawcoded',
+          '_sum_all', 'rob_full')
+    T3 = ('_cp_hard', '_window10', 'psy_image_outcome', 'psy_chart', 'psy_perc', 'rob_full_coded')
+    for j in jobs:
+        jid = j['id'].split('__', 1)[1]
+        tier = 1 if (any(k in jid for k in T1) and not jid.startswith('rob_full_coded')
+                     and not jid.startswith('rob_sum_window')) else 2
+        if any(k in jid for k in T3) or j['model'] == 'qwen25vl72b':
+            tier = 3
+        if jid.startswith('rob_sum_all') or jid == 'rob_full':
+            tier = 1
+        j['tier'] = tier
     with open(a.out, 'w') as f:
         for j in jobs:
             f.write(json.dumps(j) + '\n')

@@ -1,10 +1,14 @@
 {
-  "_note": "Pinned revisions (resolved 2026-11-11). gpus_mi300x = MI300X cards (192GB) needed. pixels: Qwen 224, InternVL 448 (one tile).",
+  "_note": "Pinned revisions (resolved 2026-11-11). gpus_mi300x = MI300X cards (192GB) needed. pixels: Qwen 224, InternVL 448 (one tile), Gemma-3 224 source render -> processor resizes to native 896 (pan-and-scan off). gated: needs an HF token with the Gemma license accepted. *_thinking: only for run_thinking.py.",
   "qwen3vl8b":   {"id": "Qwen/Qwen3-VL-8B-Instruct",            "revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b", "pixels": 224, "gb": 17,  "gpus_mi300x": 1, "tier": "core"},
   "internvl8b":  {"id": "OpenGVLab/InternVL3_5-8B-HF",          "revision": "741a7d03020411e666c6109218ab71e08151ef86", "pixels": 448, "gb": 16,  "gpus_mi300x": 1, "tier": "core"},
   "qwen3vl32b":  {"id": "Qwen/Qwen3-VL-32B-Instruct",           "revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb", "pixels": 224, "gb": 67,  "gpus_mi300x": 1, "tier": "core"},
   "internvl38b": {"id": "OpenGVLab/InternVL3_5-38B-HF",         "revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3", "pixels": 448, "gb": 77,  "gpus_mi300x": 1, "tier": "core"},
   "qwen25vl72b": {"id": "Qwen/Qwen2.5-VL-72B-Instruct",         "revision": "89c86200743eec961a297729e7990e8f2ddbc4c5", "pixels": 224, "gb": 147, "gpus_mi300x": 1, "tier": "scale"},
   "qwen3vl235b": {"id": "Qwen/Qwen3-VL-235B-A22B-Instruct",     "revision": "710c13861be6c466e66de3f484069440b8f31389", "pixels": 224, "gb": 471, "gpus_mi300x": 4, "tier": "optional"},
-  "internvl241b":{"id": "OpenGVLab/InternVL3_5-241B-A28B-HF",   "revision": "b941ed62ed4e2b711be4271b55034c2c97c57f33", "pixels": 448, "gb": 481, "gpus_mi300x": 4, "tier": "optional"}
+  "internvl241b":{"id": "OpenGVLab/InternVL3_5-241B-A28B-HF",   "revision": "b941ed62ed4e2b711be4271b55034c2c97c57f33", "pixels": 448, "gb": 481, "gpus_mi300x": 4, "tier": "optional"},
+  "gemma3_27b":  {"id": "google/gemma-3-27b-it",                "revision": "005ad3404e59d6023443cb575daa05336842228a", "pixels": 224, "gb": 55,  "gpus_mi300x": 1, "tier": "core", "gated": true, "note": "SigLIP fixed 896x896, pan-and-scan off: 224/448 renders are upsampled to 896 (256 image tokens)"},
+  "gemma3_12b":  {"id": "google/gemma-3-12b-it",                "revision": "96b6f1eccf38110c56df3a15bffe176da04bfd80", "pixels": 224, "gb": 25,  "gpus_mi300x": 1, "tier": "optional", "gated": true, "note": "smaller Gemma-3 sibling; same preprocessing as gemma3_27b"},
+  "qwen3vl8b_thinking":  {"id": "Qwen/Qwen3-VL-8B-Thinking",    "revision": "92f3c4b4feadd3a016ef468d103bb5f58b2a2c6b", "pixels": 224, "gb": 18,  "gpus_mi300x": 1, "tier": "reasoning", "script": "run_thinking.py"},
+  "qwen3vl32b_thinking": {"id": "Qwen/Qwen3-VL-32B-Thinking",   "revision": "7edd10ffd1196091948fb245ff63e406ccb2d4d1", "pixels": 224, "gb": 67,  "gpus_mi300x": 1, "tier": "reasoning", "script": "run_thinking.py"}
 }

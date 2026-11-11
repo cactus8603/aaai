@@ -4,7 +4,7 @@ from pathlib import Path
 
 import torch
 import transformers
-from transformers import AutoModelForImageTextToText, AutoProcessor, GenerationConfig
+from transformers import AutoModelForImageTextToText, GenerationConfig
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'research/source_trust'))
@@ -18,9 +18,7 @@ class ShardedVLM(mb.FrozenVLM):
         if n < 1:
             raise RuntimeError('No CUDA devices visible')
         torch.manual_seed(20261111)
-        self.processor = AutoProcessor.from_pretrained(
-            str(model_dir), local_files_only=True, trust_remote_code=False,
-            use_fast=False, **preprocessing['image_processor_settings'])
+        self.processor = mb.load_processor(model_dir, preprocessing)   # Gemma-3: fast tokenizer, slow image proc
         # Default: 90% of each visible device (works for 24GB 3090s and 192GB MI300X alike).
         import os
         if max_gib_per_gpu is None and os.environ.get('VT_MAX_GIB'):

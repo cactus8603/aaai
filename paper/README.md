@@ -11,7 +11,7 @@ This is a **long paper (8 pages plus references and supplementary material, arch
 |---|---|
 | `main.tex` | Paper source, built from `AnonymousSubmission2027.tex` |
 | `aaai2027.sty`, `aaai2027.bst` | Unmodified copies from the kit. **Never edit them.** |
-| `refs.bib` | Placeholder comments only. Real entries come from the literature agent, generated from `../research/volatile_trust/literature.json`. |
+| `refs.bib` | Verified BibTeX entries (from `../research/volatile_trust/literature.json` plus later additions) |
 | `figures/` | Figures, pre-rendered as PDF, PNG or JPG. Crop them outside LaTeX. |
 | `tables/` | Table bodies that `main.tex` pulls in with `\input` |
 | `authorkit_original/` | The official AAAI-27 kit (`AuthorKit27.zip`, TemplateVersion 2027.1), downloaded from https://aaai.org/authorkit27/ and unzipped. Treat it as read-only reference material. |

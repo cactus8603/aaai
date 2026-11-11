@@ -5,6 +5,8 @@ C2 explicit_rel    : "A is correct 80% of the time; B 20%." + current reports.
 C3 explicit_counts : "In the last 10 trials, A was correct 8 times and B 2 times."
 C4 easy_short      : 10-trial history, A correct on every trial.
 C5 easy_long       : 70 trials at 50/50 then 10 trials with A always correct (80-trial prompt).
+C4c/C5c easy_short_coded / easy_long_coded : same outcome patterns, but each trial only states who was
+                     correct ("Ken was correct; Sam was wrong") -> removes the per-trial correctness step.
 Each episode (incl. twins) contributes 4 query trials (t in {20, 40, 60, 80}) per control/domain/format.
 """
 import argparse
@@ -17,22 +19,33 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(ROOT / 'research/source_trust'))
 from run_volatile import DOMAINS, NOUN, Renderer, header, label  # noqa: E402
+from scenarios import SCENARIOS, plural  # noqa: E402
 from model_backends import FrozenVLM  # noqa: E402
 
 QUERY_T = (20, 40, 60, 80)
 
 
-def synth_history(ep, domain, pattern, rng):
-    """pattern: list of a_correct bits. Returns text history lines with ep names/polarity."""
+def synth_history(ep, domain, pattern, rng, coded=False):
+    """pattern: list of a_correct bits. Returns history lines with ep names/polarity (raw or coded).
+    The rng draws are identical for raw and coded, so the two differ only in presentation."""
+    S = SCENARIOS[domain]
     pol = ep['label_polarity']
-    lines = ['Past trials:']
+    lines = [f"Past {plural(S['unit'])}:"]
     for i, ac in enumerate(pattern, 1):
         truth = rng.randrange(2)
         a_rep = truth if ac else 1 - truth
-        a = f"{ep['a_name']} reports {label(domain, a_rep, pol)}"
-        b = f"{ep['b_name']} reports {label(domain, 1 - a_rep, pol)}"
-        first, second = (a, b) if rng.random() < 0.5 else (b, a)
-        lines.append(f"Trial {i}: {first}; {second}. True {NOUN[domain]}: {label(domain, truth, pol)}.")
+        a_first = rng.random() < 0.5
+        if coded:
+            a = f"{ep['a_name']} was {'correct' if ac else 'wrong'}"
+            b = f"{ep['b_name']} was {'wrong' if ac else 'correct'}"
+            first, second = (a, b) if a_first else (b, a)
+            lines.append(f"{S['unit'].capitalize()} {i}: {first}; {second}.")
+        else:
+            a = f"{ep['a_name']} {S['verb']} {label(domain, a_rep, pol)}"
+            b = f"{ep['b_name']} {S['verb']} {label(domain, 1 - a_rep, pol)}"
+            first, second = (a, b) if a_first else (b, a)
+            lines.append(f"{S['unit'].capitalize()} {i}: {first}; {second}. {S['outcome']}: "
+                         f"{label(domain, truth, pol)}.")
     return '\n'.join(lines) + '\n'
 
 
@@ -41,26 +54,28 @@ def build(renderer, ep, domain, fmt, t, control, rng):
     names = (ep['a_name'], ep['b_name']) if rng.random() < 0.5 else (ep['b_name'], ep['a_name'])
     if control == 'explicit_rel':
         rel = {ep['a_name']: 80, ep['b_name']: 20}
-        ctx = (f"Summary of past performance: {names[0]} was correct on {rel[names[0]]}% of past trials; "
-               f"{names[1]} was correct on {rel[names[1]]}% of past trials.\n")
+        Us = plural(SCENARIOS[domain]['unit'])
+        ctx = (f"Summary of past performance: {names[0]} was correct on {rel[names[0]]}% of past {Us}; "
+               f"{names[1]} was correct on {rel[names[1]]}% of past {Us}.\n")
     elif control == 'explicit_counts':
         cnt = {ep['a_name']: 8, ep['b_name']: 2}
-        ctx = (f"Summary of the last 10 trials: {names[0]} was correct {cnt[names[0]]} times; "
+        ctx = (f"Summary of the last 10 {plural(SCENARIOS[domain]['unit'])}: {names[0]} was correct {cnt[names[0]]} times; "
                f"{names[1]} was correct {cnt[names[1]]} times.\n")
-    elif control == 'easy_short':
-        ctx = synth_history(ep, domain, [1] * 10, rng)
-    elif control == 'easy_long':
+    elif control in ('easy_short', 'easy_short_coded'):
+        ctx = synth_history(ep, domain, [1] * 10, rng, coded=control.endswith('_coded'))
+    elif control in ('easy_long', 'easy_long_coded'):
         noise = [1] * 35 + [0] * 35
         rng.shuffle(noise)
-        ctx = synth_history(ep, domain, noise + [1] * 10, rng)
+        ctx = synth_history(ep, domain, noise + [1] * 10, rng, coded=control.endswith('_coded'))
     else:
         raise ValueError(control)
     rendered, labels, target = renderer.choice(ep, domain, fmt, t)
     # Replace the header+history text (first content block) with header + control context.
+    U = SCENARIOS[domain]['unit']
     first = rendered['content'][0]['text']
-    tail = first[first.index('Current trial'):]
-    n_hist = {'easy_short': 10, 'easy_long': 80}.get(control)
-    tail = tail.replace(f'Current trial {t} ', 'Current trial ' if n_hist is None else f'Current trial {n_hist + 1} ', 1)
+    tail = first[first.index(f'Current {U}'):]
+    n_hist = {'easy_short': 10, 'easy_long': 80, 'easy_short_coded': 10, 'easy_long_coded': 80}.get(control)
+    tail = tail.replace(f'Current {U} {t} ', f'Current {U} ' if n_hist is None else f'Current {U} {n_hist + 1} ', 1)
     rendered['content'][0]['text'] = header(ep, domain) + ctx + tail
     return rendered, labels, target
 
@@ -74,7 +89,9 @@ def main():
     ap.add_argument('--pixels', type=int, choices=(224, 448), default=224)
     ap.add_argument('--sharded', action='store_true')
     ap.add_argument('--formats', nargs='+', default=['text', 'image'])
-    ap.add_argument('--controls', nargs='+', default=['perception', 'explicit_rel', 'explicit_counts', 'easy_short', 'easy_long'])
+    ap.add_argument('--domains', nargs='+', default=list(DOMAINS), help='scenarios to cross (default: all)')
+    ap.add_argument('--controls', nargs='+', default=['perception', 'explicit_rel', 'explicit_counts', 'easy_short', 'easy_long',
+                                                                  'easy_short_coded', 'easy_long_coded', 'single_trial_who'])
     args = ap.parse_args()
     eps = [json.loads(l) for l in open(args.data_dir / 'episodes.jsonl')]
     eps = [e for e in eps if e['split'] == 'development']
@@ -90,14 +107,25 @@ def main():
     with open(args.output / 'run_metadata.jsonl', 'a') as mf:
         mf.write(json.dumps(meta, default=str) + '\n')
     out_path = args.output / 'controls.jsonl'
+    # fingerprint guard (A02) and truncation of an incomplete trailing line (I05)
+    import hashlib
+    fp = dict(model_id=args.model_id, model_revision=Path(args.model_dir).name, pixels=args.pixels,
+              data_sha256=hashlib.sha256((args.data_dir / 'episodes.jsonl').read_bytes()).hexdigest(),
+              controls=sorted(args.controls), formats=sorted(args.formats), domains=sorted(args.domains))
+    (args.output / '_COMPLETE').unlink(missing_ok=True)   # never keep a stale marker
+    fp_path = args.output / '_FINGERPRINT.json'
+    if fp_path.exists() and json.loads(fp_path.read_text()) != fp:
+        sys.exit(f'Refusing to resume: fingerprint differs ({fp_path})')
+    fp_path.write_text(json.dumps(fp, indent=1))
+    if out_path.exists():
+        raw = out_path.read_bytes()
+        if raw and not raw.endswith(b'\n'):
+            out_path.write_bytes(raw[:raw.rfind(b'\n') + 1])
     done = set()
     if out_path.exists():
-        for line in open(out_path):
-            try:
-                r = json.loads(line)
-                done.add(r['key'])
-            except (json.JSONDecodeError, KeyError):
-                pass
+        for k, line in enumerate(open(out_path)):
+            r = json.loads(line)          # an interior corrupt line is an error, not silently skipped
+            done.add(r['key'])
     out = open(out_path, 'a')
 
     expected = set()
@@ -107,7 +135,11 @@ def main():
         if key in done:
             return
         row = backend.score(rendered, labels, max_new_tokens=1)
+        other = [v for k, v in row['logits'].items() if k != target][0]
         out.write(json.dumps(dict(key=key, y=row['probabilities'][target], target=target,
+                                  logit_a=row['logits'][target], logit_other=other,
+                                  logit_diff=row['logits'][target] - other,
+                                  candidate_mass=row.get('canonical_candidate_mass'),
                                   argmax=row['argmax_label'], greedy=row['greedy_answer'],
                                   input_tokens=row['input_tokens'], pixels=args.pixels, **fields)) + '\n')
         done.add(key)
@@ -116,15 +148,15 @@ def main():
     seen = set()
     for ep in (eps if 'perception' in args.controls else []):
         for t in QUERY_T:
-            for domain in DOMAINS:
+            for domain in args.domains:
                 for lab in DOMAINS[domain]:
-                    iid = (domain, lab) if domain == 'color' else ep['pet_image_ids'][str(t)][lab]
+                    iid = ep['pet_image_ids'][str(t)][lab] if domain == 'pet' else (domain, lab)   # icons for non-pet
                     if iid in seen:
                         continue
                     seen.add(iid)
                     labels = list(DOMAINS[domain])
                     rendered = dict(content=[{'type': 'image'}, {'type': 'text', 'text':
-                                    f"\nWhat {NOUN[domain]} is shown? Answer with exactly one lowercase word: "
+                                    f"\nWhich {NOUN[domain]} does this image show? Answer with exactly one lowercase word: "
                                     f"{labels[0]} or {labels[1]}."}], images=[renderer.image(domain, lab, ep, t)])
                     emit(f'perception|{iid}', rendered, labels, lab, control='perception', domain=domain, label=lab)
     for ep in eps:
@@ -148,6 +180,28 @@ def main():
                     emit(f'chart_read|{ep["episode_id"]}|{t}|{k}', rendered, names, correct,
                          control='chart_read', episode_id=ep['episode_id'], t=t, trial_asked=k,
                          a_was_correct=tr['a_correct'])
+            # C8 single-trial correctness judgement (step 1 in isolation): one raw record, ask who was correct
+            if 'single_trial_who' in args.controls:
+                for domain in args.domains:
+                    if domain == 'pet':
+                        continue
+                    S = SCENARIOS[domain]
+                    k = t - 1                       # the record of trial t-1 (exists for all QUERY_T)
+                    tr = ep['trials'][k - 1]
+                    pol = ep['label_polarity']
+                    a = f"{ep['a_name']} {S['verb']} {label(domain, tr['a_report_bit'], pol)}"
+                    b = f"{ep['b_name']} {S['verb']} {label(domain, tr['b_report_bit'], pol)}"
+                    first, second = (a, b) if tr['a_listed_first'] else (b, a)
+                    names = [ep['a_name'], ep['b_name']] if tr['a_listed_first'] else [ep['b_name'], ep['a_name']]
+                    rec = (f"{S['unit'].capitalize()} {k}: {first}; {second}. {S['outcome']}: "
+                           f"{label(domain, tr['truth_bit'], pol)}.")
+                    correct = ep['a_name'] if tr['a_correct'] else ep['b_name']
+                    rendered = dict(content=[{'type': 'text', 'text': header(ep, domain) + rec +
+                                    f"\nOn {S['unit']} {k}, which {S['role']} was correct? "
+                                    f"Answer with exactly one name: {names[0]} or {names[1]}."}], images=[])
+                    emit(f'single_trial_who|{ep["episode_id"]}|{t}|{domain}', rendered, names, correct,
+                         control='single_trial_who', episode_id=ep['episode_id'], t=t, domain=domain,
+                         format='text', a_was_correct=tr['a_correct'])
             # C7 composite panel reading: which animal is in <name>'s panel? (tests name->panel binding)
             if 'composite_read' in args.controls:
                 tr = ep['trials'][t - 1]
@@ -165,22 +219,28 @@ def main():
                     emit(f'composite_read|{ep["episode_id"]}|{t}|{name}', rendered, labels, lab,
                          control='composite_read', episode_id=ep['episode_id'], t=t,
                          asked_first_panel=(name == reps[0][0]))
-            for control in [c for c in args.controls if c not in ('perception', 'chart_read', 'composite_read')]:
-                for domain in DOMAINS:
+            for control in [c for c in args.controls if c not in ('perception', 'chart_read', 'composite_read',
+                                                                   'single_trial_who')]:
+                for domain in args.domains:
                     for fmt in args.formats:
                         if fmt == 'chart':
                             continue      # history-replacing controls are undefined for the chart format
-                        r2 = random.Random(f"{base}-{t}-{control}-{domain}-{fmt}")
+                        seed_ctrl = control.replace('_coded', '')
+                        r2 = random.Random(f"{base}-{t}-{seed_ctrl}-{domain}-{fmt}")
                         rendered, labels, target = build(renderer, ep, domain, fmt, t, control, r2)
                         emit(f'{control}|{ep["episode_id"]}|{t}|{domain}|{fmt}', rendered, labels, target,
                              control=control, episode_id=ep['episode_id'], t=t, domain=domain, format=fmt)
             out.flush()
     out.close()
-    if expected and expected <= done:
+    # Completion: re-read the file and require exactly the expected keys, no duplicates or extras.
+    keys = [json.loads(l)['key'] for l in open(out_path)]
+    dup = len(keys) - len(set(keys))
+    missing, extra = expected - set(keys), set(keys) - expected
+    if expected and not missing and not extra and not dup:
         (args.output / '_COMPLETE').write_text(json.dumps(dict(rows=len(expected), at=__import__('time').strftime('%F %T'))))
         print(f'COMPLETE {len(expected)} rows')
     else:
-        print(f'INCOMPLETE: {len(expected - done)} missing of {len(expected)}')
+        print(f'INCOMPLETE: missing={len(missing)} extra={len(extra)} duplicates={dup} expected={len(expected)}')
         sys.exit(3)
     print('done')
 

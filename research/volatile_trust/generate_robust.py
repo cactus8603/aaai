@@ -53,7 +53,7 @@ def episode(eid, order, rng, pool):
 
 
 def main(n=24, seed=20261112):
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'episodes_robust_v2'
+    out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'episodes_robust_v3'
     out.mkdir(exist_ok=True)
     pools = load_pools()
     rows = []
@@ -61,6 +61,8 @@ def main(n=24, seed=20261112):
         rng = random.Random(seed * 31 + i)
         ep = episode(f'rob{i:03d}', 'SV' if i % 2 == 0 else 'VS', rng, pools['held_out'])
         ep['header_a_first'] = (i // 2) % 2 == 0
+        from scenarios import TEXT_SCENARIOS
+        ep['scenario'] = TEXT_SCENARIOS[(i // 4) % len(TEXT_SCENARIOS)]
         rows.append(ep)
     twins = []
     for e in rows:
@@ -72,9 +74,9 @@ def main(n=24, seed=20261112):
     with open(out / 'episodes.jsonl', 'w') as f:
         for r in rows + twins:
             f.write(json.dumps(r) + '\n')
-    src = (out.parent / 'episodes_v2' / 'image_index.json')
+    src = (out.parent / 'episodes_v3' / 'image_index.json')
     if not src.exists():
-        src = Path(__file__).parent / 'episodes_v2' / 'image_index.json'
+        src = Path(__file__).parent / 'episodes_v3' / 'image_index.json'
     (out / 'image_index.json').write_text(src.read_text())
     (out / 'protocol.json').write_text(json.dumps(dict(
         n=n, seed=seed, T=T, dwell='uniform int 6-16 in volatile phase; leftover <6 merged into previous dwell', correctness='IID Bernoulli(p_A)',

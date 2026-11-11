@@ -7,12 +7,12 @@ PY=${PY:-python}
 VT=research/volatile_trust
 echo "[1/6] Oxford-IIIT Pet: official download (MD5-checked), seeded selection, letterbox 224/448"
 $PY research/source_trust/prepare_pet_data.py --cache .cache/datasets/oxford-iiit-pet --output research/source_trust/natural_images_v1 > /dev/null
-echo "[2/6] Main-task episodes v2 (canonical: dev 16 + held-out 48, with twins)"
-$PY $VT/generate_episodes.py --out $VT/episodes_v2
+echo "[2/6] Main-task episodes v3 (canonical: dev 16 + held-out 48, with twins, scenarios)"
+$PY $VT/generate_episodes.py --out $VT/episodes_v3
 echo "[3/6] Pilot episodes v1 (only for the cross-platform check against 3090 pilot rows)"
 $PY $VT/generate_episodes.py --legacy-v1 --out $VT/episodes_v1
-echo "[4/6] Robustness episodes v2 (IID correctness, irregular dwell 6-16)"
-$PY $VT/generate_robust.py $VT/episodes_robust_v2
+echo "[4/6] Robustness episodes v3 (IID correctness, irregular dwell 6-16)"
+$PY $VT/generate_robust.py $VT/episodes_robust_v3
 echo "[5/6] Psych-101 xiong2023: pinned download (sha256-checked) + build"
 $PY -I $VT/psych101/fetch_xiong.py
 $PY -I $VT/psych101/build_xiong.py > /dev/null
@@ -26,7 +26,7 @@ for path, want in ref.items():
     bad += got != want
     print(('OK   ' if got == want else 'FAIL ') + path)
 miss = 0
-for d in ('episodes_v1', 'episodes_v2'):
+for d in ("episodes_v1", "episodes_v3"):
     idx = json.load(open(f'research/volatile_trust/{d}/image_index.json'))
     for r in idx.values():
         for k in ('224', '448'):

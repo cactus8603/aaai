@@ -28,3 +28,4 @@ __pycache__/
 .secrets/
 /research/volatile_trust/*.sh
 /research/volatile_trust/psych101/data/
+/research/volatile_trust/suggestion.md

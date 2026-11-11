@@ -1,5 +1,7 @@
 # Volatile Trust: Do VLMs Adapt Source Trust to Changing Reliability In-Context?
 
+> **注意：本文件是早期設計草稿。正式的實驗規格以 `EXPERIMENTS.md` 為準。**
+
 Target venue: NeuroAI 2.0 workshop at AAAI-27 (https://neuroai-multimodal-workshop.github.io/).
 The deadline is 2026-11-20. We plan a 4-page short paper (non-archival). Review is double-blind and uses the AAAI-27 author kit.
 

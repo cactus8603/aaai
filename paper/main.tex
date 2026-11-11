@@ -1,0 +1,235 @@
+% =====================================================================
+% NeuroAI 2.0 Workshop @ AAAI-27 -- SHORT PAPER (4 pages + refs; non-archival)
+% Template: AAAI-27 Author Kit (AuthorKit27, TemplateVersion 2027.1),
+%           AnonymousSubmission2027.tex. Double-blind.
+% Main content (Abstract..Discussion) must fit in 4 pages.
+% References and Supplementary (after references) do not count.
+% See README.md for compile command and the formatting checklist.
+% =====================================================================
+\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
+\usepackage[submission]{aaai2027}  % DO NOT CHANGE THIS
+% Fonts are loaded by aaai2027.sty. DO NOT add times/helvet/courier/lmodern/any font package.
+\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
+\usepackage{graphicx} % DO NOT CHANGE THIS
+\urlstyle{rm} % DO NOT CHANGE THIS
+\def\UrlFont{\rm}  % DO NOT CHANGE THIS
+\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\frenchspacing  % DO NOT CHANGE THIS
+
+% Allowed extras
+\usepackage{booktabs}   % tables (recommended by the kit)
+\usepackage{amsmath}    % math
+\usepackage{amssymb}
+
+% Keep the \pdfinfo exactly as in the kit (no /Title or /Author for anonymity).
+\pdfinfo{
+/TemplateVersion (2027.1)
+}
+
+% DISALLOWED PACKAGES (from the kit): authblk, babel, balance, CJK, epsf, epsfig,
+% euler, float, flushend, fullpage, geometry, graphics, hyperref, indentfirst,
+% layout, lmodern, multicol, nameref, navigator, pdfcomment, pgfplots, psfig,
+% pstricks, savetrees, setspace, stfloats, t1enc, tabu, times, titlesec,
+% tocbibind, ulem, wrapfig (or anything that embeds links).
+% DISALLOWED COMMANDS: \nocopyright, \addtolength, \balance, \baselinestretch,
+% \linespread, \clearpage, \newpage, \pagebreak, \break, \columnsep, \pagestyle,
+% \setlength (except \setlength{\tabcolsep}), \textheight, \topmargin, \tiny,
+% \abovecaption/\belowcaption, \abovedisplay/\belowdisplay, \float, \clip, \trim,
+% \resizebox on tables, negative \vspace/\vskip near captions/floats/headings/refs.
+
+\setcounter{secnumdepth}{0} % unnumbered sections (kit: no section numbers for short papers)
+
+% Simple in-text TODO marker. Remove all uses before submission (grep TODO).
+\newcommand{\todo}[1]{\textbf{[TODO: #1]}}
+% Placeholder box for figures not yet generated (remove when real PDFs exist).
+\newcommand{\figplaceholder}[2]{\fbox{\parbox[c][#2][c]{0.95\linewidth}{\centering\small Figure placeholder: #1}}}
+
+% Title in mixed (title) case, per AAAI.
+\title{Do Vision-Language Models Adapt Their Trust to Volatile Sources?\\An In-Context Test of a Neuroscience Paradigm}
+% Anonymous author block (double-blind). Do not change.
+\author{
+    Anonymous Submission
+}
+\affiliations{
+}
+
+\begin{document}
+
+\maketitle
+
+% ---------------------------------------------------------------------
+\begin{abstract}
+% TODO (~150 words, single paragraph): problem (source-reliability tracking under
+% volatility); paradigm (Behrens et al. 2008 two-reporter task, stable vs volatile
+% phases, 80 trials, revealed truth); models (frozen VLMs: Qwen2.5-VL-3B,
+% Qwen3-VL-4B, InternVL3.5-4B [+ 7/8B if run]); readouts (choice and judgment
+% logits); key findings (reversal adaptation, stable vs volatile learning rate,
+% text vs image, judgment vs choice gap); takeaway. No mechanistic/brain claims.
+\todo{Abstract, $\sim$150 words.}
+\end{abstract}
+
+% Optional links block must sit between abstract and main text; keep anonymous
+% (e.g., anonymous.4open.science). Leave commented out for now.
+% \begin{links}
+%     \link{Code}{https://anonymous.4open.science/r/XXXX}
+% \end{links}
+
+% ---------------------------------------------------------------------
+\section{Introduction}
+% TODO (~0.6 column, 3 short paragraphs):
+%  (1) Agents (and VLMs used as assistants) must decide whom to trust when sources
+%      conflict, and reliability can change. In neuroscience, Behrens et al. (2007, 2008)
+%      showed humans raise their learning rate when the environment is volatile.
+%  (2) Gap: does in-context learning in frozen VLMs show this signature? Multimodal
+%      angle: does it hold when current reports are images rather than text?
+%  (3) Contributions (bullet list, 3 items): paradigm port + open protocol;
+%      cognitive-model analysis (delta-rule, phase-specific alpha, Bayesian observer);
+%      findings on text vs image and estimation vs use.
+\todo{Introduction.}
+
+% ---------------------------------------------------------------------
+\section{Related Work}
+% TODO (SHORT, ~0.3 column, one paragraph each or fewer):
+%  - Volatility and learning rate in humans/animals (Behrens 2007/2008; Nassar 2010).
+%  - LLMs/VLMs as cognitive-science subjects; in-context RL / bandit behavior.
+%  - Source reliability, sycophancy, and trust calibration in (V)LMs.
+% Citations come from literature.json (see refs.bib note).
+\todo{Related work.}
+
+% ---------------------------------------------------------------------
+\section{Task and Methods}
+% TODO (~1 column incl. Fig. 1).
+
+\begin{figure}[t]
+\centering
+% Replace with \includegraphics[width=\columnwidth]{figures/paradigm.pdf}
+\figplaceholder{paradigm schematic -- two reporters, conflicting reports, revealed truth;
+p\textsubscript{A}(t) schedule: stable (40 trials, 0.8) and volatile (40 trials, alternating
+0.2/0.8 every 10); text vs image report format.}{3.2cm}
+\caption{Task paradigm. \todo{caption}}
+\label{fig:paradigm}
+\end{figure}
+
+\paragraph{Paradigm.}
+% TODO: Behrens-style two-reporter conflict task; T=80; stable p_A=0.8 (40 trials);
+% volatile alternation every 10 trials; SV/VS orders and favored alias counterbalanced;
+% stratified realized accuracy per 10-trial window; domains color (red/blue squares)
+% and pet (cat/dog, Oxford-IIIT Pet); history always textual; current reports as text or image.
+\todo{Paradigm description (refer to Figure~\ref{fig:paradigm}).}
+
+\paragraph{Models.}
+% TODO: frozen, bf16, batch 1: Qwen2.5-VL-3B, Qwen3-VL-4B, InternVL3.5-4B
+% (+ Qwen2.5-VL-7B, Qwen3-VL-8B, InternVL3.5-8B if run). Pinned checkpoints in appendix.
+\todo{Models.}
+
+\paragraph{Readouts.}
+% TODO: choice = P(label = A's report), normalized over the two label tokens;
+% judgment (text only) = P(A) over the two alias tokens for "Which reporter is
+% currently more reliable?"; queried at every t = 1..80. Dev (16 eps) vs held-out (48 eps).
+\todo{Choice and judgment readouts; dev/held-out split.}
+
+% ---------------------------------------------------------------------
+\section{Cognitive Modeling}
+% TODO (~0.5 column): delta-rule fidelity estimate
+%   q_{t+1} = q_t + \alpha (o_t - q_t), P(follow A) = \sigma(\beta (q_t - 0.5) + b).
+% M1 single alpha; M2 alpha_stable vs alpha_volatile (key test); M3 alpha+/alpha-;
+% M4 Bayesian observer (change-point/HMM or Behrens volatile learner) as normative
+% reference; baselines WSLS, Beta count-all, last-k. Fit by cross-entropy on soft
+% choice probabilities; model comparison (e.g., BIC / held-out CE); parameter recovery.
+\todo{Model equations and fitting procedure.}
+
+% ---------------------------------------------------------------------
+\section{Results}
+% TODO (~1.2 columns incl. figures/table). Keep each claim tied to a figure/table.
+
+\begin{figure}[t]
+\centering
+% Replace with \includegraphics[width=\columnwidth]{figures/reversal_curves.pdf}
+\figplaceholder{learning curves around reversals: P(follow currently-better reporter)
+vs trials since reversal, per model, text vs image.}{3.2cm}
+\caption{Adaptation around reliability reversals. \todo{caption}}
+\label{fig:reversal}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+% Replace with \includegraphics[width=\columnwidth]{figures/learning_rate.pdf}
+\figplaceholder{fitted learning rate (M2) stable vs volatile per model; human
+reference qualitative (Behrens et al. 2008).}{3.2cm}
+\caption{Effective learning rate in stable vs volatile phases. \todo{caption}}
+\label{fig:lr}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\input{tables/model_comparison}
+\caption{Model comparison (lower is better). Q = Qwen-VL, IVL = InternVL. \todo{caption}}
+\label{tab:modelcomp}
+\end{table}
+
+\paragraph{Reversal adaptation.}
+% TODO: Figure~\ref{fig:reversal}; perseveration after reversal.
+\todo{Results for RQ1.}
+
+\paragraph{Learning rate: stable vs volatile.}
+% TODO: Figure~\ref{fig:lr}; M2 alpha_volatile > alpha_stable? Table~\ref{tab:modelcomp}.
+\todo{Results for RQ2 and model comparison.}
+
+\paragraph{Text vs image.}
+% TODO: format factor effect on curves/alpha (could be a panel of Fig. 2 or a sentence + appendix figure).
+\todo{Text vs image reports.}
+
+\paragraph{Judgment vs choice.}
+% TODO: estimation-vs-use gap: judgment P(A) vs choice P(follow A), trial-by-trial.
+\todo{Judgment vs choice.}
+
+% ---------------------------------------------------------------------
+\section{Discussion and Limitations}
+% TODO (~0.4 column): what the signature does/doesn't show; non-claims (no brain-like
+% mechanism, neural homology, or human alignment; human comparison only qualitative);
+% limitations: small models, two domains, synthetic reporters, logit readouts,
+% prompt sensitivity; future work.
+\todo{Discussion and limitations.}
+
+% ---------------------------------------------------------------------
+% Optional, unnumbered, before references:
+% \section*{Ethical Statement} ...
+% Acknowledgments: OMIT for double-blind submission.
+
+% References: style is set by aaai2027.sty (do NOT add \bibliographystyle).
+% refs.bib is currently a placeholder (see note inside); entries come from
+% research/volatile_trust/literature.json via the literature agent.
+% TEMPORARY: \nocite{*} only lets BibTeX run while refs.bib is empty and nothing
+% is cited yet. REMOVE once real \cite commands exist (otherwise every entry in
+% refs.bib gets listed, cited or not).
+\nocite{*}
+\bibliography{refs}
+
+% ---------------------------------------------------------------------
+% Supplementary material / technical appendix: AFTER the references
+% (allowed by the workshop; does not count toward the 4 pages).
+\appendix
+\section{Supplementary Material}
+
+\subsection{Prompt Templates}
+% TODO: exact choice and judgment prompts; alias pool; image rendering details.
+\todo{Prompts.}
+
+\subsection{Episode Generation and Counterbalancing}
+% TODO: schedules, stratification, seeds, dev/held-out split.
+\todo{Episode generation.}
+
+\subsection{Model Checkpoints and Compute}
+% TODO: pinned revisions, bf16, RTX 3090, runtime.
+\todo{Checkpoints and compute.}
+
+\subsection{Parameter Recovery}
+% TODO: synthetic-agent recovery for M1--M4.
+\todo{Parameter recovery.}
+
+\subsection{Additional Results}
+% TODO: per-domain, per-order (SV/VS), larger models, full fit tables.
+\todo{Additional results.}
+
+\end{document}

@@ -1,0 +1,7 @@
+{
+  "research/source_trust/natural_images_v1/dev128.jsonl": "29366f75156de2b52677240a135bcd9a3809e038b89a0f4a4ba7215cdf226f4c",
+  "research/source_trust/natural_images_v1/heldout256.jsonl": "8551fc112bccfd2d980ebc286bc3422cca7ad3178b0a7b3b4c3bc3b95b316dc8",
+  "research/volatile_trust/episodes_v1/episodes.jsonl": "1e03024658b53b2179d182da0c49e55c4a5ec93b1b9e3f0372f67a08de4dd6a0",
+  "research/volatile_trust/episodes_v1/image_index.json": "f75c8309a450d47ad373e5f8421f8757d0749efa9f19aa4553b0b3d02e115f47",
+  "research/volatile_trust/episodes_robust/episodes.jsonl": "23c29b6a65a38e9ead358ac4cabf64af5466322efebeb8791146fc28eb012433"
+}

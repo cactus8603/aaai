@@ -1,0 +1,12 @@
+# Install the ROCm build of PyTorch first. Use the version matching the server's ROCm, e.g.:
+#   pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/rocm6.2
+# or use the AMD docker image rocm/pytorch, which already includes torch.
+# Pinned to the same versions as the 3090 pilot environment:
+transformers==4.57.1
+accelerate==1.11.0
+tokenizers==0.22.2
+safetensors==0.8.0
+huggingface_hub==0.36.2
+numpy==2.2.6
+scipy==1.15.3
+pillow==11.3.0

@@ -1,0 +1,320 @@
+{
+  "verified_at": "2026-11-11",
+  "scope": "Literature/novelty audit for research/volatile_trust/DESIGN.md. Builds on research/source_trust/{literature_followup,neuroscience_bridge,topic_lock,workshop_benchmark_audit}.json (not redone). Sources: arXiv API keyword queries, arXiv abstracts/HTML, PMLR pages, Crossref, PubMed E-utilities, Behrens 2008 full PDF and SI, Behrens 2007 SI, workshop site, OpenReview API v2 submission invitation, AAAI-27 and ICLR 2027 instructions, OpenReview docs.",
+  "search_limits": "Search engines and arXiv keyword search are not exhaustive. Preprints from roughly the last two weeks, OpenReview submissions under review that are not public, and CogSci 2026 papers not indexed by search may be missed. ICML/NeurIPS 2026 proceedings were covered only through web search, not by browsing the full lists.",
+  "novelty_verdict": {
+    "verdict": "Novel as a specific combination; not novel in any single component. No retrieved paper pre-empts the full design. One paper partially pre-empts the 'LLMs + reversal/volatility + fitted RL learning rates' part (Wang, Ward & Zhang 2026, arXiv 2604.04182, IPMU 2026).",
+    "combination_not_found": "Bounded search on 2026-11-11 (arXiv API keyword queries, web/extended search over arXiv, OpenReview, ACL Anthology, PMLR/ICML, NeurIPS, ICLR, CogSci/eScholarship) found no paper that (a) uses VLMs (or any LLM) in a Behrens-2008-style social-advice task with stable vs volatile advisor fidelity, (b) fits phase-specific learning rates (stable vs volatile alpha) to in-context choices of frozen models, (c) manipulates the current-report format (image vs text), or (d) compares explicit reliability judgments with choice-implied reliability trial by trial. Absence in this search does not prove absence in the literature; preprints from the last ~2 weeks and non-indexed workshop papers may be missed.",
+    "what_is_already_done": [
+      "LLMs in two-option probabilistic reversal tasks with fixed vs random (more volatile) schedules, with hierarchical RL fits of gain/loss learning rates (2604.04182). Text-only, non-social, API models, no Bayesian volatile learner, no formal stable-vs-volatile learning-rate test.",
+      "Cognitive-model fitting (Rescorla-Wagner, dual learning rates, relative value) to LLM in-context bandit choices: CogBench (ICML 2024), Schubert et al. (ICML 2024), Hayes et al. (2024 preprint; CogSci 2024 companion), Wang et al. 2603.07717.",
+      "Reversal-learning task in an LLM benchmark without model fitting (Reflection-Bench PRLT, ICML 2025).",
+      "LLM trust in peers/teammates from interaction history, including a test-time reliability flip (ECL, ICLR 2026 workshop) and trust formation/breakage/recovery with scripted failures (Chen 2606.14923). No learning-rate or Bayesian fits.",
+      "External (non-in-context) reliability memory that adapts to reliability shifts (Sigma-Mem 2607.27958).",
+      "Source-discernment/estimation-vs-use failures with static source reliability (Learn2Discern 2607.19355); knowing-doing gap in bandits (2504.16078); stated vs revealed preference gap (2601.21975).",
+      "Modality-format gaps for identical content (IsoBench, COLM 2024) and text bias in VLM conflicts (Words or Vision, CVPR 2025)."
+    ],
+    "minimal_defensible_claim": "We adapt the advisor-fidelity schedule of Behrens et al. (2008) (volatile phase: fidelity alternating 0.8/0.2 every 10 trials over 40 trials) to probe frozen open VLMs in-context, and test whether their choice-implied learning rate is higher in a volatile than in a stable advisor-fidelity phase (the Behrens volatility signature), using phase-specific delta-rule fits checked by parameter recovery and compared against a normative Bayesian volatile/change-point learner. Secondary diagnostics: whether this depends on the current reports being shown as images vs text, and whether explicit 'who is more reliable' judgments track choices. To our knowledge (bounded search), this is the first application of the stable-vs-volatile social-advice paradigm with phase-specific learning-rate fitting to VLMs.",
+    "claims_to_avoid": [
+      "'First study of LLMs in reversal learning' (pre-empted by 2604.04182, Reflection-Bench, CogBench restless bandit).",
+      "'First cognitive-model fitting of LLM in-context learning' (CogBench, Schubert 2024, Hayes 2024, 2603.07717).",
+      "'First to study LLM trust under changing reliability' (ECL Flip test, Chen 2606.14923, Sigma-Mem).",
+      "'First estimation-vs-use gap for source reliability' (Learn2Discern 2607.19355; knowing-doing gap 2504.16078; predecessor project topic_lock.json already marked this as established).",
+      "Any brain-like mechanism, neural homology, or human-alignment claim (no human data collected; DESIGN.md non-claims)."
+    ],
+    "preempting_papers": [
+      {
+        "id": "2604.04182",
+        "severity": "partial",
+        "note": "Must be cited and contrasted explicitly in the intro: LLMs show rigid reversal adaptation; fixed vs random schedules; dual learning-rate hierarchical RL. Our differences: social-advice (two-reporter) framing, Behrens stable/volatile phase design with phase-specific learning-rate test, frozen open VLMs with logit readouts, image vs text current reports, Bayesian volatile-learner reference, explicit judgment vs choice."
+      },
+      {
+        "id": "2601.21742",
+        "severity": "minor",
+        "note": "ECL Flip test is a single test-time reliability inversion, not a schedule with reversals; no learning-rate model. Its impact statement explicitly lists 'dynamic reliability shifts' as future work, which supports our gap."
+      },
+      {
+        "id": "2606.14923",
+        "severity": "minor",
+        "note": "Trust breakage/recovery under scripted teammate failures; behavioral only (verification rate), no model fits, text-only frontier models."
+      }
+    ],
+    "risk_notes": [
+      "The multimodal factor is thin: history is always text; only current reports vary. Reviewers may see the image condition as a perception/recognition confound rather than multimodal learning. Report image recognition accuracy as a control.",
+      "If VLM choices are near ceiling-perseverative or near chance, phase-specific alpha is poorly identified; parameter recovery and a simple reversal-aligned curve should be the primary evidence.",
+      "Behrens 2008 used a single advisor plus an independent reward-history schedule; our design removes the experiential (reward) channel. Say 'adapted from', not 'replication'."
+    ]
+  },
+  "close_prior_work": [
+    {
+      "rank": 1,
+      "title": "Comparative reversal learning reveals rigid adaptation in LLMs under non-stationary uncertainty",
+      "authors": "Haomiaomiao Wang, Tomás E. Ward, Lili Zhang",
+      "url": "https://arxiv.org/abs/2604.04182",
+      "year": 2026,
+      "venue": "arXiv preprint (Apr 2026); arXiv comment: accepted to IPMU 2026, special session SS04",
+      "verification": "arXiv abstract + HTML full text read",
+      "what_they_did": "Text-only two-option probabilistic reversal task (250 trials/run, 200 runs/model/schedule); three latent states [0.8/0.2], [0.5/0.5], [0.2/0.8]; performance-criterion or 16-trial-timeout switches; fixed cycle vs random schedule (more volatile). DeepSeek-V3.2, Gemini-3-Flash, GPT-5.2 at T=1 via API; human reference. Win-stay/lose-shift, perseveration, regret. Hierarchical Bayesian fits (JAGS) of dual-learning-rate RL (eta+, eta-, beta) and a counterfactual-update variant (kappa); DIC. No explicit volatility parameter; learning rates per schedule reported descriptively (no formal schedule test).",
+      "difference": "Non-social reward bandit (agent's own choices/rewards), not advisor-fidelity learning with full feedback; schedule switches are agent-performance-contingent, not Behrens stable/volatile phases; no phase-specific alpha test of the volatility signature; no Bayesian volatile learner reference; closed API models with sampled outputs vs our frozen open VLMs with logit readouts; no images; no explicit reliability judgment vs choice."
+    },
+    {
+      "rank": 2,
+      "title": "Epistemic Context Learning: Building Trust the Right Way in LLM-Based Multi-Agent Systems",
+      "authors": "Ruiwen Zhou, Maojia Song, Xiaobao Wu, Sitao Cheng, Xunjian Yin, Yuxi Xie, Zhuoqun Hao, Wenyue Hua, Liangming Pan, Soujanya Poria, Min-Yen Kan",
+      "url": "https://arxiv.org/abs/2601.21742",
+      "year": 2026,
+      "venue": "arXiv preprint; poster at ICLR 2026 workshop 'Agentic AI in the Wild: From Hallucinations to Reliable Autonomy' (iclr.cc/virtual/2026/10021090). Not verified as main-conference.",
+      "verification": "arXiv abstract + HTML (first 100k chars) + ICLR virtual page",
+      "what_they_did": "Agents build peer profiles from multi-round interaction history (default 5 rounds) on GPQA/MMLU-Pro; two-stage reasoning plus RL training. 'Flipping Identity' test inverts peer reliability only at the test round (historically reliable peer wrong now). In controlled setup one peer always correct, other always wrong. Impact statement: 'future research must address dynamic reliability shifts.'",
+      "difference": "Static reliability within history plus one test-time flip; no repeated reversals, no stable vs volatile phases, no learning-rate or Bayesian model fits, text-only, includes RL training. We study trial-wise in-context tracking across reversals in frozen VLMs with fitted learning rates."
+    },
+    {
+      "rank": 3,
+      "title": "Trust Between AI Agents: Measuring Formation, Breakage, and Recovery, with Implications for Governing Multi-Agent Systems",
+      "authors": "Yujiao Chen",
+      "url": "https://arxiv.org/abs/2606.14923",
+      "year": 2026,
+      "venue": "arXiv preprint (Jun 2026); no venue listed. Related SSRN preprint 6759863 ('Trust under fire') not read.",
+      "verification": "arXiv abstract + HTML read",
+      "what_they_did": "Cooperative survival game; trust = reduced costly verification of a scripted teammate. Schedules over 11 games: smooth, 1/2/3-strike early failures, mid-episode clustered failures, spread failures. Six frontier model snapshots. Finds recovery slower than formation, clustered failures sustain suspicion longer.",
+      "difference": "Reliability changes are a few scripted failures, not probabilistic fidelity with stable/volatile phases; trust measured by verification behavior; no learning-rate/Bayesian model fit (authors argue Bayesian-style updating does not match); no explicit judgments; text-only frontier models."
+    },
+    {
+      "rank": 4,
+      "title": "In-Context Learning Agents Are Asymmetric Belief Updaters",
+      "authors": "Johannes A. Schubert, Akshay K. Jagadish, Marcel Binz, Eric Schulz",
+      "url": "https://proceedings.mlr.press/v235/schubert24a.html",
+      "arxiv": "https://arxiv.org/abs/2402.03969",
+      "year": 2024,
+      "venue": "ICML 2024, PMLR 235:43928-43946",
+      "verification": "PMLR page + arXiv abstract",
+      "what_they_did": "Three instrumental learning tasks from cognitive psychology; fits RL models with separate learning rates for better/worse-than-expected outcomes to LLM (Claude-1.2) in-context choices; asymmetry reverses under counterfactual feedback and vanishes without agency; meta-RL agents compared.",
+      "difference": "Stationary bandits, no reversals/volatility manipulation (not seen in abstract/PMLR page), non-social, text-only. Their asymmetric-alpha result motivates our M3; our key test is stable vs volatile alpha on advisor fidelity."
+    },
+    {
+      "rank": 5,
+      "title": "CogBench: a large language model walks into a psychology lab",
+      "authors": "Julian Coda-Forno, Marcel Binz, Jane X. Wang, Eric Schulz",
+      "url": "https://proceedings.mlr.press/v235/coda-forno24a.html",
+      "arxiv": "https://arxiv.org/abs/2402.18225",
+      "year": 2024,
+      "venue": "ICML 2024, PMLR 235:9076-9108",
+      "verification": "PMLR page + arXiv HTML",
+      "what_they_did": "Ten behavioral metrics from seven cognitive tasks across 35 LLMs. Instrumental learning task: Rescorla-Wagner fit, learning rate minimizing NLL; optimism bias = alpha+ - alpha-. A restless bandit task with reward-distribution switches exists but is scored by meta-cognition (QSR), not a learning-rate fit.",
+      "difference": "Learning rate fitted only in a stationary task; volatility task not modeled with learning rates; non-social; text-only."
+    },
+    {
+      "rank": 6,
+      "title": "Rigidity in LLM Bandits with Implications for Human-AI Dyads",
+      "authors": "Haomiaomiao Wang, Tomás E. Ward, Lili Zhang",
+      "url": "https://arxiv.org/abs/2603.07717",
+      "year": 2026,
+      "venue": "arXiv preprint; comment: AICS conference",
+      "verification": "arXiv abstract",
+      "what_they_did": "Two-arm bandits, 20000 trials/condition, decoding sweeps; hierarchical Rescorla-Wagner-softmax fit shows low learning rates and very high inverse temperatures.",
+      "difference": "Stationary, non-social, text-only; no reversal or volatility phases."
+    },
+    {
+      "rank": 7,
+      "title": "Large Language Models are Biased Reinforcement Learners",
+      "authors": "William M. Hayes, Nicolas Yax, Stefano Palminteri",
+      "url": "https://arxiv.org/abs/2405.11422",
+      "year": 2024,
+      "venue": "arXiv preprint (journal version not verified; companion 'Relative Value Biases in Large Language Models' in CogSci 2024 proceedings vol. 46 per eScholarship search result, not opened)",
+      "verification": "arXiv abstract + HTML",
+      "what_they_did": "Multiple bandit tasks; relative-value RL models with confirmatory/disconfirmatory learning rates, BIC model comparison; alpha_CON > alpha_DIS.",
+      "difference": "Stationary bandits, no reversal/volatility/advisor; text-only."
+    },
+    {
+      "rank": 8,
+      "title": "Reflection-Bench: Evaluating Epistemic Agency in Large Language Models",
+      "authors": "Lingyu Li, Yixu Wang, Haiquan Zhao, Shuqi Kong, Yan Teng, Chunbo Li, Yingchun Wang",
+      "url": "https://proceedings.mlr.press/v267/li25cu.html",
+      "arxiv": "https://arxiv.org/abs/2410.16270",
+      "year": 2025,
+      "venue": "ICML 2025, PMLR 267:36236-36264",
+      "verification": "PMLR page + arXiv v3 HTML",
+      "what_they_did": "Seven-task benchmark; PRLT: two arms with complementary p/1-p (p=0.8 easy, 0.7 hard), single unannounced reversal at the midpoint; scored by MAE between moving-average (window 5) choice rate and true probabilities.",
+      "difference": "Single reversal, no volatile phase, no model fitting/learning rates, non-social, text-only."
+    },
+    {
+      "rank": 9,
+      "title": "Sigma-Mem: An Online Reliability Memory for LLM-based Multi-Agent Systems",
+      "authors": "Peilin Feng, Suorong Yang, Soujanya Poria",
+      "url": "https://arxiv.org/abs/2607.27958",
+      "year": 2026,
+      "venue": "arXiv preprint; no venue listed",
+      "verification": "arXiv abstract + HTML (first 100k chars)",
+      "what_they_did": "External per-peer reliability memory updated from post-decision correctness feedback (decay + rank-one update); residual steering of frozen Qwen models; evaluated under 'counterfactual reliability shifts' (CF@0/50/70/90).",
+      "difference": "Reliability is tracked by an external engineered module, not in-context by the model; no cognitive model fits or volatility analysis. It is a method, whereas ours is a behavioral diagnostic."
+    },
+    {
+      "rank": 10,
+      "title": "Information Discernment in Large Language Models (Learn2Discern)",
+      "authors": "Joshua Ashkinaze, Laura Kurek, Alina Faisal, Tongyuan Miao, Mariam Joseph, Ceren Budak, Eric Gilbert",
+      "url": "https://arxiv.org/abs/2607.19355",
+      "year": 2026,
+      "venue": "arXiv preprint; no venue listed",
+      "verification": "arXiv abstract",
+      "what_they_did": "Source discernment and truth discernment benchmark (13 models, ~670K trials); models rely on source popularity twice as much as reliability; near-chance source discernment.",
+      "difference": "Static, externally rated source reliability; no learning from outcome feedback, no reversal; text-only. Relevant to our estimation-vs-use framing only."
+    },
+    {
+      "rank": 11,
+      "title": "LLMs are Greedy Agents: Effects of RL Fine-tuning on Decision-Making Abilities",
+      "authors": "Thomas Schmied, Jörg Bornschein, Jordi Grau-Moya, Markus Wulfmeier, Razvan Pascanu",
+      "url": "https://arxiv.org/abs/2504.16078",
+      "year": 2025,
+      "venue": "arXiv preprint (venue not verified)",
+      "verification": "arXiv abstract",
+      "what_they_did": "Characterizes greediness, frequency bias, and the knowing-doing gap in bandits/tic-tac-toe; RL fine-tuning on CoT narrows the gap.",
+      "difference": "Knowing-doing gap in stationary bandits with fine-tuning; not source reliability, not volatility. Cite as precedent for an estimation-vs-use (knowing-doing) dissociation."
+    },
+    {
+      "rank": 12,
+      "title": "A foundation model to predict and capture human cognition (Centaur)",
+      "authors": "Marcel Binz et al.",
+      "url": "https://doi.org/10.1038/s41586-025-09215-4",
+      "year": 2025,
+      "venue": "Nature 644(8078):1002-1009",
+      "verification": "Crossref metadata + arXiv 2410.20268 abstract",
+      "what_they_did": "Fine-tunes Llama on Psych-101 (160 experiments, >10M human choices) to predict human trial-by-trial behavior.",
+      "difference": "Trained to imitate human data; we probe frozen VLMs' own in-context behavior. Namazova et al. 2025 (arXiv 2508.07887) report Centaur shows only a weak reversal effect in a two-armed reversal task (search snippet; not read in full)."
+    },
+    {
+      "rank": 13,
+      "title": "Using cognitive psychology to understand GPT-3",
+      "authors": "Marcel Binz, Eric Schulz",
+      "url": "https://doi.org/10.1073/pnas.2218523120",
+      "year": 2023,
+      "venue": "PNAS 120(6):e2218523120",
+      "verification": "Crossref + arXiv 2206.14576 abstract",
+      "what_they_did": "Battery of cognitive tasks incl. two-armed bandit and two-step task on GPT-3.",
+      "difference": "Founding 'machine psychology' reference; no reversal/volatility or source trust."
+    },
+    {
+      "rank": 14,
+      "title": "IsoBench: Benchmarking Multimodal Foundation Models on Isomorphic Representations",
+      "authors": "Deqing Fu, Ruohao Guo, Ghazal Khalighinejad, Ollie Liu, Bhuwan Dhingra, Dani Yogatama, Robin Jia, Willie Neiswanger",
+      "url": "https://arxiv.org/abs/2404.01266",
+      "year": 2024,
+      "venue": "COLM 2024 (arXiv comment)",
+      "verification": "arXiv abstract",
+      "what_they_did": "Same problems as image vs text; models prefer text representations.",
+      "difference": "Static problem solving; cite as precedent for our image-vs-text current-report factor (expect a text advantage)."
+    },
+    {
+      "rank": 15,
+      "title": "Learning Whom to Trust About the Unseen: Source Credibility and Reliability Transfer in Language Models",
+      "authors": "Ruijia Guan",
+      "url": "https://arxiv.org/abs/2611.08855",
+      "year": 2026,
+      "venue": "arXiv preprint (6 Nov 2026)",
+      "verification": "arXiv abstract",
+      "what_they_did": "Two informants with checkable forecasting records; transfer of earned reliability to unverifiable natural vs spiritual claims; six models.",
+      "difference": "Single-session static track record, no reversal, no learning-rate fits, text-only."
+    }
+  ],
+  "neuro_citations": [
+    {
+      "key": "behrens2007learning",
+      "citation": "Behrens, T. E. J., Woolrich, M. W., Walton, M. E., & Rushworth, M. F. S. (2007). Learning the value of information in an uncertain world. Nature Neuroscience, 10(9), 1214-1221.",
+      "doi": "10.1038/nn1954",
+      "verified_via": "Crossref + PubMed 17676057 abstract + Supplementary Information PDF",
+      "use": "Volatility -> learning rate. Abstract: humans assess volatility optimally; ACC signal predicts learning rates. SI: compared a Bayesian learner against RL1 (one learning rate per subject) and RL2 (separate learning rates in volatile and stable phases); models with changing learning rate fit better. Our M2 is directly analogous to RL2.",
+      "design_details": "SI states the two schedules together had 580 trials, i.e. 290 trials per schedule. UNVERIFIED (main text not accessible: TLS failure on the course-hosted PDF; Nature paywall): the commonly cited split of 120 stable trials at 75% and 170 volatile trials alternating 80/20. Do not cite these numbers without checking the main text."
+    },
+    {
+      "key": "behrens2008associative",
+      "citation": "Behrens, T. E. J., Hunt, L. T., Woolrich, M. W., & Rushworth, M. F. S. (2008). Associative learning of social value. Nature, 456(7219), 245-249.",
+      "doi": "10.1038/nature07538",
+      "verified_via": "Crossref + full PDF (fil.ion.ucl.ac.uk/~lhunt) + Supplementary Information PDF (static-content.springer.com ...MOESM306_ESM.pdf)",
+      "use": "Social-advice volatility paradigm; separate prediction errors and volatility for confederate fidelity (ACC gyrus) vs reward (ACC sulcus).",
+      "design_details": {
+        "subjects": "24 (main text)",
+        "total_trials": "120 (SI)",
+        "reward_schedule": "Trials 1-60 stable with 75% probability blue correct; trials 61-120 volatile, switching between 80% green correct and 80% blue correct every 20 trials (SI).",
+        "advice_schedule": "Trials 1-30 stable, 75% of suggestions correct; trials 31-70 volatile, switching between 80% incorrect and 80% correct every 10 trials; trials 71-120 stable again, 85% incorrect (SI).",
+        "counterbalancing": "11 subjects had the advice inverted: first 30 trials 75% incorrect, last 50 trials 85% correct (SI).",
+        "advisor": "Single confederate (actually computer-prescribed correct-advice trials); binary blue/green choice with reward magnitudes; outcome revealed every trial.",
+        "mapping_to_our_design": "Our volatile phase (40 trials, p_A alternating 0.8/0.2 every 10 trials) matches Behrens 2008's volatile advice period exactly in length, values and switch period. Our stable phase (40 trials at 0.8) differs: Behrens had 30 trials at 0.75 before and 50 at 0.15 (i.e. 0.85 incorrect) after. We have no independent reward-history channel and use two conflicting reporters (equivalent to one advisor with fidelity p_A). Correct phrasing: 'advisor-fidelity schedule adapted from Behrens et al. (2008)'."
+      }
+    },
+    {
+      "key": "nassar2010approximately",
+      "citation": "Nassar, M. R., Wilson, R. C., Heasly, B., & Gold, J. I. (2010). An approximately Bayesian delta-rule model explains the dynamics of belief updating in a changing environment. Journal of Neuroscience, 30(37), 12366-12378.",
+      "doi": "10.1523/JNEUROSCI.0822-10.2010",
+      "verified_via": "Crossref + PubMed 20844132",
+      "use": "Change-point/reduced Bayesian delta-rule model; reference for M4 change-point learner."
+    },
+    {
+      "key": "nassar2012rational",
+      "citation": "Nassar, M. R., Rumsey, K. M., Wilson, R. C., Parikh, K., Heasly, B., & Gold, J. I. (2012). Rational regulation of learning dynamics by pupil-linked arousal systems. Nature Neuroscience, 15(7), 1040-1046.",
+      "doi": "10.1038/nn.3130",
+      "verified_via": "Crossref + PubMed 22660479 abstract",
+      "use": "Learning-rate regulation by change-point probability and relative uncertainty; pupil-linked arousal."
+    },
+    {
+      "key": "mathys2011bayesian",
+      "citation": "Mathys, C., Daunizeau, J., Friston, K. J., & Stephan, K. E. (2011). A Bayesian foundation for individual learning under uncertainty. Frontiers in Human Neuroscience, 5, 39.",
+      "doi": "10.3389/fnhum.2011.00039",
+      "verified_via": "PubMed 21629826 (Crossref lists only first author; PubMed gives all four)",
+      "use": "Hierarchical Gaussian Filter (HGF); volatility-dependent precision-weighted updates."
+    },
+    {
+      "key": "soltani2019adaptive",
+      "citation": "Soltani, A., & Izquierdo, A. (2019). Adaptive learning under expected and unexpected uncertainty. Nature Reviews Neuroscience, 20(10), 635-644.",
+      "doi": "10.1038/s41583-019-0180-y",
+      "verified_via": "Crossref + PubMed 31147631",
+      "use": "Review: expected vs unexpected uncertainty, reversal learning and learning-rate adaptation."
+    },
+    {
+      "key": "piray2021model",
+      "citation": "Piray, P., & Daw, N. D. (2021). A model for learning based on the joint estimation of stochasticity and volatility. Nature Communications, 12, 6587.",
+      "doi": "10.1038/s41467-021-26731-9",
+      "verified_via": "Crossref",
+      "use": "Recent: volatility raises and stochasticity lowers the learning rate; important confound because our p=0.8 fidelity has stochasticity."
+    },
+    {
+      "key": "piray2024computational",
+      "citation": "Piray, P., & Daw, N. D. (2024). Computational processes of simultaneous learning of stochasticity and volatility in humans. Nature Communications, 15, 9073.",
+      "doi": "10.1038/s41467-024-53459-z",
+      "verified_via": "Crossref",
+      "use": "Recent human evidence that learning rates track both volatility and stochasticity."
+    },
+    {
+      "key": "diaconescu2020neural",
+      "citation": "Diaconescu, A. O., Stecy, M., Kasper, L., Burke, C. J., Nagy, Z., Mathys, C., & Tobler, P. N. (2020). Neural arbitration between social and individual learning systems. eLife, 9, e54051.",
+      "doi": "10.7554/eLife.54051",
+      "verified_via": "Crossref (also in predecessor neuroscience_bridge.json)",
+      "use": "Optional: HGF for advice fidelity and volatility in a social-advice task."
+    }
+  ],
+  "venue_rules": {
+    "workshop": "2nd International Workshop on Neuro for AI & AI for Neuro: Towards Multi-Modal Natural Intelligence (NeuroAI 2.0) @ AAAI-27, Montreal, Feb 22-23 2027",
+    "site": "https://neuroai-multimodal-workshop.github.io/",
+    "openreview_group": "https://openreview.net/group?id=AAAI.org/2027/Workshop/NeuroAI",
+    "deadline": "November 20, 2026, 23:59 AoE (UTC-12), as stated in the OpenReview submission form. OpenReview invitation duedate = 2026-11-21T11:59Z; expdate 2026-11-21T12:29Z.",
+    "notification": "December 5, 2026",
+    "registration": "Early registration deadline Dec 15, 2026; standard Jan 10, 2027 (workshop site).",
+    "page_limits": "Short: up to 4 pages main content, non-archival. Long: up to 8 pages, archival opt-in. References and supplementary material/appendices: no page limit.",
+    "format": "AAAI 2027 two-column format; anonymized PDF, max 50 MB.",
+    "author_kit": "https://aaai.org/authorkit27/ (resolves with HTTP 200 to https://aaai.org/wp-content/uploads/2026/10/AuthorKit27.zip, checked 2026-11-11)",
+    "aaai27_instructions": "https://aaai.org/conference/aaai/aaai-27/submission-instructions/",
+    "anonymity": "Double-blind. Omit author names, affiliations, acknowledgments and identifying information from the paper, appendices and supplementary material; author info only in OpenReview fields; mandatory anonymity acknowledgment checkbox. Abstract must not include identifying info.",
+    "submission_type_options": [
+      "Long paper — archival publication requested",
+      "Long paper — non-archival participation",
+      "Short paper — non-archival participation"
+    ],
+    "dual_submission": "Workshop form: the archival eligibility restriction (no previously published work, no concurrent archival submission) 'applies to archival submissions'. Short non-archival papers are not subject to it. Visibility: submissions and reviews stay private on OpenReview; non-archival participation does not automatically make the PDF public; accepted titles and author names may be listed on the website.",
+    "later_conference_submission": "AAAI-27 rules: 'Preprint servers (such as arXiv) and non-archival workshops are permitted'; papers under review or published in another archival conference or journal are not considered. ICLR 2027 author guidelines: papers presented at workshops 'i.e., venues that do not have publication proceedings' do not violate the dual-submission policy. So a non-archival 4-page paper can later be extended to a conference under these policies. Check each target venue's own CFP (NeurIPS/ICML/CogSci not checked here). Note: PMLR proceedings apply only to archival long papers.",
+    "author_obligations": "All authors must have an OpenReview profile BEFORE submitting. Use the same account for submission and reviewing. All authors are asked to join the reviewer pool (vetted by experience; exceptions via PCs). Maximum 10 submissions per author to the workshop. Author emails are shared with PCs.",
+    "openreview_profile_moderation": "OpenReview docs (signing-up page): 'Signing up with a public domain may take up to 2 weeks in moderation.' 'To activate immediately, please sign up with an email address that uses an educational or employing institution domain.' ICLR 2027 guidelines: profiles without an institutional email 'can take up to two weeks'; with one they are 'activated automatically'. ACTION: today is 2026-11-11 and the deadline is 2026-11-20. Any coauthor without an active profile must register NOW with an institutional email. A Gmail-only profile may not be active in time. If a profile is pending, add and confirm an institutional email on it; do not create a second account.",
+    "unverified": [
+      "Whether OpenReview allows adding an author whose profile is still pending moderation (not checked).",
+      "Exact AAAI-27 page-limit equivalence for workshop (workshop states its own limits; AAAI main is 7+2)."
+    ]
+  },
+  "bibtex": "@article{behrens2007learning,\n  title   = {Learning the value of information in an uncertain world},\n  author  = {Behrens, Timothy E. J. and Woolrich, Mark W. and Walton, Mark E. and Rushworth, Matthew F. S.},\n  journal = {Nature Neuroscience},\n  volume  = {10},\n  number  = {9},\n  pages   = {1214--1221},\n  year    = {2007},\n  doi     = {10.1038/nn1954}\n}\n\n@article{behrens2008associative,\n  title   = {Associative learning of social value},\n  author  = {Behrens, Timothy E. J. and Hunt, Laurence T. and Woolrich, Mark W. and Rushworth, Matthew F. S.},\n  journal = {Nature},\n  volume  = {456},\n  number  = {7219},\n  pages   = {245--249},\n  year    = {2008},\n  doi     = {10.1038/nature07538}\n}\n\n@article{nassar2010approximately,\n  title   = {An approximately {Bayesian} delta-rule model explains the dynamics of belief updating in a changing environment},\n  author  = {Nassar, Matthew R. and Wilson, Robert C. and Heasly, Benjamin and Gold, Joshua I.},\n  journal = {Journal of Neuroscience},\n  volume  = {30},\n  number  = {37},\n  pages   = {12366--12378},\n  year    = {2010},\n  doi     = {10.1523/JNEUROSCI.0822-10.2010}\n}\n\n@article{nassar2012rational,\n  title   = {Rational regulation of learning dynamics by pupil-linked arousal systems},\n  author  = {Nassar, Matthew R. and Rumsey, Katherine M. and Wilson, Robert C. and Parikh, Kinjan and Heasly, Benjamin and Gold, Joshua I.},\n  journal = {Nature Neuroscience},\n  volume  = {15},\n  number  = {7},\n  pages   = {1040--1046},\n  year    = {2012},\n  doi     = {10.1038/nn.3130}\n}\n\n@article{mathys2011bayesian,\n  title   = {A {Bayesian} foundation for individual learning under uncertainty},\n  author  = {Mathys, Christoph and Daunizeau, Jean and Friston, Karl J. and Stephan, Klaas E.},\n  journal = {Frontiers in Human Neuroscience},\n  volume  = {5},\n  pages   = {39},\n  year    = {2011},\n  doi     = {10.3389/fnhum.2011.00039}\n}\n\n@article{soltani2019adaptive,\n  title   = {Adaptive learning under expected and unexpected uncertainty},\n  author  = {Soltani, Alireza and Izquierdo, Alicia},\n  journal = {Nature Reviews Neuroscience},\n  volume  = {20},\n  number  = {10},\n  pages   = {635--644},\n  year    = {2019},\n  doi     = {10.1038/s41583-019-0180-y}\n}\n\n@article{piray2021model,\n  title   = {A model for learning based on the joint estimation of stochasticity and volatility},\n  author  = {Piray, Payam and Daw, Nathaniel D.},\n  journal = {Nature Communications},\n  volume  = {12},\n  pages   = {6587},\n  year    = {2021},\n  doi     = {10.1038/s41467-021-26731-9}\n}\n\n@article{piray2024computational,\n  title   = {Computational processes of simultaneous learning of stochasticity and volatility in humans},\n  author  = {Piray, Payam and Daw, Nathaniel D.},\n  journal = {Nature Communications},\n  volume  = {15},\n  pages   = {9073},\n  year    = {2024},\n  doi     = {10.1038/s41467-024-53459-z}\n}\n\n@article{diaconescu2020neural,\n  title   = {Neural arbitration between social and individual learning systems},\n  author  = {Diaconescu, Andreea Oliviana and Stecy, Madeline and Kasper, Lars and Burke, Christopher J. and Nagy, Zoltan and Mathys, Christoph and Tobler, Philippe N.},\n  journal = {eLife},\n  volume  = {9},\n  pages   = {e54051},\n  year    = {2020},\n  doi     = {10.7554/eLife.54051}\n}\n\n@article{binz2023using,\n  title   = {Using cognitive psychology to understand {GPT-3}},\n  author  = {Binz, Marcel and Schulz, Eric},\n  journal = {Proceedings of the National Academy of Sciences},\n  volume  = {120},\n  number  = {6},\n  pages   = {e2218523120},\n  year    = {2023},\n  doi     = {10.1073/pnas.2218523120}\n}\n\n@article{binz2025foundation,\n  title   = {A foundation model to predict and capture human cognition},\n  author  = {Binz, Marcel and Akata, Elif and Bethge, Matthias and Br{\\\"a}ndle, Franziska and Callaway, Fred and Coda-Forno, Julian and Dayan, Peter and Demircan, Can and Eckstein, Maria K. and {\\'E}ltet{\\H{o}}, No{\\'e}mi and Griffiths, Thomas L. and Haridi, Susanne and Jagadish, Akshay K. and Ji-An, Li and Kipnis, Alexander and Kumar, Sreejan and Ludwig, Tobias and Mathony, Marvin and Mattar, Marcelo and Modirshanechi, Alireza and Nath, Surabhi S. and Peterson, Joshua C. and Rmus, Milena and Russek, Evan M. and Saanum, Tankred and Schubert, Johannes A. and Schulze Buschoff, Luca M. and Singhi, Nishad and Sui, Xin and Thalmann, Mirko and Theis, Fabian J. and Truong, Vuong and Udandarao, Vishaal and Voudouris, Konstantinos and Wilson, Robert and Witte, Kristin and Wu, Shuchen and Wulff, Dirk U. and Xiong, Huadong and Schulz, Eric},\n  journal = {Nature},\n  volume  = {644},\n  number  = {8078},\n  pages   = {1002--1009},\n  year    = {2025},\n  doi     = {10.1038/s41586-025-09215-4}\n}\n\n@inproceedings{schubert2024incontext,\n  title     = {In-Context Learning Agents Are Asymmetric Belief Updaters},\n  author    = {Schubert, Johannes A. and Jagadish, Akshay Kumar and Binz, Marcel and Schulz, Eric},\n  booktitle = {Proceedings of the 41st International Conference on Machine Learning},\n  series    = {Proceedings of Machine Learning Research},\n  volume    = {235},\n  pages     = {43928--43946},\n  publisher = {PMLR},\n  year      = {2024}\n}\n\n@inproceedings{codaforno2024cogbench,\n  title     = {{CogBench}: a large language model walks into a psychology lab},\n  author    = {Coda-Forno, Julian and Binz, Marcel and Wang, Jane X. and Schulz, Eric},\n  booktitle = {Proceedings of the 41st International Conference on Machine Learning},\n  series    = {Proceedings of Machine Learning Research},\n  volume    = {235},\n  pages     = {9076--9108},\n  publisher = {PMLR},\n  year      = {2024}\n}\n\n@inproceedings{li2025reflectionbench,\n  title     = {{Reflection-Bench}: Evaluating Epistemic Agency in Large Language Models},\n  author    = {Li, Lingyu and Wang, Yixu and Zhao, Haiquan and Kong, Shuqi and Teng, Yan and Li, Chunbo and Wang, Yingchun},\n  booktitle = {Proceedings of the 42nd International Conference on Machine Learning},\n  series    = {Proceedings of Machine Learning Research},\n  volume    = {267},\n  pages     = {36236--36264},\n  publisher = {PMLR},\n  year      = {2025}\n}\n\n@misc{wang2026comparative,\n  title         = {Comparative reversal learning reveals rigid adaptation in {LLMs} under non-stationary uncertainty},\n  author        = {Wang, Haomiaomiao and Ward, Tom{\\'a}s E. and Zhang, Lili},\n  year          = {2026},\n  eprint        = {2604.04182},\n  archivePrefix = {arXiv},\n  primaryClass  = {cs.AI},\n  note          = {Accepted to IPMU 2026 (per arXiv comment)}\n}\n\n@misc{wang2026rigidity,\n  title         = {Rigidity in {LLM} Bandits with Implications for Human-{AI} Dyads},\n  author        = {Wang, Haomiaomiao and Ward, Tom{\\'a}s E. and Zhang, Lili},\n  year          = {2026},\n  eprint        = {2603.07717},\n  archivePrefix = {arXiv}\n}\n\n@misc{hayes2024biased,\n  title         = {Large Language Models are Biased Reinforcement Learners},\n  author        = {Hayes, William M. and Yax, Nicolas and Palminteri, Stefano},\n  year          = {2024},\n  eprint        = {2405.11422},\n  archivePrefix = {arXiv}\n}\n\n@misc{zhou2026epistemic,\n  title         = {Epistemic Context Learning: Building Trust the Right Way in {LLM}-Based Multi-Agent Systems},\n  author        = {Zhou, Ruiwen and Song, Maojia and Wu, Xiaobao and Cheng, Sitao and Yin, Xunjian and Xie, Yuxi and Hao, Zhuoqun and Hua, Wenyue and Pan, Liangming and Poria, Soujanya and Kan, Min-Yen},\n  year          = {2026},\n  eprint        = {2601.21742},\n  archivePrefix = {arXiv},\n  note          = {ICLR 2026 Workshop on Agentic AI in the Wild}\n}\n\n@misc{chen2026trust,\n  title         = {Trust Between {AI} Agents: Measuring Formation, Breakage, and Recovery, with Implications for Governing Multi-Agent Systems},\n  author        = {Chen, Yujiao},\n  year          = {2026},\n  eprint        = {2606.14923},\n  archivePrefix = {arXiv}\n}\n\n@misc{feng2026sigmamem,\n  title         = {$\\Sigma$-Mem: An Online Reliability Memory for {LLM}-based Multi-Agent Systems},\n  author        = {Feng, Peilin and Yang, Suorong and Poria, Soujanya},\n  year          = {2026},\n  eprint        = {2607.27958},\n  archivePrefix = {arXiv}\n}\n\n@misc{ashkinaze2026information,\n  title         = {Information Discernment in Large Language Models},\n  author        = {Ashkinaze, Joshua and Kurek, Laura and Faisal, Alina and Miao, Tongyuan and Joseph, Mariam and Budak, Ceren and Gilbert, Eric},\n  year          = {2026},\n  eprint        = {2607.19355},\n  archivePrefix = {arXiv}\n}\n\n@misc{schmied2025greedy,\n  title         = {{LLMs} are Greedy Agents: Effects of {RL} Fine-tuning on Decision-Making Abilities},\n  author        = {Schmied, Thomas and Bornschein, J{\\\"o}rg and Grau-Moya, Jordi and Wulfmeier, Markus and Pascanu, Razvan},\n  year          = {2025},\n  eprint        = {2504.16078},\n  archivePrefix = {arXiv}\n}\n\n@inproceedings{fu2024isobench,\n  title     = {{IsoBench}: Benchmarking Multimodal Foundation Models on Isomorphic Representations},\n  author    = {Fu, Deqing and Guo, Ruohao and Khalighinejad, Ghazal and Liu, Ollie and Dhingra, Bhuwan and Yogatama, Dani and Jia, Robin and Neiswanger, Willie},\n  booktitle = {First Conference on Language Modeling (COLM)},\n  year      = {2024},\n  note      = {arXiv:2404.01266}\n}\n"
+}

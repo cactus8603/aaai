@@ -1,8 +1,8 @@
 % =====================================================================
-% NeuroAI 2.0 Workshop @ AAAI-27 -- SHORT PAPER (4 pages + refs; non-archival)
+% NeuroAI 2.0 Workshop @ AAAI-27 -- LONG PAPER (8 pages + refs + supplementary; archival, PMLR)
 % Template: AAAI-27 Author Kit (AuthorKit27, TemplateVersion 2027.1),
 %           AnonymousSubmission2027.tex. Double-blind.
-% Main content (Abstract..Discussion) must fit in 4 pages.
+% Main content (Abstract..Discussion) must fit in 8 pages.
 % References and Supplementary (after references) do not count.
 % See README.md for compile command and the formatting checklist.
 % =====================================================================
@@ -38,15 +38,15 @@
 % \abovecaption/\belowcaption, \abovedisplay/\belowdisplay, \float, \clip, \trim,
 % \resizebox on tables, negative \vspace/\vskip near captions/floats/headings/refs.
 
-\setcounter{secnumdepth}{0} % unnumbered sections (kit: no section numbers for short papers)
+\setcounter{secnumdepth}{0} % unnumbered sections (kit default)
 
 % Simple in-text TODO marker. Remove all uses before submission (grep TODO).
 \newcommand{\todo}[1]{\textbf{[TODO: #1]}}
 % Placeholder box for figures not yet generated (remove when real PDFs exist).
 \newcommand{\figplaceholder}[2]{\fbox{\parbox[c][#2][c]{0.95\linewidth}{\centering\small Figure placeholder: #1}}}
 
-% Title in mixed (title) case, per AAAI.
-\title{Do Vision-Language Models Adapt Their Trust to Volatile Sources?\\An In-Context Test of a Neuroscience Paradigm}
+% Title in mixed (title) case, per AAAI. Working title; final wording after results.
+\title{Told, Not Learned: A Description--Experience Gap in How\\Vision-Language Models Learn Whom to Trust}
 % Anonymous author block (double-blind). Do not change.
 \author{
     Anonymous Submission
@@ -58,178 +58,170 @@
 
 \maketitle
 
-% ---------------------------------------------------------------------
+% =====================================================================
+% TERMINOLOGY (from research/volatile_trust/discussion/paper_conventions.md; use consistently)
+%  advisor / advice-taking (judge--advisor system, Yaniv)    NOT "reporter trust learning"
+%  advisor accuracy / reliability                           NOT "source fidelity score"
+%  raw history / summarized history (Krishnamurthy et al. 2024)
+%  description condition = stated reliability ("80% correct") ; experience = feedback history
+%  description--history (DH) gap (Ge et al. 2026) ; description--experience gap (Hertwig et al. 2004)
+%  correctness-coded history (our condition B; define on first use)
+%  positive recency (copying the last outcome)              NOT "outcome perseveration", NOT "hot hand"
+%  CPT regressor: follow the advisor correct on the previous trial (Behrens et al. 2008, Fig. 1e)
+%  integration kernel (Lau & Glimcher 2005; Keung et al. 2020) ; x: "Trials in the past", y: "Regression weight (log-odds)"
+%  volatility, change-point, hazard rate (Behrens 2007; Nassar 2010; Adams & MacKay 2007)
+%  cover story (our scenarios) ; counterbalanced copy (our "twins") ; control conditions (our positive controls)
+%  frozen model, in-context ; Psych-101 replay: "conditioned on previously executed behaviour" (Centaur)
+%  equivalence test (TOST) with smallest effect size of interest = 2 pp
+%  95% bootstrap CI over episode pairs (state in every caption)
+% =====================================================================
+
 \begin{abstract}
-% TODO (~150 words, single paragraph): problem (source-reliability tracking under
-% volatility); paradigm (Behrens et al. 2008 two-reporter task, stable vs volatile
-% phases, 80 trials, revealed truth); models (frozen VLMs: Qwen2.5-VL-3B,
-% Qwen3-VL-4B, InternVL3.5-4B [+ 7/8B if run]); readouts (choice and judgment
-% logits); key findings (reversal adaptation, stable vs volatile learning rate,
-% text vs image, judgment vs choice gap); takeaway. No mechanistic/brain claims.
-\todo{Abstract, $\sim$150 words.}
+% ~180 words, one paragraph. Problem: deciding whom to trust requires learning advisor accuracy from
+% feedback, a core adaptive skill studied in social neuroscience (Behrens et al. 2008). Approach:
+% advice-taking task adapted from Behrens et al. (stable/volatile accuracy), six cover stories plus photos,
+% frozen VLMs from two language-model families, three history formats that remove processing steps
+% (raw -> correctness-coded -> summarized), plus a stated-reliability description condition.
+% Findings (fill from held-out): DH gap size; where it localizes; positive recency in raw history;
+% summaries are followed but add nothing beyond the rule; multimodal binding; human comparison on Psych-101.
+% Takeaway: in-context "learning whom to trust" fails at evidence integration, not at use.
+\todo{Abstract.}
 \end{abstract}
 
-% Optional links block must sit between abstract and main text; keep anonymous
-% (e.g., anonymous.4open.science). Leave commented out for now.
-% \begin{links}
+% \begin{links}  % anonymous code link (anonymous.4open.science) -- add before submission
 %     \link{Code}{https://anonymous.4open.science/r/XXXX}
 % \end{links}
 
-% ---------------------------------------------------------------------
 \section{Introduction}
-% TODO (~0.6 column, 3 short paragraphs):
-%  (1) Agents (and VLMs used as assistants) must decide whom to trust when sources
-%      conflict, and reliability can change. In neuroscience, Behrens et al. (2007, 2008)
-%      showed humans raise their learning rate when the environment is volatile.
-%  (2) Gap: does in-context learning in frozen VLMs show this signature? Multimodal
-%      angle: does it hold when current reports are images rather than text?
-%  (3) Contributions (bullet list, 3 items): paradigm port + open protocol;
-%      cognitive-model analysis (delta-rule, phase-specific alpha, Bayesian observer);
-%      findings on text vs image and estimation vs use.
+% ~0.9 page. P1: learning whom to trust from feedback; humans track advisor accuracy and its volatility
+%   (Behrens 2007, 2008; Yaniv). P2: LLM/VLM agents increasingly combine conflicting sources; whether
+%   they learn source reliability in-context is untested beyond static or single-flip settings (ECL; Learn2Discern).
+% P3: description vs experience (Hertwig 2004; Wulff 2018) and its LLM analogue (Ge 2026; Krishnamurthy 2024;
+%   Xue 2026). Gap: none decompose which step fails, none for advisors, none multimodal.
+% P4: contributions (3 bullets max): (i) decomposition paradigm + cover stories + images; (ii) DH gap localized
+%   to <step>, with positive-recency mechanism; (iii) human comparison on an external task.
 \todo{Introduction.}
 
-% ---------------------------------------------------------------------
 \section{Related Work}
-% TODO (SHORT, ~0.3 column, one paragraph each or fewer):
-%  - Volatility and learning rate in humans/animals (Behrens 2007/2008; Nassar 2010).
-%  - LLMs/VLMs as cognitive-science subjects; in-context RL / bandit behavior.
-%  - Source reliability, sycophancy, and trust calibration in (V)LMs.
-% Citations come from literature.json (see refs.bib note).
+% ~0.5 page, 3 short paragraphs: (1) cognitive evaluation of LLMs (Binz & Schulz 2023; CogBench; Centaur;
+% Schubert 2024; Wang et al. 2026 reversal); (2) description vs experience, history summaries in bandits
+% (Hertwig; Ge 2026; Krishnamurthy 2024; Xue 2026; LLMs as discounted Bayesian filters); (3) advice taking,
+% volatility and change-point learning (Behrens; Nassar; Adams & MacKay); multi-image VLM binding.
 \todo{Related work.}
 
-% ---------------------------------------------------------------------
 \section{Task and Methods}
-% TODO (~1 column incl. Fig. 1).
-
-\begin{figure}[t]
-\centering
-% Replace with \includegraphics[width=\columnwidth]{figures/paradigm.pdf}
-\figplaceholder{paradigm schematic -- two reporters, conflicting reports, revealed truth;
-p\textsubscript{A}(t) schedule: stable (40 trials, 0.8) and volatile (40 trials, alternating
-0.2/0.8 every 10); text vs image report format.}{3.2cm}
-\caption{Task paradigm. \todo{caption}}
-\label{fig:paradigm}
-\end{figure}
-
-\paragraph{Paradigm.}
-% TODO: Behrens-style two-reporter conflict task; T=80; stable p_A=0.8 (40 trials);
-% volatile alternation every 10 trials; SV/VS orders and favored alias counterbalanced;
-% stratified realized accuracy per 10-trial window; domains color (red/blue squares)
-% and pet (cat/dog, Oxford-IIIT Pet); history always textual; current reports as text or image.
-\todo{Paradigm description (refer to Figure~\ref{fig:paradigm}).}
-
-\paragraph{Models.}
-% TODO: frozen, bf16, batch 1: Qwen2.5-VL-3B, Qwen3-VL-4B, InternVL3.5-4B
-% (+ Qwen2.5-VL-7B, Qwen3-VL-8B, InternVL3.5-8B if run). Pinned checkpoints in appendix.
+% ~1.6 pages incl. Fig. 1 and Table 1.
+\paragraph{Advice-taking task.} % two advisors, conflicting binary reports, truth revealed; 80 trials;
+% stable (40 trials, 80% accuracy) and volatile phases (accuracy alternates 0.8/0.2 every 10 trials; adapted from
+% Behrens et al. 2008, Supplementary Information); SV/VS orders; counterbalanced copies; cover stories.
+\todo{Task.}
+\paragraph{History formats.} % A raw; B correctness-coded (text) and B' chart; C summarized (counts);
+% D description (stated accuracy; control condition). Table/figure panel listing which steps each removes.
+\todo{Formats.}
+\paragraph{Models and readout.} % frozen, bf16; first-token logits over two answer words; Table 1.
 \todo{Models.}
+\paragraph{Analysis.} % episode pairs as units; preregistered primary test; Wilcoxon; bootstrap CI; TOST;
+% integration kernel; heuristic agreement (kappa); Holm.
+\todo{Analysis.}
 
-\paragraph{Readouts.}
-% TODO: choice = P(label = A's report), normalized over the two label tokens;
-% judgment (text only) = P(A) over the two alias tokens for "Which reporter is
-% currently more reliable?"; queried at every t = 1..80. Dev (16 eps) vs held-out (48 eps).
-\todo{Choice and judgment readouts; dev/held-out split.}
-
-% ---------------------------------------------------------------------
-\section{Cognitive Modeling}
-% TODO (~0.5 column): delta-rule fidelity estimate
-%   q_{t+1} = q_t + \alpha (o_t - q_t), P(follow A) = \sigma(\beta (q_t - 0.5) + b).
-% M1 single alpha; M2 alpha_stable vs alpha_volatile (key test); M3 alpha+/alpha-;
-% M4 Bayesian observer (change-point/HMM or Behrens volatile learner) as normative
-% reference; baselines WSLS, Beta count-all, last-k. Fit by cross-entropy on soft
-% choice probabilities; model comparison (e.g., BIC / held-out CE); parameter recovery.
-\todo{Model equations and fitting procedure.}
-
-% ---------------------------------------------------------------------
-\section{Results}
-% TODO (~1.2 columns incl. figures/table). Keep each claim tied to a figure/table.
-
-\begin{figure}[t]
-\centering
-% Replace with \includegraphics[width=\columnwidth]{figures/reversal_curves.pdf}
-\figplaceholder{learning curves around reversals: P(follow currently-better reporter)
-vs trials since reversal, per model, text vs image.}{3.2cm}
-\caption{Adaptation around reliability reversals. \todo{caption}}
-\label{fig:reversal}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-% Replace with \includegraphics[width=\columnwidth]{figures/learning_rate.pdf}
-\figplaceholder{fitted learning rate (M2) stable vs volatile per model; human
-reference qualitative (Behrens et al. 2008).}{3.2cm}
-\caption{Effective learning rate in stable vs volatile phases. \todo{caption}}
-\label{fig:lr}
-\end{figure}
+\begin{figure*}[t]
+  \centering
+  \figplaceholder{Fig.~1. (a) Example trial and prompt (one cover story) with an image report. (b) Accuracy schedule:
+  true P(advisor A correct) dashed, Bayesian observer estimate solid, stable vs.\ volatile shaded.
+  (c) History formats A/B/B$'$/C/D and which processing steps each removes.}{5cm}
+  \caption{\todo{Task and history formats.}}
+  \label{fig:task}
+\end{figure*}
 
 \begin{table}[t]
-\centering
-\input{tables/model_comparison}
-\caption{Model comparison (lower is better). Q = Qwen-VL, IVL = InternVL. \todo{caption}}
-\label{tab:modelcomp}
+  \centering
+  \small
+  \begin{tabular}{llrl}
+    \toprule
+    Model & LM family & Params & Image input \\
+    \midrule
+    \multicolumn{4}{c}{\todo{fill from models.json}} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Models (frozen; pinned revisions in the supplementary material).}
+  \label{tab:models}
 \end{table}
 
-\paragraph{Reversal adaptation.}
-% TODO: Figure~\ref{fig:reversal}; perseveration after reversal.
-\todo{Results for RQ1.}
+\section{Results}
+% ~3 pages incl. Figs. 2--5 and Table 2. Each paragraph = one claim tied to one figure/table.
+\paragraph{Models use stated reliability but not experienced reliability.} % Fig. 2a/b; control conditions.
+\todo{Description vs.\ experience (control conditions).}
+\paragraph{The gap localizes to <step>.} % Fig. 2: A vs B vs B' vs C per model, cover-story dots; Table 2.
+\todo{Primary test and decomposition.}
+\paragraph{Raw histories elicit positive recency, not advisor tracking.} % Fig. 4: kernels + heuristic kappa.
+\todo{Mechanism.}
+\paragraph{Externalized integration restores tracking; the VLM adds nothing beyond the rule.} % Fig. 3; TOST;
+% rule differences match the normative simulation (appendix).
+\todo{Summaries and change-point controller.}
+\paragraph{Multimodal reports.} % photo binding (first-image default, model-specific); chart legibility.
+\todo{Multimodal.}
+\paragraph{Comparison with humans.} % Fig. 5: phi vs hazard, humans (Xiong et al. 2023) vs models; hidden primary.
+\todo{Psych-101.}
+\paragraph{Reasoning mode.} % Thinking/CoT subset: does the gap shrink?
+\todo{Reasoning.}
 
-\paragraph{Learning rate: stable vs volatile.}
-% TODO: Figure~\ref{fig:lr}; M2 alpha_volatile > alpha_stable? Table~\ref{tab:modelcomp}.
-\todo{Results for RQ2 and model comparison.}
+\begin{figure}[t]\centering
+  \figplaceholder{Fig.~2. Accuracy by history format (A raw, B coded, B$'$ chart, C summarized; D stated) per model;
+  dots = cover stories; dashed = rule alone; 95\% bootstrap CI over episode pairs.}{4.2cm}
+  \caption{\todo{Description--experience gap and its decomposition.}}\label{fig:gap}
+\end{figure}
+\begin{figure}[t]\centering
+  \figplaceholder{Fig.~3. P(follow better advisor) vs.\ trials after change-point, raw vs.\ summarized variants vs.\ oracle.}{4cm}
+  \caption{\todo{Reversal-aligned learning curves.}}\label{fig:curves}
+\end{figure}
+\begin{figure}[t]\centering
+  \figplaceholder{Fig.~4. (a) Integration kernels (x: Trials in the past; y: Regression weight, log-odds), raw vs.\ summarized.
+  (b) Last-outcome and CPT coefficients; heuristic agreement ($\kappa$).}{4cm}
+  \caption{\todo{Mechanism.}}\label{fig:kernel}
+\end{figure}
+\begin{figure}[t]\centering
+  \figplaceholder{Fig.~5. Forgetting rate $\phi$ vs.\ hazard rate: humans (Xiong et al. 2023) and models, hidden-hazard condition.}{4cm}
+  \caption{\todo{Human comparison on Psych-101.}}\label{fig:human}
+\end{figure}
+\begin{table}[t]\centering\small
+  \begin{tabular}{lrrr}
+    \toprule
+    Test (held-out) & Estimate & 95\% CI & $p$ \\
+    \midrule
+    \multicolumn{4}{c}{\todo{primary DH-gap test per model; secondary tests}} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Preregistered tests. \todo{state where the analysis plan was lodged.}}\label{tab:tests}
+\end{table}
 
-\paragraph{Text vs image.}
-% TODO: format factor effect on curves/alpha (could be a panel of Fig. 2 or a sentence + appendix figure).
-\todo{Text vs image reports.}
-
-\paragraph{Judgment vs choice.}
-% TODO: estimation-vs-use gap: judgment P(A) vs choice P(follow A), trial-by-trial.
-\todo{Judgment vs choice.}
-
-% ---------------------------------------------------------------------
 \section{Discussion and Limitations}
-% TODO (~0.4 column): what the signature does/doesn't show; non-claims (no brain-like
-% mechanism, neural homology, or human alignment; human comparison only qualitative);
-% limitations: small models, two domains, synthetic reporters, logit readouts,
-% prompt sensitivity; future work.
+% ~0.6 page. Interpretation (integration, not use); relation to DH gap and bandit summaries; NeuroAI link:
+% externalized volatility tracking as an analogue of a separate learning system (computational level only).
+% Limitations: binary task; text histories; single-token immediate answers (reasoning subset only);
+% two LM families; Psych-101 experience mismatch; no neural claims.
 \todo{Discussion and limitations.}
 
 % ---------------------------------------------------------------------
-% Optional, unnumbered, before references:
-% \section*{Ethical Statement} ...
-% Acknowledgments: OMIT for double-blind submission.
+% \section*{Ethical Statement}  % optional
+% \section*{Acknowledgments}    % omit for review
+% ---------------------------------------------------------------------
 
-% References: style is set by aaai2027.sty (do NOT add \bibliographystyle).
-% refs.bib is currently a placeholder (see note inside); entries come from
-% research/volatile_trust/literature.json via the literature agent.
-% TEMPORARY: \nocite{*} only lets BibTeX run while refs.bib is empty and nothing
-% is cited yet. REMOVE once real \cite commands exist (otherwise every entry in
-% refs.bib gets listed, cited or not).
-\nocite{*}
 \bibliography{refs}
 
-% ---------------------------------------------------------------------
-% Supplementary material / technical appendix: AFTER the references
-% (allowed by the workshop; does not count toward the 4 pages).
 \appendix
 \section{Supplementary Material}
-
-\subsection{Prompt Templates}
-% TODO: exact choice and judgment prompts; alias pool; image rendering details.
-\todo{Prompts.}
-
-\subsection{Episode Generation and Counterbalancing}
-% TODO: schedules, stratification, seeds, dev/held-out split.
-\todo{Episode generation.}
-
-\subsection{Model Checkpoints and Compute}
-% TODO: pinned revisions, bf16, RTX 3090, runtime.
-\todo{Checkpoints and compute.}
-
-\subsection{Parameter Recovery}
-% TODO: synthetic-agent recovery for M1--M4.
-\todo{Parameter recovery.}
-
-\subsection{Additional Results}
-% TODO: per-domain, per-order (SV/VS), larger models, full fit tables.
-\todo{Additional results.}
+% No page limit (workshop CFP). Order follows the main text.
+\subsection{A. Prompts and Cover Stories}            % exact templates for all 7 cover stories, A/B/B'/C/D, icons
+\subsection{B. Episode Generation and Counterbalancing} % schedules, stratification, seeds, splits, counterbalanced copies
+\subsection{C. Control Conditions: Full Results}      % heatmap model x condition x cover story
+\subsection{D. Normative Simulation}                  % rule comparison across contrasts/phase lengths (design_sim)
+\subsection{E. Change-Point Controller and Summary Variants} % BOCPD details, hazard, K selection on dev
+\subsection{F. Computational Models and Parameter Recovery}  % delta-rule variants, calibrated learning rates, LOEO-CV
+\subsection{G. Multimodal Binding and Chart Legibility}      % image_named/composite/after, composite_read, chart_read
+\subsection{H. Reasoning Mode}                               % thinking/CoT subset, lengths, truncation
+\subsection{I. Psych-101 Protocol and Additional Fits}       % hidden/told, sampled-choice fits, long blocks, position
+\subsection{J. Robustness}                                   % IID/irregular episodes; per-cover-story results
+\subsection{K. Models, Revisions and Compute}                % pinned revisions, hardware, cross-platform check
+\subsection{L. Pilot Results on Smaller Models}              % 3B/4B, v1 data caveat
 
 \end{document}

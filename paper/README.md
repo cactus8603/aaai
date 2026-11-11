@@ -1,6 +1,6 @@
 # Paper: Do Vision-Language Models Adapt Their Trust to Volatile Sources?
 
-This is a short paper (4 pages plus references, non-archival) for the **NeuroAI 2.0 workshop at AAAI-27**.
+This is a **long paper (8 pages plus references and supplementary material, archival in PMLR)** for the **NeuroAI 2.0 workshop at AAAI-27**.
 - Workshop site: https://neuroai-multimodal-workshop.github.io/
 - Deadline: **2026-11-20**
 - Submission portal: OpenReview
@@ -38,9 +38,9 @@ grep -n "Overfull" main.log   # must print nothing
 
 ## AAAI-27 and workshop formatting rules that matter
 **Page limits (workshop CFP)**
-- A short paper is at most **4 pages** of main content.
+- A long paper is at most **8 pages** of main content (the target since 2026-11-11). A short paper would be 4 pages.
 - References and supplementary material do not count toward the limit and have no page limit.
-- The main content runs from the Abstract through Discussion & Limitations. Any content appendix placed before the references counts toward the 4 pages.
+- The main content runs from the Abstract through Discussion & Limitations. Any content appendix placed before the references counts toward the 8 pages.
 - Section order:
   1. Main content
   2. (Ethical Statement)

@@ -9,8 +9,10 @@ Run with an isolated interpreter (the inputs are untrusted downloaded data):
     .venv/bin/python -I research/volatile_trust/psych101/build_xiong.py
 
 MODEL PROTOCOL (documented in PROTOCOL.md next to this file)
-  * Episodes = the three 100-trial games per participant (h = 0.1, 0.2, 0.4; Psych-101 games 1/3/5,
-    the paper's practice blocks). 30 participants x 3 games x 100 trials = 9000 queries per format.
+  * Episodes = the three 100-trial games per participant (h = 0.1, 0.2, 0.4; Psych-101 games 1/3/5).
+    Each 100-trial game directly precedes a 1500-trial game with the same h, so at games 3/5 the human
+    has already played 1,600/3,200 trials; h order is counterbalanced (6 orders). `position` (1/2/3 =
+    game 1/3/5) is stored for covariate analysis. 30 participants x 3 games x 100 trials = 9000 queries.
     The 1500-trial games are written to episodes_long.jsonl for human-only reference fits (not queried).
   * Teacher-forced replay: at trial t the model sees the instructions, the game header and the HUMAN's
     trials 1..t-1 (choice + points received), then is asked which machine it presses on trial t.
@@ -29,6 +31,8 @@ import re
 from pathlib import Path
 
 import pyarrow.parquet as pq
+
+HERE = Path(__file__).resolve().parent
 
 ROOT = Path(__file__).resolve().parents[3]
 RAW = ROOT / '.cache/datasets/psych101_xiong2023/raw'
@@ -57,6 +61,11 @@ def main():
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
+    prov = json.loads((HERE / 'provenance.json').read_text())
+    for f in prov['files']:
+        got = sha256(RAW.parent / f['local_path'])
+        if got != f['sha256']:
+            raise SystemExit(f"sha256 mismatch for {f['local_path']}: {got} != {f['sha256']}")
     tab = pq.read_table(RAW / 'xiong2023neural_exp1_train.parquet').to_pydict()
     raw = collections.defaultdict(list)
     for i in range(len(tab['trial'])):
@@ -98,7 +107,9 @@ def main():
             checks['games_matched'] += 1
             ep = dict(episode_id=f'p{pid:02d}_g{g + 1}', participant=pid, game=g + 1, task=g,
                       hazard=float(hm.group(2)), n_trials=len(rows),
+                      position=g // 2 + 1,  # 1..3: order of this h for the participant
                       labels=labels,                       # labels[k] = letter of raw choice k (slot k+1)
+                      intro_letters=[LABEL_REMAP.get(x, x) for x in letters_intro],   # Psych-101 intro order
                       original_letters=[letter_of[0], letter_of[1]],
                       trials=[dict(t=i + 1, choice=int(r['choice']), reward=int(r['reward']),
                                    v=[float(r['slot1_value']), float(r['slot2_value'])],

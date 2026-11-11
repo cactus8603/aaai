@@ -148,6 +148,44 @@ def shift_signature(c, r, y):
     return dict(p_shift_low=float(np.mean(1 - p_same[low])), p_shift_high=float(np.mean(1 - p_same[~low])))
 
 
+def trend_tests(X, hs, P, rng, n_boot=2000):
+    """X: (N participants, 3 hazards) parameter matrix; P: matching game positions (1..3) or None.
+    One observation per participant per test (no pseudo-replication):
+      * slope of the parameter on h per participant (OLS over the 3 conditions) -> Wilcoxon vs 0
+      * Friedman (any difference) and Page's L (ordered increase h=0.1<0.2<0.4)
+      * position covariate: within-participant (fixed-effects) OLS  x_c = b_h * h_c + b_pos * pos_c,
+        CI of b_h by participant bootstrap; plus medians per (h, position) cell (position-balanced view).
+    """
+    N = len(X)
+    hc = hs - hs.mean()
+    slopes = (X - X.mean(1, keepdims=True)) @ hc / (hc @ hc)
+    w = stats.wilcoxon(slopes) if np.any(slopes != 0) else None
+    fr = stats.friedmanchisquare(*X.T) if N > 2 else None
+    pg = stats.page_trend_test(X) if N > 2 else None
+    out = dict(n=N, median_slope_per_unit_h=float(np.median(slopes)), frac_positive_slope=float(np.mean(slopes > 0)),
+               slope_wilcoxon_p=None if w is None else float(w.pvalue),
+               friedman_p=None if fr is None else float(fr.pvalue),
+               page_L=None if pg is None else float(pg.statistic), page_p=None if pg is None else float(pg.pvalue),
+               median_diff_hmax_minus_hmin=float(np.median(X[:, -1] - X[:, 0])))
+    if P is not None and not np.any(P == None):  # noqa: E711
+        P = P.astype(float)
+
+        def fe(idx):
+            Xc = X[idx] - X[idx].mean(1, keepdims=True)
+            Hc = np.tile(hs, (len(idx), 1)) - hs.mean()
+            Pc = P[idx] - P[idx].mean(1, keepdims=True)
+            A = np.stack([Hc.ravel(), Pc.ravel()], 1)
+            return np.linalg.lstsq(A, Xc.ravel(), rcond=None)[0]
+        b = fe(np.arange(N))
+        bs = np.array([fe(rng.integers(0, N, N)) for _ in range(n_boot)])
+        out['fe_position_adjusted'] = dict(b_h=float(b[0]), b_h_ci95=[float(v) for v in np.percentile(bs[:, 0], [2.5, 97.5])],
+                                           b_h_boot_p_le0=float(np.mean(bs[:, 0] <= 0)),
+                                           b_position=float(b[1]), b_position_ci95=[float(v) for v in np.percentile(bs[:, 1], [2.5, 97.5])])
+        out['median_by_h_position'] = {f'h{h}_pos{q}': float(np.median(X[:, j][P[:, j] == q])) if np.any(P[:, j] == q) else None
+                                       for j, h in enumerate(hs) for q in (1, 2, 3)}
+    return out
+
+
 def analyse_source(eps, by_h, boot, rng, models=('delta', 'xiong_mf', 'bayes_h')):
     """by_h: h -> (ids, c, r, y). Pooled fits per h (+ participant bootstrap) and per-participant fits."""
     out = dict(pooled={}, per_participant={}, signature={}, tests={})
@@ -169,25 +207,18 @@ def analyse_source(eps, by_h, boot, rng, models=('delta', 'xiong_mf', 'bayes_h')
             for eid, f in zip(ids, res):
                 pp[m].setdefault(h, {})[eps[eid]['participant']] = f['params']
     hs = sorted(by_h)
+    pos = {(eps[i]['participant'], h): eps[i].get('position') for h, (ids, *_) in by_h.items() for i in ids}
+    out['per_participant_params'] = {m: {str(h): {str(p_): v for p_, v in dh[h].items()} for h in hs} for m, dh in pp.items()}
     for m, dh in pp.items():
         common = sorted(set.intersection(*[set(dh[h]) for h in hs]))
-        out['per_participant'][m] = {h: {k: float(np.median([dh[h][p][k] for p in common])) for k in ('alpha', 'phi', 'beta', 'kappa')}
+        out['per_participant'][m] = {h: {k: float(np.median([dh[h][p_][k] for p_ in common])) for k in ('alpha', 'phi', 'beta', 'kappa')}
                                      for h in hs}
         for k in ('alpha', 'phi'):
             if k == 'phi' and m == 'delta':
                 continue
-            lo = np.array([dh[hs[0]][p][k] for p in common])
-            hi = np.array([dh[hs[-1]][p][k] for p in common])
-            w = stats.wilcoxon(hi, lo) if np.any(hi != lo) else None
-            hh = np.repeat(hs, len(common))
-            vals = np.concatenate([[dh[h][p][k] for p in common] for h in hs])
-            # within-participant trend: Spearman of h vs parameter after removing participant means
-            cent = vals - np.tile([np.mean([dh[h][p][k] for h in hs]) for p in common], len(hs))
-            rho = stats.spearmanr(hh, cent)
-            out['tests'][f'{m}.{k}'] = dict(n=len(common), median_diff_hmax_minus_hmin=float(np.median(hi - lo)),
-                                           frac_increase=float(np.mean(hi > lo)),
-                                           wilcoxon_p=None if w is None else float(w.pvalue),
-                                           spearman_rho_within=float(rho.statistic), spearman_p=float(rho.pvalue))
+            out['tests'][f'{m}.{k}'] = trend_tests(np.array([[dh[h][p_][k] for h in hs] for p_ in common]),
+                                                   np.array(hs), np.array([[pos[(p_, h)] for h in hs] for p_ in common]),
+                                                   rng)
     pool = out['pooled']
     for m in ('delta', 'xiong_mf'):
         a = [pool[h][m]['params']['alpha'] for h in hs]
@@ -198,20 +229,42 @@ def analyse_source(eps, by_h, boot, rng, models=('delta', 'xiong_mf', 'bayes_h')
     return out
 
 
+def read_jsonl(path):
+    """Rows of a results file; a truncated LAST line (crash mid-write) is skipped, anything else is an error."""
+    lines = Path(path).read_text().split('\n')
+    rows = []
+    for j, line in enumerate(lines):
+        if not line.strip():
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            if j == len(lines) - 1:           # no trailing newline -> partial last row
+                print(f'warning: skipping truncated last line of {path}')
+            else:
+                raise
+    return rows
+
+
 def load_results(patterns):
+    """Groups: (model, format, hazard_info, image_px, n_img) -> {(episode, t): P(slot1)}; duplicates are errors."""
     rows = []
     for pat in patterns:
         for f in sorted(glob.glob(pat)):
-            rows += [json.loads(l) for l in open(f) if l.strip()]
+            rows += read_jsonl(f)
     groups = collections.defaultdict(dict)
+    perc = collections.defaultdict(dict)
     for r in rows:
         if r['format'] in ('text', 'image_outcome', 'chart'):
-            groups[(r['model_id'], r['format'], r['hazard_info'])][(r['episode_id'], r['t'])] = r['p_slot1']
-    perc = collections.defaultdict(list)
-    for r in rows:
-        if r['format'].startswith('perc'):
-            perc[(r['model_id'], r['format'], r['subtask'])].append(r)
-    return groups, perc
+            g = (r['model_id'], r['format'], r['hazard_info'], r.get('image_px'), r.get('n_img'))
+            key = (r['episode_id'], r['t'])
+            assert key not in groups[g], f'duplicate row {key} in group {g}'
+            groups[g][key] = r['p_slot1']
+        elif r['format'].startswith('perc'):
+            g = (r['model_id'], r['format'], r['subtask'], r.get('image_px'))
+            assert r['item'] not in perc[g], f"duplicate perception item {r['item']} in {g}"
+            perc[g][r['item']] = r
+    return groups, {g: list(v.values()) for g, v in perc.items()}
 
 
 def selftest():
@@ -242,8 +295,45 @@ def selftest():
             f_soft = fit('xiong_mf', h, c, r, y_soft)['params']
             res[f'{name}_h{h}'] = dict(truth=truth, hard={k: round(f_hard[k], 3) for k in ('alpha', 'phi', 'beta')},
                                        soft={k: round(f_soft[k], 3) for k in ('alpha', 'phi', 'beta')})
+    res['null_constant_phi'] = null_trend_test(eps)
     print(json.dumps(res, indent=1))
     return res
+
+
+def null_trend_test(eps, seeds=(0, 1, 2, 3, 4), prm=dict(alpha=1.0, phi=0.2, beta=0.4, kappa=0.2, b=0.0)):
+    """Null check: every simulated participant has the SAME phi = 0.2 at all h (human-like beta ~ 0.4).
+    Closed-loop simulation on each participant's real value sequences, per-participant fits, then the
+    same trend tests as for real data. A valid pipeline should give no spurious h trend (p > 0.05)."""
+    out = {}
+    pids = sorted({e['participant'] for e in eps.values()})
+    hs = np.array(HAZARDS)
+    for seed in seeds:
+        rng = np.random.default_rng(seed)
+        X = np.zeros((len(pids), len(hs)))
+        jobs = []
+        for j, h in enumerate(hs):
+            ids = [next(i for i, e in eps.items() if e['participant'] == p_ and e['hazard'] == h) for p_ in pids]
+            V = np.array([[tr['v'] for tr in eps[i]['trials']] for i in ids])
+            E, T = V.shape[:2]
+            c, r = np.zeros((E, T), int), np.zeros((E, T))
+            Q, s, rows = np.full((E, 2), 50.0), np.zeros(E), np.arange(E)
+            for t in range(T):
+                p = sig(prm['beta'] * (Q[:, 0] - Q[:, 1]) / 10 + prm['kappa'] * s + prm['b'])
+                ch = (rng.random(E) > p).astype(int)
+                c[:, t], r[:, t] = ch, V[rows, t, ch]
+                Q[rows, ch] += prm['alpha'] * (r[:, t] - Q[rows, ch])
+                Q[rows, 1 - ch] += prm['phi'] * (50 - Q[rows, 1 - ch])
+                s = np.where(ch == 0, 1.0, -1.0)
+            jobs += [('xiong_mf', float(h), c[k:k + 1], r[k:k + 1], (c[k:k + 1] == 0).astype(float)) for k in range(E)]
+        fits = pmap(jobs)
+        for idx, f in enumerate(fits):
+            X[idx % len(pids), idx // len(pids)] = f['params']['phi']
+        tt = trend_tests(X, hs, None, rng)
+        out[f'seed{seed}'] = dict(median_phi={str(h): float(np.median(X[:, j])) for j, h in enumerate(hs)},
+                                  slope_wilcoxon_p=tt['slope_wilcoxon_p'], page_p=tt['page_p'], friedman_p=tt['friedman_p'])
+    out['n_seeds_slope_p_gt_0.05'] = sum(v['slope_wilcoxon_p'] > 0.05 for k, v in out.items() if k.startswith('seed'))
+    out['n_seeds_page_p_gt_0.05'] = sum(v['page_p'] > 0.05 for k, v in out.items() if k.startswith('seed'))
+    return out
 
 
 def main():
@@ -277,9 +367,16 @@ def main():
     if args.human_long:
         long_eps = {i: e for i, e in load_episodes(HERE / 'data/episodes_long.jsonl').items() if e['n_trials'] == 1500}
         report['sources']['human/long1500'] = analyse_source(long_eps, human(long_eps), min(args.boot, 50), rng)
+        # side-by-side: humans on the replayed 100-trial games vs their 1500-trial games (same h)
+        report['human_short_vs_long'] = {
+            n: {'pooled_phi': {h: src['pooled'][h]['xiong_mf']['params']['phi'] for h in src['pooled']},
+                'pooled_alpha': {h: src['pooled'][h]['xiong_mf']['params']['alpha'] for h in src['pooled']},
+                'median_phi': {h: v['phi'] for h, v in src['per_participant']['xiong_mf'].items()},
+                'phi_tests': src['tests']['xiong_mf.phi']}
+            for n, src in report['sources'].items() if n.startswith('human/')}
 
     groups, perc = load_results(args.results)
-    for (mid, fmt, hz), tab in sorted(groups.items()):
+    for (mid, fmt, hz, px, nimg), tab in sorted(groups.items(), key=str):
         by_h = {}
         for h in HAZARDS:
             ids = sorted(i for i, e in eps.items() if e['hazard'] == h
@@ -297,10 +394,10 @@ def main():
             ll.append(np.log(np.clip(pc, EPS, 1)).ravel())
         src['human_choice_loglik_per_trial'] = float(np.mean(np.concatenate(ll)))
         src['n_complete_episodes'] = {h: len(v[0]) for h, v in by_h.items()}
-        report['sources'][f'{mid}/{fmt}/{hz}'] = src
-    report['perception'] = {f'{m}/{f}/{s}': dict(n=len(v), acc=float(np.mean([r['correct_argmax'] for r in v])),
+        report['sources'][f'{mid}/{fmt}/{hz}/px{px}' + (f'/n{nimg}' if fmt == 'image_outcome' else '')] = src
+    report['perception'] = {f'{m}/{f}/{s}/px{px_}': dict(n=len(v), acc=float(np.mean([r['correct_argmax'] for r in v])),
                                                  mean_p_correct=float(np.mean([r['correct_prob'] for r in v])))
-                            for (m, f, s), v in sorted(perc.items())}
+                            for (m, f, s, px_), v in sorted(perc.items(), key=str)}
     args.output.write_text(json.dumps(report, indent=1, default=float))
     # compact console summary
     for name, src in report['sources'].items():
@@ -309,9 +406,12 @@ def main():
                      for h in sorted(pool))
         sg = ' '.join(f"h{h}:{src['signature'][h]['p_shift_low']:.2f}/{src['signature'][h]['p_shift_high']:.2f}"
                       for h in sorted(src['signature']))
-        print(f'{name:45s} xiong_mf pooled {a} | P(shift|low/high) {sg} | '
-              f"phi trend rho={src['tests'].get('xiong_mf.phi', {}).get('spearman_rho_within', float('nan')):.2f} "
-              f"p={src['tests'].get('xiong_mf.phi', {}).get('spearman_p', float('nan')):.3g}")
+        t_ = src['tests'].get('xiong_mf.phi', {})
+        fe_ = t_.get('fe_position_adjusted', {})
+        pm = ' '.join(f"{src['per_participant']['xiong_mf'][h]['phi']:.2f}" for h in sorted(pool))
+        print(f'{name:45s} xiong_mf pooled {a} | per-participant median phi {pm} | P(shift|low/high) {sg} | '
+              f"phi slope Wilcoxon p={t_.get('slope_wilcoxon_p')} Page p={t_.get('page_p')} "
+              f"pos-adjusted b_h={fe_.get('b_h', float('nan')):.3f} CI={fe_.get('b_h_ci95')}")
     for k, v in report['perception'].items():
         print('perception', k, v)
 

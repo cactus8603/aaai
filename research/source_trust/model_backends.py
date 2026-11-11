@@ -147,8 +147,11 @@ class FrozenVLM:
         torch.cuda.reset_peak_memory_stats()
         torch.cuda.synchronize()
         started = time.monotonic()
+        # transformers>=4.5x merges model-specific defaults (e.g. Qwen3-VL do_sample=True) into any
+        # value equal to the global default; explicit kwargs are applied last, so force greedy here.
         result = self.model.generate(**inputs, generation_config=self.generation_config,
-                                     max_new_tokens=max_new_tokens,
+                                     max_new_tokens=max_new_tokens, do_sample=False,
+                                     repetition_penalty=1.0, top_k=None, top_p=None, temperature=None,
                                      return_dict_in_generate=True, output_logits=True)
         torch.cuda.synchronize()
         elapsed = time.monotonic()-started
@@ -160,6 +163,7 @@ class FrozenVLM:
         generation = result.sequences[0, inputs['input_ids'].shape[1]:]
         answer = self.processor.tokenizer.decode(generation, skip_special_tokens=True).strip()
         row = dict(probabilities=dict(zip(labels,probabilities)),
+                   argmax_label=labels[int(candidate_logits.argmax())],
                    logits={label:float(logits[ids[label]]) for label in labels},
                    canonical_candidate_mass=float(sum(full_prob[ids[label]] for label in labels)),
                    greedy_answer=answer, generated_tokens=int(generation.numel()),
@@ -180,7 +184,8 @@ class FrozenVLM:
         torch.cuda.synchronize()
         started = time.monotonic()
         result = self.model.generate(**inputs, generation_config=self.generation_config,
-                                     max_new_tokens=max_new_tokens)
+                                     max_new_tokens=max_new_tokens, do_sample=False,
+                                     repetition_penalty=1.0, top_k=None, top_p=None, temperature=None)
         torch.cuda.synchronize()
         generation = result[0, inputs['input_ids'].shape[1]:]
         row = dict(text=self.processor.tokenizer.decode(generation, skip_special_tokens=True).strip(),

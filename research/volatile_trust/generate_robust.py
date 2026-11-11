@@ -14,12 +14,20 @@ T, HIGH, LOW = 80, 0.8, 0.2
 
 
 def irregular_volatile(first, n, rng):
+    """Dwell times uniform 6-16; a leftover shorter than 6 is merged into the previous dwell."""
+    dwells = []
+    while sum(dwells) < n:
+        dwells.append(rng.randint(6, 16))
+    dwells[-1] -= sum(dwells) - n
+    if dwells[-1] < 6 and len(dwells) > 1:
+        leftover = dwells.pop()
+        dwells[-1] += leftover
+    assert sum(dwells) == n and min(dwells) >= 6
     out, p = [], first
-    while len(out) < n:
-        d = rng.randint(6, 16)
-        out += [(p, 'volatile')] * d
+    for d in dwells:
+        out += [(round(p, 2), 'volatile')] * d
         p = HIGH + LOW - p
-    return out[:n]
+    return out
 
 
 def episode(eid, order, rng, pool):
@@ -28,7 +36,7 @@ def episode(eid, order, rng, pool):
     else:
         v = irregular_volatile(HIGH, 40, rng)
         last = v[-1][0]
-        sched = v + [(HIGH + LOW - last, 'stable')] * 40   # reversal entering stable phase
+        sched = v + [(round(HIGH + LOW - last, 2), 'stable')] * 40   # reversal entering stable phase (B may be the better one)
     trials = []
     for t, (p, ph) in enumerate(sched, 1):
         ac = int(rng.random() < p)
@@ -45,28 +53,31 @@ def episode(eid, order, rng, pool):
 
 
 def main(n=24, seed=20261112):
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'episodes_robust'
+    out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / 'episodes_robust_v2'
     out.mkdir(exist_ok=True)
     pools = load_pools()
     rows = []
     for i in range(n):
         rng = random.Random(seed * 31 + i)
-        rows.append(episode(f'rob{i:03d}', 'SV' if i % 2 == 0 else 'VS', rng, pools['held_out']))
+        ep = episode(f'rob{i:03d}', 'SV' if i % 2 == 0 else 'VS', rng, pools['held_out'])
+        ep['header_a_first'] = (i // 2) % 2 == 0
+        rows.append(ep)
     twins = []
     for e in rows:
         t = copy.deepcopy(e)
         t.update(episode_id=e['episode_id'] + 't', a_name=e['b_name'], b_name=e['a_name'],
-                 label_polarity=1 - e['label_polarity'], twin_of=e['episode_id'])
+                 label_polarity=1 - e['label_polarity'], header_a_first=not e['header_a_first'],
+                 twin_of=e['episode_id'])
         twins.append(t)
     with open(out / 'episodes.jsonl', 'w') as f:
         for r in rows + twins:
             f.write(json.dumps(r) + '\n')
-    src = (out.parent / 'episodes_v1' / 'image_index.json')
+    src = (out.parent / 'episodes_v2' / 'image_index.json')
     if not src.exists():
-        src = Path(__file__).parent / 'episodes_v1' / 'image_index.json'
+        src = Path(__file__).parent / 'episodes_v2' / 'image_index.json'
     (out / 'image_index.json').write_text(src.read_text())
     (out / 'protocol.json').write_text(json.dumps(dict(
-        n=n, seed=seed, T=T, dwell='uniform int 6-16 in volatile phase', correctness='IID Bernoulli(p_A)',
+        n=n, seed=seed, T=T, dwell='uniform int 6-16 in volatile phase; leftover <6 merged into previous dwell', correctness='IID Bernoulli(p_A)',
         truth='IID uniform', reversals_per_episode=[len(r['reversals']) for r in rows],
         sha256=hashlib.sha256((out / 'episodes.jsonl').read_bytes()).hexdigest()), indent=1))
     print(len(rows) + len(twins), [len(r['reversals']) for r in rows])

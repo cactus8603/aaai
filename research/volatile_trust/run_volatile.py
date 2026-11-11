@@ -26,8 +26,10 @@ COLOR_RGB = {'red': (220, 30, 30), 'blue': (30, 60, 220)}
 
 def header(ep, domain, hint=True):
     n = NOUN[domain]
-    s = (f"You are observing a sequence of trials. On every trial, two reporters, {ep['a_name']} and "
-         f"{ep['b_name']}, give conflicting reports about a hidden {n}. After each trial, the true {n} "
+    first, second = ((ep['a_name'], ep['b_name']) if ep.get('header_a_first', True)
+                     else (ep['b_name'], ep['a_name']))
+    s = (f"You are observing a sequence of trials. On every trial, two reporters, {first} and "
+         f"{second}, give conflicting reports about a hidden {n}. After each trial, the true {n} "
          f"is revealed.")
     if hint:
         s += " A reporter's accuracy may change over time."
@@ -116,28 +118,37 @@ class Renderer:
         return out
 
     def chart(self, ep, t):
-        """Raster chart of trials 1..t-1: rows = reporters (listing order of trial t), green = correct."""
+        """Chart of trials 1..t-1, wrapped as 4 lines x 20 trials. Each line has one row per reporter
+        (listing order of trial t); green = that reporter was correct, gray = wrong, blank = not yet."""
         from PIL import ImageDraw
         n = t - 1
-        cell, left, top = 8, 70, 30
-        W, H = left + 80 * cell + 20, top + 2 * 34 + 40
+        cw, ch, left, line_gap, top = 22, 26, 64, 22, 8
+        per_line, lines = 20, 4
+        W = left + per_line * cw + 12
+        H = top + lines * (2 * ch + line_gap)
         img = Image.new('RGB', (W, H), 'white')
         d = ImageDraw.Draw(img)
-        f = self._font(16)
         names = [ep['a_name'], ep['b_name']]
         if not ep['trials'][t - 1]['a_listed_first']:
             names.reverse()
-        for row, name in enumerate(names):
-            y = top + row * 34
-            d.text((8, y + 6), name, fill='black', font=f)
-            for k, tr in enumerate(ep['trials'][:n]):
-                correct = tr['a_correct'] if name == ep['a_name'] else 1 - tr['a_correct']
-                x = left + k * cell
-                d.rectangle([x, y, x + cell - 2, y + 26], fill=(40, 170, 60) if correct else (200, 200, 200))
-        for k in range(0, 81, 10):
-            x = left + max(k - 1, 0) * cell
-            d.text((x, top + 2 * 34 + 6), str(max(k, 1)), fill='black', font=self._font(12))
-        d.text((left, 6), 'trial ->', fill='black', font=self._font(12))
+        fn, fs = self._font(16), self._font(11)
+        for L in range(lines):
+            y0 = top + L * (2 * ch + line_gap)
+            for row, name in enumerate(names):
+                y = y0 + row * ch
+                d.text((4, y + 5), name, fill='black', font=fn)
+                for c in range(per_line):
+                    k = L * per_line + c          # 0-based trial index
+                    x = left + c * cw
+                    if k < n:
+                        tr = ep['trials'][k]
+                        correct = tr['a_correct'] if name == ep['a_name'] else 1 - tr['a_correct']
+                        d.rectangle([x, y + 2, x + cw - 3, y + ch - 3],
+                                    fill=(40, 170, 60) if correct else (190, 190, 190))
+                    else:
+                        d.rectangle([x, y + 2, x + cw - 3, y + ch - 3], outline=(230, 230, 230))
+            d.text((left, y0 + 2 * ch + 2), f'trials {L * per_line + 1}-{(L + 1) * per_line}',
+                   fill='black', font=fs)
         return img
 
     def choice(self, ep, domain, fmt, t, hint=True, window=(1, None, False)):
@@ -154,9 +165,9 @@ class Renderer:
         if fmt == 'chart':   # method 2: history as one raster chart; current reports as text
             content = [{'type': 'text', 'text': header(ep, domain, hint) +
                         ('Past trials: none yet.\n' if t == 1 else
-                         f'Past trials 1-{t - 1} are summarized in this chart (one column per trial; '
-                         'a green square means that reporter was correct on that trial, '
-                         'a gray square means that reporter was wrong):\n')}]
+                         f'Past trials 1-{t - 1} are summarized in this chart (trials run left to right in '
+                         'four lines of 20; for each trial, a green square means that reporter was correct, '
+                         'a gray square means that reporter was wrong, an empty square means not yet played):\n')}]
             if t > 1:
                 content.append({'type': 'image'})
                 images.append(self.chart(ep, t))
@@ -228,7 +239,8 @@ def main():
         for line in open(out_path):
             try:
                 r = json.loads(line)
-                done.add((r['episode_id'], r['t'], r['readout'], r['domain'], r['format']))
+                done.add((r['episode_id'], r['t'], r['readout'], r['domain'], r['format'],
+                          r.get('history_mode', 'full'), r.get('hint', True), r.get('pixels', args.pixels)))
             except json.JSONDecodeError:
                 pass
     if args.sharded:
@@ -238,7 +250,9 @@ def main():
         backend = FrozenVLM(args.model_dir, args.model_id, pixels=args.pixels)
     meta = dict(backend.metadata, args={k: str(v) for k, v in vars(args).items()},
                 episodes=[e['episode_id'] for e in eps])
-    (args.output / f'run_metadata_shard{i}of{n}.json').write_text(json.dumps(meta, indent=1, default=str))
+    meta['started'] = time.strftime('%Y-%m-%dT%H:%M:%S')
+    with open(args.output / f'run_metadata_shard{i}of{n}.jsonl', 'a') as mf:   # one line per launch (resume-safe)
+        mf.write(json.dumps(meta, default=str) + '\n')
     hint = not args.no_hint
     started, count = time.time(), 0
     with open(out_path, 'a') as out:
@@ -260,7 +274,7 @@ def main():
                 if 'judgment' in args.readouts:
                     jobs += [('judgment', d, 'text') for d in args.domains]
                 for readout, domain, fmt in jobs:
-                    key = (ep['episode_id'], t, readout, domain, fmt)
+                    key = (ep['episode_id'], t, readout, domain, fmt, args.history_mode, hint, args.pixels)
                     if key in done:
                         continue
                     if readout == 'choice':
@@ -276,12 +290,32 @@ def main():
                                greedy=row['greedy_answer'], target=target,
                                input_tokens=row['input_tokens'], prompt_sha256=row['prompt_sha256'],
                                model_id=args.model_id, hint=hint, history_mode=args.history_mode,
+                               pixels=args.pixels, argmax=row.get('argmax_label'),
                                window_start=window[0], marker=window[1], summary=window[2])
                     out.write(json.dumps(rec) + '\n')
                     count += 1
                 out.flush()
             print(json.dumps(dict(episode=ep['episode_id'], rows=count,
                                   sec_per_row=(time.time() - started) / max(count, 1))), flush=True)
+    # Completion check: every expected key for this configuration must be present exactly once.
+    n_jobs = (len(args.domains) * len(args.formats) if 'choice' in args.readouts else 0) + \
+             (len(args.domains) if 'judgment' in args.readouts else 0)
+    expected = len(eps) * len(args.trials or range(1, 81)) * n_jobs
+    keys = []
+    for line in open(out_path):
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if (r.get('history_mode', 'full'), r.get('hint', True), r.get('pixels', args.pixels)) == \
+                (args.history_mode, hint, args.pixels):
+            keys.append((r['episode_id'], r['t'], r['readout'], r['domain'], r['format']))
+    if len(set(keys)) == expected and len(keys) == expected and expected > 0:
+        (args.output / f'_COMPLETE_shard{i}of{n}').write_text(json.dumps(dict(rows=expected, at=time.strftime('%F %T'))))
+        print(f'COMPLETE {expected} rows', flush=True)
+    else:
+        print(f'INCOMPLETE: {len(set(keys))} unique / {len(keys)} rows, expected {expected}', flush=True)
+        sys.exit(3)
 
 
 if __name__ == '__main__':

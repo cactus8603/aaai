@@ -108,11 +108,11 @@ def test_fit_outputs_and_ic():
     out = cm.fit_episode(ep)
     for m, f in out["fits"].items():
         assert f["k"] == cm.MODELS[m].k and f["n"] == 80
-        assert f["aic"] == pytest.approx(2 * f["k"] + 2 * f["nll"])
-        assert f["bic"] == pytest.approx(f["k"] * np.log(80) + 2 * f["nll"])
+        assert f["aic_heuristic"] == pytest.approx(2 * f["k"] + 2 * f["nll"])
+        assert f["bic_heuristic"] == pytest.approx(f["k"] * np.log(80) + 2 * f["nll"])
         assert f["excess_nll"] >= -1e-6
     assert out["fits"]["M2_phase"]["nll"] <= out["fits"]["M1_delta"]["nll"] + 1e-4
-    assert out["fits"]["M2_phase"]["bic"] < out["fits"]["M0_bias"]["bic"]
+    assert out["fits"]["M2_phase"]["bic_heuristic"] < out["fits"]["M0_bias"]["bic_heuristic"]
     assert out["episode_id"] == "e0"
 
 
@@ -157,12 +157,49 @@ def test_cli_roundtrip(tmp_path):
     out = json.loads(outp.read_text())
     assert len(out["episodes"]) == 3 and out["episodes"][0]["domain"] == "color"
     g = "model=toyVLM|domain=color|format=text"
-    assert g in out["comparison"] and "pxp" in out["comparison"][g]["bms"]
-    assert out["comparison"][g]["best_by_sum_bic"] in ("M1_delta", "M2_phase")
+    assert g in out["comparison_heuristic"] and "pxp" in out["comparison_heuristic"][g]["bms_heuristic"]
+    assert out["comparison_heuristic"][g]["best_by_sum_bic_heuristic"] in ("M1_delta", "M2_phase")
     assert out["pooled"][g]["M1_delta"]["n"] == 240
+    cv = out["cv"][g]
+    assert cv["M1_delta"]["n_folds"] == 3 and cv["M1_delta"]["n_trials"] == 240
+    assert cv["M1_delta"]["heldout_nll"] < cv["M0_bias"]["heldout_nll"]
+    assert cv["M4_cp_norm"]["heldout_nll"] == pytest.approx(
+        sum(e["fits"]["M4_cp_norm"]["nll"] for e in out["episodes"]))
+    assert np.isfinite(out["eff_lr_calibrated_summary"][g]["diff_signed"]["mean"])
 
 
 def test_parameter_recovery_small():
     rep = cm.parameter_recovery(n_per_model=12, noise_sd=0.3, seed=1)
     assert rep["param_recovery"]["M1_delta"]["alpha"]["pearson"] > 0.7
     assert rep["param_recovery"]["M2_phase"]["alpha_volatile"]["pearson"] > 0.6
+
+
+def test_raw_elr_is_confounded_and_calibrated_is_null():
+    """M1 data: raw diff is biased negative; calibrated diff is about 0. M2 (alpha_v > alpha_s): positive."""
+    raw, cal, cal2 = [], [], []
+    for s in range(8):
+        order = ["SV", "VS"][s % 2]
+        ep = _ep("M1_delta", [0.4, 10, 0.0], seed=s, order=order, noise=0.3)
+        r = cm.calibrated_effective_learning_rate(ep, n_restarts=3, n_surrogates=100, seed=s)
+        raw.append(r["raw"]["diff_signed"])
+        cal.append(r["calibrated"]["diff_signed"])
+        ep2 = _ep("M2_phase", [0.15, 0.6, 10, 0.0], seed=s, order=order, noise=0.3)
+        cal2.append(cm.calibrated_effective_learning_rate(ep2, n_restarts=3, n_surrogates=100,
+                                                          seed=s)["calibrated"]["diff_signed"])
+    assert np.mean(raw) < -0.2
+    assert abs(np.mean(cal)) < 0.1
+    assert np.mean(cal2) > 0.3 and np.mean(cal2) > np.mean(cal) + 0.3
+
+
+def test_calibrated_noiseless_m1_exact_zero():
+    ep = _ep("M1_delta", [0.3, 10, 0.2], seed=2)
+    r = cm.calibrated_effective_learning_rate(ep, n_surrogates=0)
+    assert abs(r["calibrated"]["diff_signed"]) < 0.02
+
+
+def test_loeo_cv_prefers_generating_model():
+    eps = [_ep("M2_phase", [0.05, 0.7, 12, 0.0], seed=s, order=["SV", "VS"][s % 2], noise=0.3)
+           for s in range(6)]
+    r1 = cm.loeo_cv("M1_delta", eps)
+    r2 = cm.loeo_cv("M2_phase", eps)
+    assert r1["n_folds"] == 6 and r2["heldout_nll"] < r1["heldout_nll"]

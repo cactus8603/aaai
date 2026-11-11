@@ -15,6 +15,7 @@ NAMES = ['Tom', 'Ben', 'Sam', 'Leo', 'Dan', 'Joe', 'Ted', 'Jim',
          'Tim', 'Ken', 'Ian', 'Jon', 'Ron', 'Hal', 'Lou', 'Roy']
 DOMAINS = {'color': ('red', 'blue'), 'pet': ('cat', 'dog')}
 T, WINDOW = 80, 10
+LEGACY_V1 = False   # --legacy-v1 reproduces the 3090 pilot data (no header_a_first, unrounded p_A)
 HIGH, LOW = 0.8, 0.2
 
 
@@ -53,7 +54,7 @@ def episode(eid, order, split, rng, image_pools):
     for t in range(T):
         truth = truth_bit[t]
         a_rep = truth if a_correct[t] else 1 - truth
-        trials.append(dict(t=t + 1, p_a=sched[t][0], phase=sched[t][1], a_correct=a_correct[t],
+        trials.append(dict(t=t + 1, p_a=sched[t][0] if LEGACY_V1 else round(sched[t][0], 2), phase=sched[t][1], a_correct=a_correct[t],
                            truth_bit=truth, a_report_bit=a_rep, b_report_bit=1 - a_rep,
                            a_listed_first=first_listed[t]))
     images = {}
@@ -75,11 +76,14 @@ def load_pools():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--out', type=Path, default=Path(__file__).parent / 'episodes_v1')
+    ap.add_argument('--out', type=Path, default=Path(__file__).parent / 'episodes_v2')
     ap.add_argument('--dev', type=int, default=16)
     ap.add_argument('--heldout', type=int, default=48)
     ap.add_argument('--seed', type=int, default=20261111)
+    ap.add_argument('--legacy-v1', action='store_true', help='reproduce the pilot episodes_v1 exactly')
     args = ap.parse_args()
+    global LEGACY_V1
+    LEGACY_V1 = args.legacy_v1
     pools = load_pools()
     args.out.mkdir(parents=True, exist_ok=True)
     rows = []
@@ -87,7 +91,11 @@ def main():
         for i in range(n):
             rng = random.Random(args.seed * 7919 + offset + i)
             order = 'SV' if i % 2 == 0 else 'VS'
-            rows.append(episode(f'{split[:3]}{i:03d}', order, split, rng, pools))
+            ep = episode(f'{split[:3]}{i:03d}', order, split, rng, pools)
+            # Which name the instructions introduce first; balanced within each order, flipped in twins.
+            if not LEGACY_V1:
+                ep['header_a_first'] = (i // 2) % 2 == 0
+            rows.append(ep)
     # Image-record lookup (paths and hashes) so the runner never touches the pools by index.
     image_index = {r['id']: dict(label=r['label'], path224=r['images']['224']['path'],
                                  sha224=r['images']['224']['sha256'],
@@ -107,6 +115,8 @@ def main():
             t['episode_id'] = e['episode_id'] + 't'
             t['a_name'], t['b_name'] = e['b_name'], e['a_name']
             t['label_polarity'] = 1 - e['label_polarity']
+            if not LEGACY_V1:
+                t['header_a_first'] = not e['header_a_first']
             t['twin_of'] = e['episode_id']
             f.write(json.dumps(t) + '\n')
     (args.out / 'image_index.json').write_text(json.dumps(image_index, indent=1))
@@ -130,7 +140,8 @@ def main():
                     notes=['Every trial is a conflict trial; truth == A report with prob p_A(t).',
                            'Realized A accuracy stratified per 10-trial window; truth balanced per window.',
                            'Reporter A = favoured at trial 1. Within-trial listing order randomized.',
-                           'Pet images: development from trainval pool, held_out from test pool.'])
+                           'Pet images: development from trainval pool, held_out from test pool.',
+                           'header_a_first: which name the instructions mention first; balanced, flipped in twins.'])
     (args.out / 'protocol.json').write_text(json.dumps(protocol, indent=1))
     print(json.dumps(dict(episodes=len(rows), sha256=digest)))
 

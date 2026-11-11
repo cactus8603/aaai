@@ -2,6 +2,8 @@
 
 Formats (history = the human's trials 1..t-1; query = which machine on trial t):
   text          : Psych-101 text history, verbatim lines "You press <<M>> and get 65 points."
+                  Instructions are the participant's Psych-101 intro verbatim (original letter order); the only
+                  changes are the game header ("Game 1.", standalone game) and the appended question.
   image_outcome : same text history, but the outcomes of the LAST N_IMG = 5 trials are shown as a rendered
                   slot-machine picture whose digital display shows the points (earlier trials stay text).
                   Why last-5 rather than only the previous outcome: under h = 0.4 most of the decision-relevant
@@ -33,7 +35,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 N_IMG = 5
 GAME_LEN = 100
-FONT_DIR = Path('/usr/share/fonts/truetype/dejavu')
+FONT_DIR = Path(__file__).resolve().parent / 'fonts'   # vendored DejaVu fonts (permissive license, see fonts/LICENSE)
 COLORS = [(31, 102, 189), (230, 120, 20)]          # machine 1 blue, machine 2 orange (color-blind safe pair)
 
 # ---------------------------------------------------------------- text
@@ -50,8 +52,9 @@ HIDDEN_REPLACE = {4: "The expected points change randomly, abruptly, and indepen
 
 
 def letters(ep):
-    """Alphabetical order of the two letters for instructions/questions (independent of slot index)."""
-    return sorted(ep['labels'])
+    """The two letters in the participant's original Psych-101 intro order ("labeled X and Y"),
+    used for the instructions and the answer question. Deterministic; recorded per episode by build_xiong."""
+    return list(ep['intro_letters'])
 
 
 def instructions(ep, hazard_info='told'):
@@ -85,7 +88,9 @@ def question(ep, t):
 # ---------------------------------------------------------------- images
 def _font(name, size):
     p = FONT_DIR / name
-    return ImageFont.truetype(str(p), size) if p.exists() else ImageFont.load_default(size=size)
+    if not p.exists():
+        raise FileNotFoundError(f'missing vendored font {p}')
+    return ImageFont.truetype(str(p), size)
 
 
 def font_provenance():
@@ -157,7 +162,7 @@ def chart_image(ep, upto, size=448, highlight=None):
 
 # ---------------------------------------------------------------- rendered queries
 def choice_query(ep, t, fmt, hazard_info='told', n_img=N_IMG, chart_px=448, img_px=224):
-    """Returns rendered={content, images}, labels (alphabetical letters)."""
+    """Returns rendered={content, images}, labels (letters in original intro order)."""
     hist = ep['trials'][:t - 1]
     head = instructions(ep, hazard_info) + '\n\n' + game_header(ep, hazard_info) + '\n'
     content, images = [], []
@@ -165,9 +170,11 @@ def choice_query(ep, t, fmt, hazard_info='told', n_img=N_IMG, chart_px=448, img_
         body = ''.join(trial_line(ep, tr) + '\n' for tr in hist)
         content.append({'type': 'text', 'text': head + body + question(ep, t)})
     elif fmt == 'image_outcome':
-        note = (f"(For the most recent {n_img} trials, the points you got are shown as a picture of the "
-                f"machine's display.)\n")
         k0 = max(0, len(hist) - n_img)
+        k = len(hist) - k0                      # number of pictures actually shown (0 at t = 1)
+        note = ('' if k == 0 else
+                f"(For the most recent {'trial' if k == 1 else f'{k} trials'}, the points you got are shown as a "
+                f"picture of the machine's display.)\n")
         txt = head + note + ''.join(trial_line(ep, tr) + '\n' for tr in hist[:k0])
         for tr in hist[k0:]:
             txt += f"You press <<{ep['labels'][tr['choice']]}>> and get the points shown here: "

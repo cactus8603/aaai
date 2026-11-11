@@ -5,7 +5,11 @@ and is scored on the two machine letters (raw first-token logits, normalized ove
 One --format per process (the image resolution is fixed per backend):
   text | image_outcome | chart                     (choice readout; --hazard-info told|hidden)
   perc_outcome | perc_chart                         (perception controls; hazard text irrelevant)
-Resumable (skips rows already in the shard file); --shard i/n splits episodes across processes/GPUs;
+Output files are tagged by format, hazard_info, image px and n_img (choice) or format and px (perception):
+  results_<tag>_shard<i>of<n>.jsonl; after a full pass whose unique rows equal the expected count, the
+  marker <output>/_COMPLETE_<tag>_shard<i>of<n> is written (rows expected / written inside).
+Resumable for every format (skips keys already in the shard file; a truncated last line is dropped);
+--shard i/n splits episodes across processes/GPUs;
 --sharded spreads one large model over all visible GPUs (backend_multi.ShardedVLM).
 
 Example:
@@ -56,16 +60,33 @@ def main():
     i, n = map(int, args.shard.split('/'))
     eps = eps[i::n]
     args.output.mkdir(parents=True, exist_ok=True)
-    tag = f'{args.format}_{args.hazard_info}' if not args.format.startswith('perc') else args.format
-    out_path = args.output / f'results_{tag}_shard{i}of{n}.jsonl'
-    done = set()
-    if out_path.exists():
-        for line in open(out_path):
-            try:
-                r = json.loads(line)
-                done.add((r['episode_id'], r['item']))
-            except json.JSONDecodeError:
-                pass
+    perc = args.format.startswith('perc')
+    tag = f'{args.format}_px{px}' if perc else f'{args.format}_{args.hazard_info}_px{px}_n{args.n_img}'
+    stem = f'{tag}_shard{i}of{n}'
+    out_path = args.output / f'results_{stem}.jsonl'
+    marker = args.output / f'_COMPLETE_{stem}'
+    if marker.exists() and not args.trials:
+        marker.unlink()                       # re-validated at the end of this pass (debug --trials never touch it)
+
+    def read_done():
+        keys = set()
+        if out_path.exists():
+            raw = out_path.read_bytes()
+            if raw and not raw.endswith(b'\n'):   # crash mid-write: drop the partial last line
+                raw = raw[:raw.rfind(b'\n') + 1]
+                out_path.write_bytes(raw)
+            for line in raw.decode().splitlines():
+                r = json.loads(line)          # any other corrupt line is a hard error
+                keys.add((r['episode_id'], r['item']))
+        return keys
+
+    done = read_done()
+    expected = set()
+    for ep in eps:
+        if perc:
+            expected |= {(ep['episode_id'], it['item_id']) for it in rx.perception_items(ep, args.format)}
+        else:
+            expected |= {(ep['episode_id'], t) for t in (args.trials or range(1, ep['n_trials'] + 1))}
     if args.sharded:
         from backend_multi import ShardedVLM
         backend = ShardedVLM(args.model_dir, args.model_id, pixels=px)
@@ -95,7 +116,8 @@ def main():
                 probs = row['probabilities']
                 rec = dict(episode_id=ep['episode_id'], participant=ep['participant'], game=ep['game'],
                            hazard=ep['hazard'], item=item, format=args.format, hazard_info=args.hazard_info,
-                           model_id=args.model_id, image_px=px, n_images=len(rendered['images']),
+                           model_id=args.model_id, image_px=px, n_img=args.n_img, tag=tag,
+                           n_images=len(rendered['images']),
                            probabilities=probs, candidate_mass=row['canonical_candidate_mass'],
                            greedy=row['greedy_answer'], input_tokens=row['input_tokens'],
                            prompt_sha256=row['prompt_sha256'], images_sha256=rx.image_digest(rendered['images']))
@@ -112,6 +134,14 @@ def main():
             out.flush()
             print(json.dumps(dict(episode=ep['episode_id'], rows=count,
                                   sec_per_row=(time.time() - started) / max(count, 1))), flush=True)
+    written = read_done()
+    n_lines = sum(1 for _ in open(out_path)) if out_path.exists() else 0
+    missing, extra = expected - written, written - expected
+    status = dict(tag=tag, shard=args.shard, expected=len(expected), written=len(written),
+                  rows=n_lines, duplicates=n_lines - len(written), missing=len(missing), unexpected=len(extra))
+    if not missing and not extra and n_lines == len(written) and not args.trials:
+        marker.write_text(json.dumps(status) + '\n')
+    print(json.dumps(dict(status, complete=marker.exists())), flush=True)
 
 
 if __name__ == '__main__':

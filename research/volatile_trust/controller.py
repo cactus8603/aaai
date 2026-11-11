@@ -5,7 +5,7 @@ o_t = 1[reporter A was correct], Beta-Bernoulli likelihood, constant hazard h. T
 normative counterpart of Nassar-style change-point-probability learning-rate control (an
 LC-NE "unexpected uncertainty" analogue). Output at trial t (using o_1..o_{t-1} only):
   run_length : MAP number of trials since the last inferred change
-  cpp        : posterior probability that a change occurred at the latest trial
+  cpp        : posterior probability of run length 0 after the latest observation (change just occurred)
 """
 import numpy as np
 
@@ -32,7 +32,7 @@ def bocpd(o, h=1 / 15, a0=1.0, b0=1.0):
         R[:t + 2] = newR
         rl = int(np.argmax(newR))
         p_a = float((newR * a / (a + b)).sum())
-        states.append(dict(run_length=rl, cpp=float(newR[0] + (newR[1] if t > 0 else 0)), p_a=p_a))
+        states.append(dict(run_length=rl, cpp=float(newR[0]), p_a=p_a))
     return states
 
 

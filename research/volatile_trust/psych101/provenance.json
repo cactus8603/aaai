@@ -1,0 +1,50 @@
+{
+  "retrieved": "2026-11-11",
+  "note": "Untrusted downloaded data. Read only with `python -I`; nothing here is executed.",
+  "files": [
+    {
+      "local_path": "raw/psych101_xiong2023neural_exp1.jsonl",
+      "description": "The 30 lines of Psych-101 prompts_training.jsonl whose experiment == 'xiong2023neural/exp1.csv' (one line per participant, all 6 games). The datasets-server /filter endpoint was failing (HF auth error), so the full jsonl was streamed at the pinned revision and filtered on the fly (grep -F 'xiong2023neural/exp1.csv'). Only the matching lines were stored.",
+      "source_url": "https://huggingface.co/datasets/marcelbinz/Psych-101/resolve/611565c66395e2787cd7e3305149bb75dc138024/prompts_training.jsonl",
+      "repo": "marcelbinz/Psych-101",
+      "revision": "611565c66395e2787cd7e3305149bb75dc138024",
+      "license": "apache-2.0 (HF dataset card)",
+      "sha256": "6018689512dce4bb3955df54909617b955ac314563b0ec54188df06168feb0ff",
+      "bytes": 5105998,
+      "lines": 30,
+      "upstream_full_file_sha256": "7a370a94084acd6f73f20d6559214683cfadcab8a1f69e369df285ba75ccef01",
+      "upstream_full_file_bytes": 859179475,
+      "upstream_sha_check": "streamed sha256 equals the HF x-linked-etag (LFS oid)"
+    },
+    {
+      "local_path": "raw/xiong2023neural_exp1_train.parquet",
+      "description": "Raw per-trial data: task, trial, choice (0/1), reward, RT, slot1_value, slot2_value (true expected points), hazard_rate, block_length, participant. 155,400 rows, 33 participants.",
+      "source_url": "https://huggingface.co/datasets/marcelbinz/xiong2023neural/resolve/565dd050f4f146324c458ab7da664c2cf25e2310/exp1/train-00000-of-00001.parquet",
+      "repo": "marcelbinz/xiong2023neural",
+      "revision": "565dd050f4f146324c458ab7da664c2cf25e2310",
+      "license": "NONE DECLARED (the dataset card has no license field). Treat as all rights reserved: use it for research analysis and do not redistribute. Cite the paper below.",
+      "sha256": "a0d79f7630dcb59a87deeecbb5a1165ad6e647473433bb2ae0dac737d1aa0eca",
+      "bytes": 3116662
+    },
+    {
+      "local_path": "raw/README_xiong2023neural.md",
+      "source_url": "https://huggingface.co/datasets/marcelbinz/xiong2023neural/resolve/565dd050f4f146324c458ab7da664c2cf25e2310/README.md",
+      "license": "see above",
+      "sha256": "02a23aa051beef748126d2bbf7da319a90f4c2b01a38d008701e7efb22ecbda4",
+      "bytes": 631
+    }
+  ],
+  "paper": {
+    "citation": "Xiong, H.-D., Ji-An, L., Mattar, M. G., & Wilson, R. C. (2023). Neural network modeling reveals diverse human exploration behaviors via state space analysis. Conference on Cognitive Computational Neuroscience (CCN 2023), pp. 1335-1337.",
+    "url": "https://2023.ccneuro.org/proceedings/0001335.pdf",
+    "license": "CC BY 3.0 (paper text)"
+  },
+  "psych101_citation": "Binz, M., et al. (2025). A foundation model to predict and capture human cognition. Nature (Centaur / Psych-101).",
+  "cross_check": {
+    "psych101_vs_raw": "For all 30 Psych-101 participants (ids = raw participant ids), all 6 games (180) match the raw choices and rewards trial-for-trial.",
+    "raw_participants_not_in_psych101": [3, 5, 28],
+    "raw_participant_31_long_blocks": "500 trials, not 1500",
+    "paper_vs_data": "The paper reports 29 participants, 3 x 1500-trial blocks and a 300-trial practice. The data have 33 raw / 30 Psych-101 participants. The 100-trial games appear to be the practice (3 x 100 = 300).",
+    "reward_noise": "reward == chosen machine's current true value on every trial (155,400/155,400 rows). The task is noise-free; the points change only at change points (hazard h)."
+  }
+}

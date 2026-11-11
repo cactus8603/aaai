@@ -7,17 +7,20 @@ Provenance (URLs, revisions, licenses and sha256) is in `.cache/datasets/psych10
 - The two sources match trial for trial in all 180 games.
 
 ## Protocol
-- **Episodes.** We use the three 100-trial games per participant (h = 0.1, 0.2, 0.4). These are Psych-101 games 1, 3 and 5, i.e. the paper's 300-trial practice. That gives 90 episodes and 9,000 trials.
+- **Episodes.** We use the three 100-trial games per participant (h = 0.1, 0.2, 0.4). These are Psych-101 games 1, 3 and 5. That gives 90 episodes and 9,000 trials.
+  - Each 100-trial game directly precedes a 1500-trial game with the same h. By games 3 and 5 the human has already played 1,600 and 3,200 trials. The h order is counterbalanced over 6 orders, with 4–6 participants each.
+  - Each episode stores `position` (1/2/3 = game 1/3/5). The (h, position) cells hold 9–11 episodes each.
   - The 1500-trial games are in `data/episodes_long.jsonl`. They are used only for human reference fits (`--human-long`).
 - **Teacher-forced replay.** At trial t the model sees the original instructions, a game header and the human's trials 1..t-1 with the points the human received. We then ask "Trial t of this game: which slot machine do you press? Answer with exactly one letter: X or Y."
   - The readout is P(letter), normalized over the two letters, from raw first-token logits.
   - The model and the human therefore see identical evidence.
 - **Standalone games.** Each game is shown alone as "Game 1."; the participant's other games are not shown.
+  - **Limitation (experience mismatch):** at positions 2 and 3 the human had 1,600 or 3,200 trials of prior experience with the task, including a 1500-trial block at a different h. The model has none. The analysis therefore adjusts for position (see below), but cannot remove the mismatch.
 - **Machine letters.**
   - Each participant keeps their own Psych-101 letters. All 26 uppercase letters are single tokens in every local Qwen2.5-VL, Qwen3-VL and InternVL3.5 tokenizer, so there is no remap (`LABEL_REMAP = {}`).
-  - In the instructions and the question, the letters are listed alphabetically. Alphabetical order is independent of the slot index: the first letter is slot 1 in 108 of 180 games.
+  - The instructions keep the participant's original intro order ("labeled X and Y"). The question lists the letters in that same order. The order is stored per episode as `intro_letters`; for 12 of 30 participants it is not alphabetical.
 - **Hazard variants.**
-  - `told`: the verbatim Psych-101 wording.
+  - `told`: the participant's Psych-101 intro verbatim. The only changes are the game header ("Game 1." for every standalone game; the original reads "Game 1/3/5.") and the appended question line.
   - `hidden`: removes "with a hazard rate (which you will be told)", the "For example, if the hazard rate is 0.1…" line and "The hazard rate is h." from the header.
 
 ## Formats (`render_xiong.py`; PIL only, deterministic, DejaVu fonts with sha256 recorded)
@@ -47,9 +50,15 @@ Provenance (URLs, revisions, licenses and sha256) is in `.cache/datasets/psych10
 - The rewards are noise-free: reward = the chosen machine's true value on all 155,400 rows. So the normative Bayesian learner has α = 1 and forgetting rate φ = h. **φ is the hazard-sensitive learning rate.** We also report α and a plain delta rule (φ = 0).
 - Tests:
   - pooled fits with a participant bootstrap;
-  - per-participant fits with a Wilcoxon test of h = 0.4 vs 0.1 and a within-participant Spearman trend;
+  - per-participant fits, with one statistic per participant (no pseudo-replication):
+    - the per-participant OLS slope of the parameter on h, tested with Wilcoxon against 0;
+    - Friedman, and Page's L for the ordered increase;
+  - **position adjustment**: a within-participant fixed-effects OLS, param ~ h + position, with a participant-bootstrap CI for the h coefficient, plus medians per (h, position) cell;
   - the paper's model-agnostic signature, P(shift | last reward < 50) by h.
-- The self-test (`--selftest`) recovers α and φ from closed-loop simulations on the real value sequences.
+- `--human-long` also fits humans on their 1500-trial games and reports them next to the 100-trial fits (`human_short_vs_long`).
+- Self-test (`--selftest`):
+  - recovers α and φ from closed-loop simulations on the real value sequences;
+  - **null check**: every simulated participant has φ = 0.2 at every h (β = 0.4, about the human level). Per-participant fits then show no spurious h trend: slope-Wilcoxon and Page p > 0.05 in 5 of 5 seeds.
 
 ## Run cost
 | set | queries | 8B @ 0.3 s/row | 32B @ 0.75 s/row |
@@ -62,6 +71,13 @@ The prompts are longer than in the volatile-trust task (mean of about 800 to 1,1
 
 ## Known mismatches with the paper
 - The paper reports 29 participants doing 3 × 1500-trial blocks after a 300-trial practice. The raw data have 33 participants and Psych-101 has 30; raw ids 3, 5 and 28 are absent from Psych-101. Raw participant 31 has 500-trial long blocks.
-- We replay the 100-trial (practice) games because of context length.
+- The paper does not describe the 100-trial games. They are not "the paper's practice": that practice is described as 300 trials *before* the blocks, whereas each 100-trial game here sits directly before a 1500-trial block with the same h. We replay the 100-trial games because of context length.
+- In the 1500-trial blocks the pooled human φ is flat (about 0.01–0.02 at every h), while per-participant medians and slopes still rise with h. Report both.
 - The paper fits LR, MF, model-based and RNN models but no per-h learning rates. Its human finding is "high-stay, low-shift": more shifting after low rewards when h is higher. It reports no learning-rate increase.
 - The instruction text says the same machine "will not always give you the same points". In the data, a machine's points stay the same until a change point.
+
+## Run outputs
+- **File names.** `results_<tag>_shard<i>of<n>.jsonl`. For the choice formats `<tag>` is `<format>_<hazard_info>_px<px>_n<n_img>`; for the perception formats it is `<format>_px<px>`. Each row also stores `image_px`, `n_img` and `tag`.
+- **Completion marker.** `_COMPLETE_<tag>_shard<i>of<n>` is written only when the unique rows equal the expected keys for the selected episodes, with no duplicates. Debug `--trials` runs never write or remove it.
+- **Resume.** A truncated last line is dropped on resume.
+- **Analysis grouping.** `analyze_xiong.py` groups by (model, format, hazard_info, px, n_img) and stops with an error on duplicate keys.

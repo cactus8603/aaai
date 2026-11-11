@@ -10,3 +10,4 @@ huggingface_hub==0.36.2
 numpy==2.2.6
 scipy==1.15.3
 pillow==11.3.0
+pyarrow==25.0.1   # psych101 build only

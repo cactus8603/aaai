@@ -10,6 +10,9 @@ minimising the soft cross-entropy
 
 With soft targets, NLL is a pseudo-likelihood (y_t is treated as the expected value of
 a Bernoulli choice). AIC = 2k + 2 NLL and BIC = k ln(n) + 2 NLL, with n = number of trials.
+These AIC/BIC (and BMS built on them) are HEURISTIC: their output keys carry a
+``_heuristic`` suffix. The recommended comparison is ``loeo_cv``, the held-out soft
+cross-entropy under leave-one-episode-out pooled fits.
 We also report ``excess_nll = NLL - sum_t H(y_t)``, which is the summed KL divergence
 and equals 0 for a perfect fit.
 
@@ -374,8 +377,12 @@ def fit_model(model: CogModel | str, episodes: Episode | Sequence[Episode], n_re
               seed: int = 0) -> dict:
     """Fit one model to one episode, or pooled over several episodes with shared params.
 
-    Returns nll, excess_nll, k, n, aic, bic, params and the fitted per-trial predictions
-    (``p_hat``, concatenated across episodes when pooled).
+    Returns nll, excess_nll, k, n, aic_heuristic, bic_heuristic, params and the fitted
+    per-trial predictions (``p_hat``, concatenated across episodes when pooled).
+
+    AIC/BIC here are HEURISTIC. With soft targets the soft cross-entropy is a
+    pseudo-likelihood, and the effective sample size is not n trials. Prefer
+    ``loeo_cv`` (held-out soft cross-entropy) for model comparison.
     """
     model = MODELS[model] if isinstance(model, str) else model
     eps = [episodes] if isinstance(episodes, Episode) else list(episodes)
@@ -402,22 +409,28 @@ def fit_model(model: CogModel | str, episodes: Episode | Sequence[Episode], n_re
     k = model.k
     return {
         "model": model.name, "nll": nll, "excess_nll": nll - sum(entropy_sum(ep.y) for ep in eps),
-        "k": k, "n": n, "aic": 2 * k + 2 * nll, "bic": k * math.log(n) + 2 * nll,
+        "k": k, "n": n, "aic_heuristic": 2 * k + 2 * nll, "bic_heuristic": k * math.log(n) + 2 * nll,
         "params": params, "p_hat": p_hat.tolist(),
     }
 
 
 def fit_episode(ep: Episode | dict, models: Sequence[str] = DEFAULT_MODELS, n_restarts: int = 6,
-                seed: int = 0, keep_pred: bool = False) -> dict:
-    """Fit every model in ``models`` to one episode. Adds the model-agnostic effective LR."""
+                seed: int = 0, keep_pred: bool = False, n_surrogates: int = 200) -> dict:
+    """Fit every model in ``models`` to one episode.
+
+    Adds the raw effective LR (``eff_lr_uncalibrated``) and the M1-calibrated one
+    (``eff_lr_calibrated``). Use the calibrated one for the stable-vs-volatile claim.
+    """
     ep = Episode.from_dict(ep) if isinstance(ep, dict) else ep
     fits = {}
     for m in models:
-        r = fit_model(m, ep, n_restarts, seed)
-        if not keep_pred:
+        fits[m] = fit_model(m, ep, n_restarts, seed)
+    cal = calibrated_effective_learning_rate(ep, m1_fit=fits.get("M1_delta"), n_restarts=n_restarts,
+                                             seed=seed, n_surrogates=n_surrogates)
+    if not keep_pred:
+        for r in fits.values():
             r.pop("p_hat")
-        fits[m] = r
-    return {**ep.meta, "fits": fits, "eff_lr": effective_learning_rate(ep.y, ep.o, ep.vol)}
+    return {**ep.meta, "fits": fits, "eff_lr_uncalibrated": cal["raw"], "eff_lr_calibrated": cal}
 
 
 # ------------------------------------------------------- model-agnostic learning rate
@@ -425,7 +438,14 @@ def fit_episode(ep: Episode | dict, models: Sequence[str] = DEFAULT_MODELS, n_re
 
 def effective_learning_rate(y: np.ndarray, o: np.ndarray, phase, clip: float = 1e-4,
                             exclude: np.ndarray | None = None) -> dict:
-    """Regress the trial-to-trial update in implied belief logit on the outcome, per phase.
+    """UNCALIBRATED effective learning rate: regress the trial-to-trial update in the implied
+    belief logit on the outcome, per phase.
+
+    Warning: this statistic is not null-calibrated. Even a constant-alpha delta-rule (M1)
+    agent gives a nonzero, typically negative, volatile-minus-stable difference. Beliefs
+    are more extreme in the stable phase, and the logit transform stretches updates there.
+    For example, alpha=.3, beta=10 gives diff_signed of about -0.26. Use
+    ``calibrated_effective_learning_rate`` for inference.
 
     d_t = logit(y_{t+1}) - logit(y_t) for t = 1..T-1, regressed (OLS with intercept) on
       * the signed outcome s_t = 2 o_t - 1 (``slope_signed``), and
@@ -455,6 +475,63 @@ def effective_learning_rate(y: np.ndarray, o: np.ndarray, phase, clip: float = 1
         out[name] = r
     for key in ("signed", "pe"):
         out[f"diff_{key}"] = out["volatile"][f"slope_{key}"] - out["stable"][f"slope_{key}"]
+    return out
+
+
+_ELR_KEYS = ("slope_signed", "slope_pe")
+
+
+def _elr_diff(a: dict, b: dict) -> dict:
+    """a - b for the per-phase slopes and the volatile-minus-stable differences."""
+    out = {ph: {k: a[ph][k] - b[ph][k] for k in _ELR_KEYS} for ph in ("stable", "volatile", "all")}
+    out.update({k: a[k] - b[k] for k in ("diff_signed", "diff_pe")})
+    return out
+
+
+def calibrated_effective_learning_rate(ep: Episode | dict, m1_fit: dict | None = None, n_restarts: int = 6,
+                                       seed: int = 0, n_surrogates: int = 200, exclude=None) -> dict:
+    """Effective LR calibrated against a constant-alpha (M1) null.
+
+    1. Fit M1 to the episode, or reuse ``m1_fit``, which must contain ``p_hat``.
+    2. Compute the raw ELR statistic on the data (``raw``).
+    3. Compute the same statistic on M1-implied data. With ``n_surrogates > 0``, these are
+       surrogates y* = sigmoid(logit p_hat + e), with e ~ N(0, s^2) iid and s equal to the
+       s.d. of the residual logit(y) - logit(p_hat); ``null`` is their mean and ``null_sd``
+       their s.d. Noise matters for slope_pe, because y appears in the regressor. With
+       ``n_surrogates = 0``, ``null`` is the statistic on the noiseless p_hat.
+    4. ``calibrated = raw - null``. A calibrated ``diff_signed > 0`` means a larger
+       volatile-phase update than a single-alpha learner fitted to the same episode
+       would show. ``z_diff_*`` = calibrated diff / null_sd (when surrogates are used).
+    """
+    ep = Episode.from_dict(ep) if isinstance(ep, dict) else ep
+    if m1_fit is None or "p_hat" not in m1_fit:
+        m1_fit = fit_model("M1_delta", ep, n_restarts, seed)
+    p_hat = _clip(np.asarray(m1_fit["p_hat"], float), 1e-4)
+    raw = effective_learning_rate(ep.y, ep.o, ep.vol, exclude=exclude)
+    out = {"raw": raw, "m1_params": m1_fit["params"]}
+    if n_surrogates > 0:
+        yl = logit(np.clip(ep.y, 1e-4, 1 - 1e-4))
+        sd = float(np.std(yl - logit(p_hat)))
+        rng = np.random.default_rng(seed)
+        sims = [effective_learning_rate(expit(logit(p_hat) + sd * rng.standard_normal(ep.T)), ep.o, ep.vol,
+                                        exclude=exclude) for _ in range(n_surrogates)]
+
+        def agg(fn):
+            v = np.array([fn(r) for r in sims])
+            return float(np.nanmean(v)), float(np.nanstd(v))
+
+        null = {ph: {k: agg(lambda r: r[ph][k])[0] for k in _ELR_KEYS} for ph in ("stable", "volatile", "all")}
+        null.update({k: agg(lambda r: r[k])[0] for k in ("diff_signed", "diff_pe")})
+        out["null_sd"] = {k: agg(lambda r: r[k])[1] for k in ("diff_signed", "diff_pe")}
+        out["residual_logit_sd"] = sd
+    else:
+        null = effective_learning_rate(p_hat, ep.o, ep.vol, exclude=exclude)
+    out["null"] = null
+    out["calibrated"] = _elr_diff(raw, null)
+    if "null_sd" in out:
+        for k in ("diff_signed", "diff_pe"):
+            sdk = out["null_sd"][k]
+            out[f"z_{k}"] = out["calibrated"][k] / sdk if sdk > 0 else float("nan")
     return out
 
 
@@ -501,18 +578,60 @@ def bms_random_effects(log_evidence: np.ndarray, alpha0: float = 1.0, n_samples:
 
 
 def compare_models(episode_fits: Sequence[dict], models: Sequence[str] | None = None) -> dict:
-    """Summed BIC/AIC/NLL across episodes, plus random-effects BMS on -BIC/2."""
+    """HEURISTIC comparison: summed pseudo-BIC/AIC/NLL across episodes, plus random-effects BMS
+    on -BIC/2. With soft targets these are pseudo-likelihood scores, so treat them as
+    descriptive only and use ``loeo_cv`` for inference."""
     models = list(models or episode_fits[0]["fits"].keys())
-    bic = np.array([[e["fits"][m]["bic"] for m in models] for e in episode_fits])
+    bic = np.array([[e["fits"][m]["bic_heuristic"] for m in models] for e in episode_fits])
     out = {"models": models, "n_episodes": len(episode_fits),
-           "sum_bic": dict(zip(models, bic.sum(0).tolist())),
-           "sum_aic": dict(zip(models, [float(sum(e["fits"][m]["aic"] for e in episode_fits)) for m in models])),
+           "sum_bic_heuristic": dict(zip(models, bic.sum(0).tolist())),
+           "sum_aic_heuristic": dict(zip(models, [float(sum(e["fits"][m]["aic_heuristic"] for e in episode_fits)) for m in models])),
            "sum_nll": dict(zip(models, [float(sum(e["fits"][m]["nll"] for e in episode_fits)) for m in models])),
-           "best_by_sum_bic": models[int(bic.sum(0).argmin())],
-           "n_best_bic": dict(zip(models, np.bincount(bic.argmin(1), minlength=len(models)).tolist()))}
+           "best_by_sum_bic_heuristic": models[int(bic.sum(0).argmin())],
+           "n_best_bic_heuristic": dict(zip(models, np.bincount(bic.argmin(1), minlength=len(models)).tolist()))}
     if len(episode_fits) >= 2 and len(models) >= 2:
-        out["bms"] = bms_random_effects(-bic / 2)
+        out["bms_heuristic"] = bms_random_effects(-bic / 2)
     return out
+
+
+def loeo_cv(model: str, episodes: Sequence[Episode | dict], n_restarts: int = 3, seed: int = 0,
+            folds: Sequence[int] | None = None) -> dict:
+    """Leave-one-episode-out cross-validation of a pooled (shared-parameter) fit.
+
+    For each held-out episode, fit the model pooled over the remaining episodes and
+    score the held-out soft cross-entropy. This is the recommended model-comparison
+    score; unlike the heuristic AIC/BIC it does not rely on treating soft targets as
+    Bernoulli observations. ``folds`` restricts the run to a subset (used for
+    parallelism); the totals then cover only those folds.
+    """
+    eps = [Episode.from_dict(e) if isinstance(e, dict) else e for e in episodes]
+    m = MODELS[model]
+    idx = range(len(eps)) if folds is None else folds
+    per = []
+    for i in idx:
+        train = [e for j, e in enumerate(eps) if j != i]
+        if m.bounds or m.grid_name:
+            r = fit_model(m, train, n_restarts, seed)
+            theta = np.array([r["params"][p] for p in m.params])
+            g = r["params"].get(m.grid_name) if m.grid_name else None
+            if m.grid_name == "k":
+                g = int(g)
+        else:
+            theta, g = np.zeros(0), None
+        p = m.predict(theta, m.prepare(eps[i], g))
+        nll = soft_nll(eps[i].y, p)
+        per.append({"fold": int(i), "heldout_nll": nll, "heldout_excess_nll": nll - entropy_sum(eps[i].y),
+                    "n": eps[i].T, "episode_id": eps[i].meta.get("episode_id")})
+    return _cv_summary(model, per)
+
+
+def _cv_summary(model: str, per: list[dict]) -> dict:
+    n = sum(r["n"] for r in per)
+    tot = sum(r["heldout_nll"] for r in per)
+    exc = sum(r["heldout_excess_nll"] for r in per)
+    return {"model": model, "n_folds": len(per), "n_trials": n, "heldout_nll": tot,
+            "heldout_nll_per_trial": tot / n, "heldout_excess_nll_per_trial": exc / n,
+            "per_episode": sorted(per, key=lambda r: r["fold"])}
 
 
 # --------------------------------------------------------- schedules and simulation
@@ -581,7 +700,7 @@ def _recover_one(args):
     ep = Episode.from_dict({**sched, "y": y.tolist()})
     fits = {m: fit_model(m, ep, n_restarts=4, seed=i) for m in fit_models}
     return {"gen": gen, "true": theta, "order": sched["order"],
-            "fit": {m: {"params": f["params"], "bic": f["bic"], "aic": f["aic"]} for m, f in fits.items()}}
+            "fit": {m: {"params": f["params"], "bic": f["bic_heuristic"], "aic": f["aic_heuristic"]} for m, f in fits.items()}}
 
 
 def parameter_recovery(n_per_model: int = 60, noise_sd: float = 0.3, seed: int = 0, jobs: int = 1) -> dict:
@@ -640,37 +759,79 @@ def _fit_task(args):
     return fit_episode(d, models, n_restarts, seed)
 
 
+def _cv_task(args):
+    rows, model, fold, n_restarts, seed = args
+    return model, loeo_cv(model, rows, n_restarts, seed, folds=[fold])["per_episode"][0]
+
+
 def _group_key(meta: dict, keys: Sequence[str]) -> str:
     return "|".join(f"{k}={meta.get(k)}" for k in keys)
 
 
+def _pooled_task(args):
+    rows, model, n_restarts, seed = args
+    r = fit_model(model, [Episode.from_dict(d) for d in rows], n_restarts, seed)
+    r.pop("p_hat")
+    return r
+
+
+def _map(fn, tasks, jobs):
+    if jobs > 1 and len(tasks) > 1:
+        with ProcessPoolExecutor(jobs) as ex:
+            return list(ex.map(fn, tasks))
+    return [fn(t) for t in tasks]
+
+
+def summarize_calibrated_elr(episode_fits: Sequence[dict]) -> dict:
+    """Across-episode summary of the M1-calibrated volatile-minus-stable ELR difference."""
+    out = {}
+    for k in ("diff_signed", "diff_pe"):
+        v = np.array([e["eff_lr_calibrated"]["calibrated"][k] for e in episode_fits], float)
+        v = v[np.isfinite(v)]
+        n = len(v)
+        sd = float(v.std(ddof=1)) if n > 1 else float("nan")
+        out[k] = {"mean": float(v.mean()) if n else float("nan"), "sd": sd, "n": n,
+                  "t": float(v.mean() / (sd / math.sqrt(n))) if n > 1 and sd > 0 else float("nan")}
+    return out
+
+
 def fit_file(input_path: str, models: Sequence[str] = DEFAULT_MODELS, group_by: Sequence[str] = ("model", "domain", "format"),
-             n_restarts: int = 6, seed: int = 0, jobs: int = 1, pooled: bool = True) -> dict:
-    """Fit all episodes in a JSONL file. Returns per-episode fits, per-group comparison and pooled fits."""
+             n_restarts: int = 6, seed: int = 0, jobs: int = 1, pooled: bool = True, cv: bool = True,
+             cv_restarts: int = 3) -> dict:
+    """Fit all episodes in a JSONL file.
+
+    Returns per-episode fits, per-group heuristic comparison (summed pseudo-BIC, BMS),
+    pooled fits, the leave-one-episode-out CV score per group and model (``cv``, the
+    recommended comparison), and the across-episode calibrated-ELR summary.
+    """
     with open(input_path) as fh:
         rows = [json.loads(line) for line in fh if line.strip()]
-    tasks = [(d, list(models), n_restarts, seed) for d in rows]
-    if jobs > 1:
-        with ProcessPoolExecutor(jobs) as ex:
-            eps = list(ex.map(_fit_task, tasks))
-    else:
-        eps = [_fit_task(t) for t in tasks]
+    eps = _map(_fit_task, [(d, list(models), n_restarts, seed) for d in rows], jobs)
     groups: dict[str, list[int]] = {}
     for i, e in enumerate(eps):
         groups.setdefault(_group_key(e, group_by), []).append(i)
     comparison = {g: compare_models([eps[i] for i in idx], models) for g, idx in groups.items()}
-    pooled_out = {}
+    elr = {g: summarize_calibrated_elr([eps[i] for i in idx]) for g, idx in groups.items()}
+    pooled_out: dict = {}
     if pooled:
-        for g, idx in groups.items():
-            group_eps = [Episode.from_dict(rows[i]) for i in idx]
-            pooled_out[g] = {}
-            for m in models:
-                r = fit_model(m, group_eps, n_restarts, seed)
-                r.pop("p_hat")
-                pooled_out[g][m] = r
+        keys = [(g, m) for g in groups for m in models]
+        res = _map(_pooled_task, [([rows[i] for i in groups[g]], m, n_restarts, seed) for g, m in keys], jobs)
+        for (g, m), r in zip(keys, res):
+            pooled_out.setdefault(g, {})[m] = r
+    cv_out: dict = {}
+    if cv:
+        keys = [(g, m, f) for g, idx in groups.items() if len(idx) >= 2 for m in models for f in range(len(idx))]
+        res = _map(_cv_task, [([rows[i] for i in groups[g]], m, f, cv_restarts, seed) for g, m, f in keys], jobs)
+        per: dict = {}
+        for (g, m, _), (_, r) in zip(keys, res):
+            per.setdefault(g, {}).setdefault(m, []).append(r)
+        for g, d in per.items():
+            cv_out[g] = {m: _cv_summary(m, v) for m, v in d.items()}
+            cv_out[g]["best_by_cv"] = min(d, key=lambda m: cv_out[g][m]["heldout_nll"])
     return {"models": {m: {"params": MODELS[m].params, "grid": MODELS[m].grid_name, "k": MODELS[m].k,
                            "description": MODELS[m].description} for m in models},
-            "group_by": list(group_by), "episodes": eps, "comparison": comparison, "pooled": pooled_out}
+            "group_by": list(group_by), "episodes": eps, "comparison_heuristic": comparison,
+            "cv": cv_out, "eff_lr_calibrated_summary": elr, "pooled": pooled_out}
 
 
 def _json_default(o):
@@ -693,6 +854,8 @@ def main(argv=None):
     f.add_argument("--seed", type=int, default=0)
     f.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) // 2))
     f.add_argument("--no-pooled", action="store_true")
+    f.add_argument("--no-cv", action="store_true", help="skip leave-one-episode-out CV")
+    f.add_argument("--cv-restarts", type=int, default=3)
     r = sub.add_parser("recover", help="parameter/model recovery for M1/M2/M3")
     r.add_argument("--output", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "runs", "param_recovery.json"))
     r.add_argument("--n", type=int, default=60)
@@ -701,7 +864,8 @@ def main(argv=None):
     r.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) // 2))
     a = ap.parse_args(argv)
     if a.cmd == "fit":
-        out = fit_file(a.input, a.models, a.group_by, a.restarts, a.seed, a.jobs, not a.no_pooled)
+        out = fit_file(a.input, a.models, a.group_by, a.restarts, a.seed, a.jobs, not a.no_pooled,
+                       not a.no_cv, a.cv_restarts)
     else:
         out = parameter_recovery(a.n, a.noise, a.seed, a.jobs)
         summary = {g: {p: round(v["pearson"], 3) for p, v in pr.items()} for g, pr in out["param_recovery"].items()}

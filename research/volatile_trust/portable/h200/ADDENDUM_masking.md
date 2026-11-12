@@ -1,12 +1,8 @@
 # H200 附加工作與遮罩實驗的事先預測（2026-11-13，跑 held-out 之前寫定）
 
-H200 不跑大於 38B 的模型。Qwen2.5-VL-72B 確定不放進論文（2026-11-13 使用者決定），已從 `jobs_h200.jsonl` 移除。
-`jobs_h200.jsonl` 前 292 行是 `jobs.jsonl` 去掉 72B 的 51 行，後面附加 37 個 tier 4 工作（`make_jobs_h200.py`），依優先順序：
-
-1. **held-out 遮罩確認**（15 個）：`<model>__ho_mask_{rep_ok,out_ok,mask_ok}`，模型為 Qwen3-VL-8B、InternVL3.5-8B、
-   Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B。對照組是同模型的 `ho_full_rawcoded`、`ho_full_coded`。
-2. **8B 的 dev 遮罩**（6 個）：之前只在 3090 跑過，這裡重跑，讓同一模型的所有條件都在 H200 上。
-3. **8B 的措辭關鍵對比**（16 個）：p1／p2 × 四種歷史，理由同上；2×2×2 拆解仍以 3090 結果為準（探索性）。
+H200 上的遮罩工作：held-out 的 `<model>__ho_mask_{rep_ok,out_ok,mask_ok}`（Qwen3-VL-8B、InternVL3.5-8B、Qwen3-VL-32B、
+InternVL3.5-38B、Gemma-3-27B，共 15 個，tier 2）。對照組是同模型的 `ho_full_rawcoded`、`ho_full_coded`。
+整體優先序見 `PLAN_H200.md`（2026-11-13 重新整理；8B 的 dev 遮罩和措辭工作不在 H200 跑）。
 
 ## 遮罩實驗設計（`masking_probe.py`）
 沿用「原始歷史＋正確性註記」的每一行排版和長度，把標籤換成 `---`：

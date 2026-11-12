@@ -6,7 +6,8 @@ Deviations from EXPERIMENTS.md, decided before any held-out model output (see PL
 - compute: models above 38B are not run, and jobs are re-tiered by what the paper needs, so the full list fits the
   time before the deadline. The `tier` field is the priority: 1 = primary test and the core evidence chain,
   2 = secondary tests and tables, 3 = only if time remains (revised the same day to a middle ground: cheap
-  development, image/chart, Psych-101 and wording jobs, Gemma-3-12B and part of the reasoning mode added back). Jobs not listed below are not run on H200.
+  image/chart, Psych-101 and wording jobs, Gemma-3-12B and part of the reasoning mode added back; development
+  main-task reruns dropped except dev_full_text, which is the per-model cross-platform check). Jobs not listed below are not run on H200.
 Job ids, arguments and output names are unchanged from jobs.jsonl (only `output` moves to runs_h200/ and `tier`
 changes), so a resumed run skips completed jobs.
 
@@ -22,21 +23,21 @@ GEMMA12 = 'gemma3_12b'   # tier 3: its wording decomposition and masking jobs (d
 BIG = ['qwen3vl32b', 'internvl38b', 'gemma3_27b']
 
 # priority 1: primary test (held-out summary - raw), its decomposition (coded, raw+correct), stated-reliability and
-# binding controls (development-only by design), robustness set, cross-platform check
-P1 = ['xcheck', 'dev_controls', 'dev_binding', 'dev_chartread',
+# binding controls (development-only by design), robustness set, and the cross-platform check: dev_full_text is
+# compared item by item with the MI300X run of the same job (development work was done on MI300X / RTX 3090;
+# every held-out and robustness evaluation is on H200)
+P1 = ['xcheck', 'dev_full_text', 'dev_controls', 'dev_binding', 'dev_chartread',
       'ho_full_text', 'ho_sum_all', 'ho_full_rawcoded', 'ho_full_coded', 'rob_full', 'rob_sum_all']
 # priority 2: secondary tests (TOST for change-point and dev-selected window), chart and image columns,
 # Psych-101 primary fits, held-out confirmation of the masking result
 P2 = ['ho_sum_cp', 'dev_sum_window5', 'dev_sum_window10', 'dev_sum_window20',
       'ho_sum_window5', 'ho_sum_window10', 'ho_sum_window20', 'ho_full_chart', 'ho_full_image',
-      'psy_text_hidden', 'psy_text_told', 'ho_mask_rep_ok', 'ho_mask_out_ok', 'ho_mask_mask_ok',
-      # development main task on H200 too (cheap; keeps dev analyses on the same platform as held-out)
-      'dev_full_text', 'dev_sum_all', 'dev_full_rawcoded', 'dev_full_coded']
+      'psy_text_hidden', 'psy_text_told', 'psy_image_outcome_hidden', 'psy_chart_hidden',
+      'psy_perc_outcome_hidden', 'psy_perc_chart_hidden',      # Psych-101: all formats (human comparison)
+      'ho_mask_rep_ok', 'ho_mask_out_ok', 'ho_mask_mask_ok']
 # priority 3: only if time remains
 P3 = ['ho_sum_oracle', 'rob_sum_cp', 'rob_sum_window10', 'ho_window10', 'ho_cp_hard', 'rob_full_coded',
       'para_p2_raw', 'para_p2_raw_coded', 'para_p2_coded', 'para_p2_sum_all',
-      'dev_full_image', 'dev_full_chart', 'dev_sum_cp', 'dev_sum_oracle',
-      'psy_image_outcome_hidden', 'psy_chart_hidden',
       'para_p1_raw', 'para_p1_raw_coded', 'para_p1_coded', 'para_p1_sum_all']
 # reasoning mode (tier 3, after the above): the 8B thinking model in full (4 shards x raw/summary), then half of the
 # 32B thinking model (shards 0-1); the 32B chain-of-thought jobs are not run

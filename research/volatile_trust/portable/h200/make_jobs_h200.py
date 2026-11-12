@@ -2,8 +2,9 @@
 
 2026-11-13 deviation from EXPERIMENTS.md (platform): every model in jobs.jsonl is rerun in full on H200 (user decision),
 so all conditions of every model are on one platform. MI300X outputs stay untouched as a cross-platform check.
-python research/volatile_trust/portable/h200/make_jobs_h200.py --models <all keys in models.json used by jobs.jsonl>
-2026-11-13: models above 38B are not run on H200; H200-only exploratory jobs (tier 4) are appended at the end.
+python research/volatile_trust/portable/h200/make_jobs_h200.py --models qwen3vl8b internvl8b qwen3vl32b internvl38b gemma3_27b gemma3_12b qwen3vl8b_thinking qwen3vl32b_thinking
+2026-11-13: models above 38B are not run on H200 (Qwen2.5-VL-72B dropped from the paper, user decision; its lines are no
+longer in jobs_h200.jsonl). H200-only exploratory jobs (tier 4) are appended at the end.
 """
 import argparse
 import json

@@ -1,7 +1,7 @@
 # H200 附加工作與遮罩實驗的事先預測（2026-11-13，跑 held-out 之前寫定）
 
-H200 不跑大於 38B 的模型（Qwen2.5-VL-72B 不送；`submit.sh` 的 `MODELS` 不要放 `qwen25vl72b`）。
-`jobs_h200.jsonl` 前 343 行不變，後面附加 37 個 tier 4 工作（`make_jobs_h200.py`），依優先順序：
+H200 不跑大於 38B 的模型。Qwen2.5-VL-72B 確定不放進論文（2026-11-13 使用者決定），已從 `jobs_h200.jsonl` 移除。
+`jobs_h200.jsonl` 前 292 行是 `jobs.jsonl` 去掉 72B 的 51 行，後面附加 37 個 tier 4 工作（`make_jobs_h200.py`），依優先順序：
 
 1. **held-out 遮罩確認**（15 個）：`<model>__ho_mask_{rep_ok,out_ok,mask_ok}`，模型為 Qwen3-VL-8B、InternVL3.5-8B、
    Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B。對照組是同模型的 `ho_full_rawcoded`、`ho_full_coded`。

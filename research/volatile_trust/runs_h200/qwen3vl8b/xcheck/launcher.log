@@ -1,0 +1,66 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/run_volatile.py", line 394, in <module>
+    main()
+  File "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/run_volatile.py", line 314, in main
+    backend = ShardedVLM(args.model_dir, args.model_id, pixels=args.pixels)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/backend_multi.py", line 31, in __init__
+    self.model = AutoModelForImageTextToText.from_pretrained(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 604, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 277, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 5048, in from_pretrained
+    ) = cls._load_pretrained_model(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 5468, in _load_pretrained_model
+    _error_msgs, disk_offload_index = load_shard_file(args)
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 831, in load_shard_file
+    state_dict = load_state_dict(
+                 ^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 484, in load_state_dict
+    with safe_open(checkpoint_file, framework="pt") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No such file or directory: /raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-8B-Instruct/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b/model-00001-of-00004.safetensors
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/run_volatile.py", line 394, in <module>
+    main()
+  File "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/run_volatile.py", line 314, in main
+    backend = ShardedVLM(args.model_dir, args.model_id, pixels=args.pixels)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/backend_multi.py", line 31, in __init__
+    self.model = AutoModelForImageTextToText.from_pretrained(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 604, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 277, in _wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 5048, in from_pretrained
+    ) = cls._load_pretrained_model(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 5468, in _load_pretrained_model
+    _error_msgs, disk_offload_index = load_shard_file(args)
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 831, in load_shard_file
+    state_dict = load_state_dict(
+                 ^^^^^^^^^^^^^^^^
+  File "/work/ChihChungHsu/cactus8603/aaai/env/lib/python3.11/site-packages/transformers/modeling_utils.py", line 484, in load_state_dict
+    with safe_open(checkpoint_file, framework="pt") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No such file or directory: /raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-8B-Instruct/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b/model-00001-of-00004.safetensors
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.37it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.38it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.38it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.63it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.53it/s]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}. If this is not desired, please set these values explicitly.
+{"episode": "dev000", "rows": 160, "sec_per_row": 0.04331233501434326}
+{"episode": "dev001", "rows": 320, "sec_per_row": 0.04036367759108543}
+COMPLETE 320 rows

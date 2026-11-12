@@ -1,0 +1,25 @@
+{
+ "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+ "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+ "data_sha256": "1e03024658b53b2179d182da0c49e55c4a5ec93b1b9e3f0372f67a08de4dd6a0",
+ "renderer_sha256": "1a0ec149ff677600cfbf0b6fdfdc84c6bcfce59a1041c96199d7df1f6095ee98",
+ "split": "development",
+ "pixels": 224,
+ "hazard": 0.06666666666666667,
+ "history_mode": "full",
+ "history_format": "raw",
+ "hint": true,
+ "readouts": [
+  "choice"
+ ],
+ "domains": [
+  "color",
+  "pet"
+ ],
+ "formats": [
+  "text"
+ ],
+ "trials": null,
+ "max_episodes": 2,
+ "icon_version": "v3.1"
+}

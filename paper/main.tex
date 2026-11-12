@@ -136,7 +136,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
 \end{figure*}
 \begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_kernel.pdf}
-  \caption{Under raw histories, models copy the previous outcome. (a) Integration kernel by history format (thick: mean over models; thin: models). (b) Agreement with simple strategies under raw histories (Cohen's $\kappa$). (c) Replacing the outcome label in the raw history with correctness, but not the reports, recovers most of the gap to the coded history. \devnote{}}\label{fig:kernel}
+  \caption{Under raw histories, models copy the previous outcome. (a) Integration kernel by history format (thick: mean over models; thin: individual models; per-model 95\% CIs in Appendix~F). (b) Agreement with simple strategies under raw histories (Cohen's $\kappa$). (c) Replacing the outcome label in the raw history with correctness, but not the reports, recovers most of the gap to the coded history (two 8B models, development episodes; points are model means). \devnote{}}\label{fig:kernel}
 \end{figure*}
 \devnote{}
 
@@ -158,7 +158,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
 
 \begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_curves.pdf}
-  \caption{After a reversal, no format lets models switch quickly. Probability of following the currently better advisor as a function of trials since a reversal, by history format and model. \devnote{} \todo{add window and change-point summaries}}\label{fig:curves}
+  \caption{After a reversal, no format lets models switch quickly. Probability of following the currently better advisor as a function of trials since a reversal, by history format and model (mean over reversals and episodes; no error bars shown). \devnote{} \todo{add window and change-point summaries}}\label{fig:curves}
 \end{figure*}
 \begin{figure}[t]\centering
   \figplaceholder{Forgetting rate $\phi$ vs.\ hazard rate: humans (told $h$; our re-analysis of Xiong et al.\ 2023) and models (hidden $h$; told $h$ as secondary).}{4cm}

@@ -8,8 +8,9 @@ wording and line layout change.
   p1: reworded sentences, same layout (one sentence per trial).
   orig: the runner's own prompts (baseline on the same machine).
   p2: terse record layout ("#t | name=label | ... | truth=label").
+  H<x>-L<x>-Q<x>: mix of components (x = o|1|2), e.g. Ho-L2-Qo = original prompt with terse history lines.
 
-Usage: python paraphrase_probe.py --wording p1|p2 [--show] -- <run_volatile.py arguments, --formats text only>
+Usage: python paraphrase_probe.py --wording orig|p1|p2|H<x>-L<x>-Q<x> [--show] -- <run_volatile.py arguments, --formats text only>
   --show prints example prompts for one development episode (no model needed) and exits.
 """
 import json
@@ -23,6 +24,18 @@ import run_volatile as rv  # noqa: E402
 from scenarios import SCENARIOS, plural  # noqa: E402
 
 WORDINGS = ('orig', 'p1', 'p2')   # orig = unchanged runner prompts (same-platform baseline)
+ORIG = dict(header=rv.header, history=rv.history, summary=rv.summary, choice=rv.Renderer.choice)
+
+
+def parse(w):
+    """'orig' | 'p1' | 'p2' | component mix 'H<x>-L<x>-Q<x>' with x in o,1,2 (o = original).
+    H = task description (header); L = history lines and count summary; Q = current-trial lines and question."""
+    if w in WORDINGS:
+        return w, w, w
+    m = {'o': 'orig', '1': 'p1', '2': 'p2'}
+    parts = w.split('-')
+    assert [p[0] for p in parts] == ['H', 'L', 'Q'] and all(p[1:] in m for p in parts), w
+    return tuple(m[p[1:]] for p in parts)
 
 
 def _pair(tr, a, b):
@@ -109,7 +122,7 @@ def make(w):
                 (ep['b_name'], rv.label(domain, tr['b_report_bit'], pol))]
         if not tr['a_listed_first']:
             reps.reverse()
-        text = header(ep, domain, hint) + history(ep, domain, t, *window, fmt=hfmt)
+        text = rv.header(ep, domain, hint) + rv.history(ep, domain, t, *window, fmt=hfmt)
         if w == 'p1':
             text += f"Now, {S['unit']} {t} ({S['pending']}).\n"
             text += ''.join(f'{n} says {lab}.\n' for n, lab in reps)
@@ -125,9 +138,13 @@ def make(w):
 
 
 def install(w):
-    header, history, summary, choice = make(w)
-    rv.header, rv.history, rv.summary = header, history, summary
-    rv.Renderer.choice = choice
+    hw, lw, qw = parse(w)
+    rv.header = make(hw)[0] if hw != 'orig' else ORIG['header']
+    if lw != 'orig':
+        _, rv.history, rv.summary, _ = make(lw)
+    else:
+        rv.history, rv.summary = ORIG['history'], ORIG['summary']
+    rv.Renderer.choice = make(qw)[3] if qw != 'orig' else ORIG['choice']
 
 
 def show(w):
@@ -139,22 +156,42 @@ def show(w):
                     ('raw', (1, None, True))):
         for dom in ('pet', ep['scenario']):
             c, labs, tgt = r.choice(ep, dom, 'text', 4, True, win, hf)
-            print(f'===== {w} {hf} summary={win[2]} {dom} target={tgt}\n{c["content"][0]["text"]}\n')
+            txt = ''.join(x['text'] for x in c['content'] if x['type'] == 'text')
+            print(f'===== {w} {hf} summary={win[2]} {dom} target={tgt}\n{txt}\n')
+
+
+def split_argv(argv):
+    """Take --wording W and --show from anywhere in argv; everything else (minus a bare '--') goes to the runner.
+    Accepts both 'paraphrase_probe.py --wording W -- <runner args>' and run_jobs.py's
+    'paraphrase_probe.py --model-dir ... --output ... --wording W <runner args>'."""
+    rest, w, show, it = [], None, False, iter(argv)
+    for a in it:
+        if a == '--wording':
+            w = next(it)
+        elif a == '--show':
+            show = True
+        elif a != '--':
+            rest.append(a)
+    assert w is not None, '--wording is required'
+    parse(w)
+    return w, show, rest
 
 
 if __name__ == '__main__':
-    pre = sys.argv[1:sys.argv.index('--')] if '--' in sys.argv else sys.argv[1:]
-    w = pre[pre.index('--wording') + 1]
-    assert w in WORDINGS, w
-    if '--show' in pre:
+    w, show_only, rest = split_argv(sys.argv[1:])
+    if show_only:
         show(w)
         sys.exit()
-    sys.argv = [sys.argv[0]] + sys.argv[sys.argv.index('--') + 1:]
-    assert '--formats' in sys.argv and sys.argv[sys.argv.index('--formats') + 1:][:2][0] == 'text'
-    if w != 'orig':
-        install(w)
-    out = Path(sys.argv[sys.argv.index('--output') + 1])
+    sys.argv = [sys.argv[0]] + rest
+    assert '--formats' in rest and rest[rest.index('--formats') + 1] == 'text' and \
+        (len(rest) == rest.index('--formats') + 2 or rest[rest.index('--formats') + 2].startswith('--')), \
+        'paraphrase probe: --formats text only'
+    install(w)
+    out = Path(rest[rest.index('--output') + 1])
     out.mkdir(parents=True, exist_ok=True)
-    (out / '_WORDING').write_text(w + '\n')
-    print(f'wording: {w}', flush=True)
+    wf = out / '_WORDING'
+    if wf.exists() and wf.read_text().strip() != w:
+        sys.exit(f'Refusing to resume: {out} was made with wording {wf.read_text().strip()!r}, not {w!r}')
+    wf.write_text(w + '\n')
+    print(f'wording: {w} (H, L, Q = {parse(w)})', flush=True)
     rv.main()

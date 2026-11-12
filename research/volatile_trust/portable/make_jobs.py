@@ -110,6 +110,28 @@ def main():
                 jobs.append(dict(model=key, gpus=m['gpus_mi300x'], id=f'{key}__e9_{mode}_{hname}_s{i}',
                                  script=f'{VT}/run_thinking.py', args=args,
                                  output=f'{VT}/runs_mi300x/{key}/e9_{mode}_{hname}/s{i}'))
+    # Exploratory prompt-wording check (added 2026-11-12 after the freeze; development episodes only; see
+    # EXPERIMENTS.md and discussion/paraphrase_analysis.md). Full 2x2x2 component decomposition on the Gemma-3 family's
+    # smaller model (the 8B Qwen3-VL / InternVL3.5 decompositions were run on the 3090s); the larger models get the
+    # key contrast only (reworded p1 and terse p2; their original-wording baseline is the dev_* jobs above).
+    para = []
+    PARA_FMTS = {'raw': ('full', 'raw'), 'raw_coded': ('full', 'raw_coded'), 'coded': ('full', 'coded'),
+                 'sum_all': ('sum_all', 'raw')}
+    MIXES = ('Ho-L2-Qo', 'H2-Lo-Qo', 'Ho-Lo-Q2', 'H2-L2-Qo', 'H2-Lo-Q2', 'Ho-L2-Q2')
+    plan = [('gemma3_12b', w, f) for w in ('orig', 'p1', 'p2') for f in PARA_FMTS]
+    plan += [('gemma3_12b', w, f) for w in MIXES for f in ('raw', 'coded', 'sum_all')]
+    plan += [(k, w, f) for k in ('qwen3vl32b', 'internvl38b', 'gemma3_27b', 'qwen25vl72b') if k in a.models
+             for w in ('p1', 'p2') for f in PARA_FMTS]
+    for key, w, f in plan:
+        m = reg[key]
+        mode, hfmt = PARA_FMTS[f]
+        name = f'para_{w}_{f}'
+        para.append(dict(model=key, gpus=m['gpus_mi300x'], id=f'{key}__{name}',
+                         script=f'{VT}/paraphrase_probe.py',
+                         args=['--wording', w, '--split', 'development', '--data-dir', f'{VT}/episodes_v3',
+                               '--history-mode', mode, '--history-format', hfmt, '--domains', 'pet', 'scenario',
+                               '--formats', 'text', '--readouts', 'choice', '--pixels', str(m['pixels'])],
+                         output=f'{VT}/runs_mi300x/{key}/{name}'))
     # Tiers (run tier 1 first): 1 = core evidence chain, 2 = secondary/explanatory, 3 = exploratory/extra.
     T1 = ('dev_controls', 'dev_binding', 'dev_chartread', 'xcheck', '_full_text', '_full_coded', '_full_rawcoded',
           '_sum_all', 'rob_full')
@@ -123,6 +145,9 @@ def main():
         if jid.startswith('rob_sum_all') or jid == 'rob_full':
             tier = 1
         j['tier'] = tier
+    for j in para:            # appended last, so run_jobs.py starts them after everything else
+        j['tier'] = 4
+    jobs += para
     with open(a.out, 'w') as f:
         for j in jobs:
             f.write(json.dumps(j) + '\n')

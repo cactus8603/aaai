@@ -68,6 +68,19 @@ python research/volatile_trust/portable/supersede_icon_v3.py --apply    # 搬到
 只影響這 8 種工作：`dev_controls`、`dev_binding`、`dev_full_image`、`ho_full_image`、`dev_full_coded`、`ho_full_coded`、`dev_sum_cp`、`ho_sum_cp`。
 如果某個含圖片的工作沒有先搬走就續跑，runner 會拒絕（訊息含 `icons changed`），照上面搬走再跑即可。
 
+## 5c. 提示措辭檢查（探索性，tier 4，2026-11-12 加入）
+主實驗（tier 1–3）跑完、GPU 有空時再跑；不影響任何既有工作，`jobs.jsonl` 前 266 行完全沒變。
+- **Gemma-3-12B**：完整拆解，共 30 個工作（三種措辭 × 四種歷史，加上 6 種組件組合 × 三種歷史）。要先下載，同一個 HF 帳號也要在 https://huggingface.co/google/gemma-3-12b-it 同意授權：
+  ```bash
+  python research/volatile_trust/portable/download_models.py --models gemma3_12b
+  ```
+- **Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B、Qwen2.5-VL-72B**：只跑關鍵對比，每個模型 8 個工作（換句話說、精簡表格 × 四種歷史）。原始措辭的基準直接用它們的 `dev_*` 工作。
+- 全部只用 dev 資料，只有文字報告，每個工作 5120 筆。
+```bash
+nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 --tier 4 > launcher_t4.out 2>&1 &
+```
+輸出在 `runs_mi300x/<model>/para_<措辭>_<歷史格式>/`。如果同一個輸出目錄曾用另一種措辭跑過，程式會拒絕續跑（訊息含 `Refusing to resume ... wording`）。
+
 ## 6. 傳回結果
 ```bash
 tar czf results_mi300x.tar.gz research/volatile_trust/runs_mi300x

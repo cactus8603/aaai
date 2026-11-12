@@ -1,13 +1,13 @@
 {
-  "cache_bytes": 914089158,
+  "cache_bytes": 1755193378,
   "dataset": "Oxford-IIIT Pet",
   "license": "CC-BY-SA-4.0",
   "license_note": "Copyright remains with original image owners.",
   "license_source": "https://www.robots.ox.ac.uk/~vgg/data/pets/",
   "license_verified_date": "2026-11-11",
   "official_annotation_sha256": {
-    "test": "8fa5aa98d95e64303703afbd20288ca5c16cf529c9b89f28f13bad8361653035",
-    "trainval": "1bfb8a90062f7aa00b84af3200f40399b5d7cb6c69c7f2b7c857ff216efdc070"
+    "test": "a5454003774ffe01f4f322756d3ba5495bae21cb30bb217ab285dbfa2bef245c",
+    "trainval": "408f3f609481b939c94634169e6413414b733a3faeba440cbdcc5c02142eebdc"
   },
   "preprocessing": {
     "method": "aspect preserving LANCZOS resize, centered gray RGB(127,127,127) letterbox via Pillow ImageOps.pad",
@@ -20,16 +20,25 @@
   "ready": true,
   "runtime": {
     "pillow": "11.3.0",
-    "python": "3.12.3"
+    "python": "3.11.18"
   },
-  "script_sha256": "e91836ebe12e866afdfa85fbdea69ef8e9e35f016de4db442356831ce24be074",
+  "script_sha256": "71c8bd5d3ee674170785d252a7d5868930b028770245e4bbfdd69e491d7f3d7c",
   "seed": 20261111,
   "selection": "Python random.Random; sorted official annotations grouped by species/breed; shuffled breed order and candidates; equal breed quotas with seeded remainder; replace decode failures or duplicates only",
   "sources": [
     {
-      "annotations": "Official split and class IDs from the Hugging Face mirror, with species-specific IDs reconstructed",
-      "revision": "089695c834a7deb60505b7cc506672db1c31a6aa",
-      "url": "https://huggingface.co/datasets/timm/oxford-iiit-pet"
+      "archive": ".cache/datasets/oxford-iiit-pet/images.tar.gz",
+      "bytes": 791918971,
+      "md5": "5c4f3ee8e5d25df40f4fd59a7f44e54c",
+      "sha256": "67195c5e1c01f1ab5f9b6a5d22b8c27a580d896ece458917e61d459337fa318d",
+      "url": "https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz"
+    },
+    {
+      "archive": ".cache/datasets/oxford-iiit-pet/annotations.tar.gz",
+      "bytes": 19173078,
+      "md5": "95a8c909bbe2e81eed6a22bccdf3f68f",
+      "sha256": "52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91",
+      "url": "https://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz"
     }
   ],
   "splits": {

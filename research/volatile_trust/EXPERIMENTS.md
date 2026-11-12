@@ -73,7 +73,7 @@
 | qwen3vl8b_thinking、qwen3vl32b_thinking | Qwen3-VL Thinking | Qwen3 | 只用在 E9 |
 | gemma3_12b、qwen3vl235b、internvl241b | — | — | 選配 |
 
-- 平台：正式結果全部在 MI300X 上跑，同一個模型的所有條件都在同一個平台完成。
+- 平台：正式結果全部在 MI300X 上跑，同一個模型的所有條件都在同一個平台完成。（**已由偏離 D2 取代**：正式評估改在 H200。）
 - 3B／4B 只有 3090 前導資料（v1 版，有開頭介紹順序的混淆），論文中只放附錄，不作主張。
 
 ### 1.2 讀出方式
@@ -340,3 +340,10 @@ robust 資料（IID）：window:5 .675、sum_cp .663、window:10 .635、window:2
 - **措辭拆解與擴充（2026-11-12，探索性，只用 dev）。** p2 拆成三個組件：H（任務說明）、L（歷史每行格式與摘要句）、Q（當前回合行與提問），做 2×2×2 全因子實驗（`paraphrase_probe.py --wording H<x>-L<x>-Q<x>`）。已確認 Ho-Lo-Qo 的 prompt hash 和原 runner 逐字相同。分層設計：每個家族較小的模型做完整拆解，包括 Qwen3-VL-8B、InternVL3.5-8B（3090，原始歷史、逐回合標正確、摘要三種格式）和 Gemma-3-12B（MI300X）；較大的 Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B、Qwen2.5-VL-72B 只跑 p1／p2 × 四種歷史，原始措辭的基準用各自的 dev_* 工作。MI300X 上的工作列為 tier 4，放在 `jobs.jsonl` 最後（`make_jobs.py`），README §5c。分析用 `analyze_paraphrase.py`，會輸出各組件的主效果。
 - **遮罩實驗（2026-11-12，探索性，只用 dev，3090）。** 問題：逐回合標正確的歷史（raw+correct）只收回原始到 coded 差距的 1/5–2/5，而且照抄上一回合結果的權重反而上升。是結果標籤、報告標籤，還是長度造成的？`masking_probe.py` 不改 runner，沿用 raw+correct 每行的排版和長度，把部分欄位換成 `---`：rep_ok（遮結果）、out_ok（遮報告）、mask_ok（兩者都遮，資訊等同 coded，但長度接近 raw+correct）。兩個 8B 模型 × 3 種，對照組用同機的 `runs/paraphrase/orig_*`。分析用 `analyze_masking.py`（2×2 主效果與交互作用、mask_ok−coded 檢查長度／排版、copy 權重與 κ）。
   - 結果（兩個 8B）：遮結果的主效果 +.07／+.10，遮報告約 0，交互作用 +.07／+.05；兩者都遮跟 coded 只差 −.02 → B−A+ 差距約 80–85% 來自歷史中的標籤，長度／排版約 15–20%。copy 權重只要顯示結果就維持 .27–.50，遮掉後 ≤ .12。詳見 `discussion/masking_analysis.md`。MI300X tier 4 加入 15 個 `*__mask_*` 工作（Gemma-3-12B 與四個大模型），`jobs.jsonl` 前 328 行不變。
+- **偏離 D2（2026-11-13，凍結 tag `prereg-v3` 之後；決定時尚未看過任何 held-out 模型結果）：評估平台改成 H200、拿掉 72B、精簡工作清單。**
+  - **原因**：計算資源。MI300X 不再使用；原清單在截稿前跑不完。
+  - **平台**：held-out、穩健性資料、Psych-101、論文會報告的 dev 對照（E1、綁定、圖表可讀性）和選 K 用的 dev 視窗，全部在 NVIDIA H200 上跑（PyTorch 2.8.0、CUDA 12.8、Transformers 4.57.1），同一個模型的這些條件都在 H200 完成。探索性的 dev 檢查（icon、措辭、遮罩）維持在 RTX 3090。論文不報告 MI300X 的結果。
+  - **一致性檢查**：每個模型在 H200 重跑 `dev_full_text` 與 `xcheck`，和既有輸出逐題比對（E5 門檻：|Δy| 中位數 < 0.02、選擇一致率 > 98%、提示雜湊相同），只作內部檢查，不放進論文。`portable/h200/xplat_check.py`。
+  - **模型**：拿掉 Qwen2.5-VL-72B（規模延伸）、Qwen3-VL-32B-Thinking 與 32B 的 E9 CoT、Gemma-3-12B；E9 只留 Qwen3-VL-8B-Thinking。
+  - **工作**：依論文主張重新分級，共 177 個（`portable/h200/PLAN_H200.md`、`jobs_h200.jsonl`）；拿掉大模型的措辭 p1、穩健性資料的額外條件（`rob_full_coded`、`rob_sum_cp`、`rob_sum_window10`）。主要檢定（C1，held-out C−A）與其分析方式不變。
+  - **執行**：`portable/h200/worker.py`（依清單順序跨模型挑工作）。

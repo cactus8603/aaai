@@ -13,7 +13,7 @@ for m in $MODELS; do
   G=${NGPU:-1}; [ "$m" = qwen25vl72b ] && [ $G -lt 2 ] && G=2   # 72B 每個工作要 2 張卡
   GPUS=$(seq -s' ' 0 $((G-1)))                                   # 同一模型的工作在這幾張卡上平行跑
   RJ="python research/volatile_trust/portable/run_jobs.py --jobs $J --gpus $GPUS --models $m"
-  R="--gres=gpu:$G --cpus-per-task=$((16*G)) --mem=$((170*G))G"
+  R="--gres=gpu:$G"   # h200q 依卡數自動配 CPU 與記憶體（每卡 16 核、170G）
   d=${DEP:+--dependency=afterany:$DEP}
   s1=$(sbatch --parsable $d $R --job-name=aaai-$m-s1 --time=2-00:00:00 research/volatile_trust/portable/h200/run.slurm --env $A/env -- \
        bash -c "$RJ --tier 1 --only dev_ xcheck")

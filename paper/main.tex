@@ -302,13 +302,13 @@ Table~\ref{tab:cover} lists the cover stories. The examples below are rendered b
     color & reporters & red/blue & color patch \\
     weather & forecasters & rain/dry & cloud, sun \\
     stock & analysts & up/down & trend arrow \\
-    sports & commentators & win/lose & trophy, cross \\
-    medical & doctors & positive/negative & test strip \\
+    sports & commentators & win/lose & happy/sad face \\
+    medical & doctors & positive/negative & plus/minus \\
     news & news sources & true/false & tick, cross \\
     pet (photo) & reporters & cat/dog & photograph \\
     \bottomrule
   \end{tabular}
-  \caption{Cover stories. Trials are called trials (color, pet), days, weeks, games, cases or stories. Icons are drawn by code and contain no text; the medical icon is a test strip with two lines (positive) or one line (negative).}
+  \caption{Cover stories with the selected icon set (v3.1). Trials are called trials (color, pet), days, weeks, games, cases or stories. Icons are drawn by code and contain no answer words. Appendix~G shows the original and selected medical and sports icons and identifies results obtained with the original set.}
   \label{tab:cover}
 \end{table}
 
@@ -361,7 +361,7 @@ With text reports the images are replaced by the answer word. \todo{binding-cont
 
 \paragraph{Splits and seeds.} The main set has 16 development episodes (color, weather, stock and sports cover stories) and 48 held-out episodes (eight per text cover story), 128 with counterbalanced copies, generated with seed 20261111. Pet photos come from the Oxford-IIIT Pet dataset (CC BY-SA 4.0): 128 photos from the official trainval split for development episodes and 256 from the test split for held-out episodes, with no overlap. The robustness set has 24 held-out episodes (48 with copies; seed 20261112) in which correctness is drawn independently on each trial, outcome labels are drawn independently, and volatile-phase dwell times are drawn uniformly from 6--16 trials. All data are regenerated from seeds and checked against stored SHA-256 hashes.
 \subsection{C. Control Conditions and Decomposition: Full Results}      % heatmap model x condition x cover story
-Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the stepwise differences between history formats on the main task. Image reports lowered accuracy in every control condition, including stated reliability (.60--.81 instead of .92--1.00), although models named the content of a single report image almost perfectly. The image-report results in this table use the original icons; in the perception check, all models were at .50 for the original medical icons (and InternVL3.5-8B also for the sports icons). These icons were replaced before held-out evaluation (Appendix~G). \devnote{} \todo{replace with the rerun using the new icons}
+Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the stepwise differences between history formats on the main task. Image reports lowered accuracy in every control condition, including stated reliability (.60--.81 instead of .92--1.00). Single-image naming varied by cover story: all models were at .50 for the original medical icons, and InternVL3.5-8B was also at .50 for the original sports icons. The image-report results in this table use those original icons. Appendix~G documents the development-only replacement study; the original results cannot isolate advisor binding from icon-recognition failures. \devnote{} \todo{replace with the rerun using the new icons}
 
 % FILL: analyze_controls.py on runs_mi300x/<model>/dev_controls -> pooled[control].hard_acc
 \begin{table}[h]\centering\small
@@ -608,8 +608,8 @@ These rule baselines were computed on held-out episodes before any model results
   \caption{Recovery of strategies and integration kernels from synthetic agents run on the same episodes.}
   \label{tab:recovery}
 \end{table}
-\subsection{G. Multimodal Binding and Chart Legibility}      % image_named/composite/after, composite_read, chart_read
-These analyses use development episodes only and are exploratory. Table~\ref{tab:mm} summarizes them. Binding was best when the advisor's name was printed on the image (.73--.82 with stated reliability), intermediate with a composite image of both reports (.72--.78), and worst when the image followed the name (.56--.66), although each panel of a composite image was read correctly on every item. Reading a single cell of the correctness chart was below the 0.8 gate for every model (.63--.69).
+\subsection{G. Icon Design, Multimodal Binding and Chart Legibility}      % icon selection, image_named/composite/after, composite_read, chart_read
+These analyses use development episodes only and are exploratory. Table~\ref{tab:mm} summarizes the original-icon results. Accuracy was highest when the advisor's name was printed on the image (.73--.82 with stated reliability), intermediate with a composite image of both reports (.72--.78), and lowest when the image followed the name (.56--.66), although each panel of a composite image was read correctly on every item. Reading a single cell of the correctness chart was below the 0.8 gate for every model (.63--.69).
 
 % FILL: analyze_controls.py (perception, composite_read, chart_read: hard_acc); analyze_main.py dev -> cells for report modality text / pet photo / icon and B' (chart).
 \begin{table*}[h]\centering\small
@@ -628,41 +628,47 @@ These analyses use development episodes only and are exploratory. Table~\ref{tab
     Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Multimodal reports (development episodes, exploratory). Main-task columns use the correctness-coded history, so outcome evaluation is removed and the drop with image reports reflects binding images to advisors. Chart history: not yet run. Chart read below the prespecified 0.8 gate means chart-history results for that model are not interpreted.}
+  \caption{Multimodal reports (development episodes, exploratory; original icons). Main-task columns use correctness-coded history, removing outcome evaluation. The drop with image reports can reflect both icon legibility and advisor binding. Chart history: not yet run. Chart read below the prespecified 0.8 gate means chart-history results for that model are not interpreted.}
   \label{tab:mm}
 \end{table*}
-\paragraph{Icon design.} Icons replace the answer word with a picture in the image-report conditions, so they must be text-free (otherwise the model could read the answer), unambiguous for the two labels of each cover story, distinct from the icons of the other cover stories (the news story already uses a check mark and a cross, and the stock story green and red arrows), and legible at the 224-px (Qwen) and 448-px (InternVL3.5) input sizes. All icons are drawn programmatically, so they are identical across runs. In the frozen version, the medical icon (a lateral-flow test strip with one or two lines) and, for InternVL3.5-8B, the sports icon (a trophy versus a grey ball with a red cross) were named at chance in the single-image perception check on development items (Appendix~C), so image-report results for these cover stories would have mixed illegible icons with the binding problem we intended to measure.
+\paragraph{Icon design and examples.} Icons replace the answer word with a picture in the image-report conditions. Figure~\ref{fig:icons} shows the actual deterministic renderings used in the icon probe, at 224 pixels; InternVL3.5 receives 448-pixel renderings from the same drawing functions. In the original medical pair, two red test-strip lines indicate positive and one indicates negative. The selected pair uses a dark plus or minus inside the same circular outline. In sports, the original gold trophy and red cross on a grey ball encode win and lose; the selected pair uses a yellow happy face and a grey-blue sad face. Labels and selection markers in the figure are reader annotations and are absent from the report images. These are synthetic symbols for the answer labels, not clinical scans or photographs of game outcomes. All other cover-story icons are unchanged.
 
-\paragraph{Icon selection (deviation from the frozen plan).} We therefore drew alternative icons (Fig.~\ref{fig:icons}) and tested them on development items only, with Qwen3-VL-8B and InternVL3.5-8B, before any held-out evaluation. The selection rule was fixed in advance of the comparison: an icon had to be named correctly by both models in the perception check (both labels, both answer orders), and among those we chose the one with the highest mean accuracy over the image-report control conditions (Table~\ref{tab:icons}). For medical this selected a plus/minus sign; a coloured version scored higher on the control conditions but was not named reliably by InternVL3.5-8B. For sports it selected a happy/sad face. The test strip remained illegible even when enlarged, which suggests that the problem was the meaning of the icon rather than its resolution. All other icons are unchanged. Every job that shows icon reports was rerun with the new icons; text reports, pet photographs, the correctness chart and the main test are unaffected. Outputs with the original icons are kept and the original icons can be regenerated. \todo{add main-task check (coded history, image reports, old vs.\ new icons)}
+\paragraph{Development-only selection.} We tested five medical pairs and four sports pairs with Qwen3-VL-8B and InternVL3.5-8B before held-out evaluation. The single-image probe asks for each of the two labels under both answer orders (four prompts per pair and model). We required all four responses to be correct for both models, then selected the eligible pair with the highest mean accuracy over four image-report controls and both models (Table~\ref{tab:icons}). The controls use stated reliability, a short raw history, a short correctness-coded history, and a long correctness-coded history. Each downstream cell contains 64 items after averaging label-aligned logits across the counterbalanced episode copies. This selected plus/minus and happy/sad faces. Enlarging the test strip left naming accuracy at .50 for both models, so size alone did not resolve that failure. Coloured plus/minus signs scored higher downstream but failed the InternVL3.5 naming criterion.
 
-\begin{figure*}[h]\centering
+\paragraph{Results and limits.} The downstream mean increases from .521 to .668 for medical and from .588 to .678 for sports. Both selected pairs reach 4/4 in the naming probe for both models. However, stated-reliability accuracy pooled over these two image-report cover stories is .773 for Qwen3-VL-8B and .727 for InternVL3.5-8B, below the .80 gate. Single-image recognition therefore does not establish successful use of image reports in the advice-taking task. Selection and evaluation use the same development controls, so these gains are descriptive and do not estimate held-out improvement.
+
+\paragraph{Versioning and main-task check.} This development-driven change is deviation D1 from the frozen plan. The selected icons define v3.1; v3 remains reproducible and original outputs are retained separately. Affected image-report and binding jobs require reruns. Text reports, pet photographs, the correctness chart, and the primary text-report comparison are unchanged. On the main task with correctness-coded history and image reports (16 development episodes, both counterbalanced copies, trials $t\ge 2$), the selected icons raised mean accuracy over the original ones for both models: Qwen3-VL-8B from .51 to .62 (medical) and from .56 to .67 (sports), and InternVL3.5-8B from .50 to .55 and from .52 to .55 (paired differences over 32 episode copies: $+.11$ [.06, .16], $+.11$ [.09, .14], $+.05$ [.03, .06], $+.03$ [.02, .05]; 95\% bootstrap CIs). Accuracy remained below the same condition with text reports (Qwen3-VL-8B .57 and .70; InternVL3.5-8B .79 and .77), so image reports still add a cost beyond outcome evaluation, now with icons that both models name correctly. Tables~\ref{tab:controls_full} and~\ref{tab:mm} retain the original-icon results.
+% Evidence: runs/iconprobe/main_{plus_minus_faces,v3_strip_v3_trophy_x}_{q,i}; mean y over t>=2, not twin-averaged.
+
+\begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_icons.pdf}
-  \caption{Candidate icons for the medical and sports cover stories (top: positive/win; bottom: negative/lose). Original: the frozen-plan icons. Chosen: the icons used for all reported image-report results.}
+  \caption{Actual candidate report icons for medical (positive/negative) and sports (win/lose). Original marks the frozen v3 pairs; selected marks their v3.1 replacements. Labels and headings are shown for the reader and are not embedded in model inputs. All candidates, including those not selected, are evaluated in Table~\ref{tab:icons}.}
   \label{fig:icons}
 \end{figure*}
 
-% FILL: runs/iconprobe (icon_probe_controls.py), analyze_controls.py; development items only.
-\begin{table*}[h]\centering\small
+% Evidence: runs/iconprobe/{qwen3vl8b,internvl8b}.jsonl for the four-prompt probe;
+% runs/iconprobe/ctl.json from analyze_controls.py for twin-averaged downstream controls.
+\begin{table*}[t]\centering\small
   \setlength{\tabcolsep}{4pt}
   \begin{tabular}{l cccccc}
     \toprule
-    Icon pair & Perception & Stated \% & Short raw & Short coded & Long coded & Mean \\
+    Icon pair & Naming probe & Stated \% & Short raw & Short coded & Long coded & Mean \\
     \midrule
     \multicolumn{7}{l}{\textit{Medical (positive / negative)}} \\
     Test strip (original) & .50/.50 & .61/.36 & .58/.62 & .62/.36 & .56/.45 & .52 \\
     Large test strip & .50/.50 & .61/.53 & .58/.59 & .73/.77 & .62/.56 & .62 \\
-    Plus / minus (chosen) & 1.00/1.00 & .70/.67 & .84/.62 & 1.00/.50 & .61/.39 & .67 \\
+    Plus / minus (selected) & 1.00/1.00 & .70/.67 & .84/.62 & 1.00/.50 & .61/.39 & .67 \\
     Plus / minus, coloured & 1.00/.50 & .72/.70 & .77/.64 & 1.00/.95 & .61/.52 & .74 \\
-    Virus / empty circle & 1.00/.50 & .61/.92 & .59/.59 & 1.00/.41 & .48/.39 & .62 \\
+    Virus / empty circle & .75/.75 & .61/.92 & .59/.59 & 1.00/.41 & .48/.39 & .62 \\
     \midrule
     \multicolumn{7}{l}{\textit{Sports (win / lose)}} \\
     Trophy / cross (original) & 1.00/.50 & .61/.64 & .52/.55 & .72/.62 & .61/.44 & .59 \\
     Trophy / sad face & 1.00/1.00 & .66/.73 & .55/.48 & .84/.83 & .61/.44 & .64 \\
-    Happy / sad face (chosen) & 1.00/1.00 & .84/.78 & .50/.52 & .80/1.00 & .50/.48 & .68 \\
-    Medal / cracked medal & 1.00/.50 & .61/.64 & .53/.41 & .64/.39 & .48/.50 & .53 \\
+    Happy / sad face (selected) & 1.00/1.00 & .84/.78 & .50/.52 & .80/1.00 & .50/.48 & .68 \\
+    Medal / cracked medal & 1.00/.75 & .61/.64 & .53/.41 & .64/.39 & .48/.50 & .53 \\
     \bottomrule
   \end{tabular}
-  \caption{Icon legibility on development items, image reports (Qwen3-VL-8B / InternVL3.5-8B). Perception: the two icons named correctly, over both answer orders. Other columns: accuracy on control items for that cover story (64 items per cell). Mean: over the four control conditions and both models. Selection rule: perception 1.00 for both models, then highest mean.}
+  \caption{Icon comparison on development items, image reports (Qwen3-VL-8B / InternVL3.5-8B). Naming probe: accuracy over two labels $\times$ two answer orders (four prompts per model and icon pair). Downstream columns: hard accuracy over 64 items per cell after averaging counterbalanced-copy logits; Stated \% denotes stated reliability. Mean averages the four downstream conditions and both models, excluding the naming probe. Selection requires 4/4 naming accuracy for both models, then the highest mean.}
   \label{tab:icons}
 \end{table*}
 

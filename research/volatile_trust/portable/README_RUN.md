@@ -58,6 +58,16 @@ python research/volatile_trust/portable/make_jobs.py      # 產生工作清單�
 - 每個 runner 跑完會先核對列數，正確才寫入 `_COMPLETE*` 標記。沒有標記的工作，重新啟動時會從中斷處續跑。
 - 正在執行中的工作有 `_LOCK` 檔，啟動器不會重複啟動它。
 
+## 5b. icon 更新後的重跑（偏離 D1，2026-11-12）
+medical／sports 的 icon 換成 v3.1。**先停掉 run_jobs.py**，再 `git pull`，然後：
+```bash
+python research/volatile_trust/portable/supersede_icon_v3.py            # 先看會搬哪些（dry run）
+python research/volatile_trust/portable/supersede_icon_v3.py --apply    # 搬到 runs_mi300x/_superseded_icons_v3/
+```
+之後照原本的指令重新啟動 run_jobs.py，被搬走的工作會自動用新 icon 重跑；其他已完成的工作會被跳過。
+只影響這 8 種工作：`dev_controls`、`dev_binding`、`dev_full_image`、`ho_full_image`、`dev_full_coded`、`ho_full_coded`、`dev_sum_cp`、`ho_sum_cp`。
+如果某個含圖片的工作沒有先搬走就續跑，runner 會拒絕（訊息含 `icons changed`），照上面搬走再跑即可。
+
 ## 6. 傳回結果
 ```bash
 tar czf results_mi300x.tar.gz research/volatile_trust/runs_mi300x

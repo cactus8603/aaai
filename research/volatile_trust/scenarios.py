@@ -51,8 +51,17 @@ def plural(unit):
     return {'story': 'stories'}.get(unit, unit + 's')
 
 
-def icon(scenario, lab, P):
+ICON_VERSION = 'v3.1'
+# v3.1 (2026-11-12, deviation D1 in EXPERIMENTS.md): the v3 medical test-strip and sports trophy/cross icons were
+# illegible to the models (single-image perception at .50 on development items). They are replaced by a plus/minus
+# sign (medical) and a happy/sad face (sports), chosen on development control items only (icon_probe.py).
+# All other icons are unchanged. icon(..., version='v3') reproduces the original icons.
+
+
+def icon(scenario, lab, P, version=ICON_VERSION):
     """Deterministic, text-free icon for a scenario label (P x P pixels)."""
+    if version == 'v3.1' and scenario in ('medical', 'sports'):
+        return _icon_v31(scenario, lab, P)
     img = Image.new('RGB', (P, P), 'white')
     d = ImageDraw.Draw(img)
     s = P / 224
@@ -103,4 +112,27 @@ def icon(scenario, lab, P):
             d.line(S(170, 55, 55, 170), fill=(210, 40, 40), width=int(18 * s))
     else:
         raise ValueError(scenario)
+    return img
+
+
+def _icon_v31(scenario, lab, P):
+    img = Image.new('RGB', (P, P), 'white')
+    d = ImageDraw.Draw(img)
+    s = P / 224
+
+    def S(*xy):
+        return [v * s for v in xy]
+    if scenario == 'medical':                               # thick plus (positive) / minus (negative) in a ring
+        d.ellipse(S(22, 22, 202, 202), outline=(80, 80, 80), width=int(6 * s))
+        d.rectangle(S(52, 98, 172, 126), fill=(60, 60, 60))
+        if lab == 'positive':
+            d.rectangle(S(98, 52, 126, 172), fill=(60, 60, 60))
+    else:                                                   # happy face (win) / sad face (lose)
+        d.ellipse(S(32, 32, 192, 192), fill=(250, 210, 60) if lab == 'win' else (160, 170, 190))
+        d.ellipse(S(75, 80, 95, 100), fill=(40, 40, 40))
+        d.ellipse(S(129, 80, 149, 100), fill=(40, 40, 40))
+        if lab == 'win':
+            d.arc(S(70, 95, 154, 160), start=20, end=160, fill=(40, 40, 40), width=int(8 * s))
+        else:
+            d.arc(S(70, 125, 154, 185), start=200, end=340, fill=(40, 40, 40), width=int(8 * s))
     return img

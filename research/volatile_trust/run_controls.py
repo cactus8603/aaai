@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(ROOT / 'research/source_trust'))
 from run_volatile import DOMAINS, NOUN, Renderer, header, label  # noqa: E402
-from scenarios import SCENARIOS, plural  # noqa: E402
+from scenarios import ICON_VERSION, SCENARIOS, plural  # noqa: E402
 from model_backends import FrozenVLM  # noqa: E402
 
 QUERY_T = (20, 40, 60, 80)
@@ -112,6 +112,10 @@ def main():
     fp = dict(model_id=args.model_id, model_revision=Path(args.model_dir).name, pixels=args.pixels,
               data_sha256=hashlib.sha256((args.data_dir / 'episodes.jsonl').read_bytes()).hexdigest(),
               controls=sorted(args.controls), formats=sorted(args.formats), domains=sorted(args.domains))
+    uses_icons = any(c not in ('chart_read', 'composite_read', 'single_trial_who') for c in args.controls) and (
+        any(f != 'text' for f in args.formats) or 'perception' in args.controls)
+    if uses_icons:
+        fp['icon_version'] = ICON_VERSION      # v3 outputs lack this key, so resuming them with new icons is refused
     (args.output / '_COMPLETE').unlink(missing_ok=True)   # never keep a stale marker
     fp_path = args.output / '_FINGERPRINT.json'
     if fp_path.exists() and json.loads(fp_path.read_text()) != fp:

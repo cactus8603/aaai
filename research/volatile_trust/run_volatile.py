@@ -19,7 +19,7 @@ from model_backends import FrozenVLM  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from controller import history_window  # noqa: E402
 
-from scenarios import SCENARIOS, icon, plural  # noqa: E402
+from scenarios import ICON_VERSION, SCENARIOS, icon, plural  # noqa: E402
 
 DOMAINS = {k: v['labels'] for k, v in SCENARIOS.items()}
 NOUN = {k: v['noun'] for k, v in SCENARIOS.items()}
@@ -278,14 +278,17 @@ def main():
                        split=args.split, pixels=args.pixels, hazard=args.hazard, history_mode=args.history_mode,
                        history_format=args.history_format, hint=not args.no_hint, readouts=sorted(args.readouts),
                        domains=sorted(args.domains), formats=sorted(args.formats),
-                       trials=args.trials, max_episodes=args.max_episodes)
+                       trials=args.trials, max_episodes=args.max_episodes, icon_version=ICON_VERSION)
     (args.output / f'_COMPLETE_shard{i}of{n}').unlink(missing_ok=True)   # never keep a stale marker
     fp_path = args.output / f'_FINGERPRINT_shard{i}of{n}.json'
     if fp_path.exists():
         old = json.loads(fp_path.read_text())
-        diff = {k: (old.get(k), v) for k, v in fingerprint.items() if old.get(k) != v and k != 'renderer_sha256'}
+        diff = {k: (old.get(k), v) for k, v in fingerprint.items() if old.get(k) != v and k not in ('renderer_sha256', 'icon_version')}
         if diff:
             sys.exit(f'Refusing to resume: fingerprint differs from existing output: {diff}')
+        if old.get('icon_version', 'v3') != fingerprint['icon_version'] and 'image' in args.formats:
+            sys.exit(f"Refusing to resume: icons changed ({old.get('icon_version', 'v3')} -> "
+                     f"{fingerprint['icon_version']}); move this output aside and rerun (portable/README_RUN.md)")
         if old.get('renderer_sha256') != fingerprint['renderer_sha256']:
             print('WARNING: renderer code changed since this output was started (prompt hashes are stored per row).')
     else:

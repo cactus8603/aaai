@@ -156,10 +156,8 @@ Further summaries apply other integration rules outside the model: counts over t
 
 \begin{figure*}[t]
   \centering
-  \figplaceholder{Fig.~1. (a) Example trial and prompt (one cover story) with an image report. (b) Accuracy schedule:
-  true P(advisor A correct) dashed, Bayesian observer estimate solid, stable vs.\ volatile shaded.
-  (c) History formats and the stated-reliability condition, and which processing steps each removes.}{5cm}
-  \caption{Task and history formats. (a) One trial in the weather cover story. (b) Schedule of advisor A's accuracy in a stable-first episode. (c) History formats and the processing steps each leaves to the model: (i) outcome evaluation, (ii) integration across trials, (iii) use. \todo{finalize with figure}}
+  \includegraphics[width=\textwidth]{figures/fig_task.pdf}
+  \caption{Task and history formats. (a) One trial in the weather cover story. (b) Schedule of advisor A's accuracy in a stable-first episode. (c) History formats and the processing steps each leaves to the model: (i) outcome evaluation, (ii) integration across trials, (iii) use.}
   \label{fig:task}
 \end{figure*}
 
@@ -189,10 +187,10 @@ Further summaries apply other integration rules outside the model: counts over t
 \devnote{}
 
 \paragraph{Stated vs.\ experienced reliability (control conditions).} % D vs A on the control items; separate metric from main-task accuracy (W03).
-All models used reliability when it was stated (Table~\ref{tab:controls}, Fig.~\ref{fig:gap}b). With text reports, a stated percentage or stated counts led to the better advisor on 92--100\% of items, and models identified which advisor had been correct on a single shown trial on 100\% of items. The same information given as experience was used much less: with an easy raw history in which one advisor had been correct on every recent trial, accuracy was .61--.70 for 10-trial histories and .53--.56 for 80-trial histories. When the same easy histories were correctness-coded, accuracy rose to .996--1.00 for 10 trials and .68--.75 for 80 trials. Evaluating a single trial is therefore not the difficulty; evaluating and combining many raw trials is, and long histories are hard even when evaluation is removed.
+All models used reliability when it was stated (Fig.~\ref{fig:gap}b; Table~\ref{tab:controls} in Appendix~C). With text reports, a stated percentage or stated counts led to the better advisor on 92--100\% of items, and models identified which advisor had been correct on a single shown trial on 100\% of items. The same information given as experience was used much less: with an easy raw history in which one advisor had been correct on every recent trial, accuracy was .61--.70 for 10-trial histories and .53--.56 for 80-trial histories. When the same easy histories were correctness-coded, accuracy rose to .996--1.00 for 10 trials and .68--.75 for 80 trials. Evaluating a single trial is therefore not the difficulty; evaluating and combining many raw trials is, and long histories are hard even when evaluation is removed.
 
 \paragraph{Raw vs.\ summarized history.} % Fig. 2: A, A+, B, B', C per model; text cover stories and pet reported separately; Table 2. Title wording decided by results (R04).
-On the main task, accuracy with the raw history was .463--.487, at or below chance, and accuracy with the summarized history was .616--.632 (Table~\ref{tab:main}, Fig.~\ref{fig:gap}a). The summary--raw gap was $+.129$ to $+.169$ in every model (16 development episode pairs; Wilcoxon $p < .001$ in each model). The correctness-coded history reached .627--.642, as high as the summary: the coded history recovered 97--120\% of the summary--raw gap (Table~\ref{tab:decomp}). Appending the correctness statement to the raw history, so that the information was present but the reports remained, recovered only $+.049$ to $+.065$, about two-fifths of the gap. The gap therefore arises mainly where the raw reports must be compared with the outcome, not where outcomes must be integrated. Integration over long histories still limits accuracy in the volatile phase, where following the better advisor was near .50 in all formats (Fig.~\ref{fig:curves}), as it is for the all-trial count rule itself.
+On the main task, accuracy with the raw history was .463--.487, at or below chance, and accuracy with the summarized history was .616--.632 (Table~\ref{tab:main}, Fig.~\ref{fig:gap}a). The summary--raw gap was $+.129$ to $+.169$ in every model (16 development episode pairs; Wilcoxon $p < .001$ in each model). The correctness-coded history reached .627--.642, as high as the summary: the coded history recovered 97--120\% of the summary--raw gap (Table~\ref{tab:decomp}). Appending the correctness statement to the raw history, so that the information was present but the reports remained, recovered only $+.049$ to $+.065$, about two-fifths of the gap. The gap therefore arises mainly where the raw reports must be compared with the outcome, not where outcomes must be integrated. Integration over long histories still limits accuracy in the volatile phase, where following the better advisor was near .50 in all formats (Appendix~C, Fig.~\ref{fig:curves}), as it is for the all-trial count rule itself.
 
 \paragraph{Behavior under raw histories.} % Fig. 4: integration kernels + heuristic agreement (kappa); 'consistent with', not mechanism (R08).
 Under raw histories, the regression weights on which advisor had been correct were close to zero at every lag, whereas the weight on repeating the previous outcome (following whichever advisor currently reports the last trial's outcome) was positive in every model ($0.28$--$0.46$ log-odds; Fig.~\ref{fig:kernel}). Among simple strategies, repeating the previous outcome agreed best with the models' choices (Cohen's $\kappa = 0.24$--$0.28$; Table~\ref{tab:kappa}); it was the best-matching strategy in 11 to 14 of the 16 episodes for each model. This also explains accuracy below .5: because each outcome label occurs exactly five times in every 10-trial block (Appendix~B), the previous outcome predicts the next one slightly worse than chance, and repeating it scores .439 on these episodes (.479 on the robustness set, whose outcomes are independent). With correctness-coded histories the kernel was recency-weighted (largest weight at lag~1) and the weight on the previous outcome vanished; with appended correctness both components were present. These analyses describe behavior consistent with a strategy and do not identify a mechanism.
@@ -210,10 +208,6 @@ This comparison is supporting and descriptive. Human participants were told the 
 \begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_gap.pdf}
   \caption{(a) Accuracy on the main task by history format, text reports (markers: models; bars: 95\% bootstrap CIs over episode pairs). Dashed: the all-trial count rule that produces the summary, applied without a model. (b) Control conditions with text reports, on their own metric (accuracy on control items). Stated: reliability given as a percentage or as counts. Single trial: who was correct on one shown trial. Short/long: easy 10- or 80-trial histories, raw or correctness-coded. \devnote{}}\label{fig:gap}
-\end{figure*}
-\begin{figure*}[t]\centering
-  \includegraphics[width=\textwidth]{figures/fig_curves.pdf}
-  \caption{Probability of following the currently better advisor as a function of trials since a reversal, by history format. \devnote{} \todo{add window and change-point summaries}}\label{fig:curves}
 \end{figure*}
 \begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_kernel.pdf}
@@ -270,27 +264,6 @@ This comparison is supporting and descriptive. Human participants were told the 
   \label{tab:tests}
 \end{table*}
 
-% FILL: analyze_controls.py on runs_mi300x/<model>/dev_controls -> pooled[control].hard_acc
-\begin{table}[t]\centering\small
-  \setlength{\tabcolsep}{2.2pt}
-  \begin{tabular}{l ccccccc}
-    \toprule
-    & \multicolumn{2}{c}{Stated} & \multicolumn{2}{c}{Short} & \multicolumn{2}{c}{Long} & Single \\
-    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
-    Model & \% & counts & raw & coded & raw & coded & trial \\
-    \midrule
-    Qwen3-VL-8B & .917 & .998 & .701 & 1.00 & .533 & .681 & 1.00 \\
-    InternVL3.5-8B & 1.00 & 1.00 & .638 & .996 & .562 & .676 & 1.00 \\
-    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen3-VL-32B & 1.00 & 1.00 & .607 & 1.00 & .545 & .750 & 1.00 \\
-    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    \midrule
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    \bottomrule
-  \end{tabular}
-  \caption{Control conditions on development episodes, text reports (accuracy on control items, averaged over counterbalanced copies; image reports in Appendix~C). Stated: reliability given as a percentage or as counts. Short/long: an easy history in which one advisor is clearly better, given raw or correctness-coded. Single trial: who was correct on one shown trial. Full results by cover story in Appendix~C.}
-  \label{tab:controls}
-\end{table}
 
 \section{Discussion and Limitations}
 % ~0.6 page. Interpretation from held-out results only (which step, if any, fails); relation to DH gap and bandit summaries; NeuroAI link:
@@ -388,7 +361,35 @@ With text reports the images are replaced by the answer word. \todo{binding-cont
 
 \paragraph{Splits and seeds.} The main set has 16 development episodes (color, weather, stock and sports cover stories) and 48 held-out episodes (eight per text cover story), 128 with counterbalanced copies, generated with seed 20261111. Pet photos come from the Oxford-IIIT Pet dataset (CC BY-SA 4.0): 128 photos from the official trainval split for development episodes and 256 from the test split for held-out episodes, with no overlap. The robustness set has 24 held-out episodes (48 with copies; seed 20261112) in which correctness is drawn independently on each trial, outcome labels are drawn independently, and volatile-phase dwell times are drawn uniformly from 6--16 trials. All data are regenerated from seeds and checked against stored SHA-256 hashes.
 \subsection{C. Control Conditions and Decomposition: Full Results}      % heatmap model x condition x cover story
-Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the stepwise differences between history formats on the main task. Image reports lowered accuracy in every control condition, including stated reliability (.60--.81 instead of .92--1.00), although models named the content of a single report image almost perfectly. In the perception check, all models were at .50 for the medical cover story's icons (and InternVL3.5-8B also for the sports icons), so image-report results for these cover stories also reflect illegible icons; text-report results are unaffected. \devnote{} \todo{redraw the medical icons for future runs or exclude these strata from image analyses}
+Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the stepwise differences between history formats on the main task. Image reports lowered accuracy in every control condition, including stated reliability (.60--.81 instead of .92--1.00), although models named the content of a single report image almost perfectly. The image-report results in this table use the original icons; in the perception check, all models were at .50 for the original medical icons (and InternVL3.5-8B also for the sports icons). These icons were replaced before held-out evaluation (Appendix~G). \devnote{} \todo{replace with the rerun using the new icons}
+
+% FILL: analyze_controls.py on runs_mi300x/<model>/dev_controls -> pooled[control].hard_acc
+\begin{table}[h]\centering\small
+  \setlength{\tabcolsep}{2.2pt}
+  \begin{tabular}{l ccccccc}
+    \toprule
+    & \multicolumn{2}{c}{Stated} & \multicolumn{2}{c}{Short} & \multicolumn{2}{c}{Long} & Single \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+    Model & \% & counts & raw & coded & raw & coded & trial \\
+    \midrule
+    Qwen3-VL-8B & .917 & .998 & .701 & 1.00 & .533 & .681 & 1.00 \\
+    InternVL3.5-8B & 1.00 & 1.00 & .638 & .996 & .562 & .676 & 1.00 \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & 1.00 & 1.00 & .607 & 1.00 & .545 & .750 & 1.00 \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Control conditions on development episodes, text reports (accuracy on control items, averaged over counterbalanced copies; image reports in Appendix~C). Stated: reliability given as a percentage or as counts. Short/long: an easy history in which one advisor is clearly better, given raw or correctness-coded. Single trial: who was correct on one shown trial. Full results by cover story in Appendix~C.}
+  \label{tab:controls}
+\end{table}
+
+\begin{figure*}[h]\centering
+  \includegraphics[width=\textwidth]{figures/fig_curves.pdf}
+  \caption{Probability of following the currently better advisor as a function of trials since a reversal, by history format. \devnote{} \todo{add window and change-point summaries}}\label{fig:curves}
+\end{figure*}
+
 
 % FILL: analyze_controls.py -> table[] pooled over cover stories by report type (make_figures.load_controls); per cover story in the released output.
 \begin{table*}[h]\centering\small
@@ -630,6 +631,41 @@ These analyses use development episodes only and are exploratory. Table~\ref{tab
   \caption{Multimodal reports (development episodes, exploratory). Main-task columns use the correctness-coded history, so outcome evaluation is removed and the drop with image reports reflects binding images to advisors. Chart history: not yet run. Chart read below the prespecified 0.8 gate means chart-history results for that model are not interpreted.}
   \label{tab:mm}
 \end{table*}
+\paragraph{Icon design.} Icons replace the answer word with a picture in the image-report conditions, so they must be text-free (otherwise the model could read the answer), unambiguous for the two labels of each cover story, distinct from the icons of the other cover stories (the news story already uses a check mark and a cross, and the stock story green and red arrows), and legible at the 224-px (Qwen) and 448-px (InternVL3.5) input sizes. All icons are drawn programmatically, so they are identical across runs. In the frozen version, the medical icon (a lateral-flow test strip with one or two lines) and, for InternVL3.5-8B, the sports icon (a trophy versus a grey ball with a red cross) were named at chance in the single-image perception check on development items (Appendix~C), so image-report results for these cover stories would have mixed illegible icons with the binding problem we intended to measure.
+
+\paragraph{Icon selection (deviation from the frozen plan).} We therefore drew alternative icons (Fig.~\ref{fig:icons}) and tested them on development items only, with Qwen3-VL-8B and InternVL3.5-8B, before any held-out evaluation. The selection rule was fixed in advance of the comparison: an icon had to be named correctly by both models in the perception check (both labels, both answer orders), and among those we chose the one with the highest mean accuracy over the image-report control conditions (Table~\ref{tab:icons}). For medical this selected a plus/minus sign; a coloured version scored higher on the control conditions but was not named reliably by InternVL3.5-8B. For sports it selected a happy/sad face. The test strip remained illegible even when enlarged, which suggests that the problem was the meaning of the icon rather than its resolution. All other icons are unchanged. Every job that shows icon reports was rerun with the new icons; text reports, pet photographs, the correctness chart and the main test are unaffected. Outputs with the original icons are kept and the original icons can be regenerated. \todo{add main-task check (coded history, image reports, old vs.\ new icons)}
+
+\begin{figure*}[h]\centering
+  \includegraphics[width=\textwidth]{figures/fig_icons.pdf}
+  \caption{Candidate icons for the medical and sports cover stories (top: positive/win; bottom: negative/lose). Original: the frozen-plan icons. Chosen: the icons used for all reported image-report results.}
+  \label{fig:icons}
+\end{figure*}
+
+% FILL: runs/iconprobe (icon_probe_controls.py), analyze_controls.py; development items only.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccccc}
+    \toprule
+    Icon pair & Perception & Stated \% & Short raw & Short coded & Long coded & Mean \\
+    \midrule
+    \multicolumn{7}{l}{\textit{Medical (positive / negative)}} \\
+    Test strip (original) & .50/.50 & .61/.36 & .58/.62 & .62/.36 & .56/.45 & .52 \\
+    Large test strip & .50/.50 & .61/.53 & .58/.59 & .73/.77 & .62/.56 & .62 \\
+    Plus / minus (chosen) & 1.00/1.00 & .70/.67 & .84/.62 & 1.00/.50 & .61/.39 & .67 \\
+    Plus / minus, coloured & 1.00/.50 & .72/.70 & .77/.64 & 1.00/.95 & .61/.52 & .74 \\
+    Virus / empty circle & 1.00/.50 & .61/.92 & .59/.59 & 1.00/.41 & .48/.39 & .62 \\
+    \midrule
+    \multicolumn{7}{l}{\textit{Sports (win / lose)}} \\
+    Trophy / cross (original) & 1.00/.50 & .61/.64 & .52/.55 & .72/.62 & .61/.44 & .59 \\
+    Trophy / sad face & 1.00/1.00 & .66/.73 & .55/.48 & .84/.83 & .61/.44 & .64 \\
+    Happy / sad face (chosen) & 1.00/1.00 & .84/.78 & .50/.52 & .80/1.00 & .50/.48 & .68 \\
+    Medal / cracked medal & 1.00/.50 & .61/.64 & .53/.41 & .64/.39 & .48/.50 & .53 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Icon legibility on development items, image reports (Qwen3-VL-8B / InternVL3.5-8B). Perception: the two icons named correctly, over both answer orders. Other columns: accuracy on control items for that cover story (64 items per cell). Mean: over the four control conditions and both models. Selection rule: perception 1.00 for both models, then highest mean.}
+  \label{tab:icons}
+\end{table*}
+
 \subsection{H. Reasoning Mode}                               % thinking/CoT subset, lengths, truncation
 Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. The main comparison is Qwen3-VL-32B-Instruct with a step-by-step prompt against the same checkpoint answering directly; Qwen3-VL-8B-Thinking and Qwen3-VL-32B-Thinking use their native reasoning templates as a supplement. The subset comprises the main task at trials 20, 40, 60 and 80 with raw and summarized history, and the stated-reliability, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. Table~\ref{tab:reason} gives the results. \todo{one paragraph after results}
 

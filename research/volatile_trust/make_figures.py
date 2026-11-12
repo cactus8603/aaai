@@ -219,7 +219,73 @@ def main():
     fig_gap(D, C, out, a.split_label)
     fig_curves(D, out, a.split_label)
     fig_kernel(D, out, a.split_label)
+    fig_task(out)
     print('wrote', sorted(p.name for p in out.glob('fig_*.pdf')))
+
+
+
+def fig_task(out):
+    """Fig. 1: (a) one trial, (b) accuracy schedule, (c) history formats and the steps left to the model."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from scenarios import icon
+    fig = plt.figure(figsize=(7.0, 2.35))
+    gs = fig.add_gridspec(1, 3, width_ratios=[0.72, 0.9, 1.85], wspace=0.25)
+    # (a) one trial
+    a = fig.add_subplot(gs[0])
+    a.set_xlim(0, 1)
+    a.set_ylim(0, 1)
+    a.axis('off')
+    a.set_title('(a) One trial (weather)', loc='left')
+    a.text(0.0, 0.93, 'Day 6 of 80', fontsize=7, color=INK2, va='top')
+    for y, name, lab in ((0.70, 'Joe', 'dry'), (0.44, 'Tim', 'rain')):
+        a.text(0.0, y, f'{name} forecasts:', fontsize=7.5, va='center')
+        ia = a.inset_axes([0.68, y - 0.11, 0.22, 0.22])
+        ia.imshow(np.asarray(icon('weather', lab, 112)))
+        ia.axis('off')
+    a.text(0.0, 0.2, 'Model predicts the\nweather = chooses\nwhom to follow', fontsize=6.8, va='center', color=INK)
+    a.text(0.0, -0.02, 'Outcome revealed,\nadded to history', fontsize=6.8,
+           va='bottom', color=INK2)
+    # (b) schedule
+    b = fig.add_subplot(gs[1])
+    t = np.arange(1, 81)
+    p = np.where(t <= 40, 0.8, np.where(((t - 41) // 10) % 2 == 0, 0.2, 0.8))
+    b.axvspan(40.5, 80.5, color=GRID, alpha=0.6, lw=0)
+    b.step(t, p, where='mid', color='#2a78d6')
+    b.text(20, 0.9, 'stable', ha='center', fontsize=6.8, color=INK2)
+    b.text(60, 0.9, 'volatile', ha='center', fontsize=6.8, color=INK2)
+    b.set_ylim(0, 1)
+    b.set_xlim(0.5, 80.5)
+    b.set_xlabel('Trial')
+    b.set_ylabel('P(advisor A correct)')
+    b.set_title('(b) Schedule (stable-first)', loc='left')
+    grid(b)
+    # (c) formats
+    c = fig.add_subplot(gs[2])
+    c.axis('off')
+    c.set_xlim(0, 1)
+    c.set_ylim(0, 1)
+    c.set_title('(c) History formats', loc='left')
+    rows = [('Raw', 'Joe: rain; Tim: dry; actual: rain', 'iii', '#eb6834'),
+            ('Raw+correctness', '...rain (Joe correct; Tim wrong)', 'iii', '#eda100'),
+            ('Correctness-coded', 'Joe correct; Tim wrong', ' ii', '#1baf7a'),
+            ('Summarized', '5 days: Joe correct 4, Tim 1', '  i', '#2a78d6'),
+            ('Stated reliability', 'Joe correct on 80% of days', '  i', INK2)]
+    hdr_y = 0.95
+    for x, h in ((0.0, 'Format'), (0.355, 'Example (abbreviated)'), (0.865, '(i)'), (0.93, '(ii)'), (0.995, '(iii)')):
+        c.text(x, hdr_y, h, fontsize=6.5, color=INK2, va='top', ha='left' if x < 0.8 else 'center')
+    steps = {'iii': (1, 1, 1), ' ii': (0, 1, 1), '  i': (0, 0, 1)}
+    for k, (name, ex, st, col) in enumerate(rows):
+        y = 0.78 - k * 0.17
+        c.plot([0.0], [y], marker='s', color=col, ms=5)
+        c.text(0.03, y, name, fontsize=6.6, va='center')
+        c.text(0.355, y, ex, fontsize=6.2, va='center', color=INK, linespacing=1.15)
+        for j, on in enumerate(steps[st]):
+            c.plot(0.865 + j * 0.065, y, marker='o', ms=5, color=INK if on else 'white', mec=INK2, mew=0.6, clip_on=False)
+    c.text(1.0, 0.0, 'Filled: step left to the model. (i) outcome evaluation, (ii) integration, (iii) use',
+           fontsize=6, color=INK2, ha='right')
+    fig.savefig(out / 'fig_task.pdf', bbox_inches='tight')
+    plt.close(fig)
 
 
 if __name__ == '__main__':

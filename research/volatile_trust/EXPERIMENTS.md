@@ -330,3 +330,9 @@ robust 資料（IID）：window:5 .675、sum_cp .663、window:10 .635、window:2
   - 圖表計畫與 main.tex 統一為 5 圖 2 表；E1 熱圖移到附錄。
   - 凍結程序列出 tag 內容與凍結前已看過的東西（本文件開頭）。
 - **待決定**：如果 Gemma 授權未通過，就用 Mistral-Small-3.2-24B 替代作為獨立家族。
+- **偏離 D1（2026-11-12，凍結 tag `prereg-v3` 之後；依據只有 dev 資料，尚未看過任何 held-out 模型結果）：medical 和 sports 的 icon 換新（`ICON_VERSION = 'v3.1'`）。**
+  - **原因**：AMD dev 控制組的單圖辨識（perception）中，三個模型認 medical icon（試紙）都只有 .50；InternVL3.5-8B 認 sports icon（獎盃對打叉的灰球）也只有 .50。也就是模型認不出圖，圖片報告條件的結果會混入「看不懂 icon」，無法解讀成綁定或學習的問題。
+  - **怎麼選**：只用 dev 控制題（`icon_probe.py`、`icon_probe_controls.py`；Qwen3-VL-8B 與 InternVL3.5-8B）。規則是先要求兩個模型的單圖辨識都 = 1.00，再挑圖片控制題（明示可靠度、短 raw、短 coded、長 coded）平均最高的。medical 試了 5 種、sports 試了 4 種。結果：medical 用加號／減號（環形外框、同色），sports 用笑臉／哭臉。彩色加減號的下游平均較高（.738 對 .668），但 InternVL 的辨識只有 .50，所以不選。
+  - **影響範圍**：只有顯示 icon 報告的工作（`dev_controls`、`dev_binding`、`{dev,ho}_full_image`、`{dev,ho}_full_coded`、`{dev,ho}_sum_cp`）。這些工作用 `portable/supersede_icon_v3.py --apply` 移到 `runs_mi300x/_superseded_icons_v3/` 後重跑。文字報告、pet 照片、圖表、Psych-101、robust、E9、xcheck 不受影響，不必重跑。主檢定（文字報告 C−A）完全不受影響。
+  - **防呆**：`run_volatile.py` 遇到含圖片格式、但 icon 版本不同的既有輸出時，拒絕續跑；`run_controls.py` 的 fingerprint 加入 `icon_version`。舊版 icon 用 `icon(..., version='v3')` 可以重現。
+  - 論文附錄 G 報告所有候選 icon 與結果（含原版），舊 icon 的 dev 結果保留在 superseded 目錄，不刪除。

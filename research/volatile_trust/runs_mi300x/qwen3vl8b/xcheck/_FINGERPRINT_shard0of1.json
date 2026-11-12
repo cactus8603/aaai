@@ -1,0 +1,24 @@
+{
+ "model_id": "Qwen/Qwen3-VL-8B-Instruct",
+ "model_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+ "data_sha256": "1e03024658b53b2179d182da0c49e55c4a5ec93b1b9e3f0372f67a08de4dd6a0",
+ "renderer_sha256": "21c4cee9cbb4af3871a21bbbdfff716006a38264b3f7772e2e32e4f653f346b9",
+ "split": "development",
+ "pixels": 224,
+ "hazard": 0.06666666666666667,
+ "history_mode": "full",
+ "history_format": "raw",
+ "hint": true,
+ "readouts": [
+  "choice"
+ ],
+ "domains": [
+  "color",
+  "pet"
+ ],
+ "formats": [
+  "text"
+ ],
+ "trials": null,
+ "max_episodes": 2
+}

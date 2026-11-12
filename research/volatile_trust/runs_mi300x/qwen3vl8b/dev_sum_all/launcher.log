@@ -1,0 +1,36 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:02<00:08,  2.72s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:05<00:05,  2.66s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:08<00:02,  2.67s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.24s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.40s/it]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}. If this is not desired, please set these values explicitly.
+{"episode": "dev000", "rows": 160, "sec_per_row": 0.0788995623588562}
+{"episode": "dev001", "rows": 320, "sec_per_row": 0.0583945482969284}
+{"episode": "dev002", "rows": 480, "sec_per_row": 0.05153974990049998}
+{"episode": "dev003", "rows": 640, "sec_per_row": 0.04811580590903759}
+{"episode": "dev004", "rows": 800, "sec_per_row": 0.04608485996723175}
+{"episode": "dev005", "rows": 960, "sec_per_row": 0.04470105692744255}
+{"episode": "dev006", "rows": 1120, "sec_per_row": 0.04371721829686846}
+{"episode": "dev007", "rows": 1280, "sec_per_row": 0.04299600925296545}
+{"episode": "dev008", "rows": 1440, "sec_per_row": 0.0424157761865192}
+{"episode": "dev009", "rows": 1600, "sec_per_row": 0.04194469422101974}
+{"episode": "dev010", "rows": 1760, "sec_per_row": 0.04157917120239951}
+{"episode": "dev011", "rows": 1920, "sec_per_row": 0.041269125789403914}
+{"episode": "dev012", "rows": 2080, "sec_per_row": 0.041012693253847265}
+{"episode": "dev013", "rows": 2240, "sec_per_row": 0.04079972952604294}
+{"episode": "dev014", "rows": 2400, "sec_per_row": 0.04060897837082545}
+{"episode": "dev015", "rows": 2560, "sec_per_row": 0.04044699668884277}
+{"episode": "dev000t", "rows": 2720, "sec_per_row": 0.04030311493312611}
+{"episode": "dev001t", "rows": 2880, "sec_per_row": 0.040172429713937974}
+{"episode": "dev002t", "rows": 3040, "sec_per_row": 0.04005479694981324}
+{"episode": "dev003t", "rows": 3200, "sec_per_row": 0.0399494469165802}
+{"episode": "dev004t", "rows": 3360, "sec_per_row": 0.03985792597134908}
+{"episode": "dev005t", "rows": 3520, "sec_per_row": 0.039768558876080946}
+{"episode": "dev006t", "rows": 3680, "sec_per_row": 0.03968779619621194}
+{"episode": "dev007t", "rows": 3840, "sec_per_row": 0.03961638491600752}
+{"episode": "dev008t", "rows": 4000, "sec_per_row": 0.03954832822084427}
+{"episode": "dev009t", "rows": 4160, "sec_per_row": 0.03948516037601691}
+{"episode": "dev010t", "rows": 4320, "sec_per_row": 0.03942977929556811}
+{"episode": "dev011t", "rows": 4480, "sec_per_row": 0.03937661977750914}
+{"episode": "dev012t", "rows": 4640, "sec_per_row": 0.03932564679918618}
+{"episode": "dev013t", "rows": 4800, "sec_per_row": 0.03928188343842824}
+{"episode": "dev014t", "rows": 4960, "sec_per_row": 0.03924353786053196}
+{"episode": "dev015t", "rows": 5120, "sec_per_row": 0.0392048008274287}
+COMPLETE 5120 rows

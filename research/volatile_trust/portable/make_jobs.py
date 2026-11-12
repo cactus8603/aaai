@@ -132,6 +132,20 @@ def main():
                                '--history-mode', mode, '--history-format', hfmt, '--domains', 'pet', 'scenario',
                                '--formats', 'text', '--readouts', 'choice', '--pixels', str(m['pixels'])],
                          output=f'{VT}/runs_mi300x/{key}/{name}'))
+    # Exploratory masking check (added 2026-11-12 after the freeze; development episodes only; see EXPERIMENTS.md).
+    # The raw-plus-correctness history with the outcome and/or report labels replaced by '---' (masking_probe.py);
+    # the baselines are each model's dev_full_rawcoded / dev_full_coded jobs. Appended after the wording jobs.
+    for key in ('gemma3_12b', 'qwen3vl32b', 'internvl38b', 'gemma3_27b', 'qwen25vl72b'):
+        if key not in a.models and key != 'gemma3_12b':
+            continue
+        m = reg[key]
+        for f in ('rep_ok', 'out_ok', 'mask_ok'):
+            para.append(dict(model=key, gpus=m['gpus_mi300x'], id=f'{key}__mask_{f}',
+                             script=f'{VT}/masking_probe.py',
+                             args=['--split', 'development', '--data-dir', f'{VT}/episodes_v3',
+                                   '--history-mode', 'full', '--history-format', f, '--domains', 'pet', 'scenario',
+                                   '--formats', 'text', '--readouts', 'choice', '--pixels', str(m['pixels'])],
+                             output=f'{VT}/runs_mi300x/{key}/mask_{f}'))
     # Tiers (run tier 1 first): 1 = core evidence chain, 2 = secondary/explanatory, 3 = exploratory/extra.
     T1 = ('dev_controls', 'dev_binding', 'dev_chartread', 'xcheck', '_full_text', '_full_coded', '_full_rawcoded',
           '_sum_all', 'rob_full')

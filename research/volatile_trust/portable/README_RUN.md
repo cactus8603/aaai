@@ -34,7 +34,7 @@ python research/volatile_trust/portable/download_models.py --models qwen3vl8b in
 
 ## 5. 執行
 ```bash
-python research/volatile_trust/portable/make_jobs.py      # 產生工作清單：266 個工作（tier 1：69、tier 2：99、tier 3：98）
+python research/volatile_trust/portable/make_jobs.py      # 產生工作清單：343 個工作（tier 1：69、tier 2：99、tier 3：98、tier 4：77）
 ```
 每個工作都有 `tier` 欄位。`run_jobs.py --tier 1`（可給多個，例如 `--tier 2 3`）只跑指定 tier 的工作，可以和 `--models`、`--only`（工作 id 的子字串）合併使用。加 `--dry-run` 會列出要執行的指令，但不真的執行。
 
@@ -80,6 +80,8 @@ python research/volatile_trust/portable/supersede_icon_v3.py --apply    # 搬到
 nohup python research/volatile_trust/portable/run_jobs.py --gpus 0 1 2 3 4 5 6 7 --tier 4 > launcher_t4.out 2>&1 &
 ```
 輸出在 `runs_mi300x/<model>/para_<措辭>_<歷史格式>/`。如果同一個輸出目錄曾用另一種措辭跑過，程式會拒絕續跑（訊息含 `Refusing to resume ... wording`）。
+
+**遮罩檢查（tier 4，同日加入，放在措辭工作之後）**：Gemma-3-12B、Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B、Qwen2.5-VL-72B 每個 3 個工作（`*__mask_rep_ok`、`*__mask_out_ok`、`*__mask_mask_ok`），共 15 個，每個 5120 筆，只用 dev、只有文字報告。輸出在 `runs_mi300x/<model>/mask_<變體>/`。上面那行 `--tier 4` 會一起跑；只想先跑這組可以加 `--only mask_`。現在 `jobs.jsonl` 共 343 行，前 328 行沒變。
 
 ## 6. 傳回結果
 ```bash

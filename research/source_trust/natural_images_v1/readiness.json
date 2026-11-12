@@ -1,0 +1,138 @@
+{
+  "cache_bytes": 914089158,
+  "dataset": "Oxford-IIIT Pet",
+  "license": "CC-BY-SA-4.0",
+  "license_note": "Copyright remains with original image owners.",
+  "license_source": "https://www.robots.ox.ac.uk/~vgg/data/pets/",
+  "license_verified_date": "2026-11-11",
+  "official_annotation_sha256": {
+    "test": "8fa5aa98d95e64303703afbd20288ca5c16cf529c9b89f28f13bad8361653035",
+    "trainval": "1bfb8a90062f7aa00b84af3200f40399b5d7cb6c69c7f2b7c857ff216efdc070"
+  },
+  "preprocessing": {
+    "method": "aspect preserving LANCZOS resize, centered gray RGB(127,127,127) letterbox via Pillow ImageOps.pad",
+    "orientation": "raw decoded orientation; no EXIF transpose",
+    "sizes": [
+      224,
+      448
+    ]
+  },
+  "ready": true,
+  "runtime": {
+    "pillow": "11.3.0",
+    "python": "3.12.3"
+  },
+  "script_sha256": "e91836ebe12e866afdfa85fbdea69ef8e9e35f016de4db442356831ce24be074",
+  "seed": 20261111,
+  "selection": "Python random.Random; sorted official annotations grouped by species/breed; shuffled breed order and candidates; equal breed quotas with seeded remainder; replace decode failures or duplicates only",
+  "sources": [
+    {
+      "annotations": "Official split and class IDs from the Hugging Face mirror, with species-specific IDs reconstructed",
+      "revision": "089695c834a7deb60505b7cc506672db1c31a6aa",
+      "url": "https://huggingface.co/datasets/timm/oxford-iiit-pet"
+    }
+  ],
+  "splits": {
+    "dev128": {
+      "breeds": {
+        "Abyssinian": 6,
+        "Bengal": 6,
+        "Birman": 5,
+        "Bombay": 6,
+        "British_Shorthair": 5,
+        "Egyptian_Mau": 5,
+        "Maine_Coon": 6,
+        "Persian": 5,
+        "Ragdoll": 5,
+        "Russian_Blue": 5,
+        "Siamese": 5,
+        "Sphynx": 5,
+        "american_bulldog": 3,
+        "american_pit_bull_terrier": 2,
+        "basset_hound": 3,
+        "beagle": 3,
+        "boxer": 2,
+        "chihuahua": 3,
+        "english_cocker_spaniel": 2,
+        "english_setter": 3,
+        "german_shorthaired": 3,
+        "great_pyrenees": 3,
+        "havanese": 3,
+        "japanese_chin": 3,
+        "keeshond": 2,
+        "leonberger": 3,
+        "miniature_pinscher": 2,
+        "newfoundland": 3,
+        "pomeranian": 3,
+        "pug": 2,
+        "saint_bernard": 2,
+        "samoyed": 2,
+        "scottish_terrier": 3,
+        "shiba_inu": 3,
+        "staffordshire_bull_terrier": 2,
+        "wheaten_terrier": 2,
+        "yorkshire_terrier": 2
+      },
+      "classes": {
+        "cat": 64,
+        "dog": 64
+      },
+      "manifest_sha256": "29366f75156de2b52677240a135bcd9a3809e038b89a0f4a4ba7215cdf226f4c",
+      "total": 128
+    },
+    "heldout256": {
+      "breeds": {
+        "Abyssinian": 10,
+        "Bengal": 10,
+        "Birman": 10,
+        "Bombay": 11,
+        "British_Shorthair": 10,
+        "Egyptian_Mau": 11,
+        "Maine_Coon": 11,
+        "Persian": 11,
+        "Ragdoll": 11,
+        "Russian_Blue": 11,
+        "Siamese": 11,
+        "Sphynx": 11,
+        "american_bulldog": 5,
+        "american_pit_bull_terrier": 5,
+        "basset_hound": 5,
+        "beagle": 5,
+        "boxer": 5,
+        "chihuahua": 6,
+        "english_cocker_spaniel": 5,
+        "english_setter": 5,
+        "german_shorthaired": 6,
+        "great_pyrenees": 5,
+        "havanese": 5,
+        "japanese_chin": 5,
+        "keeshond": 5,
+        "leonberger": 5,
+        "miniature_pinscher": 5,
+        "newfoundland": 5,
+        "pomeranian": 5,
+        "pug": 6,
+        "saint_bernard": 5,
+        "samoyed": 5,
+        "scottish_terrier": 5,
+        "shiba_inu": 5,
+        "staffordshire_bull_terrier": 5,
+        "wheaten_terrier": 5,
+        "yorkshire_terrier": 5
+      },
+      "classes": {
+        "cat": 128,
+        "dog": 128
+      },
+      "manifest_sha256": "8551fc112bccfd2d980ebc286bc3422cca7ad3178b0a7b3b4c3bc3b95b316dc8",
+      "total": 256
+    }
+  },
+  "validation": {
+    "duplicates_checked": "Across and within all selected splits; RGB pixel hashes include dimensions; no model-based filtering",
+    "issues": [],
+    "selected_decode_pass": 384,
+    "unique_original_sha256": 384,
+    "unique_rgb_pixel_sha256": 384
+  }
+}

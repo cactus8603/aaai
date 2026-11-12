@@ -1,0 +1,29 @@
+{
+ "model_id": "OpenGVLab/InternVL3_5-8B-HF",
+ "model_revision": "741a7d03020411e666c6109218ab71e08151ef86",
+ "pixels": 448,
+ "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+ "controls": [
+  "easy_long",
+  "easy_long_coded",
+  "easy_short",
+  "easy_short_coded",
+  "explicit_counts",
+  "explicit_rel",
+  "perception",
+  "single_trial_who"
+ ],
+ "formats": [
+  "image",
+  "text"
+ ],
+ "domains": [
+  "color",
+  "medical",
+  "news",
+  "pet",
+  "sports",
+  "stock",
+  "weather"
+ ]
+}

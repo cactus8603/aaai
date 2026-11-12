@@ -1,0 +1,3074 @@
+{
+ "Abyssinian_14": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_14.png",
+  "sha224": "0b42b2bf85fc156e3f7470d0e716fbed11df56da2cfe2ed5bf9c9499de6a96ea",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_14.png",
+  "sha448": "5931f41b6351c06edd791b1d4b9d71fa5cf2c7ea7b4849331d8b88e0bfc35f19",
+  "split": "trainval"
+ },
+ "Abyssinian_146": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_146.png",
+  "sha224": "60b71daf25e5dab0d094551b81f22c4464c4a231f14ac0089870392e24d463aa",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_146.png",
+  "sha448": "7e7dc61604a8d0dd848150166cc906bea21a3cdffa0dba27f39787566ee8e2f6",
+  "split": "trainval"
+ },
+ "Abyssinian_152": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_152.png",
+  "sha224": "f8c7e507608f8c650267b9e4c594321cc7a29bdb8b101ba3fcb2c9e2acc1eee2",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_152.png",
+  "sha448": "70962fdba01d25fdf24f8052ae5e24f181854d511e41f2ec4b5ef3276226b40f",
+  "split": "trainval"
+ },
+ "Abyssinian_165": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_165.png",
+  "sha224": "b859f8657714b425eb92d25bade3f0802f8cafec88d9833b9f2db9c9a89ae357",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_165.png",
+  "sha448": "263f1ed2f818f7200c344ef108e5b94af233c2621a1e7d9a5d597daa286bc025",
+  "split": "trainval"
+ },
+ "Abyssinian_169": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_169.png",
+  "sha224": "b3e135a8c61a798a527b5660c839213be7dfde9bc31f7856284b36419a7509b0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_169.png",
+  "sha448": "faa1af9bebec5d964e0f928bab3101ebf49446066d54833a973b7018d180bf89",
+  "split": "trainval"
+ },
+ "Abyssinian_196": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_196.png",
+  "sha224": "275dfff356eab04b560c367d857b04e1e8c8a3453cc03850b638aed7dead4bb1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_196.png",
+  "sha448": "29d27dfc8500c73f314f0f2551673681e8c318c42d80026a6b34d90814722bcc",
+  "split": "trainval"
+ },
+ "Bengal_104": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_104.png",
+  "sha224": "16ecb115161ffbd180b48aab3649834c8ef4727cacbe808c6f3b7047c496ba28",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_104.png",
+  "sha448": "c3bf24a34b8f5fe8c72a99f939e9e364bd4f729267c29881efe71f0a91174b52",
+  "split": "trainval"
+ },
+ "Bengal_116": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_116.png",
+  "sha224": "6c33c086231b20dc435a27ad0f82f4f495e1179806de2f7c0bc82c9c37e8a954",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_116.png",
+  "sha448": "86e992766e2eb8bd0e1a9fa681c342af57715ac3058ef0a708fb0bb13faae643",
+  "split": "trainval"
+ },
+ "Bengal_129": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_129.png",
+  "sha224": "10df6dfc0cd197962a236161853792501f6af973c2932d44d5ded6abf4cb56a8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_129.png",
+  "sha448": "253947d20a02df2a6ff7f935aa85bdcbb7daa185999087e932f8a20751497b71",
+  "split": "trainval"
+ },
+ "Bengal_132": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_132.png",
+  "sha224": "a9203e1996e74c7e8eec932617132443156fb602fb066616ae9a7f263de502d7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_132.png",
+  "sha448": "8ff2988c931b0dce251db6cd5d7bbb7c64186dbb4517eec890999cf7aed70bca",
+  "split": "trainval"
+ },
+ "Bengal_154": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_154.png",
+  "sha224": "7eec11b9fcd410383874cb43a711953c6f3184ba2a0e091990f934f33ce235eb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_154.png",
+  "sha448": "2bc44b4ddccc50a9547be9ecddceda713e9fb19384223c5197fedd4bde3a43f8",
+  "split": "trainval"
+ },
+ "Bengal_155": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_155.png",
+  "sha224": "4538e3b1c72104de16deb0d89180a97cc89889f8d7f7837a94d58e2388530167",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_155.png",
+  "sha448": "b935507f8fea31817f12fb2fa0bcf56308b72de46e4cb6cac8dfe6563a5897c9",
+  "split": "trainval"
+ },
+ "Birman_122": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_122.png",
+  "sha224": "1e31a8828f7cd2d7fbb10f266947c48c407e0d8968608e646c21c37ab49cd8fc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_122.png",
+  "sha448": "e3d3516773ff95482c98b6038c137239daae3f2922a926cb6dd92c7e08212ef7",
+  "split": "trainval"
+ },
+ "Birman_146": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_146.png",
+  "sha224": "d55a0a932726a7e3fd146073cb2bc4adb371e9eaf54253507edfc1cbb2932978",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_146.png",
+  "sha448": "88789f90dabcaa45b2a4d7cbd9c66372a765442b8c3661f5597cfb6074acc368",
+  "split": "trainval"
+ },
+ "Birman_150": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_150.png",
+  "sha224": "9b067fd661386837eb87c8fc7a01c9e8654e05fdd93669a0968d1e811c05615c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_150.png",
+  "sha448": "fea7d2ef8598359f597ad6c234249ba9172eacdb40262784e5b91f77e35eedac",
+  "split": "trainval"
+ },
+ "Birman_165": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_165.png",
+  "sha224": "19eb54f0054224f999d04ef7996827d344ccb87d47dcf3b695f17ca8e73f044c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_165.png",
+  "sha448": "471b646a5862739b7b4b94a245161681c4a794304d582a8429a8777dd2dff4e8",
+  "split": "trainval"
+ },
+ "Birman_170": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_170.png",
+  "sha224": "f881bfd9c92dc0d8e3d66018bf2ac64c990a4d2a11acdb25ef283a9da8297080",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_170.png",
+  "sha448": "4627c6fc7044aa175574a11d5ba117feb22f106cb8b9f9b21c922018dfb4b017",
+  "split": "trainval"
+ },
+ "Bombay_100": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_100.png",
+  "sha224": "605aeb2ad022c16b5a84819670fdf0cad7ff74f88982a14df639188dcde281e7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_100.png",
+  "sha448": "e6d932f68a62a14341f8ad842c42f9ccad6234bb6fbae0cce224cde34776440f",
+  "split": "trainval"
+ },
+ "Bombay_101": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_101.png",
+  "sha224": "ca1245f0baed153bceef6e713d345eaacf1f0f17ca9a1e029b155293f9b2ff4b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_101.png",
+  "sha448": "7cb10671c14de2cacda5e15297ac885b15637bbb95c225e3bc777036c7a5ea5d",
+  "split": "trainval"
+ },
+ "Bombay_129": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_129.png",
+  "sha224": "29cc6b67fef6afe00663be843ef4f7371f5143e0fa8546f2a0335d36c756890a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_129.png",
+  "sha448": "88508b367eeb917c70abc80556d0b6bdf28e0000ccc779d02e8d560d309d6141",
+  "split": "trainval"
+ },
+ "Bombay_132": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_132.png",
+  "sha224": "fdc639745a218ebf0f892cd8efed45363568a7df0333aef81fbe428ba2b8a442",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_132.png",
+  "sha448": "57d2618cfeec640a7e0e10f185692af2c24e2b3953b21f53f84b04b8901a5ae0",
+  "split": "trainval"
+ },
+ "Bombay_176": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_176.png",
+  "sha224": "52164781f7b8c51b0310ece2f2a293929fa6a74613d700c40d526a142177a8d0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_176.png",
+  "sha448": "1b27e67f5ee1df391a74f686304027bb906a4e2eec2b8542f550390a8e65da1e",
+  "split": "trainval"
+ },
+ "Bombay_18": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_18.png",
+  "sha224": "ed6d18cf136c87810830449694fa953d77fe923817d8fe86c791bd12df71818b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_18.png",
+  "sha448": "86d3e31aaf64ee25a089836b42c239ad04b675e8f675e7fc9a60f35d778b556a",
+  "split": "trainval"
+ },
+ "British_Shorthair_116": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_116.png",
+  "sha224": "40d646fe0553c71bbd9e322e420b6f9fc5693b7586a8fddc783bdbf68a48f8ba",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_116.png",
+  "sha448": "381ec22a29a65bc7c49426cea05a4eb9d14a4fbccbde57d7a9bf2db879f44a45",
+  "split": "trainval"
+ },
+ "British_Shorthair_164": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_164.png",
+  "sha224": "2051085968e9c69139e2432e6b8422dcd6cb05140c50706654fcfd06ad17180b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_164.png",
+  "sha448": "64354171cf5fcd11519b4ca8b445da6ab6fab498fe7e8f412565677363e21369",
+  "split": "trainval"
+ },
+ "British_Shorthair_195": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_195.png",
+  "sha224": "6b0058d47cb133ef05e6d0636796c7847f8692e4851ffaf6aed01d692eea0182",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_195.png",
+  "sha448": "94406aa9dc1dbe6ae66490e4b8b74e0e94dedf266672a8dd91009d4ef869387b",
+  "split": "trainval"
+ },
+ "British_Shorthair_197": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_197.png",
+  "sha224": "f508dd9630dd1c30d5daa8e6d42c33aa88f9f54835f444b8c0ef5e2afec2c0c8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_197.png",
+  "sha448": "0ccd2a5fab63938943f961e62a3d8d9ae6bfe704991186646a1ac2fe8a954599",
+  "split": "trainval"
+ },
+ "British_Shorthair_205": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_205.png",
+  "sha224": "93b6ca0b656b524c5668536c321e6d00f91587e5adef373543aa374f608b87d5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_205.png",
+  "sha448": "264d4c02c03765ae5f41dc4b44d82cbb1bf7f0c8c7feedcfeaef8a668a748440",
+  "split": "trainval"
+ },
+ "Egyptian_Mau_102": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_102.png",
+  "sha224": "574c972a0126383eca0e325411c292da8eddcb06912b53107b946d7553a71379",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_102.png",
+  "sha448": "34d2508601197875768e77fa9189f70ee7c073c99a16660da629cc1b4b8a64e6",
+  "split": "trainval"
+ },
+ "Egyptian_Mau_108": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_108.png",
+  "sha224": "d9faf2c9ec1394b736df06a47a7396209c0910c6e0865f67e1970f868995df96",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_108.png",
+  "sha448": "9d6b266d664a1c14cff56702d33895079109586aa12d741662fd90d597c6e8e8",
+  "split": "trainval"
+ },
+ "Egyptian_Mau_119": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_119.png",
+  "sha224": "f3022a513f9de2827cd4f4717b8ed62878b1e86e480130f77ca82ee7ecdff19d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_119.png",
+  "sha448": "e667a1ac700435831fd5ddda6a94d91289f7bf107d9957ba0b91e021bd1ee1cb",
+  "split": "trainval"
+ },
+ "Egyptian_Mau_122": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_122.png",
+  "sha224": "47a425793542a7f9e7cd65df6b346bb4058a92b342dc4b454a803ed4eb0496b1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_122.png",
+  "sha448": "294bc08b7097a53eb2b3b9730c36d63d8a9b56325f1e7b5b37c3dafcd586b2ae",
+  "split": "trainval"
+ },
+ "Egyptian_Mau_142": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_142.png",
+  "sha224": "f812bc0f39d5674737d6924508f352e4e234496357d852b5496cb928150f53e1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_142.png",
+  "sha448": "491d9f5bee2bceccf105b8b94f97da3524d649dfe58624033378135659e841bc",
+  "split": "trainval"
+ },
+ "Maine_Coon_107": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_107.png",
+  "sha224": "b08e2ce6c036eaf40d26653d657ac5c9bca0d9dbfbb8e909d3ddca7af5079286",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_107.png",
+  "sha448": "88d383fe6cb4e7ec90a2aba3df02671a7aff27b513bd61be2c18666ddb01b7db",
+  "split": "trainval"
+ },
+ "Maine_Coon_110": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_110.png",
+  "sha224": "0a780986bb325232647423c7d0961a3625efed2842cf880f788c60be0d70d370",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_110.png",
+  "sha448": "78bc01b06a4290a37f1aac383dabee960ba5d585860206fdd929bd71fa7da9f3",
+  "split": "trainval"
+ },
+ "Maine_Coon_147": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_147.png",
+  "sha224": "1d4c2330dd93d766017eb7d70a022b4edc3b347bf0977e9719b75e30d357d7cb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_147.png",
+  "sha448": "a3da6e7cbca30d1f9a00e9f6ae1055d9c5bdcae7edb04cba17ab8559e31c7a90",
+  "split": "trainval"
+ },
+ "Maine_Coon_171": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_171.png",
+  "sha224": "eaf108f85b790ecb815e7eecc5683caa260acce712c4d26d038532dcdd035c56",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_171.png",
+  "sha448": "d6d845c60e8d64ccfa8fa2d09dbdfeb6d3eada0e92049e305571498cad4fe586",
+  "split": "trainval"
+ },
+ "Maine_Coon_191": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_191.png",
+  "sha224": "c4b0a2f3dcc11d53cf56f20649331d14478af8879534b6d8874c4bb2d28f5a1a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_191.png",
+  "sha448": "f4055e2b3e02f7fb38b671c21c59522cc47ac7fdb79ee0bc4be7c3cac4f7dde4",
+  "split": "trainval"
+ },
+ "Maine_Coon_217": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_217.png",
+  "sha224": "baeaadbe122511cf720c6c53754a3f93d900251953881cb2c1bdaab7378e0ffe",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_217.png",
+  "sha448": "26eb2f754ac0b8cc8c5ff29e22bca3d6e752b138e138d3493bdbceb587952966",
+  "split": "trainval"
+ },
+ "Persian_15": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_15.png",
+  "sha224": "5f336b79ae7958cc84f7a8b4157a163f7acd9290f0e6852576b81d95d6726147",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_15.png",
+  "sha448": "906fae0a41cdb3d00671c11f9cbf5f559f30a1b14fab66a8c6c016bf8f5f72a7",
+  "split": "trainval"
+ },
+ "Persian_158": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_158.png",
+  "sha224": "88c823ec68b8b41945985fc773e581fc83e6094b12d003b8474dba77c1a25b7e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_158.png",
+  "sha448": "8c7f343390a07c61dd6bcde126139350673702a86aa5ac43cb3619ddb80bab9f",
+  "split": "trainval"
+ },
+ "Persian_166": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_166.png",
+  "sha224": "6ebb4d3fa52c79136bc6289a52bb9878a9515f71f3b7518aa815f4c9eacff3c0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_166.png",
+  "sha448": "30c91aa87427f174a0025a7aadd79c11b54245b1388a7aba284d57bc8467efe1",
+  "split": "trainval"
+ },
+ "Persian_193": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_193.png",
+  "sha224": "801b4f7c41cc075923a1da878aa42f65042c736ad087fe2b56ce025043234c56",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_193.png",
+  "sha448": "a92772db35627974d572b735796c8bd587aa95958e63c991118b521fad7ab97e",
+  "split": "trainval"
+ },
+ "Persian_213": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_213.png",
+  "sha224": "47ae84ec5d9d5a9afb369673f5e17ddef62a76e4c23b835d79c4c28233f6bc9f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_213.png",
+  "sha448": "3974aa9a0c0221ef82f7a24a69002e64b151377eb474e9533809c99b7051e280",
+  "split": "trainval"
+ },
+ "Ragdoll_101": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_101.png",
+  "sha224": "9e6d0588f1d858582cd4cf73db27eaa9f53fa4f2e0095064d0d05d97bd3bb163",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_101.png",
+  "sha448": "38f59e44663e7b021d454ab0e4c1eac9e2f4697c3f59cec91798dc2e6bc8ab4b",
+  "split": "trainval"
+ },
+ "Ragdoll_103": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_103.png",
+  "sha224": "71ce9e3849c841c55d6b5c9e45d8c96c1eed76d3d2779c834dcb84c1328c8fb4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_103.png",
+  "sha448": "17806a99fdcbe878d8fe881fba69b4687802dd4d55eaed1762a528a6471b174b",
+  "split": "trainval"
+ },
+ "Ragdoll_127": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_127.png",
+  "sha224": "bb7d94a119e1d84442f5e35fd21418dcfb02236b905d11cab6638a04bb7a030e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_127.png",
+  "sha448": "7775f1b05ee01c995adce0dfe401a1642ebd87e5dfb1b7115846691caad1a8e0",
+  "split": "trainval"
+ },
+ "Ragdoll_156": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_156.png",
+  "sha224": "f139e6c83e66382aa9251309613b0ac8e7729bf5a108b24c6d91853a40e9e26a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_156.png",
+  "sha448": "7358dcd5f9f3dde969d7ae203fb18becdf484f88feb8570b073f4b08567d0e43",
+  "split": "trainval"
+ },
+ "Ragdoll_186": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_186.png",
+  "sha224": "8dd2aa04c2013c71fb6520fbb4bac38e31576c30ebe1d642d5198dfb404732ff",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_186.png",
+  "sha448": "4641681a2c1284f0740b6fd50b7b0de917d99e06708acddf528d35d321ca572c",
+  "split": "trainval"
+ },
+ "Russian_Blue_10": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_10.png",
+  "sha224": "9a6049cfbeeb9e2550121b593d7aeb203692aecc3ba0e7d7db506e20dcece537",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_10.png",
+  "sha448": "97078b3d09e37e7430e367a2b72179f1b802509d731385e4308414bba6d4fd27",
+  "split": "trainval"
+ },
+ "Russian_Blue_127": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_127.png",
+  "sha224": "fec64aa24d2ec13d71062af3833ca443d8434a4899e973a367c7f218a107c704",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_127.png",
+  "sha448": "b3861688b270441d01446d88a92c1353a2897b12dbfcd3bf326afbc5aa6caf1a",
+  "split": "trainval"
+ },
+ "Russian_Blue_149": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_149.png",
+  "sha224": "73742b35e4296976d7304c124e49a486ee95ee93dfc0857926db88a20c85c41e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_149.png",
+  "sha448": "2e9694987ca68695be07588b518c93927e78c5c5a04f7297e7bff33b362b5a11",
+  "split": "trainval"
+ },
+ "Russian_Blue_174": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_174.png",
+  "sha224": "d8b4e679c75612cfdc9958fcd1c30647e215d7dcd97cc2fd3086df64a7725aae",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_174.png",
+  "sha448": "c8866d8a9b34c06e6700a6e90634840ccf293c228b1faadc8f902167f115ab19",
+  "split": "trainval"
+ },
+ "Russian_Blue_193": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_193.png",
+  "sha224": "2362c8fb9618a4fac42c53741eaa43edfded62626c77607feb5b6416b58d6abf",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_193.png",
+  "sha448": "231948c2aae0c8c70d4fd84dd30335fe765cbd53cd0bc5e4d0cd7c6bb3e70da6",
+  "split": "trainval"
+ },
+ "Siamese_112": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_112.png",
+  "sha224": "3ef9626c350047b7903bdb6499a40d875d98792ddb808a07ed08f44c07ac7817",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_112.png",
+  "sha448": "c2db97b70cb38f976ed719706763e3d5ccb5246b365b673f01717a81f55f3e84",
+  "split": "trainval"
+ },
+ "Siamese_153": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_153.png",
+  "sha224": "af0944ac879cd2f3c0a2cdee7ecb77b11bff1ba4c0c9dc56f3adb09f8da43a9c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_153.png",
+  "sha448": "65ad7c9d58465b4d597f1bda6c3d902cf33ca0f70cae7694a43f6b6c79b0863c",
+  "split": "trainval"
+ },
+ "Siamese_17": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_17.png",
+  "sha224": "b4c6a5fd119222f3fbb25537f2b696b28b8c4fb1813fcbf48b6bacdb0ff77f1a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_17.png",
+  "sha448": "242c903d726f69e395ad0b441e143acab31b08c8327178e8208cb394e501b90d",
+  "split": "trainval"
+ },
+ "Siamese_194": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_194.png",
+  "sha224": "f85955004b7329005e440c14c9538c3c53d42e75eac5243273b0e3493de06a6e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_194.png",
+  "sha448": "4959009d52b4f7d0599db28470ffdcf7604350d8d94252e2aef3a53dc0a8be84",
+  "split": "trainval"
+ },
+ "Siamese_199": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_199.png",
+  "sha224": "6a654f493774382514d6277762a92b1fe971938096760b5c14dde246fa803ee8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_199.png",
+  "sha448": "edcc5052e63d372109c50df7194294e434f824b0e8a9679eef5a235e054a2559",
+  "split": "trainval"
+ },
+ "Sphynx_111": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_111.png",
+  "sha224": "f24b16db5088f38994a96b7398c4ac67eb0c2750ff94f212faf03e521f473931",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_111.png",
+  "sha448": "04608826f88b1770b27827ef51a06773b5f1337f1362d5f6feab6d32abcc65ea",
+  "split": "trainval"
+ },
+ "Sphynx_14": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_14.png",
+  "sha224": "ef0675a0f4fc877478fa9dc224b47f821e65db9b8a17ac4ba6e95d7beb6b226d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_14.png",
+  "sha448": "54adbfad91d03db09a3e536364be235e251c790d5f6e0e9fa339991cfb117b09",
+  "split": "trainval"
+ },
+ "Sphynx_186": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_186.png",
+  "sha224": "ac03736de8279dee7a8bdb85dc4cac327fa6891280e4df867d2108066dea3ae0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_186.png",
+  "sha448": "1c2fd70407c7c21b0a9d7b54afc80529f4e3040a8c7e9b634d057c8c3b2c76ea",
+  "split": "trainval"
+ },
+ "Sphynx_188": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_188.png",
+  "sha224": "6194a24f9b2a4d369321c61de902872479bf86112d4955c3b292a0ff77cd49ec",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_188.png",
+  "sha448": "71dc41bf76ce37b4ba31c123f8c827f722f8d139f6cd78fddcc2ef7c2a1b9382",
+  "split": "trainval"
+ },
+ "Sphynx_195": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_195.png",
+  "sha224": "3d4a6cfaecd7fb3fa7ccabcd935e9735fc34420dd411a9a7c6158856621b4ba7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_195.png",
+  "sha448": "5c3ac229c537ce3fa7d31d87252e06ba4b5f5bc659596cd221d586cc90ac9bb0",
+  "split": "trainval"
+ },
+ "american_bulldog_119": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_119.png",
+  "sha224": "3d5c6ffee33c778bbf1cbf0556388e88c3c995a68c20a53810723fe08b9de7b5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_119.png",
+  "sha448": "3f67a1f569c82bca281c857896c77c99d8436bd8f34de34efb88886293dd7e6b",
+  "split": "trainval"
+ },
+ "american_bulldog_139": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_139.png",
+  "sha224": "8710d9ce185d760fe03b445e91fa16d5636026e80c6d87897c8594a031f7c225",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_139.png",
+  "sha448": "528ba7d83b776ab56ab1f4e6f6d5b108fdd81fbd1ae04f0684ec3ee3b076ac65",
+  "split": "trainval"
+ },
+ "american_bulldog_182": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_182.png",
+  "sha224": "7677506e962cb123eb0e7dd33388b54fc3b1beba59beb1cb6d2e22762485362d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_182.png",
+  "sha448": "4405063bde5b5ada4f5ce5c4642445d0a75b4e202f49a7fbd3f9ca60ef424ae9",
+  "split": "trainval"
+ },
+ "american_pit_bull_terrier_171": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_171.png",
+  "sha224": "d368409751f65801cf93c585b5ef550e4030a22059c07298cb44792bf8285e0e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_171.png",
+  "sha448": "a14e640d864300ed52f498d4fba078a5a8534700c30b47e9d22c25cb2df7d1af",
+  "split": "trainval"
+ },
+ "american_pit_bull_terrier_172": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_172.png",
+  "sha224": "5e605c76e726cb23111d89e50c59217387c9554c97a9f178f9afa23789f227a9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_172.png",
+  "sha448": "20c43c0a53359e2b614360a9ecaa58712e0288e6b4a7980e4b9238b8c37907bd",
+  "split": "trainval"
+ },
+ "basset_hound_127": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_127.png",
+  "sha224": "6c627b3b54f1ba0a23709958ebdffa6a05fdf3a60b4c79b52ac4f706b271f95e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_127.png",
+  "sha448": "54c86b8b680bf909bb7f7a593a4ff77bd004aa5303d7b735a39579a1cefd8036",
+  "split": "trainval"
+ },
+ "basset_hound_131": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_131.png",
+  "sha224": "23b695e05c392554b340088c1faeb84943e83d2578ff0ef060a5ade194521282",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_131.png",
+  "sha448": "cb0c2fb3d9a464669b3f5bcb092e295fd00c6ea4e20fd1df7bcfcdce3341484d",
+  "split": "trainval"
+ },
+ "basset_hound_163": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_163.png",
+  "sha224": "78ba7362097f766ba082860d32661db3e0196d0e1d8e6b0079449eb5c9a8866b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_163.png",
+  "sha448": "4a3c4aaebe3271c7999f349d4b88e150f9c25c93e068c5398eb8a57e1a90652c",
+  "split": "trainval"
+ },
+ "beagle_125": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_125.png",
+  "sha224": "706b85817aacdd2da62e96d46aa88affa901c2c5e5814d4e945d529d919793c5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_125.png",
+  "sha448": "ea183ab4fe33f416dae414892d22d62f03016c2f5b9daddb18022f0751535471",
+  "split": "trainval"
+ },
+ "beagle_15": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_15.png",
+  "sha224": "8cf55d8a99f3b89a5fce432c3479ba9d5a56ae3afc18c46276c540e8f70efffe",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_15.png",
+  "sha448": "eefb8473cf39f97a9017302c38956250e529f9eefdf43de42c826bebd2a682ab",
+  "split": "trainval"
+ },
+ "beagle_150": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_150.png",
+  "sha224": "ea263e2c95feff8c63e4f98dbf6ed69a5559cb7c8832e4c30ff71f062f085a0a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_150.png",
+  "sha448": "274f01b38bb26bdfeda6bf93c4a58a0acc990939e77df2d3e02936eb5aa086c0",
+  "split": "trainval"
+ },
+ "boxer_156": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_156.png",
+  "sha224": "c5fa727f4b6caaff9bd7a177ac15761084f209a15cd69f5747fd5b48b06d3ec9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_156.png",
+  "sha448": "7b0db83058ce2e90ff37514c5267d66103e613890487f4c07a06d210772fa40a",
+  "split": "trainval"
+ },
+ "boxer_176": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_176.png",
+  "sha224": "06cd735beb893a21c12a9b6f5a5b19dab3247ed94c5b4d04da2f8eb19c45641d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_176.png",
+  "sha448": "44f81f642f5360b688fb26b0f605deaf51d9f1b27af012cfde4ca5f03757c929",
+  "split": "trainval"
+ },
+ "chihuahua_133": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_133.png",
+  "sha224": "283c480db33b4f04ce09f6f040b036381315e608bd50308ec792b9e9b33c6c95",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_133.png",
+  "sha448": "debe8bd96aaccb0a30e6998da51b3bd3e1f3c4396a409ca785b4cfcd92fab340",
+  "split": "trainval"
+ },
+ "chihuahua_164": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_164.png",
+  "sha224": "a94e251d53f5c7b988f3c762d0ff95d13d5fa3a9de272f591216408793480ce4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_164.png",
+  "sha448": "d7413eeedb5093b5e03b77ea73671ae394ea076cea58197172fa0ff58e969441",
+  "split": "trainval"
+ },
+ "chihuahua_165": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_165.png",
+  "sha224": "2b5074fa31644a11df807fafd73a376d3db29a895e6c66fb2a187034efeb85d0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_165.png",
+  "sha448": "5df5eadb32b008f8df7d8355b88490cfd63a6acfb3daa230aeeb9599723f9109",
+  "split": "trainval"
+ },
+ "english_cocker_spaniel_122": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_122.png",
+  "sha224": "19c76b0f666f62c1fca1de556adc0a44570c3dcfdbb9f9ac1aa9c01b6b92fde3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_122.png",
+  "sha448": "410b48b5bdf6f335a943cdb30168ae34282a75a5bddc5d2c732f97c222e2989d",
+  "split": "trainval"
+ },
+ "english_cocker_spaniel_144": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_144.png",
+  "sha224": "3e4cebaaeb9940911c80f450c8a1e4750b6e9542de01b95fa956acb483a64794",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_144.png",
+  "sha448": "cd36ebb7da99c446d9086d9fc8de774f1076dfa642af7728e20a16c0d858a61f",
+  "split": "trainval"
+ },
+ "english_setter_122": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_122.png",
+  "sha224": "90a13fd1f0718bcba6fb613c9807aebe12704366525e391a7e0b684c13e6440b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_122.png",
+  "sha448": "b91fac8d48bb987d4d8ff4692d8b9011884ee384a65fb3fed944a9d5d1c5b376",
+  "split": "trainval"
+ },
+ "english_setter_162": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_162.png",
+  "sha224": "9d930f3f869e1f039b870cbde5a4777db3ae9986935241fe610074bd4c0cd39c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_162.png",
+  "sha448": "3c1aa3a485e20a8bd86d8ad8e631739ee9241117d0eba98fd18b1c9cea7c1391",
+  "split": "trainval"
+ },
+ "english_setter_189": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_189.png",
+  "sha224": "47045a58e7ca86a2d0f17e86005ddeeaf7dae1b6341021a83c19b078cc8239a0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_189.png",
+  "sha448": "fe0365671971d27ba0cc98baa1c4f420a12389874f1039545b7ef07773d0defc",
+  "split": "trainval"
+ },
+ "german_shorthaired_106": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_106.png",
+  "sha224": "99d3974479dce7b289365535bccd045fd13656406cf3e9299226fc64191e67ac",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_106.png",
+  "sha448": "6a463e4e06bf5097db101b66fdb92946a77161b0ea5424bc32297d8e9513ccdc",
+  "split": "trainval"
+ },
+ "german_shorthaired_145": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_145.png",
+  "sha224": "f2d80295b313e0443998e643a23f9e756425fe9ec0a40ad843ad5bd4f4958a87",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_145.png",
+  "sha448": "e888125d418c1394749921214e4c35f504bcc1e1c2cb8d10d8cba16c4a17ad7d",
+  "split": "trainval"
+ },
+ "german_shorthaired_186": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_186.png",
+  "sha224": "a749f24f03117a7ba7dd2300398529c3a5579139c0605e2ed6cbf364c8b4e232",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_186.png",
+  "sha448": "e79cbc8288819a400f405166fe8e0d72144b7c9ab50f2f45d64b292843ad10da",
+  "split": "trainval"
+ },
+ "great_pyrenees_149": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_149.png",
+  "sha224": "ac56c699ce00234ad9365848b0bde2c997a3f80fef99ac610033e785074b45b9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_149.png",
+  "sha448": "7156c471643ee4df0b85b6f3840e288af3c68e4d31b9dee61e2381b23627d5f6",
+  "split": "trainval"
+ },
+ "great_pyrenees_152": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_152.png",
+  "sha224": "2da44627b480716d6fa9a7846647830df6e9d698615d66f0e71f3938b8ae76a4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_152.png",
+  "sha448": "a1ae9e227ecbd84d41c1c57d7d0789ce22479c7261ca665ce368752df1b3cebb",
+  "split": "trainval"
+ },
+ "great_pyrenees_154": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_154.png",
+  "sha224": "763403b4b4758784c2b7d7d164134c582595c9f2e6dcd6f54d65367b10255a12",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_154.png",
+  "sha448": "0227159e2e91f6d7ad0396e12a76b45b37d684a1df10ba7381235de2e26bd11c",
+  "split": "trainval"
+ },
+ "havanese_169": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_169.png",
+  "sha224": "e5836465fd193189f0272832590a22818290b4d2770af77cec3a28c4776e98dd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_169.png",
+  "sha448": "7f7be4816a8ab5b906b13a6e100ca1d0c62e45aa9bba0ec084e33286560ef955",
+  "split": "trainval"
+ },
+ "havanese_175": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_175.png",
+  "sha224": "0e26aa61ec25afb5805e2b53623765f873b0ecefb1d8ba5e538962f3a4b87ae3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_175.png",
+  "sha448": "71ccae3140d77912b46fedba0226dfc2e0336cf484671735f6ce592028b5bb52",
+  "split": "trainval"
+ },
+ "havanese_186": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_186.png",
+  "sha224": "3eb181adda34226286562e219812f08f39af6e9b314bde6f66b95ecf47fdbd07",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_186.png",
+  "sha448": "b3f2a7ad00f4bb2b612137fe03aa3f7fd814ba8df7048ea40463a293b8463768",
+  "split": "trainval"
+ },
+ "japanese_chin_125": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_125.png",
+  "sha224": "17ccc8bd5ac9902151a355a9d4f30c3a8843f61faecbf17f019ffdab6c0d70d7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_125.png",
+  "sha448": "818462e09eaf52af26ba188abc36ac60fd2887a3fee8b1d05c1f756626b8111f",
+  "split": "trainval"
+ },
+ "japanese_chin_127": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_127.png",
+  "sha224": "6685a0591598714ffe12aee82ac36d666e45f611b34a864831a7a76ac0839af6",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_127.png",
+  "sha448": "98cee5dddd4f129d0a320799a0836666a1873e8a3349bf656bcb452c92fc3cd5",
+  "split": "trainval"
+ },
+ "japanese_chin_176": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_176.png",
+  "sha224": "f297be120eed61550ff017247425919da5ee3d13106d7eae30b1f15a552663f1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_176.png",
+  "sha448": "af7442e435c8c2547fc21ab367c34df5eb9abd62a0c4464928e62f31ffe18fc2",
+  "split": "trainval"
+ },
+ "keeshond_140": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_140.png",
+  "sha224": "4cdf822eb7eca54bacf0b1999d90fd7063123f1d9f35d652d147df08def438d8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_140.png",
+  "sha448": "4690e2a7162eef9d5fcc7335228d331b29f387b8110f5394ff4fa7099f83cbe1",
+  "split": "trainval"
+ },
+ "keeshond_170": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_170.png",
+  "sha224": "0cc09e0474aa47045a5bd550a56b1d801524908d7ecbfdfed8c6ad1051af1029",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_170.png",
+  "sha448": "0c6e710f9ae76bd7b3431d456d376eaf9d2e1ed934c8aa5cd724ecad6d34b171",
+  "split": "trainval"
+ },
+ "leonberger_108": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_108.png",
+  "sha224": "394986ebc4c4b08417b863229cc47b79138582657f7953ade42d73de9d269a20",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_108.png",
+  "sha448": "a44df8b1ce2c856e88edf3652b14b9558573ae0d4c3d34e7630e08c59c932732",
+  "split": "trainval"
+ },
+ "leonberger_130": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_130.png",
+  "sha224": "642d76cfa0fb4ea12ab3faa4574b74ddf5337efa874a41479f1d48bfe7c75080",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_130.png",
+  "sha448": "0d01f1c8c1d67c22ad03e7faaa8ae158216887f44679a3cecb08ca4f3528ba3a",
+  "split": "trainval"
+ },
+ "leonberger_142": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_142.png",
+  "sha224": "348ffb9ec62c96e23ddc984d69826436b51d6ae7d2c9d7ec47d34ba84548b837",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_142.png",
+  "sha448": "3d078015f061a8797e7de1be0e7467556f9b1ea3907c2642152dc36c0d1fdfc6",
+  "split": "trainval"
+ },
+ "miniature_pinscher_116": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_116.png",
+  "sha224": "6b37317e0a8221cc2067a64090d0471a22df5e16a497a1d063119ea695bd3928",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_116.png",
+  "sha448": "e764d9731b86a4607d914f071f87cdeb41d4a25bbe39b134b9f98ba8d59c56e9",
+  "split": "trainval"
+ },
+ "miniature_pinscher_155": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_155.png",
+  "sha224": "01d8b0535c362881c4cb28aba2a0b9a94e96bae83709cfb99df850784ccee4ad",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_155.png",
+  "sha448": "309c3dba939ff58781d73ed83e932436cd2e6b50b66328c377b431d43d4104c1",
+  "split": "trainval"
+ },
+ "newfoundland_11": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_11.png",
+  "sha224": "966cbefeaad4002382ad75ceb3dc421efd1c0a175edfe9bb4abbf95676e84499",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_11.png",
+  "sha448": "4d2bfd6042218c570e8330cf87f783bfd6230bf6832d45b2ec4fe4faf6c8425e",
+  "split": "trainval"
+ },
+ "newfoundland_143": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_143.png",
+  "sha224": "861010cf241939780b5f81114dc038f0e178bea22ac0139a63a1b728076c220a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_143.png",
+  "sha448": "99e28b64192740b58906bb8594c944f165278a2c26c310a8d49850ca9c68165d",
+  "split": "trainval"
+ },
+ "newfoundland_187": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_187.png",
+  "sha224": "8985d8a4b45a598179d4b033bb80e0d49e5fb8df87159a045819944627b72da0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_187.png",
+  "sha448": "d7c95114483628a84ee13207e6242bd8919552857aa3a780912f8ed70f3d2259",
+  "split": "trainval"
+ },
+ "pomeranian_151": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_151.png",
+  "sha224": "3f7c83e3edc00eb4fff0fa35b1b79f899b2d3392a7bdb555678a6d34a28c32b4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_151.png",
+  "sha448": "1aa4e19171b2b5c7bfc7966044c289146200485fe0766be141912e8e2fd420da",
+  "split": "trainval"
+ },
+ "pomeranian_173": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_173.png",
+  "sha224": "18d79aef0c894ccbf79056aa5ad5b60301114870b82cac3fe8e62cf8e6cf0c1c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_173.png",
+  "sha448": "c3558859ffc7792d6a00038fe43dc65d9556bb107803956d8b0dfedb007d8a58",
+  "split": "trainval"
+ },
+ "pomeranian_185": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_185.png",
+  "sha224": "a923c92e5744130ebd3a6d03b3278396e94ccaef080443ed19a5e512c2ab8106",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_185.png",
+  "sha448": "771920ff4f59dbdf10af33da8b99344ad4d39361fd5f725cbf78e0c0ba4cd3fe",
+  "split": "trainval"
+ },
+ "pug_175": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_175.png",
+  "sha224": "2ac8d1ac8e6038eeb8bec4a8a5c15f234f273e9c991d357df761f4b50bd504c9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_175.png",
+  "sha448": "7a913826423e8124bbf2697a27e5ed669d15c54218147cb43b27381f956da46f",
+  "split": "trainval"
+ },
+ "pug_178": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_178.png",
+  "sha224": "457f9a17307b2041806ec6632163fe5e59193723b7e7cfc4ed5bedbec018a421",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_178.png",
+  "sha448": "82c0dc1bc9c1c93282d3e63366a43d8d7cd27bbde47a1b91d94096846fd0c0df",
+  "split": "trainval"
+ },
+ "saint_bernard_18": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_18.png",
+  "sha224": "7086e2d309a776e3f3501f21636bc91b42f5bf765301ea0d5032a99699c2d152",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_18.png",
+  "sha448": "9912e837bd2e0118a4af774c890fe2597e16f37b58742dd88648dd5bc4b79166",
+  "split": "trainval"
+ },
+ "saint_bernard_188": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_188.png",
+  "sha224": "85c49cc63b72346d9bdd9de1c0dcf3275f0b0588b70d7f6f4c0e9f49b8f6467c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_188.png",
+  "sha448": "c3634c90873102b12fe558d626d4d14e1557d456d6fd805e29efe8c81cb71c6c",
+  "split": "trainval"
+ },
+ "samoyed_174": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_174.png",
+  "sha224": "18d2041fdd9d482192e1a2c7ee2a0a5319930b4de88bed507df613994270fd2b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_174.png",
+  "sha448": "d1980f1021d3a81758bc92bedbde1fb700a7e1ec62270baa9d3eb2868409f4f8",
+  "split": "trainval"
+ },
+ "samoyed_182": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_182.png",
+  "sha224": "77fdbe34433177a62420d0ccd360eacfd8d8b656be97114ee4972a92b47aadad",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_182.png",
+  "sha448": "0aea29b4a00af84ac165443303689815b7dcc656b613a72f085f53f543121ddb",
+  "split": "trainval"
+ },
+ "scottish_terrier_108": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_108.png",
+  "sha224": "72f55a69e9f5f7fa8ac16f4383feb88c9f3d8d37751abe508595bfaa8de13eca",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_108.png",
+  "sha448": "31e8e5adfd52dc6bfc9bc1aa04f6d85949cfb999f2cd62244015e878785591d3",
+  "split": "trainval"
+ },
+ "scottish_terrier_143": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_143.png",
+  "sha224": "8a620063cb803b62f7f52d21d280903a79c52d22694890f5945a6cc9bccab2ba",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_143.png",
+  "sha448": "fdd33575e1439a3ade19f3cd2641cd16f2ee15887eb4690fcf10946dc1734ee5",
+  "split": "trainval"
+ },
+ "scottish_terrier_182": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_182.png",
+  "sha224": "2643696ce83591142551ec9a1f6c73c34e7d422aa5341f48ab724687e275485b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_182.png",
+  "sha448": "e907df9a7727865ed7e69222d354e689283d46e93848f8fa04a188034b0abb63",
+  "split": "trainval"
+ },
+ "shiba_inu_140": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_140.png",
+  "sha224": "2779f1af7fcec35ff9db4a326db9ffa1bfdd5d4f5cf2d23bef7acb4fe575865e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_140.png",
+  "sha448": "1999598fb583b472af8bcd1c482498377a6567b0c62ca627a1819e0d53dae030",
+  "split": "trainval"
+ },
+ "shiba_inu_168": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_168.png",
+  "sha224": "86304d57bacc1b622a5c28bfa880531fec7b8e2498263a6f0a6a1188b8f1e837",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_168.png",
+  "sha448": "edb9af88cb89a249eaf304fdc0c43c29047c9bd997c3ce3f8441dbafed6a8346",
+  "split": "trainval"
+ },
+ "shiba_inu_174": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_174.png",
+  "sha224": "060e42ce7062836bae48b68f3eaeef72d167045f28927aae14914f5a8fb6b7e0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_174.png",
+  "sha448": "3b4f19d5a3bf9db313eb76b640fd4c7c5ab861f7f958e53ed5c5a2e76c2f94d2",
+  "split": "trainval"
+ },
+ "staffordshire_bull_terrier_163": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_163.png",
+  "sha224": "2322b164e1f97c759f352a97554ee466969f54e4db9abd713ac3b4944e682085",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_163.png",
+  "sha448": "9ac0265afa9cc938005abe44141ae81b3a4a17069a89493cf33ee00ad6e5adad",
+  "split": "trainval"
+ },
+ "staffordshire_bull_terrier_198": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_198.png",
+  "sha224": "c786191fbf92af24716ff5649b45a33d12c7561c99651899e4b80d2b2fbc9ff3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_198.png",
+  "sha448": "e2fc8b08b0baec54bcfe9796559f7c69e6215243fa7fef81d9102bd5d7fdcbda",
+  "split": "trainval"
+ },
+ "wheaten_terrier_106": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_106.png",
+  "sha224": "b6af38c0e707f5a0c638806cf13c98d5a266e57043b3e8ac8261bc11194f4424",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_106.png",
+  "sha448": "49d78b8cc2532140e3d3e4fa9590722d5e6d649d1c64f9a7b80894f9bc1efb17",
+  "split": "trainval"
+ },
+ "wheaten_terrier_153": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_153.png",
+  "sha224": "31686d086775d1767a0e0c7524092c56d951b9fd9d3ac6e25dc65a0b397784b6",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_153.png",
+  "sha448": "73b78ec3cafc4cdbd8ba96dee4b7dc49ebdfad299f56c076839df8fe33e39aab",
+  "split": "trainval"
+ },
+ "yorkshire_terrier_105": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_105.png",
+  "sha224": "1d58b82a5145a86a9ab12c134a073758265c0bec9d080a612a955410563b8077",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_105.png",
+  "sha448": "deca1dc9b2c1d2711a7de1a70e2daf7e3b58bb4e3d0631d400ae53637d5a2081",
+  "split": "trainval"
+ },
+ "yorkshire_terrier_144": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_144.png",
+  "sha224": "54d2e21ef6ff86f255e946d4e4f7f8826751d33cb1ca50f1c1baf57d1c2e9edf",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_144.png",
+  "sha448": "87a80429ab78f2f7f37fed82f21b39e3517c25ababd9afa123406639bfd88e28",
+  "split": "trainval"
+ },
+ "Abyssinian_2": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_2.png",
+  "sha224": "67ebd776f3c6040c5ceb5fcba73b3c581587772b536340059f4fbf21d66a8470",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_2.png",
+  "sha448": "190cb8c4e2f70808a310c93807f7cd180d955859596f9bed0210b17c73086ce3",
+  "split": "test"
+ },
+ "Abyssinian_20": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_20.png",
+  "sha224": "b7e21a4edbfea992f0bba2df1aa64c95c36a953fe27ca58343bad6cc7e961fea",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_20.png",
+  "sha448": "ba9cfa2f510c5731f2c89d7c122af8533b23938a4dc8abf08dba412113869f90",
+  "split": "test"
+ },
+ "Abyssinian_201": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_201.png",
+  "sha224": "627a4503087b78c422f74f1ddf873d5d9f9f24d56298f0e5a0a66c2379c32045",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_201.png",
+  "sha448": "aa3fcd1d2719522f28deea5cf217e0c043fa60d116e056b68116d3ed18064250",
+  "split": "test"
+ },
+ "Abyssinian_30": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_30.png",
+  "sha224": "6146b746154fe5797466391d39a379a466235b3b72877555cc4338448fec13f0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_30.png",
+  "sha448": "134f77c7abf6384072e358feec4d4fd11cb5be7e0e81e2897584dad831aaacb2",
+  "split": "test"
+ },
+ "Abyssinian_44": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_44.png",
+  "sha224": "e0a8aead106269546b3811928ddd57ab51ceb06cae11f11dfc8e692a0808adb5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_44.png",
+  "sha448": "7c79700dfb5ed9a906254d10ed6be208713c1a9a723fd2dace3ae396c83503f4",
+  "split": "test"
+ },
+ "Abyssinian_60": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_60.png",
+  "sha224": "7de16788b625c69d3ea848e85142c379f08ceccf82f63225570619cd6c185abe",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_60.png",
+  "sha448": "badd9b03831299fc0ca7f7d8a467e0254ea48713917ef297711f70d65576d1df",
+  "split": "test"
+ },
+ "Abyssinian_61": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_61.png",
+  "sha224": "d505cf99e33e5fb16660e9f80c80cf6b968348d74f566d3bd85d0c21896add3d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_61.png",
+  "sha448": "9b5533b2d1fd574dfe9c55aec10804253954c8b86fa958bcf81b73a9f2664f37",
+  "split": "test"
+ },
+ "Abyssinian_63": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_63.png",
+  "sha224": "0c68be7dc579a7913fac6e45163dca9498c9b295200b1c542c1c3369b01555f0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_63.png",
+  "sha448": "6d62e3f4ec461779ed7f66a195036a55a01aa6390c36a5b8c1974c48e51095e6",
+  "split": "test"
+ },
+ "Abyssinian_7": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_7.png",
+  "sha224": "2710a71baf56a5b77d4295eacfd295b7489e7d617f7254186443e834b4b3fd3b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_7.png",
+  "sha448": "417e4923e1c8143ad05c4527a19df00182acb3182a8f433b0ce899cc328c1208",
+  "split": "test"
+ },
+ "Abyssinian_99": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Abyssinian_99.png",
+  "sha224": "e3b0744117d7634fb5fde5ed0323827e27ea6fd61b9114347e3c25a6c1f18415",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Abyssinian_99.png",
+  "sha448": "5653118e163491725b1b3b79bd65a1dcdac26b1ff95116744dfc4214cd5c500d",
+  "split": "test"
+ },
+ "Bengal_198": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_198.png",
+  "sha224": "c17969fb73da2bfb3504321bde6fa26018e046176c2b3f8e537079ec7b71e53a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_198.png",
+  "sha448": "cf0de2e944a6899e0f4a238be1ee633b4db325d71386ce887694b6c4ee2a3b3e",
+  "split": "test"
+ },
+ "Bengal_20": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_20.png",
+  "sha224": "443d57cf0a80bc72c648aa59ebaa2cf5fd07801600c6678dfd4b236eb0ef49a0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_20.png",
+  "sha448": "e5cde9e49f9aa435487b7336e437fa012f21b027e8a6ec1dfec782f006782085",
+  "split": "test"
+ },
+ "Bengal_49": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_49.png",
+  "sha224": "ab9e493c8bd88efb52a35f7697d841f13e502b5d24fcc3fce33875435592a90d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_49.png",
+  "sha448": "277feb5789fa7d610a1f8c5a1a0691dd38de4e571809d038ef08c70da881e730",
+  "split": "test"
+ },
+ "Bengal_57": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_57.png",
+  "sha224": "d2e31bc2d62a0d6288fba68a27bf780f5a8cb981f9802e3b0eaed4c81651e2cb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_57.png",
+  "sha448": "ffba375a04d8c91767683b50f8e5861f55effe487270aee42ee96cc7a1e4acc5",
+  "split": "test"
+ },
+ "Bengal_61": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_61.png",
+  "sha224": "54f531d2311e65e5157ff60cbabcabfd6c6d89de661a42b12b36fcbfa446b55c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_61.png",
+  "sha448": "1c1481cc02221206ed4d2f1f99b9b766307db50778fbb9e0e6f7364adbf56cfc",
+  "split": "test"
+ },
+ "Bengal_62": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_62.png",
+  "sha224": "eea7a37181d4e45f65c940bdd5d05199c0f5552976e751e3e4414a69e2db6ece",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_62.png",
+  "sha448": "5f62e5ea52f1e7b5c1f37c7f3af8442a34a631f4f53d6d84f16d66f79ae9a1cb",
+  "split": "test"
+ },
+ "Bengal_73": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_73.png",
+  "sha224": "bc0b07261a5a192de50dcf6ff644f283a9b982a14dda2bd0ba0a46a48d09023b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_73.png",
+  "sha448": "2bef9e372cf802dd7d40c3306555ae4030e2078425385a8031b7e1ea318febdc",
+  "split": "test"
+ },
+ "Bengal_81": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_81.png",
+  "sha224": "8f14886e47e0c32a3ae44b59ccbfd8d5cdc1294b9852ff814a685fd16120dc1f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_81.png",
+  "sha448": "e137755d2fc088ca2f838dd49bfc61172ae7860789b798e8230f3713c92ec858",
+  "split": "test"
+ },
+ "Bengal_9": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_9.png",
+  "sha224": "c15ccb6b2ee2b52ddd02d2164ac5699250ac75b7fa0b751cc139db2df06caf60",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_9.png",
+  "sha448": "3cdfe6c3a4da543fb99bed8830c45fd183cec26d393a04a4d7e16ee26a89dd2e",
+  "split": "test"
+ },
+ "Bengal_92": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bengal_92.png",
+  "sha224": "a3dd4fa1a4309255e27548ce07b70f819816974c649c67605462439aed4f8d2e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bengal_92.png",
+  "sha448": "57013e9f11342779235180518b3132619a481e969d777a60d20d9914ff60e731",
+  "split": "test"
+ },
+ "Birman_22": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_22.png",
+  "sha224": "727412d8e279c17e3048c2947a7104a1e7ef89c53870caded0e3ce37923f60af",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_22.png",
+  "sha448": "06546c4a94f6f0382b3c9d37df5b7fbe19548ce8d86390fbccc22fc3dc667c95",
+  "split": "test"
+ },
+ "Birman_35": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_35.png",
+  "sha224": "c7302e03d4ecb1ab6c8bbeb47efa73af28e4bfdbcdda36e9de166dc6fec16155",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_35.png",
+  "sha448": "fd0eb8d01ec666e15f633a87312693e542ddf35ef002d77c259123bc61491495",
+  "split": "test"
+ },
+ "Birman_61": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_61.png",
+  "sha224": "5e22da481c28501e69252628090d3e68dcf249d022c2e682e975f0855b0708f7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_61.png",
+  "sha448": "c52669113a23319bc59e8748699a54ca06b8d9238215dc9998981d97940a8fb0",
+  "split": "test"
+ },
+ "Birman_63": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_63.png",
+  "sha224": "190f67a7a0ad4477804a3c3fb6331e61e05e3818a6f61034358c7ef6e41cadd1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_63.png",
+  "sha448": "3a8487e3c0e4c207bd9fb01c27b4da6b82dbdd303d917d26ee030ddec525c031",
+  "split": "test"
+ },
+ "Birman_65": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_65.png",
+  "sha224": "c2354ec49f2e1a56e5b4c13be3024448a01eceb4129dd21757f0e868ef3ec290",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_65.png",
+  "sha448": "2ef7fb7376e16c9e2cc935d23934d31c4741596efb329208b7b620b714abe3b0",
+  "split": "test"
+ },
+ "Birman_74": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_74.png",
+  "sha224": "0ad29fba49252b282d2bc5144de43475a19f89ee81b06cf47b6f8f5f44da3ebe",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_74.png",
+  "sha448": "f1414713ffd97b6ded5102f5f2d92f154325d503b8dcb2149ca73800d04559a5",
+  "split": "test"
+ },
+ "Birman_77": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_77.png",
+  "sha224": "80eab09e25202fa07ff2252e1865ae30f06c62490551c8c7e4b4f7f6846da418",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_77.png",
+  "sha448": "caa00e7eb8808d21c0535ff57b67d009e1ace0246761dd2382edd970bab8b96a",
+  "split": "test"
+ },
+ "Birman_80": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_80.png",
+  "sha224": "9ec52ebb586ef08853f6ac958cbf381b5ba4543cd0a34a19490bfdd0f2635c3d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_80.png",
+  "sha448": "2dffc50e5011d832a7b41a589ea06950f110a38ffc3032fa940f7801437f08e0",
+  "split": "test"
+ },
+ "Birman_85": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_85.png",
+  "sha224": "bf2fe9a8e7a3e85fe93bfec001d1449a261f3fcd767a2fb36e5d380b2d772bcd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_85.png",
+  "sha448": "08f89376cd90b6a3c59c0a1a26fbdc9e94c37062922d5a5bad27ad2d09d9ec2a",
+  "split": "test"
+ },
+ "Birman_9": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Birman_9.png",
+  "sha224": "ecc38506cffc9eeedbad2b922ac9175651d1ce5f44907cd1c5555c0e6244c1be",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Birman_9.png",
+  "sha448": "f1e01ea0af9080fd29aa15c1e890b0982a141639253c123eeb5942e783186a4a",
+  "split": "test"
+ },
+ "Bombay_201": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_201.png",
+  "sha224": "bd7cb80ffca354ab980e134f800adac33f14f1c84ec3730b7079034a86d28b8c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_201.png",
+  "sha448": "dcc9a9023dee978c9ea2e4a6ef1c654bc301e7430c47cfdc158f7dd914e78faf",
+  "split": "test"
+ },
+ "Bombay_26": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_26.png",
+  "sha224": "543ff2ec8236933ad5e78b0bb31d79fab740e49f71ca62d915d0699a4e7d9d18",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_26.png",
+  "sha448": "e84afefd5c5612cdcfbcd16bfa21941ec096883320f3ea51f2e60a95494611ef",
+  "split": "test"
+ },
+ "Bombay_34": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_34.png",
+  "sha224": "a56367d0dfd69cbb8d7aac702e94c461ae6ffacc19cac641f5e8b99ad3445885",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_34.png",
+  "sha448": "dee6cdebac337e79d002f529523193f146eb19a0f23874b078826b765921f40c",
+  "split": "test"
+ },
+ "Bombay_38": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_38.png",
+  "sha224": "fd94658b79cba60a99fc6674c62272236899a6dd7c9452afb009ed769a3118b9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_38.png",
+  "sha448": "6294039b3dbc08f648469a206715f5fe1f46b8e5046e43dca09d9901966df7da",
+  "split": "test"
+ },
+ "Bombay_41": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_41.png",
+  "sha224": "483e163dc688b5289cced12094c0fc9e027edba5ccc762801d1285995ed1be3a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_41.png",
+  "sha448": "2b184532f0671af70b808785ba53668dc682e0f5e4c76f50006ed7d8be3b8f30",
+  "split": "test"
+ },
+ "Bombay_6": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_6.png",
+  "sha224": "98839fb94d175c3c8010c471fd5ba026ce9fe513a30a5191ceb894e33d814871",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_6.png",
+  "sha448": "da07b93d386c7618af5a331209872417bb4dfe7739cb234ab3e8de82230ab9c3",
+  "split": "test"
+ },
+ "Bombay_66": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_66.png",
+  "sha224": "9379001e1cf8a0962a306bea8a54d177175b97534e63d596a4eec44bbb3debf9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_66.png",
+  "sha448": "c5e55ae32d792a15a014ac6baf0131e25ae5e340c6c630c73313431c7e7db121",
+  "split": "test"
+ },
+ "Bombay_79": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_79.png",
+  "sha224": "d1bf420ba52fe2762e7426a064282d984781f91a78e789bac1c7d64c404423f1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_79.png",
+  "sha448": "b6e899539577028a3a70725980b86dc83fc52e3ec9dc07b2df5b442a53b8ed52",
+  "split": "test"
+ },
+ "Bombay_8": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_8.png",
+  "sha224": "994094fb70bfaf911c03e3cf5c68966cbb64551a794c83f5f83f56b7c619e35f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_8.png",
+  "sha448": "f718b0062a08a2239ff5634110e7ff61ff9be1b230751b1e618acd20d6334d50",
+  "split": "test"
+ },
+ "Bombay_81": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_81.png",
+  "sha224": "a5117c8f2694d18bfab340e425e78897acb79d6eb031f71a1c7ac84cc98049ed",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_81.png",
+  "sha448": "a974818d190f20035883198041d20620be8d33706cb81f132d6994422a180156",
+  "split": "test"
+ },
+ "Bombay_89": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Bombay_89.png",
+  "sha224": "fc2cea21ec253375464d7f012004ab87503791141bde6e7cf4a644e8c7e0ae17",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Bombay_89.png",
+  "sha448": "1277d0cdfd1be5aad00a31895e856f087520d77359164f615d39ee0463ea86bb",
+  "split": "test"
+ },
+ "British_Shorthair_267": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_267.png",
+  "sha224": "eaeadb2cf194ffaab1cacfb9c7346c18a8ac1ca6057fb53f4f5ab134758b9642",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_267.png",
+  "sha448": "345dd93854fce5ab87a613b911a228b7b7a1092402eff80566fb2d2ff5b2c098",
+  "split": "test"
+ },
+ "British_Shorthair_268": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_268.png",
+  "sha224": "50943900b5dc0db76776ee38945d6d31df0404890589c499f51f47bae20c4046",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_268.png",
+  "sha448": "397500bf6fa9d32ffbdd3c8211cefe79a7c351fb61527f8a5399bf5d5755af37",
+  "split": "test"
+ },
+ "British_Shorthair_277": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_277.png",
+  "sha224": "108ecb3562dba123a26393f48b7a55155fc78ca91149a9828553bcfb1aa897a4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_277.png",
+  "sha448": "35772bc656d1849aab51f397da5b1475947992a07ef4f2bfb4db2e05206c323e",
+  "split": "test"
+ },
+ "British_Shorthair_31": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_31.png",
+  "sha224": "f33c50a8da7d6b822bf5100ef3b39371ed72b927d897cae02fa42529bb8dcc63",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_31.png",
+  "sha448": "d5a09701c547037970db997fb37a8797c120fbc3e58e2b6bfd6d79b05c11102e",
+  "split": "test"
+ },
+ "British_Shorthair_42": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_42.png",
+  "sha224": "f8bf0a4bc49b799bbce5a3a39e3c9b913bc0cb52c6b742dc04cfb2b7fd5bc030",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_42.png",
+  "sha448": "b42b75d7f7145a53053017c7063cff87424142bfc6e5b552d7f9bf6e0795e5f3",
+  "split": "test"
+ },
+ "British_Shorthair_45": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_45.png",
+  "sha224": "7014b8363b678a8f23acb2a521a579e17d41a9f79d05c360b179e40ea847c6a4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_45.png",
+  "sha448": "7e17b494807f1281382c543500607aa1d98d00cd9bce6092dde3954c0c625cf9",
+  "split": "test"
+ },
+ "British_Shorthair_48": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_48.png",
+  "sha224": "654adcdeb7ffa019b78d379c3c38f066372400315826fa5117c7234cb610cbc7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_48.png",
+  "sha448": "10c6242062c913695c6fcb22f7235ad71e7bb4724d0b9525ae1b079e53d1e86e",
+  "split": "test"
+ },
+ "British_Shorthair_53": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_53.png",
+  "sha224": "62ecc560d07fa173fc585e86a050085189eb209b2e37ac84e7252188f1a0e6b1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_53.png",
+  "sha448": "d69ecd61bc2dde81903d60d1e876b8d27909e32120be4ca84eb895c91f9c94e8",
+  "split": "test"
+ },
+ "British_Shorthair_61": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_61.png",
+  "sha224": "004a9f25d96a772ed4440adfff0ed50c36b3d297481f5c98892d69aa787dc78f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_61.png",
+  "sha448": "575cfa96efe9f022f072f44bc4a785eb182f25cb6d37ce69c98cb5b8c34d1e60",
+  "split": "test"
+ },
+ "British_Shorthair_99": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/British_Shorthair_99.png",
+  "sha224": "715d5343747b819d109b50e835a188078466c7197db3c6c32bf14b36acc5b2ac",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/British_Shorthair_99.png",
+  "sha448": "622d34a65c99853bba8698d54a52f4a2314297b6321d172076b5338af284e48b",
+  "split": "test"
+ },
+ "Egyptian_Mau_201": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_201.png",
+  "sha224": "fa4795cabd37da3e56164fa12e78d95788ece9d7897b7b54e6d49826742985f6",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_201.png",
+  "sha448": "5d26f6a311b923c9638822c52f33688cd78b2edcd846d89d8b64bf86142548b0",
+  "split": "test"
+ },
+ "Egyptian_Mau_215": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_215.png",
+  "sha224": "9bf3c87b3dc7c8f5ebed3175a195b6348645de969a65845919935ee22ad7098a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_215.png",
+  "sha448": "27fa3f8f9b3b3053466687637442a8580b4b358f9a5ae9d5719e7cd500ca5349",
+  "split": "test"
+ },
+ "Egyptian_Mau_219": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_219.png",
+  "sha224": "605a3db335dea2b31342eb1e8105f35949b7d4be94357023ae1631aadfe3cc7a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_219.png",
+  "sha448": "ae53f934ccc6e92632d678d06118ad0a2ba7cdf573783328cfb209befd300e0e",
+  "split": "test"
+ },
+ "Egyptian_Mau_29": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_29.png",
+  "sha224": "686cf4278e8f6ef23f98424c6c2945f7e432bf619ff3e631905e13455554a989",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_29.png",
+  "sha448": "11b502425333cd6c210051d71998712e6a7ccd809f16acda5dd1d20e8aaf26a5",
+  "split": "test"
+ },
+ "Egyptian_Mau_45": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_45.png",
+  "sha224": "3094b89f7cb1af0be31b97bcbba9230075269136a49722737e99ea9483456d4b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_45.png",
+  "sha448": "1b16b79ea6386bcfe737b20c6ee18bc2bfbce32b61a52cff243201245c5dac6e",
+  "split": "test"
+ },
+ "Egyptian_Mau_61": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_61.png",
+  "sha224": "b4692a5f9816ee15a72ba52ac4a959811f8ba86e362425fe3645b97cab9f9123",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_61.png",
+  "sha448": "854ffbd1f666150bdf36f8291730a2c0b5ac78d5b7e8c1359db5f4f45824c523",
+  "split": "test"
+ },
+ "Egyptian_Mau_69": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_69.png",
+  "sha224": "cc4a0ba7965a7d271e8e5411b57f8d13519ee8ed539609b3238349042434e7d5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_69.png",
+  "sha448": "d0d2447b4c38d59509bfa81fa3a2403b3b2c0409081cb102925ab037b61fbee6",
+  "split": "test"
+ },
+ "Egyptian_Mau_76": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_76.png",
+  "sha224": "a40001669ac07489ad06af6cd5479994a09b885e0929be48a348d8d00f71c68b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_76.png",
+  "sha448": "e8fd0b896f1861f40ae62384caba036cd4ae217db16504a443026d99fd37a04a",
+  "split": "test"
+ },
+ "Egyptian_Mau_81": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_81.png",
+  "sha224": "30b7ed26fd014d4f0e67366e9e4c03274a2dd98c56cc1cb931116c69f43992d8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_81.png",
+  "sha448": "208b47b48cf6902b941909786cfe9343fe52981c958530a78446401f02a2bca1",
+  "split": "test"
+ },
+ "Egyptian_Mau_84": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_84.png",
+  "sha224": "561c955aadd0d0a2851f5fefd89e7a0ced0f0ba426a6cf2981ae9a5b5561f388",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_84.png",
+  "sha448": "b7b2b3c68e4a9273553a4af7b764364f6bd282555f6cd83be774a6351cbb9f04",
+  "split": "test"
+ },
+ "Egyptian_Mau_90": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Egyptian_Mau_90.png",
+  "sha224": "acf501cf04b373ef76a0ca5a4a09888ab451919bbb307c7c50f2b90306e7419b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Egyptian_Mau_90.png",
+  "sha448": "9b2ca0a0c9a647f4021e8afab1647954bbf9cc1566c94a6c784eb35669645d40",
+  "split": "test"
+ },
+ "Maine_Coon_222": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_222.png",
+  "sha224": "2bb28bf07ede0947dd483a4c96e798f3c152d5e284d934ed53ccf667f8990522",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_222.png",
+  "sha448": "37ea2c0098f70ddcb67e236bd0f6e86a4d7bf9e831f157f402598f5237ecbe98",
+  "split": "test"
+ },
+ "Maine_Coon_242": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_242.png",
+  "sha224": "f666c654c493b065b9d15c1cbc3afff6d2dbbfd0b991a8265143745b4399ad25",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_242.png",
+  "sha448": "b7301a3bc20d2f71a9abd785f274771ddfa0d9cca6abf7867cc05615483e1312",
+  "split": "test"
+ },
+ "Maine_Coon_263": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_263.png",
+  "sha224": "d943eec90c1d5811b601e07c84430ffb580d7f425862e1258eb0d927190142ab",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_263.png",
+  "sha448": "ad10212ff0b8663e03c9a2d80a3920b1c44326c04040b3994816d65a99ee86e1",
+  "split": "test"
+ },
+ "Maine_Coon_269": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_269.png",
+  "sha224": "3e2730ad795a741c454903e4ec32b833f85b0302d2ff99826c94701744568213",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_269.png",
+  "sha448": "916ba4baaccbddb7ab85081c3e88a26bf432dbd70442ad2db089013ce33ab91e",
+  "split": "test"
+ },
+ "Maine_Coon_272": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_272.png",
+  "sha224": "b1f3b377d645b3c69730f522912b789fb693ad86f39c04bcea301deae934b139",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_272.png",
+  "sha448": "2669ba8cc560b9f610dff78c8b7687ea194c33ac1c66586ebd126a30a21b281c",
+  "split": "test"
+ },
+ "Maine_Coon_29": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_29.png",
+  "sha224": "acb5dc53478a1cda2838741f0e774518ab03aa6497a6395b863be4568f9ee048",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_29.png",
+  "sha448": "f186e5ba2acd614a3fae023da0f55ed459606b7b2b455f6fb011198aa70353d6",
+  "split": "test"
+ },
+ "Maine_Coon_44": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_44.png",
+  "sha224": "e42a097ecf082e3a6eb7cfcbffe26916c8878dcb74cc37764feaa7dc4247caad",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_44.png",
+  "sha448": "aacca3905fe0f8f931aa475c1f9dcd2921f4f1c6c49416213c8cf215f71c1b59",
+  "split": "test"
+ },
+ "Maine_Coon_46": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_46.png",
+  "sha224": "030a2ba2cbd313a94e3c46318222be1eeb15fa37fbfec75cb6ec1eba26dab1bc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_46.png",
+  "sha448": "2ce8c37b28f109d8b843cb352116ef15b71133239ee4b4ae5829b8ee9afd2997",
+  "split": "test"
+ },
+ "Maine_Coon_47": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_47.png",
+  "sha224": "084052fce021ff3c341e4c681009d77b09738ec3dc3e36a4b2d59701411733b6",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_47.png",
+  "sha448": "88541eb36035382f2898ee84d0883144102bf87a2843f6371ffa4e7b271d9ac8",
+  "split": "test"
+ },
+ "Maine_Coon_55": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_55.png",
+  "sha224": "ec94f3bfe99169cacb826e35f487cd58d7bb06b095971779a385dd87c0db15bb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_55.png",
+  "sha448": "8514c60e52175200a392fd0805a76b7a3b0abffee11e6d6fa942e28c329427bf",
+  "split": "test"
+ },
+ "Maine_Coon_75": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Maine_Coon_75.png",
+  "sha224": "ec5ae9e94b7ea6f280f26f603681f7ffda700f36893f616293bb1a9edd478e48",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Maine_Coon_75.png",
+  "sha448": "513be8a124da90e017adb698519a7412ce72f07d4fe4ca03d78bcdb997560d77",
+  "split": "test"
+ },
+ "Persian_257": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_257.png",
+  "sha224": "af7da7fb8cfe90de7718daaa464780c1125aea6e55e34c9497f9f82524314f15",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_257.png",
+  "sha448": "5dd6d5b75cfd472ec278219a1d5afd96db10f26ad556f7278670ccb742f5c62f",
+  "split": "test"
+ },
+ "Persian_261": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_261.png",
+  "sha224": "557fd841f60ac9cade0bcf60ba84398fc05658803b182cd79c9dc529be5ff617",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_261.png",
+  "sha448": "6b881b188ca0d765b1ff2422def3caaec246e910105636a68fb2f292bb60b16f",
+  "split": "test"
+ },
+ "Persian_27": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_27.png",
+  "sha224": "46117465579bee2a33cf4d286b284d386b0264f94cfffd7c511a39fdf18142f3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_27.png",
+  "sha448": "fc1c74dc214fc86e8e86d0000fe64083689bf4f623fd8212b9c65f764145ca50",
+  "split": "test"
+ },
+ "Persian_270": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_270.png",
+  "sha224": "f96d8435a92157361521759309751b46f5a970794f443b8de4159e4c9b37c47c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_270.png",
+  "sha448": "2432cd3f6ff61781e2d7061bdc3d03bdf41f570bfb4fca1b2e8ed16e243497f6",
+  "split": "test"
+ },
+ "Persian_272": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_272.png",
+  "sha224": "c0409b149e0a9731115bb039ca0e4be6f71e27b81e410a39800b4e0107e2e307",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_272.png",
+  "sha448": "e1495f8f2dc01b14ae65a921984185b79c9b909e3d48b392befcbada528f8e8d",
+  "split": "test"
+ },
+ "Persian_32": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_32.png",
+  "sha224": "206744382a9a636a3ce852cf5ae3a6c9ca74bf62225ab6a8a4cfacdf93b55cb2",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_32.png",
+  "sha448": "0aa4a9efba8ea594c31c814e428aefd7a05584d2ee607e86dd5687edc245f6be",
+  "split": "test"
+ },
+ "Persian_4": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_4.png",
+  "sha224": "4e3fc1a9d465f7776f9bc759127a97ff97a3a854b10c85d3fed614110eb18973",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_4.png",
+  "sha448": "480ac2330f08df4de7cc29cbe44241496a91a6a08e6eff84f36d8c56d6c84995",
+  "split": "test"
+ },
+ "Persian_7": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_7.png",
+  "sha224": "64aac3a194d02edaf1a9b3f56abaf2035f7922d2ee68b25ae4c3551aed5b7be5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_7.png",
+  "sha448": "72b4b7bfed6d74c006ec2c2e479b85278d15a8e14ec4ecc9763a786aa45094e6",
+  "split": "test"
+ },
+ "Persian_85": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_85.png",
+  "sha224": "88240687418e8dbf071c180cb8bb3fd20dabffa757ac31e93a5d7e1b5c6c5834",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_85.png",
+  "sha448": "265b9356e1c2460a229a6150280b23fb461b19f2bfdab4f79ee47e09e92f4588",
+  "split": "test"
+ },
+ "Persian_90": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_90.png",
+  "sha224": "4f8f2e9d5e71bcbed1ca9dfea1466a7b6a9a9d2ed8c65ac9ff6b69787935e0e5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_90.png",
+  "sha448": "deeacf2e4c0d7abf22d32cfc2a9b81b391f9a6fde7184c7d073415717a09c2b0",
+  "split": "test"
+ },
+ "Persian_99": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Persian_99.png",
+  "sha224": "a005617fbf08511075599dafc897488ffa1f2d9e726037e78f725437b2afbf08",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Persian_99.png",
+  "sha448": "4a1e3933a1ffcd9da274b60fe6a1d226af153781a117eacdd930cc296b377ceb",
+  "split": "test"
+ },
+ "Ragdoll_235": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_235.png",
+  "sha224": "72a171db7620a75f2975c646eb59f7aecb694b733ab0d063cc24f5dd33137519",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_235.png",
+  "sha448": "bb1723e768742f4801b2830be8d84a8fbc6034a3099e0be80f9d7426ea957761",
+  "split": "test"
+ },
+ "Ragdoll_250": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_250.png",
+  "sha224": "56c392579f1fbfa649bdd99ae00498dfb6346137619a71e7bcb7152605bc1ab3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_250.png",
+  "sha448": "ab5817791efda3becacf1b7bb7e445a9d9a5674661d8ad1fe4d6254878d8f19e",
+  "split": "test"
+ },
+ "Ragdoll_252": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_252.png",
+  "sha224": "418d5e9b63e58a164637fe2d3dc60c923fb23f31d06971166a6760c338ffa5b3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_252.png",
+  "sha448": "ca94099258ea07970501c47c33db790e09720b710663e9436f6d094e40cb0dfd",
+  "split": "test"
+ },
+ "Ragdoll_257": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_257.png",
+  "sha224": "1337440de636f89de47be8bcb8147d5ab67a3779681d373209a872e51f565830",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_257.png",
+  "sha448": "412c9d4481e8890a5fc016d25cefe0f6c99394db2c5d7483835fdaf1ffd7a653",
+  "split": "test"
+ },
+ "Ragdoll_258": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_258.png",
+  "sha224": "5cc166ef116f31c4954bdf2bb53579515e7a7dbdb66b1f08418da799c1e411de",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_258.png",
+  "sha448": "15fa4ccbcd01d762e4259505121cafafc6c60c24bbc8e45577b139ae0c35b619",
+  "split": "test"
+ },
+ "Ragdoll_263": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_263.png",
+  "sha224": "ca63e2f53db21c906cb7796b5b0ba81be743ec6742ef446fdf92263d0cf33e2a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_263.png",
+  "sha448": "f8c4d1c6e29bd3faba66bd632e40a89408e84fe9a2dd7c11095506a48f1aa016",
+  "split": "test"
+ },
+ "Ragdoll_36": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_36.png",
+  "sha224": "9009a253ed6d9bec60b90d47a56df2be88f6111451b642a8e4346854a12f5fa9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_36.png",
+  "sha448": "70fbfd448e92556532d6e8b4cefdea37a878ba3bc229ce234b605bbd99fb7534",
+  "split": "test"
+ },
+ "Ragdoll_44": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_44.png",
+  "sha224": "c2d9dcf05fd9f153426b57391bdf291f31228a3c97979517ecc19b94d65e5d3a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_44.png",
+  "sha448": "c22b1c6a76d62855e2a4994c48bf909cd9942b4300fc479155252ba3828532ad",
+  "split": "test"
+ },
+ "Ragdoll_5": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_5.png",
+  "sha224": "0b236a177560e54fcccb208112459a44469139adca544a1e7872718987a34c85",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_5.png",
+  "sha448": "c8bcf969d531c1b7d01e6c7fa1fd245e30fffe0640251cd224da97546bb59451",
+  "split": "test"
+ },
+ "Ragdoll_57": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_57.png",
+  "sha224": "378b69ba786b30c10a2ea5bca0e841f26c214c73621d16a2890a5a0ad80364a1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_57.png",
+  "sha448": "7ba494f7534bfe291140186c0a21e17710fe2ab926cf6eb9f3df96a4d0643905",
+  "split": "test"
+ },
+ "Ragdoll_58": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Ragdoll_58.png",
+  "sha224": "4ff0596836849c13a8c475340c7344c74db3d0f7f555a747bd2fb7961e84c819",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Ragdoll_58.png",
+  "sha448": "c160d82d8aa865c9e8350cf8ea70bee78bf6a91c39e764c35743a1308ba6b8fe",
+  "split": "test"
+ },
+ "Russian_Blue_205": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_205.png",
+  "sha224": "d763a73f932a88bf9092f69ea28c40f8bbc88365c52614fc3483a4ba0e76cc7f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_205.png",
+  "sha448": "3e7fd60df7e3046b345c09851c97ba7b331b527b43ba43e0706af07e2d801aba",
+  "split": "test"
+ },
+ "Russian_Blue_216": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_216.png",
+  "sha224": "258ac1954131c8024f35d4ae45ef0167bc24859285dde2fee6f7d0ad9a57afb4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_216.png",
+  "sha448": "1cbb5f6d6ba77a1e58a98bf565d45dcffee2755e1315e868fd85d070065a68cc",
+  "split": "test"
+ },
+ "Russian_Blue_239": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_239.png",
+  "sha224": "dfd25ca40be1f331a665279e275726f81558814dea0e642cb9b62f09b87e1b64",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_239.png",
+  "sha448": "886e771fc33333a33318dc6bb29c2394e36a4cab6783b849118437e519d861e5",
+  "split": "test"
+ },
+ "Russian_Blue_31": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_31.png",
+  "sha224": "4477d7f2207d1ab12a19b634d2cd5d1e640ef6268ce90759d606fdf30972f090",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_31.png",
+  "sha448": "962cd263c7fe992b359d2d2fe36b980325cdfcdedce6bf324aecfb4565638601",
+  "split": "test"
+ },
+ "Russian_Blue_35": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_35.png",
+  "sha224": "22b1bc83d112aeb1f7ec1d5444ff4d2ddacb548156da8eab3bc17718c37f9fd9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_35.png",
+  "sha448": "38ad46be51caea32330d174cfc7eebe54692efd75714f33b4f2886ac5375c96b",
+  "split": "test"
+ },
+ "Russian_Blue_36": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_36.png",
+  "sha224": "3efa237b0ab3734cc5803a54d07812231304c679c63a4d6bf774363cfe67698b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_36.png",
+  "sha448": "385000d1e2f64aa05c8381444c52913acad6be4909fed805bfd88a9994e59329",
+  "split": "test"
+ },
+ "Russian_Blue_41": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_41.png",
+  "sha224": "640ecb217a852449dd509d5e6e875d0612dfe93aea57819f7e534c7fb5bba541",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_41.png",
+  "sha448": "0e4e7107c1121ae321762798828b5575b8402fff45544769295ba41df5dc69a8",
+  "split": "test"
+ },
+ "Russian_Blue_63": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_63.png",
+  "sha224": "b93e6f0c4fc12b3e8a022155405091c92faae45ca49483e837fda91432a247c3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_63.png",
+  "sha448": "2fcba7cd157b51fb363423baba19eb234b8f8ead2ef63ce280597e336681cce4",
+  "split": "test"
+ },
+ "Russian_Blue_80": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_80.png",
+  "sha224": "389a6e75fa8d388d4154f599b3d21bc035876dc9dd1f956013faadf45588dc1b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_80.png",
+  "sha448": "0f8b2506c06dfe86fb590e61a149dad5d41e012846492115d9523c450a64e2c8",
+  "split": "test"
+ },
+ "Russian_Blue_87": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_87.png",
+  "sha224": "c2be6b71f0183a41f3c74b2c626a52fb934e3ae64dffae43d25f61b96cbb34cc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_87.png",
+  "sha448": "81e1226e03e9262426b674606a052ad45d72b1f44eb3a256e3dd77edd56e270b",
+  "split": "test"
+ },
+ "Russian_Blue_92": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Russian_Blue_92.png",
+  "sha224": "9cfb16b8ae6667d6e10b322576c655ced6767cd9698c819fde806c2de7324d82",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Russian_Blue_92.png",
+  "sha448": "7012cba5cf8a06a17498f58d7e9cc9a40b782935443583dc41bff046aaaed4d6",
+  "split": "test"
+ },
+ "Siamese_20": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_20.png",
+  "sha224": "2df2b2a50078c4bd4b2a5b8d53fc8af096649318173d4f3374891e1f7da02fcf",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_20.png",
+  "sha448": "85daf6ade3fe311258670d2aed2433b9d3b86cd4ee399506fb828f94f9130abf",
+  "split": "test"
+ },
+ "Siamese_22": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_22.png",
+  "sha224": "2a0da3e625ca6d95658b617251f889f0febaa06dfe56a557d3da257badd7ff1d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_22.png",
+  "sha448": "31da5674b7013297df121b873bbee93f2e048f403030dfae03723dde0d26b9c6",
+  "split": "test"
+ },
+ "Siamese_234": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_234.png",
+  "sha224": "162bee9557d8b955d530a1e1900f32ee406ba337bcfac5e300300fb0fc211067",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_234.png",
+  "sha448": "d2a69bc5fefbeed9f7094dae31664763b8d69306a086f09aa61fd31a29a95171",
+  "split": "test"
+ },
+ "Siamese_30": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_30.png",
+  "sha224": "6f25d7bef402975c30e082da2f2a1901732cbc464a01bc88ef46291aeb086f91",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_30.png",
+  "sha448": "fe4dfb2fba57b462d6e2c2e69419c1d206117d132b010bdef00a66ad4ac61133",
+  "split": "test"
+ },
+ "Siamese_43": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_43.png",
+  "sha224": "32ba7011c17d23661baa1833b720f3ac86b1b3d2c898edfc80e97942712123d2",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_43.png",
+  "sha448": "a789289214b00b81bcb4fdc32875f16ca924b53d53b69e3c3c5850e4c2e71a2c",
+  "split": "test"
+ },
+ "Siamese_46": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_46.png",
+  "sha224": "eace223f838827db8ac6bfa693a21a148d8f451d333b3084c6ee6e55615aa1be",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_46.png",
+  "sha448": "20888758d6ead1f1cfe4d98a8729d9290292797f439439bd21f1bae28defffb4",
+  "split": "test"
+ },
+ "Siamese_52": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_52.png",
+  "sha224": "1ec95ad23f3106a591b1ecb143d86033b41c82702b9b86e65d73d2954d2858cc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_52.png",
+  "sha448": "a0ce0318756a6335227b9e7d3f992836ccf8b2183404b5e7f875f66f1dfb335e",
+  "split": "test"
+ },
+ "Siamese_55": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_55.png",
+  "sha224": "8bc67817e5e0624805f7946ab40d93896c94f3233cdc69205592d54f1d893ac4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_55.png",
+  "sha448": "54c405c71e1c295cd915e4bc0a617713c160cd11aea511474d9c64ad5ef1874e",
+  "split": "test"
+ },
+ "Siamese_56": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_56.png",
+  "sha224": "2863719109fb97e6a61a1c55f0d480079daf9d87456bc6a462365120c0133825",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_56.png",
+  "sha448": "4d5970f3afc0360b5aff101587c0972334561caa7e8b2d93593bf62d695a54fa",
+  "split": "test"
+ },
+ "Siamese_59": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_59.png",
+  "sha224": "29497d50200153da8aa51790e02b7ac6582601063fe6849178abbe7e57f25232",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_59.png",
+  "sha448": "937d6d95a476f303e0fec9660b798629e4ad6c9651ffd9613c6d180ca0141963",
+  "split": "test"
+ },
+ "Siamese_78": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Siamese_78.png",
+  "sha224": "538a526998f2e3748f023997745ac8e5c853f03b44cdbf090a027b54a1100161",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Siamese_78.png",
+  "sha448": "4e147ec72725fdff31e30f250b71878e159f8d23ee938cb7c2b383ed6c121266",
+  "split": "test"
+ },
+ "Sphynx_2": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_2.png",
+  "sha224": "020dc58c8e9cb74a6185aff907239860cc89c6ccea29d5b4e1f9ac032c8a8d3a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_2.png",
+  "sha448": "c7033e0d2da8b0bff8c2826f9bb7872e42de6e68daf409a84391a16ddee9cb7d",
+  "split": "test"
+ },
+ "Sphynx_211": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_211.png",
+  "sha224": "10748342ffa7cd4b60534bd772de38591fa292f7a56a22b9b2aae857d215e79b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_211.png",
+  "sha448": "d1d5980153a5ba50d0a2638d01a8df74837f7032e24b895abd3d87ef887abaa9",
+  "split": "test"
+ },
+ "Sphynx_245": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_245.png",
+  "sha224": "f8717aa04ad02be64081bfad4ccf924e46df59a5b11447ab989fbc468c3de3dc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_245.png",
+  "sha448": "ad6fa56606fb644434809c6ee47b1c57ad98e73855b612a16cb61ee406ac8456",
+  "split": "test"
+ },
+ "Sphynx_44": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_44.png",
+  "sha224": "4dbdca5abbcd4b2af23aad9ee69395213df8a6cf559cabde589920cbf136bbfd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_44.png",
+  "sha448": "ea74bb692d388b70998dc4f35b54e8fb3a5354b74a6f0fc9d7eccbd57660f1c0",
+  "split": "test"
+ },
+ "Sphynx_48": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_48.png",
+  "sha224": "c3b9c065e2d4c1a20ede4a453728fecf594ef32ddc69119bec680d85bae3568e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_48.png",
+  "sha448": "9f5a08ca9ab7933a12b14a59c6ffd73027b8c1f2c42cbaff288d79ce1d1127c6",
+  "split": "test"
+ },
+ "Sphynx_67": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_67.png",
+  "sha224": "91a59502885f925cf17fb5264a2e102bf4c02a9ee67ba8290f15c97f46d2867f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_67.png",
+  "sha448": "c1ef0abfff1dd309b760166196e9199518f31f0bf274c8acd8507bd6a6a24416",
+  "split": "test"
+ },
+ "Sphynx_76": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_76.png",
+  "sha224": "01bce4ff2afa3145525d8ca31e8dcda18124557fe3218767744788eb4c71824f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_76.png",
+  "sha448": "09148eb0f73199f6ee1e3ea12f0cbe42f07ee45e5b720a9c869cfbecd34674af",
+  "split": "test"
+ },
+ "Sphynx_77": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_77.png",
+  "sha224": "a0b049f5d750af497aaec53dbf2039b5a3aa8fd5adaaac3f92408797fda67cdf",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_77.png",
+  "sha448": "1ca8c4d673dc2883774e56cf46939ea558b0dfddc05199f9ca603f2e1b8afc54",
+  "split": "test"
+ },
+ "Sphynx_78": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_78.png",
+  "sha224": "bd2c1e5f91d684add7dd727fbd4196cf0c5cd8aa151903ef66d8912ed3b91abe",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_78.png",
+  "sha448": "3603ee50f25636782a7c0980a51e4632eba2a120f417ae3f3d1e5fad35d4885e",
+  "split": "test"
+ },
+ "Sphynx_95": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_95.png",
+  "sha224": "7e2338ae893c29f2014d862c02ab5217d0d256b655ea679b7ed2ca2ac741bc8c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_95.png",
+  "sha448": "fa18277887c15b447fa0e427d931d1ea4f367c3021910bd4e9868050931c4918",
+  "split": "test"
+ },
+ "Sphynx_96": {
+  "label": "cat",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/Sphynx_96.png",
+  "sha224": "1b5feb6eed181d38fe262c8467708fd367a5e48a40d5f1cf45eb02d403a9b3ed",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/Sphynx_96.png",
+  "sha448": "2605919ba14de37cec2a3037144f1d97e81f5a6210855045067fe9923848cbbb",
+  "split": "test"
+ },
+ "american_bulldog_30": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_30.png",
+  "sha224": "c91652ff8859a6f517eaed7f32ffc74cb16e9f886cbc7b6d3872b19c61f51a4a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_30.png",
+  "sha448": "c87a1f771ffe26982b771c2e5f7f84beb3a500671dcaa226e2724b1212fe44d9",
+  "split": "test"
+ },
+ "american_bulldog_59": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_59.png",
+  "sha224": "1ccf85f1e9ac0bc9e22bc796d14ff3fd60e638dc945cd6af8bbe443d061c3dc8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_59.png",
+  "sha448": "0dfb5b1c3a80abe76fe0ddb220512449a558deac629167b30f18aa82caf609bf",
+  "split": "test"
+ },
+ "american_bulldog_64": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_64.png",
+  "sha224": "0121ee9bc7bc3ce96c9e58f1f9cf77dd4aced1c5a4c7bea9ef47b2c2eaad0b02",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_64.png",
+  "sha448": "532c30ead2984106eaeb2cdb77c51f86afc46f4487d7f580d49740aef2e2f9e8",
+  "split": "test"
+ },
+ "american_bulldog_90": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_90.png",
+  "sha224": "91140129be236cf1faa85f4bb0f0fba09514619561818e7aac5bbd57270aafdd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_90.png",
+  "sha448": "b80168f393d7886440f90a17ce9cdcd12917c42db8152a177be566a1835d6a62",
+  "split": "test"
+ },
+ "american_bulldog_95": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_bulldog_95.png",
+  "sha224": "9cf8c9f55a6b2e0bee5ce04e1d7db37a70f1b97e4bd6b3adfde2683a0f06d9c0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_bulldog_95.png",
+  "sha448": "c68cccebd6f1fbf049ba9c7880420ac618a8fa1dfcc4849ce8271805eb0a3e31",
+  "split": "test"
+ },
+ "american_pit_bull_terrier_202": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_202.png",
+  "sha224": "93060d2e2aa94bc5bb015b4c78361c77690693d53ac98876fce31da504cd4a5b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_202.png",
+  "sha448": "eed155070b2f3944845235b858761f8c94ce397cbe1705d941ef3b642d13ac4d",
+  "split": "test"
+ },
+ "american_pit_bull_terrier_50": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_50.png",
+  "sha224": "dffa3cc47f109e7ab6d8a5bce8b75571c3989ee58321871826cee0e027997563",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_50.png",
+  "sha448": "aecd5dd37396822311bfc5691d58dd1ff10e073aaff5f45f3dfe5804cb95fd9f",
+  "split": "test"
+ },
+ "american_pit_bull_terrier_70": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_70.png",
+  "sha224": "0fe4b40c69ff9cf1787f0a8238b5c8337e6e8990dcc1d18c420231b3a5560720",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_70.png",
+  "sha448": "b250880cd37a3b568d6485b354d97ee038b57c08cd08d8bab119609998605e89",
+  "split": "test"
+ },
+ "american_pit_bull_terrier_72": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_72.png",
+  "sha224": "8ff1b19893a9f49e24061ee03b116ab87d1a44b39933c40bf0471a8ccf4d3e8b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_72.png",
+  "sha448": "c37480c4c7abf2e90fefd4614e2baf25c41a2a5a268576667d9a7aa2743c4d68",
+  "split": "test"
+ },
+ "american_pit_bull_terrier_75": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/american_pit_bull_terrier_75.png",
+  "sha224": "772a27473a84e2048aeb0ad9b009a1ae53a99a9e6a30dfeeb5c69b75ba954523",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/american_pit_bull_terrier_75.png",
+  "sha448": "3f9b33300ca8c209449e9e96331feb7ddaaeab56dc91669e0bdedaf8b5acec39",
+  "split": "test"
+ },
+ "basset_hound_30": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_30.png",
+  "sha224": "b53ac730cb7951802cde6e9480959260944b2773d93a9a11602c4a305616d720",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_30.png",
+  "sha448": "5b6e8909487dd7ed5658eb58734f4acc9d3510e5603c70c519d6366b0fd0e989",
+  "split": "test"
+ },
+ "basset_hound_42": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_42.png",
+  "sha224": "a6428bbba6af57aafdeff0c46f708122384fe0334ed4d48d4f986e5f4b5c14db",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_42.png",
+  "sha448": "9031fbfdda80be5fe1746a03756e97b13d23bfcfae428150f414ccbc1d749bd6",
+  "split": "test"
+ },
+ "basset_hound_5": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_5.png",
+  "sha224": "b61f2ede75d7a03e9a9e1b363da4eb1db097b93d01da58b29acd510aafc02119",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_5.png",
+  "sha448": "51f4fe886735ee0b844c6785472af33a4f39da2e568c56b971db775ba01757ed",
+  "split": "test"
+ },
+ "basset_hound_76": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_76.png",
+  "sha224": "27ee105076f8b6eb72460dc688c33844baf582f8a36ebe7854f1ab9468902ae8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_76.png",
+  "sha448": "af3b67f0e9ec0f73e80eedf4a2d075227fb99f60fe63b333f3c0f6526c0f02dc",
+  "split": "test"
+ },
+ "basset_hound_94": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/basset_hound_94.png",
+  "sha224": "ad0c0a26a031cbcec83b363e4d9c5458e37276cdc3b49be9d6b3439a66599c22",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/basset_hound_94.png",
+  "sha448": "3c6d1f91a15a0da086e467de5203f911546eb54aa9363449418b53dccd9d7550",
+  "split": "test"
+ },
+ "beagle_195": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_195.png",
+  "sha224": "c2abbacc76fdaef337d7faf72522e1314a684cb5e1fcc3377bccc694fcc32557",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_195.png",
+  "sha448": "db33745dfee5eac8bd2426cddd3a4337e25ff2e19f793d9c1ca8cd36213b3602",
+  "split": "test"
+ },
+ "beagle_42": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_42.png",
+  "sha224": "4d65b39c8c6b1a7a6382238abb0898353bfee52978153a6f9a920390ff5d1b67",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_42.png",
+  "sha448": "dee1b5f57b4035dc0c8e92c21e3e5e82c9e721f06d8e3e9ac55a00a8aa67816a",
+  "split": "test"
+ },
+ "beagle_55": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_55.png",
+  "sha224": "b62240244bf32287667f44d08af6536889dcee098005f3f82273fcfa862077c8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_55.png",
+  "sha448": "ca34df642c65ad48112bb0dc0eddb9ae4ec5880d26bcda9d7699056a91a9507d",
+  "split": "test"
+ },
+ "beagle_92": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_92.png",
+  "sha224": "f9a3352098d06f6bd4289b48e75b1459f946fdead1c5dbec9af588d878875c9c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_92.png",
+  "sha448": "fce95d99e5e7f35ce42edfa7e5e0695a3ea41331c1a2a592f48515bb54bdc60f",
+  "split": "test"
+ },
+ "beagle_97": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/beagle_97.png",
+  "sha224": "bc0c5e41494a40532a6ba8c45729fbd946ea94daa3db494bedf5cff6fd9134e1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/beagle_97.png",
+  "sha448": "3651508a61b6edc5bce63ab7a331e02f988fb74fcc550fd96d228ee81a50a87c",
+  "split": "test"
+ },
+ "boxer_200": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_200.png",
+  "sha224": "12ced7f61c497ef27a5538860fc07029a244d1cf11efec3b0a9e94886bd09768",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_200.png",
+  "sha448": "aad2684f5612c33af9cc15dc3ea07256ad01c1bf8f727b559277d78f3ee15b52",
+  "split": "test"
+ },
+ "boxer_24": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_24.png",
+  "sha224": "12cbde74ba76a0b2ff6a924a2d832722a3a95a2aab2fa2aa7062e446b76e7e83",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_24.png",
+  "sha448": "44674feb4c8525b6b52971e7db554f5da52ae4a4868504d1e37ab4172e707421",
+  "split": "test"
+ },
+ "boxer_26": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_26.png",
+  "sha224": "0e3bb4ccaf7f935b85c0306ca07afa063de55853d1dd154e2aa63728815926f1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_26.png",
+  "sha448": "f1147c9deeb5d129b497e233cacf6b6529d026e1500c68f51be656a813a27ece",
+  "split": "test"
+ },
+ "boxer_39": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_39.png",
+  "sha224": "f8d9644a42d3d141b81520275eee4e5abffbe7e0012fdaa531be4487b699cfb6",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_39.png",
+  "sha448": "03e904d6f1ffc6bb78af0ebaa1f9fca1b6fcfad94a296bf6df44d65934a63b7a",
+  "split": "test"
+ },
+ "boxer_52": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/boxer_52.png",
+  "sha224": "4c5655f570efa6947c56d172dd9de201cbf055c697eb4c67f60ba43dc0823b22",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/boxer_52.png",
+  "sha448": "0cd3d619f42c2fc2d47f81e75a9102a908392c14659009e4cb92f349830a033c",
+  "split": "test"
+ },
+ "chihuahua_27": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_27.png",
+  "sha224": "439fc18757ac5e6ccec43651dc6b547de7530efa05d1d7cb8b85b23170ab76e3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_27.png",
+  "sha448": "5167861d9f664bc8a73ba655ebe023bdfec6e0a9c001eada2b0f0a19a80b3bf8",
+  "split": "test"
+ },
+ "chihuahua_40": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_40.png",
+  "sha224": "272239460bd8b9385c36a3ba302ad75bf34eaeddd7b3a31f19824e2d15a3fe40",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_40.png",
+  "sha448": "96fa4417a4b2e7c516c65d10360a14757c7fa2424c1b0a2c0e361cdcab24f14c",
+  "split": "test"
+ },
+ "chihuahua_58": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_58.png",
+  "sha224": "876ae649037ca0a773f37bfbcc65006d14b24afb7295ce6c459186ba6e765126",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_58.png",
+  "sha448": "b46f085c18f8d98e8eac9ffd250b3d3ef5d347eb5446f391b1c7a3fc8a1814ba",
+  "split": "test"
+ },
+ "chihuahua_68": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_68.png",
+  "sha224": "d477125acefcd116bd3be86ca012570acc7f1dc733f2b8ba307b310ad591f33b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_68.png",
+  "sha448": "07a7122eac81c55efda88deb43be5c0c9ca161311dd0c3e3cdbe43c93ca9f69c",
+  "split": "test"
+ },
+ "chihuahua_76": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_76.png",
+  "sha224": "e38913e9e9620ba6fadfb3301e36c5157cc07493ba1a1fa8e23ae2e4ef5a47bb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_76.png",
+  "sha448": "26b6195745dc1406d0b051594bcb9fe263757e5f6075023924caafdf92e4617f",
+  "split": "test"
+ },
+ "chihuahua_88": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/chihuahua_88.png",
+  "sha224": "a8e9e21cb8131e6c53364d85e79fa5ae4517e69deb2746190b8099f4dc8b1b63",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/chihuahua_88.png",
+  "sha448": "3d391c8e197e9fd2aae12175be948c55bbd79564ae59193ec27e7be22c335188",
+  "split": "test"
+ },
+ "english_cocker_spaniel_1": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_1.png",
+  "sha224": "cc06fdeff3828b06f7f3ccef104c67e398f42aefe17908d4a497934a466060c8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_1.png",
+  "sha448": "153784777585d558d34b1d0ba4b941f7f04975ec4e74e42a9422cdf0bc34d2ca",
+  "split": "test"
+ },
+ "english_cocker_spaniel_194": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_194.png",
+  "sha224": "3e53a2eb87f21438426a06ee21a2491b4396d85d43adfe853b3ca2c411079c1c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_194.png",
+  "sha448": "2a4adff5675a438b9f6c50395756d96f9e8bfd4c85b843a7f3b00ad771637f10",
+  "split": "test"
+ },
+ "english_cocker_spaniel_197": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_197.png",
+  "sha224": "d02bc02bbfc492e939b311d24a3bf6beaa4e063891a83cd30a86c131f48a649f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_197.png",
+  "sha448": "c4b3ac85e34f65cc26535c13a8565b2e3d737b114d82f6b5302f362f39bb892d",
+  "split": "test"
+ },
+ "english_cocker_spaniel_26": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_26.png",
+  "sha224": "afa108ca24105f9c4d9db8b6ca4c9857bc270e8829d0447e04900517f8d3ef61",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_26.png",
+  "sha448": "7b813c97e433a4b6987fead2155a2a14a991afc3af12294dd4f2f641d477e591",
+  "split": "test"
+ },
+ "english_cocker_spaniel_31": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_cocker_spaniel_31.png",
+  "sha224": "087fa69b519b91771c965237aa39de99606422c641f4d675fccd48cd989bdebb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_cocker_spaniel_31.png",
+  "sha448": "ec8c3e39bed1bcaf47e11595be218855fda3c9a59cb75961432aee0eeacfd13c",
+  "split": "test"
+ },
+ "english_setter_34": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_34.png",
+  "sha224": "1b71752c3c3091084facfd7da68c73b47085d77ad3d2ccec2149bbb3e8bffbb5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_34.png",
+  "sha448": "89ccce4186d3b12a9c7dd40be1e12bdbf446773e1e485a5937056c3f2ebde09a",
+  "split": "test"
+ },
+ "english_setter_47": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_47.png",
+  "sha224": "f9ab268f9aea26f6d0f2f518e4697b54a98659446f7124ee0e45d8dc8879d6a8",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_47.png",
+  "sha448": "d01b4f58a16e8373574b845b58fe73f7dcace9a3d2e0d2398ff5ed119baa7d97",
+  "split": "test"
+ },
+ "english_setter_50": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_50.png",
+  "sha224": "75088719c843fecdc9f02877996c2a71555181dd59da5e74d3ca118734bff64b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_50.png",
+  "sha448": "b7560d63b1296e77433fd5f54f3ae163816b741f2d3a5bf98b80ff38454d7692",
+  "split": "test"
+ },
+ "english_setter_92": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_92.png",
+  "sha224": "58f85eae2a3b44f45583c9ccb39a08c8704b11022de5646fe8f112a47086fd9f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_92.png",
+  "sha448": "4ba907ca6ecebba7edda6dc6e39ad350bb167c6aa3d1311e1fb90398967bdf67",
+  "split": "test"
+ },
+ "english_setter_94": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/english_setter_94.png",
+  "sha224": "dea6625f572a16050a8f348f5fc50c444e36298c0819d2a9e6187b16a46ae089",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/english_setter_94.png",
+  "sha448": "bac7409f28228bfc5da2f867f7d08b8f01e5868f08caf94d9d143f6ed3b53c6b",
+  "split": "test"
+ },
+ "german_shorthaired_38": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_38.png",
+  "sha224": "27b203d28bccdd8c80fe506ed6fbe543747c7899b863413f80968de7f5bba254",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_38.png",
+  "sha448": "7dfd52405087cf58224795b37d05105e42f533a173558b81ee5c4078d6ffd2c4",
+  "split": "test"
+ },
+ "german_shorthaired_51": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_51.png",
+  "sha224": "7d43854a587e1355e07a073046c7ae88c0ac9731e4f152e4c527b02fb1324501",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_51.png",
+  "sha448": "7108f540afb44cbbe168bd7cdce4dd283638658bee5aee4e031494dcc05f6136",
+  "split": "test"
+ },
+ "german_shorthaired_8": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_8.png",
+  "sha224": "69fcda0067013aabc33be83ec428f768a16cfd2198dc7d2138481f4e22163e2c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_8.png",
+  "sha448": "ea65d7aad2f2fed3e01830a14a97b30c185e56d4ea8b0ea3c6b9a810cfca9089",
+  "split": "test"
+ },
+ "german_shorthaired_81": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_81.png",
+  "sha224": "4517126a44a27c62bd1edfedbe67c9d6e12e99e141b70a0a9571da5cb1b79466",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_81.png",
+  "sha448": "232c3f0f760257e08beb6eaae3287311090e37bb0982c7b3e3df02a25bfff253",
+  "split": "test"
+ },
+ "german_shorthaired_96": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_96.png",
+  "sha224": "67f0baaf2933c9990737a85f95a809a256e46cbe4cd169b17e71f6cfd2a39cc3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_96.png",
+  "sha448": "03f101d06530977ab892a921479daa22a4bc2b8a45cf3cb79628f59c6798c63f",
+  "split": "test"
+ },
+ "german_shorthaired_99": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/german_shorthaired_99.png",
+  "sha224": "7fff70cc9dbe326fcfc993f3117813d471a7aca318bf77c35bd68366c262b924",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/german_shorthaired_99.png",
+  "sha448": "92c6ec836bdbd27c1aff744a41ecc55187a82b21e2705a4247956f92085d1eba",
+  "split": "test"
+ },
+ "great_pyrenees_192": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_192.png",
+  "sha224": "266fbbff1fcaaebe383aec8f65689772805b5f5cfde93dbb34ca112a096e15bd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_192.png",
+  "sha448": "071e45600537c188e5fdabf1a3fc55817b352069f65a35681ef40d19f1e7085b",
+  "split": "test"
+ },
+ "great_pyrenees_3": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_3.png",
+  "sha224": "8302226f3d09dd40d93db6bd7bb3cba0230ec29e167000b18eea55fa41badf1f",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_3.png",
+  "sha448": "9bd5485db5f321bca3edd7b89cbb503166afb4c6d513fe6568dfbfcc531a19e6",
+  "split": "test"
+ },
+ "great_pyrenees_43": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_43.png",
+  "sha224": "c7097928214814e71c86063d3b96761618a0d7f62f523715e3a827f9a0b96d81",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_43.png",
+  "sha448": "79009400a1c1ad572f62d8327a17745027851cfc4ac3843a9619f656afd80834",
+  "split": "test"
+ },
+ "great_pyrenees_53": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_53.png",
+  "sha224": "a57861edd9f7669c172f9f3ec01d6a2575aa78b40b9049b652d603b675607a3b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_53.png",
+  "sha448": "8552d71365493507cc8f0b9d33d85acc22ae3740d36b932a1836e6c153d5a696",
+  "split": "test"
+ },
+ "great_pyrenees_8": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/great_pyrenees_8.png",
+  "sha224": "70411d74811deac86b431de5251d00d33e830adf379714637fff52488cc09d40",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/great_pyrenees_8.png",
+  "sha448": "fdf3097cf6fed444187a865f88478750e608292ac6b2090dce9638f3be8debcd",
+  "split": "test"
+ },
+ "havanese_25": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_25.png",
+  "sha224": "4049d1a07ec325888f536cf0babb3207a038dc0225e6bba23ddd7575100eefdc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_25.png",
+  "sha448": "aeba92482876c93e574d72c32b4007f696a188b40cf0c020fa120ac5516b43c6",
+  "split": "test"
+ },
+ "havanese_49": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_49.png",
+  "sha224": "6d537f4e4c30c1b2f165fdaa506b5d404e0c04bec1e7cd88c0900962ad5a563a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_49.png",
+  "sha448": "2a8cc811c923e5ae1e7d68419cee83850a2cecb7f5761d6bfbceed71d2165837",
+  "split": "test"
+ },
+ "havanese_66": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_66.png",
+  "sha224": "716aba16aa400333a2f91b9f5e359e3c9f2b5948045f5ba678d5ef1c476c8dcd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_66.png",
+  "sha448": "9c41220a65547137a0ec6c6d433af7b4cf41145346c3c1893afb70edbffe40a5",
+  "split": "test"
+ },
+ "havanese_67": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_67.png",
+  "sha224": "d1a6c67a7672b14e49a0621a2500eb986eeb8989d7118ea28988606959476a54",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_67.png",
+  "sha448": "7dc9ad9dbf20716424d93ee91003b13ac2dfc86405c0a18939f6172693a3dcf9",
+  "split": "test"
+ },
+ "havanese_77": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/havanese_77.png",
+  "sha224": "39e99382eb4a63443dec3ec98f931a61d07c67d88e37bc10a18c37ae27fbd9f5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/havanese_77.png",
+  "sha448": "30a3f4e2a90c6a3cd049c63507ef34bfe1c5abd2accde4e85529ce3ce9ea7bd1",
+  "split": "test"
+ },
+ "japanese_chin_196": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_196.png",
+  "sha224": "39838640d6eb05e2df82a99496d2de48315332e0a8f4ca3de7e900caf03fa729",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_196.png",
+  "sha448": "779d60c568867a4b91e109b9cd0a8f2dc084225de2f624903b0f8e49b0755bee",
+  "split": "test"
+ },
+ "japanese_chin_23": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_23.png",
+  "sha224": "6524e81252d2225e61893e11c1647b4be38ad3f311555b7f42180a0cf2c3e379",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_23.png",
+  "sha448": "5255ae69f5a82be30e801f97608aae3d18b728a10685ac45e1b4ef0fdc946e0e",
+  "split": "test"
+ },
+ "japanese_chin_4": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_4.png",
+  "sha224": "8a45bc09a1c10f22803a8349c5bac936f1a35153d28d5b826a5d55d13a81c78b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_4.png",
+  "sha448": "949efced8249982bbe1769b562d1175d8b90f97bf8b10fb43378d1603628c9e8",
+  "split": "test"
+ },
+ "japanese_chin_81": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_81.png",
+  "sha224": "5aa02cb4c2bf544dac42e20c3034175cd846021143646331f560e6a9db6653e5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_81.png",
+  "sha448": "d0454345e88d13da9752df8323061b8b1922044e9996dec7c3f4bf2c2c3b35b1",
+  "split": "test"
+ },
+ "japanese_chin_95": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/japanese_chin_95.png",
+  "sha224": "d993330a60a5942a200ca5ece7369d50f399f6be845016122e5e5bf3a0dcf0d1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/japanese_chin_95.png",
+  "sha448": "8015918a35c59d4860ba85587f4cad19c38c2a7e369c457477eee7c60bdeccf3",
+  "split": "test"
+ },
+ "keeshond_1": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_1.png",
+  "sha224": "7ab6757a118444712e8ebd80397de55e0d5be1c4186388e8ea195244f8699e55",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_1.png",
+  "sha448": "65ecd9d78f74aeffe33138ded7af288f28854ee521238007379d05d058594345",
+  "split": "test"
+ },
+ "keeshond_58": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_58.png",
+  "sha224": "d9ecc6585933f3d949a904a453e251cc295ea6b41827296c825060b663cf748a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_58.png",
+  "sha448": "2bb18fdebd0d5dfb4825a9d61cc32add984f9440d2dd19685b0710b3f1b43009",
+  "split": "test"
+ },
+ "keeshond_79": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_79.png",
+  "sha224": "3c7e8c33cb776cb8f527be6673bbbe1228ebe5cc805be75640bf73d60d1a9cbd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_79.png",
+  "sha448": "6e203b6a284484c6876cdff57ef3eb54e3d6f56311bd0c365df01f6d658b5509",
+  "split": "test"
+ },
+ "keeshond_94": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_94.png",
+  "sha224": "7ab63b5e17e15df3d3be95b4fb27de86925ab5f1de4e2ce81b423e4c5b711f51",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_94.png",
+  "sha448": "29ac4e65d4f60cd04b2a883b55add728f1ab48c029ea47d5d62cacf612e5a8b3",
+  "split": "test"
+ },
+ "keeshond_98": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/keeshond_98.png",
+  "sha224": "06862e566f9d38a2c7bc852bfad2cb30c6ba9c03f743622ca7f00ab7394dd8af",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/keeshond_98.png",
+  "sha448": "57b9cdf02d55b7d547c81a27a23d56f94620ef8f9728d8ad5c7dc0f5940fc3aa",
+  "split": "test"
+ },
+ "leonberger_23": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_23.png",
+  "sha224": "b267f7d1dfb04c4c454dcf87af61b1a1abf7251d8705447ee799998cd12136cf",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_23.png",
+  "sha448": "7d62d09e037241467c4e3a0660d91addb19e8a40ee8ef39d3df374681688faf6",
+  "split": "test"
+ },
+ "leonberger_4": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_4.png",
+  "sha224": "4d469d7a97700186d643734d25b92873d191ab1a90426c00c2281e6e71fcc29c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_4.png",
+  "sha448": "e4ce90936f1dc0ef161e9d6b3e0a0f8f6aef6e68074a36b7c501dab8a23ac30f",
+  "split": "test"
+ },
+ "leonberger_60": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_60.png",
+  "sha224": "b5e2ec6a7dbd22a92e2814952c7c2ae5fb440fcdbf88efc807771510898f2ed0",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_60.png",
+  "sha448": "18e493f8b164abcc5f6496661a6c6e3244f4d63482dd3b8fbec36e7fb64f82c2",
+  "split": "test"
+ },
+ "leonberger_72": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_72.png",
+  "sha224": "be27a085a349dbe429fb9d4f7400b9d4c475cca80a3cee3464eb400442c27a09",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_72.png",
+  "sha448": "94f83b9a97e0fb3b08e79ea56b3c47f8579d5c7ad8af38641b3fa7619824367d",
+  "split": "test"
+ },
+ "leonberger_95": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/leonberger_95.png",
+  "sha224": "210d42ae5b827294f3d1c886915698efbc7a9566ae09d22f72d9dd74b3c8c1da",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/leonberger_95.png",
+  "sha448": "d0eed4800a2ad09cf6ebf577da05a35017801eaff51b335fdcb716e6f68782e9",
+  "split": "test"
+ },
+ "miniature_pinscher_26": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_26.png",
+  "sha224": "a46b3245efb9bcc24e9e73f53e4357bbd91366b97dd336010d7f32d531805618",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_26.png",
+  "sha448": "e4b4f1cbb1e38fbc6392da4a8bb5b07d2ccd9d12c6befe60ab3c465d6199ea73",
+  "split": "test"
+ },
+ "miniature_pinscher_51": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_51.png",
+  "sha224": "11318ba94fe99bee8a04e4d4cb256437cd0b1e26b4949aa82190f94996679d20",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_51.png",
+  "sha448": "b77469f97f78ac158ac3d8d770ea4cd29a75f02e535b69ff5952fa1237ea3aaf",
+  "split": "test"
+ },
+ "miniature_pinscher_65": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_65.png",
+  "sha224": "bbffc5b188440d3817e04db24b6b9ba25ed8979959212f17d7ef20ca00c6c75b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_65.png",
+  "sha448": "b15276fc76d10bf493785863545f09a4e0b4c26e4e4439c002f60e963784b6ba",
+  "split": "test"
+ },
+ "miniature_pinscher_79": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_79.png",
+  "sha224": "bf5b44c7ce093318c572489bd447f9e8eacc1aa9aeb5dd02f772e5314df9fdf4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_79.png",
+  "sha448": "7d0d276999feb2e5896467d4107e056b7d59dc4192ca2d80f0c8e2c85382cefd",
+  "split": "test"
+ },
+ "miniature_pinscher_98": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/miniature_pinscher_98.png",
+  "sha224": "2db7329356e7ff8952fdb1aef176edffe631c4209f51f6f2df1e7758ba46093e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/miniature_pinscher_98.png",
+  "sha448": "0b515474689e6ccf7871aafb981c803ad87542d70dbc06232190837a9abd2c47",
+  "split": "test"
+ },
+ "newfoundland_193": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_193.png",
+  "sha224": "1f43a5d05c573bccb2a7ed81ee2e15f90b63c7de4fe0874109fb3c5100e28a55",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_193.png",
+  "sha448": "914bb942bdf07190b07b94a44cafe3df115c720811a55ed16032eea114aaec74",
+  "split": "test"
+ },
+ "newfoundland_43": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_43.png",
+  "sha224": "00eb182e0942946cff332e4c95f708d648d983215d059fe9e026188b69c46ad5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_43.png",
+  "sha448": "d2a87a210441feb83aa72fe4c510cfe4932a69032bf4c564f3a1eb72ed45ef84",
+  "split": "test"
+ },
+ "newfoundland_48": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_48.png",
+  "sha224": "5f4198abe9e28f6967cb501685b76872d520073a0bebf58ab455f9e10b422403",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_48.png",
+  "sha448": "3329131dd9a866dbb240737aa35c301f89f939eb41afe925641a818ac3d30896",
+  "split": "test"
+ },
+ "newfoundland_69": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_69.png",
+  "sha224": "1f815eefcd26946cc6a8199186a46a918de3519a9dca0cfcf44b8e27f9f11c47",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_69.png",
+  "sha448": "602b09b8bc92a01a2432f53fa8d193bf148f193e3cd38158ea64f26222885b0f",
+  "split": "test"
+ },
+ "newfoundland_87": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/newfoundland_87.png",
+  "sha224": "6353283d23de2a150199790a2c0d6be5b9fa302e6e23ec524abaa0d846caf35b",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/newfoundland_87.png",
+  "sha448": "b066114a1fd34d2a4b563780c0e5759f7872010ca9c56d46390d6cda9bdcf143",
+  "split": "test"
+ },
+ "pomeranian_34": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_34.png",
+  "sha224": "bb61eafcd32f6cec4ab9875357e85ff04ee25cc313b7d70fd7400c40f240e5dd",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_34.png",
+  "sha448": "1f4bd5adaaf523a87876a24454ac918daf0e7510090f18fb41a7873af086d22b",
+  "split": "test"
+ },
+ "pomeranian_48": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_48.png",
+  "sha224": "ad59863c3a0abfbbf5003386409dd63822532efb81e73bf9e37ed75c639658b2",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_48.png",
+  "sha448": "98f709a55b6639459051da23f29b2e6608dc52ff3ee22177957b863234613a45",
+  "split": "test"
+ },
+ "pomeranian_56": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_56.png",
+  "sha224": "d092dce231cf00b7fd6fd782d31196b91743070a0e491ad531dc65a2d3afd963",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_56.png",
+  "sha448": "005c88eab1aaac8da642e3de9e5bd917c89ff22ae79b2b1519d94411980fb586",
+  "split": "test"
+ },
+ "pomeranian_75": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_75.png",
+  "sha224": "8f807711240afa7bf3225557a1606214d761ddd0c505e2593250433a639462d1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_75.png",
+  "sha448": "793bb9efe9bfbe04e2e89e3d0b54196bf6974b02e500b4f02b0fcd38c06967e5",
+  "split": "test"
+ },
+ "pomeranian_82": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pomeranian_82.png",
+  "sha224": "7098edf04e8449f83cad0b006d0071526d4fce54a76fce75c32a227c4369f58a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pomeranian_82.png",
+  "sha448": "8cdb1cbccd2db4a7dd5f231b885db3f36654eac41b7294a4660146080e8ca3c7",
+  "split": "test"
+ },
+ "pug_202": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_202.png",
+  "sha224": "37a7e2c87f8c0ca8bc2c95e289dfba2ffa880c7d57ee12099b195d0ab21447b6",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_202.png",
+  "sha448": "980fef1ae2a23999f29d73187bf8182b5b1ab35309053aecb38e66159404b110",
+  "split": "test"
+ },
+ "pug_22": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_22.png",
+  "sha224": "b68b28e2576dd0d8d27549a8b0febe8eb9f6f483f3b12efd7f0aa992c6c9107c",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_22.png",
+  "sha448": "8a3cb584e11e2c9e026c7d8d7414e49cbbc6ee10cb1997f3bd26babfccc956cc",
+  "split": "test"
+ },
+ "pug_40": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_40.png",
+  "sha224": "445633b4a2eaf3d2f6743a4f86ee8a53a0f19c767af88d164daeed1abb1d6398",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_40.png",
+  "sha448": "d942abe4e3e23b09af0b51e415a869b2af7dc110605904ea49dfdf782a1122e1",
+  "split": "test"
+ },
+ "pug_72": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_72.png",
+  "sha224": "17205669cd9ee65ab9b946bc653e3e0754f439cf28067cf90d7ddd5d16667a72",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_72.png",
+  "sha448": "d862f88510e9878e0c3590d1ac0a53b5ee39823f4cc5b279e424de96773d295f",
+  "split": "test"
+ },
+ "pug_90": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_90.png",
+  "sha224": "61e667570b60e5ecc3b1ceea8a9886e20af8d416af5234a16e7fc274e41a2949",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_90.png",
+  "sha448": "fd37ec7bd3028e050f1c2eed3b346d65f56efc54e4bf1bee1b6c554f0b6f6bf1",
+  "split": "test"
+ },
+ "pug_97": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/pug_97.png",
+  "sha224": "2f2501780a17de9f452bc877d279d6eeb24a0eeaa7f0ae198ea7bece819de1c9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/pug_97.png",
+  "sha448": "d3c028fc113b667429dd988237e74baca28ec8eba40894fffb6f80a55b2a0272",
+  "split": "test"
+ },
+ "saint_bernard_24": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_24.png",
+  "sha224": "178470e2fe0ee115951dd3792a68a24476b43300d85f7fd7b7dd9473d600c6d7",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_24.png",
+  "sha448": "fd765821642b9715cc3680a382887d7c378b52ee599a2ec6bc77d07fc1143e63",
+  "split": "test"
+ },
+ "saint_bernard_38": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_38.png",
+  "sha224": "bbba393ca1aee4427a2a46b326781cec2e0708dd0310ba479230adc17fc6ba30",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_38.png",
+  "sha448": "9808539960d3a79f5c91e14d69ffb9c0d6e002892dc0f4654d95f8db4b848045",
+  "split": "test"
+ },
+ "saint_bernard_39": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_39.png",
+  "sha224": "1df9fce9c83e1aed0ea0e4aef433b94120a9b1be638f646ebd84a24dda97f602",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_39.png",
+  "sha448": "4d3f8fbb7f93bc861c94657a60fe2374274a59372261860902286f25d4f9af5f",
+  "split": "test"
+ },
+ "saint_bernard_71": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_71.png",
+  "sha224": "578e98e2161a8565b86b287f87696d9940358001309cff80d638d7115885ecbc",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_71.png",
+  "sha448": "624e529816e10633be84b777f731749ef79a45a374a6a2171f1f9c72618b036c",
+  "split": "test"
+ },
+ "saint_bernard_77": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/saint_bernard_77.png",
+  "sha224": "0a7c189fdbffe7ba4d08067abcd3ae12e9487b1026a7cd9e304770ba2185e903",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/saint_bernard_77.png",
+  "sha448": "7b25fce03c9439c7c47c91dbdfd4d95890c9cdc4eae21d23746360e5d4e21599",
+  "split": "test"
+ },
+ "samoyed_192": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_192.png",
+  "sha224": "434e5ded2a5b39412b7a76fc0f15cbd1c66c9cf3b9e1a8976f3e06830c5395f3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_192.png",
+  "sha448": "72c8702907116e3afa8308da65a22052c010978c22996328ef8f66c4f1951feb",
+  "split": "test"
+ },
+ "samoyed_195": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_195.png",
+  "sha224": "333da8aff9d074d29905955160fa0596c34995588378ff3327a365be0db6c887",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_195.png",
+  "sha448": "30d4f89aeef5983dcd336501771ce8d2ada0e70080c15cb9e44d69624ad19e6d",
+  "split": "test"
+ },
+ "samoyed_37": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_37.png",
+  "sha224": "894b8ef48eac6ea87740de8a378a685affe59d32c7891e23e34878f09cf8a972",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_37.png",
+  "sha448": "760098defaf1a739cd6e294eccf1a4932a52d78d74bde294731fa7f576b21064",
+  "split": "test"
+ },
+ "samoyed_54": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_54.png",
+  "sha224": "48cd6c8d422bb1b0eabed67ca3b3b383ac5124b083faed53cc9e6c8bd4200f35",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_54.png",
+  "sha448": "27710bdffa2262d53b21923796ecbe7ed1cd6731c5cb615223eb1c8da2626ef8",
+  "split": "test"
+ },
+ "samoyed_86": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/samoyed_86.png",
+  "sha224": "e2f5cef355bee815a3c1606470434d39ec94d3633a1644f9b4be6acc7df908d9",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/samoyed_86.png",
+  "sha448": "d9caa63d9b230fd98e4a0964428ee224880419741264caaffedfff65eab912f2",
+  "split": "test"
+ },
+ "scottish_terrier_192": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_192.png",
+  "sha224": "3debb5c31eee1a6662b36eae07c132eb891594c7bef99b4b44fd71189e91bfd1",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_192.png",
+  "sha448": "44f5c6c431b2e22794909f2ea1a1bcc084d51cc2e13e12dc241da62f763c6fa1",
+  "split": "test"
+ },
+ "scottish_terrier_30": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_30.png",
+  "sha224": "f66ae575b70ac793e3e06c1c2aae7c359534ec6aff9664b0ea8094f7029b79ea",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_30.png",
+  "sha448": "00286de973bdf26d15572ebeb514da8444d8089a341fd6aaa943e319abedc448",
+  "split": "test"
+ },
+ "scottish_terrier_52": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_52.png",
+  "sha224": "a1eb9e659f66507da29d91c0d1e2cbd83c3b8058abd76356d5ee93d90f330cd3",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_52.png",
+  "sha448": "8fc6b1b3d29d7a6af6c3f8e5baee0c9b2c3fdbe5f80c3a47ed71190e57165f0f",
+  "split": "test"
+ },
+ "scottish_terrier_8": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_8.png",
+  "sha224": "9db982b84c5e500948d622c0f8035d386b3347d6203995fd9207ab397e3d2338",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_8.png",
+  "sha448": "9088e9bd4a588318af011f2d25a198a93b8c67007f79ecf5ec3dcfd42446b442",
+  "split": "test"
+ },
+ "scottish_terrier_93": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/scottish_terrier_93.png",
+  "sha224": "7f6ed8e4db1620701119314bcf747ae0f17d9d4a7189ca322ecb3a9020050103",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/scottish_terrier_93.png",
+  "sha448": "4905739ee382c6b2aa984866abdb8c24915cf953445427d8e41d483a069d2df9",
+  "split": "test"
+ },
+ "shiba_inu_206": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_206.png",
+  "sha224": "b386bc82f7eddf7c2c43c113fff236e9d3eab8c54d1296ca5103275b36833f35",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_206.png",
+  "sha448": "fa2b4415cc0aefa03461d0c86b514dfc1aabf81ef4762b131ff2f4dc44e98fd3",
+  "split": "test"
+ },
+ "shiba_inu_3": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_3.png",
+  "sha224": "d44e0e2aeadd227b501e17096ca62f598c250eeaa02c0ba610087e7cd6e1da2d",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_3.png",
+  "sha448": "f5a94639910f64244520abad0fedd7a7ef2053e7f386b4a4034654b34008aa1d",
+  "split": "test"
+ },
+ "shiba_inu_35": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_35.png",
+  "sha224": "cc132bab6bae70309737565c4f9d2d0e4e648989bd92990d0ee54f790a8eb387",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_35.png",
+  "sha448": "7ccb5f2272b0938e38d529aefd83aa5d9266138b94e68c4f987a65e16e797c4b",
+  "split": "test"
+ },
+ "shiba_inu_95": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_95.png",
+  "sha224": "ab5b06c2a9168d7783552e6be4a7cb1c66178d995efbf8340724995d6f108660",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_95.png",
+  "sha448": "1599fc3f405907d8a663032b448a24a9e0ee82725eb30b34b29db0bb45f662dc",
+  "split": "test"
+ },
+ "shiba_inu_99": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/shiba_inu_99.png",
+  "sha224": "e1834c5fef90b14ed19cba47376ad3c36ddf74ceff23e7c20f9982ea85755dfb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/shiba_inu_99.png",
+  "sha448": "4e0b0d2d0ea4a955ddb951db91df775d3fdaee3e77792f25fd88620e123bc1bf",
+  "split": "test"
+ },
+ "staffordshire_bull_terrier_4": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_4.png",
+  "sha224": "aa33c435534bba131ef79b284773d1071eb6d34b07398022e7b65be8255483d4",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_4.png",
+  "sha448": "35d49c6f239e86816bc71af75ee9cea625ec737672a3253a2d336bd79f8fd2aa",
+  "split": "test"
+ },
+ "staffordshire_bull_terrier_48": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_48.png",
+  "sha224": "17f89860e00ea841a0ccea6aae309fe1288e2740d06466b3c78089feffd8a76a",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_48.png",
+  "sha448": "3835798af7f0d820ea45cadcc300ed78a48437ad1e6f4422889ef77d29e7068f",
+  "split": "test"
+ },
+ "staffordshire_bull_terrier_50": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_50.png",
+  "sha224": "5814aefb6921ef28fef1cabdbb0e5ce9f449732c92e78b25e9b90826c5b91279",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_50.png",
+  "sha448": "4b1137584839a37f6d3ff0eb57949cc311de160a650d1a39b35aa29d2b037b7a",
+  "split": "test"
+ },
+ "staffordshire_bull_terrier_64": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_64.png",
+  "sha224": "8920acd4b6072c0296b980d5f2f1f5159bb6ddea07679f73a5a914cc58aefe67",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_64.png",
+  "sha448": "85e64796f94965ea22c4f19f2d559c230a459f3328480e6fa469e2c1d6b5f554",
+  "split": "test"
+ },
+ "staffordshire_bull_terrier_94": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/staffordshire_bull_terrier_94.png",
+  "sha224": "90e2e0daaed6f76f85ab94a53ab37af8cf1a83e0011437077ee6fbb7a10edd45",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/staffordshire_bull_terrier_94.png",
+  "sha448": "1a89edfc113c2fdb4fb34558f369dfc41fdeaff6d7e7530e8b005eb5a41cc037",
+  "split": "test"
+ },
+ "wheaten_terrier_40": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_40.png",
+  "sha224": "c4c6dd7e58d87b73381c93cd4de452ba280ab198c39a88e22afb607e28ffe5df",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_40.png",
+  "sha448": "7d2806de4fe579c396abe35ebe26e70594e05c1bd3db1caf82d9cb2e46ad0119",
+  "split": "test"
+ },
+ "wheaten_terrier_47": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_47.png",
+  "sha224": "3f219575c593937121f866ee4e107f8763e8d297bb83905207113024aacbd578",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_47.png",
+  "sha448": "f1713095f64442132afb327073817fff09cd0d7633ee17c52707645b711e3890",
+  "split": "test"
+ },
+ "wheaten_terrier_57": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_57.png",
+  "sha224": "7b199fec4a758cd0bc19bfa8a0dd7d25335dc4a311218bb4afe41d6821e2360e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_57.png",
+  "sha448": "4bff681f7225ca9e61762b09b4520dd8cbd9d8105c6c51d0c5b2e63b406fe4be",
+  "split": "test"
+ },
+ "wheaten_terrier_73": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_73.png",
+  "sha224": "4b1d255e9f081fefe9f4d6dc2c29b4b483a8ea9ddf697f8347c373691c713bfb",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_73.png",
+  "sha448": "3f20761afb6d50d6249e96d08f5136528a3f06f1094c5da5b6d12d2d43d05773",
+  "split": "test"
+ },
+ "wheaten_terrier_9": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/wheaten_terrier_9.png",
+  "sha224": "d87d1b024c6ef4df5f4c71bdc3674d877387cbfbcc83b7c60ec63d4be8ddacb5",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/wheaten_terrier_9.png",
+  "sha448": "89a15d2076b12cb6df61fabe53541e5f3888148295997b2fee7747583a2f88db",
+  "split": "test"
+ },
+ "yorkshire_terrier_19": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_19.png",
+  "sha224": "4afe4d286ed2e2ce9cdef3bc99c1266ba37a36072a9b197e9ed4f0d61bf14628",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_19.png",
+  "sha448": "7bb2790d974317c78422c7058aeade39d6f063140077ace8a8a83daa1eaa691d",
+  "split": "test"
+ },
+ "yorkshire_terrier_34": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_34.png",
+  "sha224": "cba9b44569839ababc43153757640ec5da440a02c4e24c5b29a1f38be3b0b493",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_34.png",
+  "sha448": "582d27ee3337122cb6104b1cb17f6d7531d25e1281cb78984dbe003899c66ea0",
+  "split": "test"
+ },
+ "yorkshire_terrier_49": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_49.png",
+  "sha224": "4083349354a43afe9bde100bda3ce2b213800f18949d7d49d137e5d16792854e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_49.png",
+  "sha448": "bb7d4d6368eccf23d5c08ec5ba21db0e70d0f1e9083202367c31c513345e4e87",
+  "split": "test"
+ },
+ "yorkshire_terrier_72": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_72.png",
+  "sha224": "1cd4a89c6d856e24170947135df85d3da447ae1ebf7e4a36bfc053b95d2e9d91",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_72.png",
+  "sha448": "9db55bbf8d7fef4f43b53c64ac3f402a91f5ec4e49f4f090fe7c41dd7b415567",
+  "split": "test"
+ },
+ "yorkshire_terrier_94": {
+  "label": "dog",
+  "path224": ".cache/datasets/oxford-iiit-pet/letterbox224/yorkshire_terrier_94.png",
+  "sha224": "dc3ba6004008e7d6cd2303a3222bb5886c010d4ad6d4a8d5f9bdd0f6333dfa3e",
+  "path448": ".cache/datasets/oxford-iiit-pet/letterbox448/yorkshire_terrier_94.png",
+  "sha448": "5a1c489db417effdd587d5935ea2f4bc43256ae145720da2c2a5af79a58a61c8",
+  "split": "test"
+ }
+}

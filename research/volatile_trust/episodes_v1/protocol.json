@@ -1,0 +1,52 @@
+{
+ "T": 80,
+ "window": 10,
+ "high": 0.8,
+ "low": 0.2,
+ "orders": [
+  "SV",
+  "VS"
+ ],
+ "names": [
+  "Tom",
+  "Ben",
+  "Sam",
+  "Leo",
+  "Dan",
+  "Joe",
+  "Ted",
+  "Jim",
+  "Tim",
+  "Ken",
+  "Ian",
+  "Jon",
+  "Ron",
+  "Hal",
+  "Lou",
+  "Roy"
+ ],
+ "domains": {
+  "color": [
+   "red",
+   "blue"
+  ],
+  "pet": [
+   "cat",
+   "dog"
+  ]
+ },
+ "seed": 20261111,
+ "n_development": 16,
+ "n_held_out": 48,
+ "episodes_sha256": "8688e5b4fc01efec26432ce03b15c06458200f26fa68442e647f347bd45f256d",
+ "episodes_sha256_with_twins": "1e03024658b53b2179d182da0c49e55c4a5ec93b1b9e3f0372f67a08de4dd6a0",
+ "twins": "Each episode X has twin Xt: names swapped and label polarity flipped; same schedule/outcomes/images.",
+ "notes": [
+  "Every trial is a conflict trial; truth == A report with prob p_A(t).",
+  "Realized A accuracy stratified per 10-trial window; truth balanced per window.",
+  "Reporter A = favoured at trial 1. Within-trial listing order randomized.",
+  "Pet images: development from trainval pool, held_out from test pool.",
+  "header_a_first: which name the instructions mention first; balanced, flipped in twins.",
+  "scenario (v3): cover story, blocks of 4 episodes per scenario; twins share it."
+ ]
+}

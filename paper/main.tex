@@ -766,6 +766,31 @@ Reasoning is tested on development episodes only, with each episode's own text c
 
 \paragraph{Prompt wording (exploratory, development episodes).} We re-ran the four text history formats for Qwen3-VL-8B and InternVL3.5-8B with two alternative wordings; episodes, names, answer words, list order and readout were unchanged. Reworded sentences keep the original layout with different phrasing (``In trial 3, Sam said cat and Ken said dog; it turned out cat.''; ``Tally over the 3 previous trials: Ken was right 2 times and Sam was right 1 times.''). A terse record uses one line per trial (``\#3 | Sam=cat | Ken=dog | truth=cat''; ``Correct counts so far (3 trials): Ken=2, Sam=1.''). The original wording re-run on our workstation reproduced the main-platform results to within .003 in every format (Table~\ref{tab:wording}). With reworded sentences, every result was preserved: raw history at .47--.49, summary$-$raw $+.12$ and $+.15$, the correctness-coded history at or above the summary, appending correctness recovering about 40\% of the gap, and a positive weight on the previous outcome. The terse record changed the picture in both directions. Raw-history accuracy rose to .55--.56 and the weight on the previous outcome fell, whereas the correctness-coded and summarized formats fell to .56--.60, and InternVL3.5-8B followed the count summary on only 72\% of non-tied trials (98\% with the original wording). The summary$-$raw gap shrank to $+.03$ [.01, .06] (Qwen3-VL-8B) and $+.01$ [$-.02$, .05] (InternVL3.5-8B). Raw-history accuracy stayed below the count rule (.63) in every wording, but the size of the raw--summarized gap depends on how the history is laid out, and we interpret it only for the natural-language layout used in all main conditions.
 
+\paragraph{Which part of the terse record matters.} The terse record changes three parts of the prompt: the task description, the history lines together with the count summary, and the current-trial line together with the question. We crossed the original and terse version of each part ($2^3$ prompts; the all-original prompt reproduces the runner's prompts byte for byte; Table~\ref{tab:wordfact}). No single part accounts for the change. Each terse part, on its own, lowered the summary$-$raw gap by 0.3--5.4 points (main effects of 2.7--6.3 points), and the gap stayed positive with a 95\% CI above zero in all six mixed prompts. The largest single changes were these: the terse question lowered accuracy with the correctness-coded history (main effect $-3.6$ and $-4.3$ points); the terse task description and count notation lowered agreement with the count rule (InternVL3.5-8B: $-8.6$ and $-10.2$ points); and for InternVL3.5-8B raw-history accuracy rose mainly when both the history lines and the current trial used the same one-line record (.477 and .491 with either alone, .559 with both). This last pattern fits the outcome-evaluation account: the gain under the raw history appeared when each past trial's reports and outcome were aligned in the same layout as the current reports, which makes deciding who was correct easier.
+
+% Evidence: analysis/paraphrase/summary.txt (main effects) and paraphrase.json; runs/paraphrase/H*-L*-Q*_*.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{3.5pt}
+  \begin{tabular}{ccc cccc cccc}
+    \toprule
+    & & & \multicolumn{4}{c}{Qwen3-VL-8B} & \multicolumn{4}{c}{InternVL3.5-8B} \\
+    \cmidrule(lr){4-7}\cmidrule(lr){8-11}
+    Task & History & Question & Raw & Coded & Summ. & Summ.$-$raw [95\% CI] & Raw & Coded & Summ. & Summ.$-$raw [95\% CI] \\
+    \midrule
+    O & O & O & .485 & .640 & .617 & $+.132$ [.108, .153] & .471 & .640 & .628 & $+.157$ [.140, .174] \\
+    O & O & T & .512 & .613 & .627 & $+.115$ [.093, .137] & .491 & .604 & .617 & $+.126$ [.106, .146] \\
+    O & T & O & .494 & .633 & .623 & $+.129$ [.114, .145] & .477 & .637 & .600 & $+.122$ [.099, .145] \\
+    O & T & T & .532 & .588 & .608 & $+.076$ [.051, .105] & .559 & .616 & .597 & $+.038$ [.007, .065] \\
+    T & O & O & .506 & .637 & .600 & $+.094$ [.066, .121] & .507 & .634 & .610 & $+.103$ [.073, .132] \\
+    T & O & T & .520 & .599 & .600 & $+.080$ [.052, .108] & .493 & .562 & .600 & $+.107$ [.079, .131] \\
+    T & T & O & .526 & .616 & .600 & $+.074$ [.040, .104] & .515 & .634 & .583 & $+.068$ [.035, .100] \\
+    T & T & T & .563 & .580 & .597 & $+.034$ [.008, .059] & .550 & .593 & .564 & $+.014$ [$-$.019, .045] \\
+    \bottomrule
+  \end{tabular}
+  \caption{Decomposition of the terse record (development episodes, text reports; twin-averaged accuracy, $t \ge 2$). O: original wording of that part; T: terse version. Task: task description; History: history lines and count summary; Question: current-trial line and question. The first row is the original prompt and the last row the terse record of Table~\ref{tab:wording}.}
+  \label{tab:wordfact}
+\end{table*}
+
 % Evidence: research/volatile_trust/analysis/paraphrase/summary.txt (analyze_paraphrase.py; runs/paraphrase/*).
 \begin{table*}[h]\centering\small
   \setlength{\tabcolsep}{5pt}

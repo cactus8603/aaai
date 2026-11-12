@@ -89,7 +89,7 @@ def fig_gap(D, controls, out, split_label):
     grid(a)
     for key, d in D.items():
         a.plot([], [], marker=d['marker'], color=INK2, ls='none', ms=4, label=d['name'])
-    a.legend(loc='upper left', handletextpad=0.2, borderaxespad=0.1)
+    a.legend(loc='lower right', handletextpad=0.2, borderaxespad=0.1)
 
     # (b) control conditions, text reports
     conds = [('explicit_rel', 'Stated\n%'), ('explicit_counts', 'Stated\ncounts'), ('single_trial_who', 'Single\ntrial'),

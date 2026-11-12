@@ -23,10 +23,9 @@ CORE = ['qwen3vl8b', 'internvl8b', 'qwen3vl32b', 'internvl38b', 'gemma3_27b']   
 BIG = ['qwen3vl32b', 'internvl38b', 'gemma3_27b']
 
 # priority 1: primary test (held-out summary - raw), its decomposition (coded, raw+correct), stated-reliability and
-# binding controls (development-only by design), robustness set, and the cross-platform check: dev_full_text is
-# compared item by item with the MI300X run of the same job (development work was done on MI300X / RTX 3090;
-# every held-out and robustness evaluation is on H200)
-P1 = ['xcheck', 'dev_full_text', 'dev_controls', 'dev_binding', 'dev_chartread',
+# binding controls (development-only by design), robustness set (no cross-platform check: the paper reports H200
+# results only, and exploratory development checks from RTX 3090)
+P1 = ['dev_controls', 'dev_binding', 'dev_chartread',
       'ho_full_text', 'ho_sum_all', 'ho_full_rawcoded', 'ho_full_coded', 'rob_full', 'rob_sum_all']
 # priority 2: secondary tests (TOST for change-point and dev-selected window), chart and image columns,
 # Psych-101 primary fits, held-out confirmation of the masking result

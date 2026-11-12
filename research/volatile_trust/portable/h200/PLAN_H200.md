@@ -11,16 +11,15 @@
 GPU 小時是用 MI300X 實測的每筆秒數推估的（8B 約 .06–.07 秒、32/38B 約 .17 秒、Gemma-3-27B 約 .28 秒），H200 實際速度請以 stage 1 的 log 為準。
 
 ## 平台分工（論文寫法）
-- **MI300X 暫停使用（2026-11-13）**：不再送任何工作；只沿用已完成的結果（dev 主任務，以及跨平台對照用的 `dev_full_text`，5 個模型都完整）。MI300X 清單上未完成的工作（InternVL3.5-38B 的部分 dev、tier 2–4）不補跑，需要的部分都已在本清單。
-- **開發**在 MI300X 與 RTX 3090：提示與 icon 設計、dev 上的主任務與探索性檢查（措辭、遮罩）。
+- **MI300X 暫停使用（2026-11-13）**：不再送任何工作；論文不使用也不提 MI300X 的結果；它們只在開發時參考過。MI300X 清單上未完成的工作（InternVL3.5-38B 的部分 dev、tier 2–4）不補跑，需要的部分都已在本清單。
+- **開發**：提示與 icon 設計、探索性檢查（措辭、遮罩）在 RTX 3090，論文附錄照實寫。
 - **正式評估全部在 H200**：held-out、穩健性資料、Psych-101，以及論文會報告的 dev-only 對照組（明示可靠度、綁定、圖表可讀性）和選 K 用的 dev 視窗。
-- **跨平台對照**：每個模型在 H200 重跑 `dev_full_text`（stage 1），和 MI300X 的同一工作逐題比對（y 的差、選擇一致率、準確率差）；`xcheck` 另外對照 3090。
-  論文寫法：「Development runs were done on MI300X and RTX 3090 GPUs; all held-out, robustness and human-comparison evaluations were run on H200 GPUs. The development main task, rerun on H200 for every model, agreed with the MI300X run (...).」
+- **不做跨平台對照，論文也不提 MI300X**（2026-11-13 使用者決定）：`dev_full_text`、`xcheck` 不在 H200 跑。
+  論文寫法：所有報告的結果都在 H200；探索性的 dev 檢查（icon、措辭、遮罩）在 RTX 3090（附錄 K）。
 
 ## tier 1（必要，約 27 GPU 小時；Gemma-3-27B 約 10 小時最久）
 | 工作 | 用途 |
 |---|---|
-| `dev_full_text`、`xcheck` | 跨平台對照（見上） |
 | `ho_full_text`、`ho_sum_all` | **唯一的主要檢定**：held-out 摘要 − 原始（C1）、Table main、Fig. gap、積分核 |
 | `ho_full_rawcoded`、`ho_full_coded` | 落差拆解（C1b）：原始＋標正確、逐回合標正確（含圖片版） |
 | `dev_controls`、`dev_binding`、`dev_chartread` | 明示可靠度（D−A，E1）、綁定、圖表可讀性；依設計只用 dev |
@@ -43,7 +42,7 @@ GPU 小時是用 MI300X 實測的每筆秒數推估的（8B 約 .06–.07 秒、
 - 8B 的 dev 遮罩和措辭（3090 已做，探索性）；held-out 遮罩確認在 tier 2。
 
 ## 送出
-**2026-11-13 改用工作者（`worker.py`、`submit_workers.sh`）**：每個工作者 1 張卡，依本清單的順序跨模型挑下一個工作（重新讀清單、用 `_LOCK` 記 Slurm job id 認領、權重沒下載的先跳過），實驗室有幾張空卡就跑幾個。`NWORK=4 NCHAIN=3 bash research/volatile_trust/portable/h200/submit_workers.sh`。跨平台對照不再擋後面的工作：`dev_full_text` 一完成就和 MI300X 比，不一致就 `scancel` 所有工作者。以下是舊的每模型送法，保留備查。
+**2026-11-13 改用工作者（`worker.py`、`submit_workers.sh`）**：每個工作者 1 張卡，依本清單的順序跨模型挑下一個工作（重新讀清單、用 `_LOCK` 記 Slurm job id 認領、權重沒下載的先跳過），實驗室有幾張空卡就跑幾個。`NWORK=4 NCHAIN=3 bash research/volatile_trust/portable/h200/submit_workers.sh`。（跨平台對照已取消，`dev_full_text` 不在清單裡。）以下是舊的每模型送法，保留備查。
 
 `submit.sh` 不用改：stage 1 跑 tier 1 的 `dev_` 與 `xcheck`，stage 2 依 tier 1 → 2 → 3 →（4，現在沒有）。
 `MODELS="qwen3vl8b internvl8b qwen3vl32b internvl38b gemma3_27b"`。`qwen3vl8b_thinking` 沒有 tier 1 工作（stage 1 會沒事可做），建議直接送 `--tier 3` 的工作，或等主要模型跑完再用空出的卡跑。

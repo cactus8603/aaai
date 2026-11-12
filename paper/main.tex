@@ -42,6 +42,7 @@
 
 % Simple in-text TODO marker. Remove all uses before submission (grep TODO).
 \newcommand{\todo}[1]{\textbf{[TODO: #1]}}
+\newcommand{\tbd}{\textbf{??}} % result cell to fill; see discussion/tables_fill_guide.md
 % Placeholder box for figures not yet generated (remove when real PDFs exist).
 \newcommand{\figplaceholder}[2]{\fbox{\parbox[c][#2][c]{0.95\linewidth}{\centering\small Figure placeholder: #1}}}
 
@@ -218,15 +219,73 @@ This comparison is supporting and descriptive. Human participants were told the 
   \figplaceholder{Fig.~5. Forgetting rate $\phi$ vs.\ hazard rate: humans (told $h$; our re-analysis of Xiong et al.\ 2023) and models (hidden $h$; told $h$ as secondary).}{4cm}
   \caption{\todo{Human comparison on Psych-101.}}\label{fig:human}
 \end{figure}
-\begin{table}[t]\centering\small
-  \begin{tabular}{lrrr}
+% FILL: analyze_main.py held-out JSON -> cells / gaps (domain=all); D from analyze_controls.py (explicit_rel hard_acc).
+\begin{table*}[t]\centering\small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{l ccccc c c}
     \toprule
-    Test (held-out) & Estimate & 95\% CI & $p$ \\
+    & \multicolumn{5}{c}{Main-task accuracy (held-out, 48 episodes)} & & Stated (D) \\
+    \cmidrule(lr){2-6}\cmidrule(lr){8-8}
+    Model & A raw & A+ raw+corr. & B coded & B$'$ chart & C summ. & C$-$A [95\% CI] & control acc. \\
     \midrule
-    \multicolumn{4}{c}{\todo{C$-$A per model; secondary}} \\
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    Rule alone (all-trial counts) & \multicolumn{5}{c}{.632} & -- & -- \\
     \bottomrule
   \end{tabular}
-  \caption{Primary and secondary tests, fixed before held-out evaluation (timestamped commit, tag prereg-v3); not a formal preregistration.}\label{tab:tests}
+  \caption{Accuracy on the main task by history format: proportion of trials ($t\ge 2$) on which the model follows the advisor who is correct, averaged over counterbalanced copies in logit space and then over episodes. Text reports; text and pet cover stories pooled (per cover story in Appendix~J). C$-$A: paired difference over episodes with 95\% bootstrap CI. D is the stated-reliability control, run on development episodes with its own metric (accuracy on control items, Table~\ref{tab:controls}), so it is not on the same scale as the main-task columns.}
+  \label{tab:main}
+\end{table*}
+
+% FILL: analyze_main.py held-out JSON -> gaps[primary=True] (mean, ci95, p_wilcoxon, p_holm) and
+%       tost[rule=window_counts, domain=all] for C in {sum_all, sum_cp, sum_window:K*} (families/secondary).
+\begin{table*}[t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccc ccc ccc}
+    \toprule
+    & \multicolumn{4}{c}{Primary: C$-$A (sum\_all vs.\ raw)} & \multicolumn{6}{c}{Secondary: VLM+summary $-$ rule alone (TOST, $\pm$2 pp)} \\
+    \cmidrule(lr){2-5}\cmidrule(lr){6-11}
+    & & & & & \multicolumn{2}{c}{All trials} & \multicolumn{2}{c}{Change-point} & \multicolumn{2}{c}{Last $K^\ast$} \\
+    \cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-11}
+    Model & Est. & 95\% CI & $p$ & $p_\text{Holm}$ & $\Delta$ [90\% CI] & $p_\text{TOST}$ & $\Delta$ [90\% CI] & $p_\text{TOST}$ & $\Delta$ [90\% CI] & $p_\text{TOST}$ \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Primary and secondary tests on held-out episodes, fixed before held-out evaluation (timestamped commit, tag prereg-v3); not a formal preregistration. Primary: Wilcoxon signed-rank test over episodes, Holm-corrected across core models; the claim requires a positive, significant gap in both language-model families (Qwen3 and Gemma~3). Secondary: two one-sided tests per model with Holm correction over the three summaries; $K^\ast$ chosen on development episodes (Appendix~E).}
+  \label{tab:tests}
+\end{table*}
+
+% FILL: analyze_controls.py on runs_mi300x/<model>/dev_controls -> pooled[control].hard_acc
+\begin{table}[t]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l ccccccc}
+    \toprule
+    & \multicolumn{2}{c}{Stated} & \multicolumn{2}{c}{Short} & \multicolumn{2}{c}{Long} & Single \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+    Model & \% & counts & raw & coded & raw & coded & trial \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies). Stated: reliability given as a percentage (D) or as counts. Short/long: an easy history in which one advisor is clearly better, given raw or correctness-coded. Single trial: who was correct on one shown trial. Full results by cover story in Appendix~C.}
+  \label{tab:controls}
 \end{table}
 
 \section{Discussion and Limitations}
@@ -322,7 +381,51 @@ With text reports the images are replaced by the answer word. \todo{binding-cont
 \paragraph{Names, order and counterbalancing.} Advisor names are drawn from 16 common English first names that are single tokens in all tokenizers. The order in which the two reports are listed is random on each trial. Phase order alternates across episodes, the order in which the instructions introduce the two names alternates in pairs, and text cover stories rotate in blocks of four episodes, so cover story, phase order and introduction order are fully crossed. Each episode has a counterbalanced copy with the advisor names swapped (A keeps its role), the answer-label mapping reversed and the introduction order reversed; outcomes and images are identical. Analyses average the label-aligned logits within each pair.
 
 \paragraph{Splits and seeds.} The main set has 16 development episodes (color, weather, stock and sports cover stories) and 48 held-out episodes (eight per text cover story), 128 with counterbalanced copies, generated with seed 20261111. Pet photos come from the Oxford-IIIT Pet dataset (CC BY-SA 4.0): 128 photos from the official trainval split for development episodes and 256 from the test split for held-out episodes, with no overlap. The robustness set has 24 held-out episodes (48 with copies; seed 20261112) in which correctness is drawn independently on each trial, outcome labels are drawn independently, and volatile-phase dwell times are drawn uniformly from 6--16 trials. All data are regenerated from seeds and checked against stored SHA-256 hashes.
-\subsection{C. Control Conditions: Full Results}      % heatmap model x condition x cover story
+\subsection{C. Control Conditions and Decomposition: Full Results}      % heatmap model x condition x cover story
+Table~\ref{tab:controls_full} gives each control condition by cover story, and Table~\ref{tab:decomp} the stepwise differences between history formats on the main task. \todo{one paragraph after results}
+
+% FILL: analyze_controls.py -> table[] (control, stratum = cover story), hard_acc; one block per model (repeat for each model).
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{ll ccccccc}
+    \toprule
+    Model & Condition & Color & Pet & Weather & Stock & Sports & Medical & News \\
+    \midrule
+    Qwen3-VL-32B & Stated \% & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Stated counts & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Short raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Short coded & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Long raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Long coded & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Single trial & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Perception & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Chart read & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    \multicolumn{9}{l}{\textit{(one block per model; repeat for the other models)}} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Control conditions by cover story, development episodes (accuracy on control items, averaged over counterbalanced copies). Perception: naming the content of one report image (pet photos; icons for other cover stories). Chart read: reading one cell of the correctness-coded chart.}
+  \label{tab:controls_full}
+\end{table*}
+
+% FILL: analyze_main.py held-out -> b_vs_a (A+, B, B' vs A: mean, ci95) and positions (C_minus_B, position, ci95, interpretable).
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l ccccc c}
+    \toprule
+    Model & A+$-$A & B$-$A & B$'-$A & C$-$B & C$-$A & (B$-$A)/(C$-$A) \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Decomposition of the raw--summarized gap on held-out episodes: paired differences in main-task accuracy with 95\% bootstrap CIs (format: mean [low, high]). The normalized position is reported only when C$-$A exceeds the prespecified threshold and its bootstrap CI excludes 0; otherwise ``n/i''.}
+  \label{tab:decomp}
+\end{table*}
 \subsection{D. Normative Simulation}                  % rule comparison across contrasts/phase lengths (design_sim)
 We ran two simulations without any VLM to check the design. Both score a rule by the proportion of trials ($t \ge 2$) on which the advisor it favours is correct; ties score 0.5.
 
@@ -351,19 +454,259 @@ We ran two simulations without any VLM to check the design. Both score a rule by
 \end{table}
 
 These rule baselines were computed on held-out episodes before any model results on the main data were seen. They are properties of the episode generator and involve no model behavior.
+
+% FILL: analyze_main.py held-out -> baselines[].table (acc, ci95), on the same trial mask as the model runs.
+\begin{table}[h]\centering\small
+  \begin{tabular}{l cc}
+    \toprule
+    Baseline (no model) & Held-out & Robustness \\
+    \midrule
+    Always follow A & \tbd & \tbd \\
+    Known current accuracy & \tbd & \tbd \\
+    BOCPD posterior & \tbd & \tbd \\
+    Outcome quota (knows block quota) & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Additional model-free baselines on the trial mask used for the model runs (95\% CIs in the analysis output).}
+  \label{tab:baselines}
+\end{table}
 \subsection{E. Change-Point Controller and Summary Variants} % BOCPD details, hazard, K selection on dev
 \paragraph{Change-point detection.} Let $o_t = 1$ if advisor A was correct on trial $t$. Before trial $t$, the controller runs Bayesian online change-point detection \citep{adams2007bocpd} on $o_1,\dots,o_{t-1}$ with a Bernoulli likelihood, a Beta(1,1) prior for each run and a constant hazard rate $h = 1/15$. This rate lies between the reversal rates of the volatile (1/10) and stable phases and was not tuned (Appendix~D). The controller takes the maximum a posteriori run length $r$, sets it to at least 3, and summarizes trials $\max(1, t-r)$ to $t-1$.
 
-\paragraph{Summary variants.} All variants use the same sentence as C, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The variants are: all past trials (C, primary); the last $K \in \{5, 10, 20\}$ trials; the run since the last inferred change-point (BOCPD); and the trials since the last true reversal up to $t-1$ (reversal-aligned reference). Two further conditions truncate the raw history instead of summarizing it: to the BOCPD run, or to the last 10 trials. The window length used in the secondary tests, $K^\ast$, is the one with the highest model accuracy on development episodes, fixed before held-out evaluation. \todo{report $K^\ast$ per model}
+\paragraph{Summary variants.} All variants use the same sentence as C, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The variants are: all past trials (C, primary); the last $K \in \{5, 10, 20\}$ trials; the run since the last inferred change-point (BOCPD); and the trials since the last true reversal up to $t-1$ (reversal-aligned reference). Two further conditions truncate the raw history instead of summarizing it: to the BOCPD run, or to the last 10 trials. The window length used in the secondary tests, $K^\ast$, is the one with the highest model accuracy on development episodes, fixed before held-out evaluation; Table~\ref{tab:variants} reports $K^\ast$ and all variants, and Table~\ref{tab:agree} compares the model with the rule alone.
+
+% FILL: K* from dev_selection JSON (--write-dev-selection); accuracies from analyze_main.py held-out -> cells (C|sum_*|text, A|cp_hard|text, A|window:10|text).
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l c cccccc cc}
+    \toprule
+    & & \multicolumn{6}{c}{Summarized history} & \multicolumn{2}{c}{Truncated raw history} \\
+    \cmidrule(lr){3-8}\cmidrule(lr){9-10}
+    Model & $K^\ast$ & All (C) & Last 5 & Last 10 & Last 20 & Change-point & Since reversal & Change-point & Last 10 \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    Rule alone & -- & .632 & .692 & .612 & .579 & .678 & .744 & -- & -- \\
+    \bottomrule
+  \end{tabular}
+  \caption{Main-task accuracy for every summary variant and the truncated raw histories (held-out). Rule alone: the summary's majority rule without a model (Table~\ref{tab:normsim}).}
+  \label{tab:variants}
+\end{table*}
+
+% FILL: analyze_main.py held-out -> tost[] (acc_vlm, acc_rule, mean, ci95) and agreement[] (agree_trial_pooled), domain=all.
+\begin{table}[h]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{ll cccc}
+    \toprule
+    Model & Summary & VLM & Rule & $\Delta$ [90\% CI] & Agree \\
+    \midrule
+    Qwen3-VL-8B & All & \tbd & \tbd & \tbd & \tbd \\
+     & CP & \tbd & \tbd & \tbd & \tbd \\
+     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & All & \tbd & \tbd & \tbd & \tbd \\
+     & CP & \tbd & \tbd & \tbd & \tbd \\
+     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & All & \tbd & \tbd & \tbd & \tbd \\
+     & CP & \tbd & \tbd & \tbd & \tbd \\
+     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & All & \tbd & \tbd & \tbd & \tbd \\
+     & CP & \tbd & \tbd & \tbd & \tbd \\
+     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & All & \tbd & \tbd & \tbd & \tbd \\
+     & CP & \tbd & \tbd & \tbd & \tbd \\
+     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{VLM with summarized history vs.\ the summary's rule alone on identical trials (held-out). Agree: proportion of non-tied trials on which the model's choice equals the rule's. Equal accuracy does not imply the same strategy; agreement is reported for that reason.}
+  \label{tab:agree}
+\end{table}
 
 \paragraph{What the controller is.} The controller is a training-free rule outside the model; it sees only the outcome sequence and does not read model states. It is motivated by change-point models of human learning \citep{nassar2010approximately,nassar2012rational}, but we use it as an integration rule, not as a model of the VLM or of the brain.
 \subsection{F. Computational Models and Parameter Recovery}  % delta-rule variants, calibrated learning rates, LOEO-CV
+\todo{model definitions (M0--M4), fitting procedure and one paragraph after results}
+
+% FILL: analyze_mechanism.py -> heuristics[<group>|<arm>]['all'][<heuristic>].kappa (+ kappa_ci95).
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{ll cccccc}
+    \toprule
+    Model & History & Copy last outcome & Follow last correct & Last 5 & All-trial counts & BOCPD & Label prior \\
+    \midrule
+    Qwen3-VL-8B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Agreement (Cohen's $\kappa$) between the model's choices and simple strategies on held-out episodes. Copy last outcome: predict the previous trial's outcome label. Follow last correct: follow the advisor who was correct on the previous trial. Label prior: always predict the same label.}
+  \label{tab:kappa}
+\end{table*}
+
+% FILL: cogmodels.py LOEO-CV fits per model x history (NLL per trial, best model, effective learning rate in each phase).
+\begin{table}[h]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{ll cccc}
+    \toprule
+    Model & History & Best & NLL/trial & $\alpha_\text{stable}$ & $\alpha_\text{volatile}$ \\
+    \midrule
+    Qwen3-VL-8B & A & \tbd & \tbd & \tbd & \tbd \\
+     & C & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & A & \tbd & \tbd & \tbd & \tbd \\
+     & C & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & A & \tbd & \tbd & \tbd & \tbd \\
+     & C & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & A & \tbd & \tbd & \tbd & \tbd \\
+     & C & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & A & \tbd & \tbd & \tbd & \tbd \\
+     & C & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Computational-model fits (leave-one-episode-out cross-validated negative log-likelihood per trial; best of M0--M4) and calibrated effective learning rates by phase.}
+  \label{tab:cogfit}
+\end{table}
+
+% FILL: analyze_mechanism.py --validate -> validation[<dataset>][<agent>] (true params, recovered kernel / exp_fit).
+\begin{table}[h]\centering\small
+  \begin{tabular}{l cc}
+    \toprule
+    Synthetic agent & Strategy $\kappa$ & Kernel decay \\
+    \midrule
+    Copy last outcome & \tbd & \tbd \\
+    Delta rule ($\alpha=0.3$) & \tbd & \tbd \\
+    Last-5 counts & \tbd & \tbd \\
+    BOCPD & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Recovery of strategies and integration kernels from synthetic agents run on the same episodes.}
+  \label{tab:recovery}
+\end{table}
 \subsection{G. Multimodal Binding and Chart Legibility}      % image_named/composite/after, composite_read, chart_read
+These analyses use development episodes only and are exploratory. \todo{one paragraph after results}
+
+% FILL: analyze_controls.py (perception, composite_read, chart_read: hard_acc); analyze_main.py dev -> cells for report modality text / pet photo / icon and B' (chart).
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l ccc ccc}
+    \toprule
+    & \multicolumn{3}{c}{Legibility controls} & \multicolumn{3}{c}{Main-task accuracy, A raw (development)} \\
+    \cmidrule(lr){2-4}\cmidrule(lr){5-7}
+    Model & Photo perception & Composite read & Chart read & Text reports & Image reports & Chart history (B$'$) \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Multimodal reports (development episodes, exploratory). Chart read below the prespecified 0.8 gate means B$'$ results for that model are not interpreted.}
+  \label{tab:mm}
+\end{table*}
 \subsection{H. Reasoning Mode}                               % thinking/CoT subset, lengths, truncation
-Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. The main comparison is Qwen3-VL-32B-Instruct with a step-by-step prompt against the same checkpoint answering directly; Qwen3-VL-8B-Thinking and Qwen3-VL-32B-Thinking use their native reasoning templates as a supplement. The subset comprises the main task at trials 20, 40, 60 and 80 with raw (A) and summarized (C) history, and the control conditions D, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. \todo{results}
+Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. The main comparison is Qwen3-VL-32B-Instruct with a step-by-step prompt against the same checkpoint answering directly; Qwen3-VL-8B-Thinking and Qwen3-VL-32B-Thinking use their native reasoning templates as a supplement. The subset comprises the main task at trials 20, 40, 60 and 80 with raw (A) and summarized (C) history, and the control conditions D, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. Table~\ref{tab:reason} gives the results. \todo{one paragraph after results}
+
+% FILL: analyze_thinking.py -> groups[<model/mode>][<condition>] (acc_valid, valid_rate, truncation_rate, forced_rate, tokens) and gap.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccc ccc c}
+    \toprule
+    & \multicolumn{4}{c}{Free-answer accuracy} & & & & \\
+    \cmidrule(lr){2-5}
+    Model / mode & A raw & C summ. & C$-$A & D stated & Valid & Truncated & Forced & Median tokens \\
+    \midrule
+    Qwen3-VL-32B, direct & \tbd & \tbd & \tbd & \tbd & -- & -- & -- & 1 \\
+    Qwen3-VL-32B, step-by-step & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Reasoning subset (development episodes; main task at trials 20, 40, 60, 80; controls at 40 and 80). Accuracy is over valid free answers; Valid, Truncated and Forced are proportions of all items.}
+  \label{tab:reason}
+\end{table*}
 \subsection{I. Psych-101 Protocol and Additional Fits}       % hidden/told, sampled-choice fits, long blocks, position
 \paragraph{Calibration of the human--model comparison.} We simulated the complete pipeline 200 times per condition. Simulated participants follow each real participant's fitted strategy at each hazard rate and play on the real value sequences; the simulated model follows the same strategy with its forgetting-rate slope shifted by $\delta$ and is replayed on the simulated participant's history; both are then fitted exactly as the real data (20 sampled choice sequences per model episode, median fit, paired Wilcoxon test and bootstrap CI). With $\delta = 0$, the test rejected at $p < .05$ in 6.0\% of replications (Monte Carlo SE 1.7\%) and the 95\% CI covered the true difference in 93.5\%, but the estimated difference was biased upward by about $+0.09$. Power was 0.49 for $\delta = -0.5$ and 0.59 for $\delta = +0.5$, where CI coverage was 0.87 and 0.96. We therefore treat the comparison as supporting and descriptive (main text).
+
+% FILL: psych101/analyze_xiong.py -> per_participant[M].phi by hazard, tests, paired slope difference (model - human), for hidden and told runs.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{ll ccc c cc}
+    \toprule
+    & & \multicolumn{3}{c}{Median forgetting rate $\phi$} & & \multicolumn{2}{c}{Slope difference (model $-$ human)} \\
+    \cmidrule(lr){3-5}\cmidrule(lr){7-8}
+    Agent & Hazard info & $h=0.1$ & $h=0.2$ & $h=0.4$ & Slope & Est.\ [95\% CI] & $p$ \\
+    \midrule
+    Humans ($n=30$) & told & \tbd & \tbd & \tbd & \tbd & -- & -- \\
+    \midrule
+    Qwen3-VL-8B & hidden & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & hidden & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & hidden & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & hidden & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & hidden & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Psych-101 changing bandit \citep{xiong2023neural}. Models are conditioned on each participant's history; $\phi$ is fitted to choices sampled from the model (20 draws, median). Slope: of $\phi$ on hazard rate. The paired test has power of about 0.5 and an upward bias of about $+0.09$ (calibration above), so it is descriptive only.}
+  \label{tab:psych}
+\end{table*}
 \subsection{J. Robustness}                                   % IID/irregular episodes; per-cover-story results
+\todo{one paragraph after results}
+
+% FILL: analyze_main.py on robust_v3 runs -> gaps (C|sum_all vs A, domain=all): A/C acc, mean, ci95, p_wilcoxon.
+\begin{table}[h]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l ccc c}
+    \toprule
+    Model & A raw & C summ. & C$-$A [95\% CI] & $p$ \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Primary comparison on the robustness set (24 episodes with independent outcomes and irregular reversals).}
+  \label{tab:robust}
+\end{table}
+
+% FILL: analyze_main.py held-out -> scenarios[] (per_scenario mean, sign_test); pet from domain=pet gaps.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccccc c c}
+    \toprule
+    & \multicolumn{6}{c}{Text cover stories} & & \\
+    \cmidrule(lr){2-7}
+    Model & Color & Weather & Stock & Sports & Medical & News & Sign test $p$ & Pet (photo) \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{C$-$A by cover story (held-out; eight episodes per text cover story). Pet uses photo reports in its own episode slot and is not part of the sign test.}
+  \label{tab:scenario}
+\end{table*}
 \subsection{K. Models, Revisions and Compute}                % pinned revisions, hardware, cross-platform check
 Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revisions. Two larger mixture-of-experts models (Qwen3-VL-235B-A22B, InternVL3.5-241B-A28B) and Gemma-3-12B-it are pinned but optional. Gemma-3 is a gated model; if access is not granted, Mistral-Small-3.2-24B replaces it as the independent family. \todo{confirm Gemma-3 runs or the replacement}
 
@@ -390,11 +733,51 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
 
 \paragraph{Image preprocessing.} Icons and photos are rendered at 224 px for Qwen models and at 448 px (one tile, no tiling) for InternVL3.5. For Gemma-3, 224-px renders are resized by the processor to the fixed 896-px input (256 image tokens; pan-and-scan off). The correctness-coded chart is rendered at 448 px for all models.
 
-\paragraph{Software and hardware.} All reported runs use AMD MI300X GPUs (192 GB), one per model, with PyTorch 2.6.0 (ROCm) and Transformers 4.57.1; all conditions of a model run on the same platform. Each run stores the rendered prompt hash, the raw candidate logits, the probability mass on the two answer tokens, and a fingerprint of the configuration. \todo{GPU-hours per model and in total}
+\paragraph{Software and hardware.} All reported runs use AMD MI300X GPUs (192 GB), one per model, with PyTorch 2.6.0 (ROCm) and Transformers 4.57.1; all conditions of a model run on the same platform. Each run stores the rendered prompt hash, the raw candidate logits, the probability mass on the two answer tokens, and a fingerprint of the configuration. GPU-hours are in Table~\ref{tab:readout}.
 
-\paragraph{Readout quality.} Because $y_t$ is normalized over the two candidate tokens only, we report for every model, format and condition the probability mass on the two candidates (mean, minimum and share of trials below 0.5) and the format-following rate (share of trials on which the greedy output is one of the two answer words). \todo{readout-quality table}
+\paragraph{Readout quality.} Because $y_t$ is normalized over the two candidate tokens only, we report for every model, format and condition the probability mass on the two candidates (mean, minimum and share of trials below 0.5) and the format-following rate (share of trials on which the greedy output is one of the two answer words); see Table~\ref{tab:readout}.
 
-\paragraph{Cross-platform check.} Pilot runs used an NVIDIA RTX 3090. For the models run on both platforms we compare the same prompts (two development episodes of the pilot data, text reports, raw history) and require a median $|\Delta y| < 0.02$ and agreement of the more probable answer above 98\%. \todo{report check outcome}
+% FILL: analyze_main.py -> readout quality per cell (mass mean/min/share<0.5, follow rate), pooled per model; GPU-hours from run logs.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccc c}
+    \toprule
+    & \multicolumn{3}{c}{Candidate probability mass} & Format & \\
+    \cmidrule(lr){2-4}
+    Model & Mean & Min & Share $<0.5$ & following & GPU-hours \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    Total & & & & & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Readout quality pooled over formats and conditions per model (per cell in the released analysis output).}
+  \label{tab:readout}
+\end{table*}
+
+\paragraph{Cross-platform check.} Pilot runs used an NVIDIA RTX 3090. For the models run on both platforms we compare the same prompts (two development episodes of the pilot data, text reports, raw history) and require a median $|\Delta y| < 0.02$ and agreement of the more probable answer above 98\%; see Table~\ref{tab:xcheck}.
+
+% FILL: xcheck runs (run_jobs.py --only xcheck) vs pilot 3090 outputs, matched on prompt hash.
+\begin{table}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccc}
+    \toprule
+    Model & Prompts & Med.\ $|\Delta y|$ & Agree & Pass \\
+    \midrule
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Cross-platform check (RTX 3090 vs.\ MI300X, identical prompts).}
+  \label{tab:xcheck}
+\end{table}
 \subsection{L. Pilot Results on Smaller Models}              % 3B/4B, v1 data caveat
 
 \end{document}

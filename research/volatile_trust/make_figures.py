@@ -1,7 +1,7 @@
 """Paper figures from analysis JSON (analyze_main / analyze_mechanism / analyze_controls).
 
 Usage:
-  python make_figures.py --analysis-dir analysis/dev3 --out ../../paper/figures [--split-label development]
+  python make_figures.py --analysis-dir analysis/dev_v31 --out ../../paper/figures [--split-label development]
 Inputs: main_<model>.json, mech_<model>.json, controls.json in --analysis-dir.
 Re-run unchanged on held-out analysis outputs to regenerate the final figures.
 """
@@ -150,28 +150,24 @@ def load_controls(ad):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--analysis-dir', default='analysis/dev3')
+    ap.add_argument('--analysis-dir', default=str(Path(__file__).resolve().parent / 'analysis/dev_v31'))
     ap.add_argument('--out', default=str(Path(__file__).resolve().parents[2] / 'paper' / 'figures'))
     ap.add_argument('--split-label', default='development')
-    ap.add_argument('--masking', default='analysis/masking/masking.json', help='analyze_masking.py output')
+    ap.add_argument('--masking', default=str(Path(__file__).resolve().parent / 'analysis/masking/masking.json'),
+                    help='analyze_masking.py output')
     ap.add_argument('--masking-label', default='development, 8B')
     a = ap.parse_args()
     ad, out = Path(a.analysis_dir), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     D = load(ad)
     C = load_controls(ad)
+    fig_teaser(D, out, a.split_label)
     fig_gap(D, C, out, a.split_label)
     fig_curves(D, out, a.split_label)
     fig_kernel_models(D, out, a.split_label)
     mk = Path(a.masking)
     fig_mech(D, json.loads(mk.read_text()) if mk.exists() else {}, out, a.split_label, a.masking_label)
     fig_task(out)
-    ref = Path(__file__).resolve().parent / 'analysis/behrens_reference.json'
-    refacc = None
-    if ref.exists():
-        r = json.loads(ref.read_text())
-        refacc = r.get('held_out' if a.split_label.startswith('held') else 'development', {}).get('acc')
-    fig_teaser(D, C, out, a.split_label, refacc)
     print('wrote', sorted(p.name for p in out.glob('fig_*.pdf')))
 
 
@@ -247,85 +243,10 @@ def fig_task(out):
     plt.close(fig)
 
 
-def fig_teaser(D, controls, out, split_label, reference=None):
-    """Fig. 1: (a) the task; (b) steps each history format leaves to the model; (c) accuracy, same rows."""
-    import sys
-    from matplotlib.patches import FancyBboxPatch, Circle, Polygon
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from scenarios import icon
-    rows = [('A|full|text', 'Raw', FORMATS[0][2], (1, 1, 1)),
-            ('A+|full|text', 'Raw + correct', FORMATS[1][2], (1, 1, 1)),
-            ('B|full|text', 'Correct only', FORMATS[2][2], (0, 1, 1)),
-            ('C|sum_all|text', 'Summary', FORMATS[3][2], (0, 0, 1)),
-            ('explicit_rel', 'Described', INK2, (0, 0, 1))]
-    n = len(rows)
-    fig = plt.figure(figsize=(7.0, 2.2))
-    gs = fig.add_gridspec(1, 3, width_ratios=[0.92, 0.95, 1.13], wspace=0.06)
-    # (a) the task -------------------------------------------------------------------------------
-    a = fig.add_subplot(gs[0])
-    a.set_xlim(0, 1)
-    a.set_ylim(0, 1)
-    a.axis('off')
-    a.set_title('(a) Whom to trust?', loc='left', fontweight='bold')
-    for x, name, lab in ((0.2, 'Ken', 'rain'), (0.66, 'Sam', 'dry')):
-        a.add_patch(Circle((x, 0.5), 0.085, fc='#dfe6f1', ec='none'))
-        a.text(x, 0.5, name, ha='center', va='center', fontsize=7)
-        bx, by, bw, bh = x - 0.02, 0.69, 0.2, 0.22                      # speech bubble with the report icon
-        a.add_patch(FancyBboxPatch((bx, by), bw, bh, boxstyle='round,pad=0.012', fc='white', ec=INK2, lw=0.6))
-        a.add_patch(Polygon([[bx + 0.03, by + 0.005], [bx + 0.07, by + 0.005], [x + 0.01, 0.585]], closed=True,
-                            fc='white', ec=INK2, lw=0.6))
-        a.plot([bx + 0.032, bx + 0.068], [by + 0.006, by + 0.006], color='white', lw=1.2)   # hide seam
-        ia = a.inset_axes([bx + 0.03, by + 0.02, bw - 0.06, bh - 0.04])
-        ia.imshow(np.asarray(icon('weather', lab, 112)))
-        ia.axis('off')
-    a.add_patch(FancyBboxPatch((0.18, 0.08), 0.5, 0.19, boxstyle='round,pad=0.015', fc='#f2f1ee', ec=INK2, lw=0.6))
-    a.text(0.43, 0.175, 'VLM: follow whom?', ha='center', va='center', fontsize=6.6)
-    for x0, x1 in ((0.22, 0.34), (0.64, 0.52)):
-        a.annotate('', xy=(x1, 0.29), xytext=(x0, 0.41), arrowprops=dict(arrowstyle='->', color=INK2, lw=0.6))
-    # (b) steps left to the model -------------------------------------------------------------------
-    b = fig.add_subplot(gs[1])
-    b.set_xlim(0, 1)
-    b.set_ylim(n - 0.45, -1.05)
-    b.axis('off')
-    b.set_title('(b) Steps left to the model', loc='left', fontweight='bold')
-    xs = [0.6, 0.76, 0.92]
-    for x, st in zip(xs, ('judge', 'integrate', 'use')):
-        b.text(x, -0.62, st, ha='center', va='center', fontsize=6.0, color=INK2)
-    for r, (_, lab, col, on) in enumerate(rows):
-        b.text(0.0, r, lab, ha='left', va='center', fontsize=6.8)
-        for x, v in zip(xs, on):
-            b.add_patch(FancyBboxPatch((x - 0.055, r - 0.27), 0.11, 0.54, boxstyle='round,pad=0.004,rounding_size=0.02',
-                                       fc=col if v else 'white', ec=col if v else '#cfcdc8', lw=0.7))
-    # (c) accuracy, aligned row by row ------------------------------------------------------------------
-    c = fig.add_subplot(gs[2])
-    c.set_ylim(n - 0.45, -1.05)
-    c.set_xlim(0.38, 1.04)
-    c.set_title(f'(c) Accuracy ({split_label})', loc='left', fontweight='bold')
-    for r, (arm, lab, col, _) in enumerate(rows):
-        if arm == 'explicit_rel':
-            vals = [controls.get(k, {}).get(('explicit_rel', 'text')) for k in D]
-        else:
-            vals = [(cell(d['main'], arm) or {}).get('acc') for d in D.values()]
-        vals = [v for v in vals if v is not None]
-        if not vals:
-            continue
-        m = float(np.mean(vals))
-        c.plot([0.5, m], [r, r], color=col, lw=2.0, solid_capstyle='butt')
-        c.plot(vals, [r] * len(vals), marker='|', ms=5, color=col, mew=0.8, ls='none')
-        c.plot(m, r, marker='o', ms=5.5, color=col if arm != 'explicit_rel' else 'white', mec=col, mew=1.2, ls='none')
-        c.text(m, r - 0.33, f'{m:.2f}'.lstrip('0'), va='center', ha='center', fontsize=6.0)
-    c.axvline(0.5, color=INK2, lw=0.6, ls=':')
-    c.text(0.5, -0.62, 'chance', ha='center', va='center', fontsize=6.0, color=INK2)
-    if reference is not None:
-        c.axvline(reference, color='#2a78d6', lw=0.8, ls='--')
-        c.text(reference + 0.012, -0.62, 'Bayesian learner', ha='left', va='center', fontsize=6.0, color='#2a78d6')
-    c.set_yticks([])
-    c.set_xticks([0.4, 0.6, 0.8, 1.0])
-    c.set_xticklabels(['.4', '.6', '.8', '1'])
-    c.spines['left'].set_visible(False)
-    grid(c, 'x')
-    fig.savefig(out / 'fig_teaser.pdf', bbox_inches='tight', pad_inches=0.02)
-    plt.close(fig)
+def fig_teaser(D, out, split_label):
+    """Fig. 1: concrete feedback, aligned history excerpts, and model accuracy."""
+    from make_teaser import draw_teaser, snapshot_from_models
+    return draw_teaser(snapshot_from_models(D, split_label), out)
 
 
 def fig_gap(D, controls, out, split_label):

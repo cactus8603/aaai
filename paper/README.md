@@ -19,6 +19,18 @@ This is a **long paper (8 pages plus references and supplementary material, arch
 ## Compile
 **Quick way:** `bash paper/build.sh` (from anywhere) compiles `main.pdf` with pdfLaTeX + BibTeX and prints the checks: the page on which References start (main text must fit in 8 pages), overfull boxes, undefined references, fonts that are not embedded or Type 3, and the number of open TODO / DRAFT / ?? markers. `bash paper/build.sh --clean` also removes the aux files. `main.pdf` is tracked so the draft can be previewed on GitHub; rebuild it with `build.sh` before committing paper changes.
 
+To regenerate Figure 1 from the repository root, run
+`.venv/bin/python research/volatile_trust/make_teaser.py` (Python with Matplotlib).
+It reads the committed `research/volatile_trust/teaser_data.json` snapshot and writes
+`figures/fig_teaser.pdf`, an editable-text SVG, and a 300-dpi PNG preview. The PDF is
+exactly seven inches wide, with text at least 9pt at its included size. The snapshot
+contains the four-model development results, source paths and SHA256 hashes; add
+`--verify-sources` to compare every plotted value with the original local analysis
+JSON files. Those larger analysis files are not required to redraw the figure.
+The small dots show individual models, not confidence intervals; the blue reference
+uses the same models under count-summary histories, not a standalone count rule.
+When replacing development results, update the snapshot and caption together.
+
 AAAI-27 requires **pdfLaTeX**. `aaai2027.sty` aborts under XeTeX, LuaTeX or tectonic. TeX is installed user-locally through TinyTeX in `~/.TinyTeX`.
 
 ```bash

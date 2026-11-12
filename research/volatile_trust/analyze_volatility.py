@@ -1,15 +1,19 @@
-"""Exploratory (added after the freeze): does a model weight recent outcomes more when accuracy is volatile?
+"""Exploratory (added after the freeze): phase-specific integration kernels and a human-like reference learner.
 
-Human signature in this task (Behrens et al. 2007, 2008): the learning rate is higher in the volatile phase.
-For each model and history format, the integration kernel (analyze_mechanism.kernel_design; K lags) is fitted
-separately on trials of the stable and of the volatile phase (phase of the current trial), and the
-volatile-minus-stable difference in (i) the lag-1 weight and (ii) the summed weight of lags 1-3 is estimated with
-a paired episode bootstrap (both phases refitted on the same resample). A constant-learning-rate delta agent run
-through the same analysis on the same episodes gives the reference: its volatile/stable ratio of the summed
-lag 1-3 weight is about 0.95 on these episodes (estimation alone pulls it slightly below 1), whereas a learner that
-raises its learning rate under volatility, as humans do, gives a ratio above 1.
+(1) For each model and history format, the integration kernel (analyze_mechanism.kernel_design; K lags) is fitted
+    separately on trials of the stable and of the volatile phase, and the volatile/stable ratio of the summed lag
+    1-3 weight is estimated with a paired episode bootstrap.
+    VALIDATION (2026-11-13): this statistic does NOT detect volatility-dependent learning on these 80-trial
+    episodes. A constant-rate delta agent gives about 0.96, and the Behrens et al. (2007) Bayesian volatility
+    learner, whose implied learning rate is higher in the volatile phase (.100 vs .115), gives 0.84-0.90. The
+    calibrated effective learning rate (cogmodels) does not detect it either (+0.002 [-0.010, 0.014], 16 episodes).
+    Do not interpret model ratios as (absence of) volatility adaptation; the output is kept for transparency only.
+(2) --reference: the Behrens-style Bayesian volatility learner (cogmodels.volatile_belief), run on the raw outcomes
+    of the development, held-out and robustness episodes (no VLM): accuracy (t >= 2) and the mean implied learning
+    rate per phase. This is the human-like reference reported in the paper.
 
-Usage: python analyze_volatility.py RUN_DIR [RUN_DIR ...] [--out analysis/volatility.json] [--K 8] [--n-boot 1000]
+Usage: python analyze_volatility.py RUN_DIR [...] [--out analysis/volatility.json] [--K 8] [--n-boot 1000]
+       python analyze_volatility.py --reference [--out analysis/behrens_reference.json]
 """
 import argparse
 import json
@@ -22,6 +26,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import analyze_main as am  # noqa: E402
 import analyze_mechanism as mech  # noqa: E402
+import cogmodels as cm  # noqa: E402
 
 ARMS = ('A|full|text', 'A+|full|text', 'B|full|text', 'C|sum_all|text')
 
@@ -99,7 +104,40 @@ def null_agent(ep_path, split, K, n_boot, alpha=0.3, beta=8.0):
     return analyze_cell(per, K, n_boot, 0)
 
 
+def behrens_reference():
+    out = {}
+    for name, path, split in (('development', 'episodes_v3', 'development'), ('held_out', 'episodes_v3', 'held_out'),
+                              ('robustness', 'episodes_robust_v3', 'held_out')):
+        eps = mech.load_episodes(HERE / path / 'episodes.jsonl')
+        acc, al = [], {'stable': [], 'volatile': []}
+        for eid, ep in sorted(eps.items()):
+            if eid.endswith('t') or ep['split'] != split:
+                continue
+            o = np.array([t['a_correct'] for t in ep['trials']], float)
+            r = cm.volatile_belief(o)
+            q = r['q']
+            ch = np.where(q > 0.5, 1.0, np.where(q < 0.5, 0.0, 0.5))
+            acc.append(float(np.where(o == 1, ch, 1 - ch)[1:].mean()))
+            ph = np.array([t['phase'] for t in ep['trials']])
+            for k in al:
+                al[k].append(float(np.nanmean(r['alpha_implied'][:-1][ph[:-1] == k])))
+        a = np.array(acc)
+        bs = [np.random.default_rng(i).choice(a, len(a)).mean() for i in range(2000)]
+        out[name] = dict(n_episodes=len(a), acc=float(a.mean()), acc_ci95=[float(np.quantile(bs, .025)),
+                         float(np.quantile(bs, .975))], implied_lr={k: float(np.mean(v)) for k, v in al.items()})
+    return out
+
+
 def main():
+    if '--reference' in sys.argv:
+        out = Path(sys.argv[sys.argv.index('--out') + 1]) if '--out' in sys.argv else HERE / 'analysis/behrens_reference.json'
+        r = behrens_reference()
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(r, indent=1))
+        for k, v in r.items():
+            print(f"{k:12} acc {v['acc']:.3f} [{v['acc_ci95'][0]:.3f}, {v['acc_ci95'][1]:.3f}]  implied lr stable "
+                  f"{v['implied_lr']['stable']:.3f} volatile {v['implied_lr']['volatile']:.3f}  n={v['n_episodes']}")
+        return
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('runs', nargs='+')
     ap.add_argument('--out', type=Path, default=HERE / 'analysis/volatility.json')

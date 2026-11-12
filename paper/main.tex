@@ -132,11 +132,11 @@ Each episode is shown with a photo cover story, in which reporters say whether a
 \section{Results}
 \begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_gap.pdf}
-  \caption{Models use described accuracy but not raw experience. (a) Main-task accuracy by history format, one line per model (shape and colour: family; filled: larger models; bars: 95\% bootstrap CIs over episode pairs). (b) Control items: reliability given (left) or experienced (shaded). \devnote{}}\label{fig:gap}
+  \caption{Models use described accuracy but not raw experience. (a) Main-task accuracy by history format, one line per model (shape and colour: family; filled: larger models; bars: 95\% bootstrap CIs over episode pairs). (b) Control items: accuracy described (left) or learned from an easy short or long history (shaded). \devnote{}}\label{fig:gap}
 \end{figure*}
 \begin{figure*}[t]\centering
   \includegraphics[width=\textwidth]{figures/fig_kernel.pdf}
-  \caption{Under raw histories, models repeat the previous outcome. (a) Integration kernel by history format (thick: mean over models; thin: individual models; per-model 95\% CIs in Appendix~F). (b) Agreement with simple strategies under raw histories (Cohen's $\kappa$). (c) Replacing the outcome label in the raw history with correctness, but not the reports, recovers most of the gap to the correctness-only history (two 8B models, development episodes; points are model means). \devnote{}}\label{fig:kernel}
+  \caption{Under raw histories, models repeat the previous outcome. (a) Integration kernel by history format (thick: mean over models; thin: individual models; per-model 95\% CIs in Appendix~F). (b) Agreement between choices under raw histories and simple strategies (Cohen's $\kappa$; Repeat: repeat the previous outcome; WSLS: win-stay/lose-shift on advisors; Count: all-trial count; Label: label bias). (c) Masking the raw history with correctness: removing the outcome label (No outcome), but not the reports (No reports), recovers most of the gap to the correctness-only history (two 8B models, development episodes). \devnote{}}\label{fig:kernel}
 \end{figure*}
 \devnote{}
 
@@ -156,10 +156,10 @@ Each episode is shown with a photo cover story, in which reporters say whether a
 
 \paragraph{Reasoning and proprietary models.} \todo{reasoning subset (Appendix~H) and API models (Appendix~K), one sentence each}
 
-\begin{figure*}[t]\centering
-  \includegraphics[width=\textwidth]{figures/fig_curves.pdf}
-  \caption{After a reversal, no format lets models switch quickly. Probability of following the currently better advisor as a function of trials since a reversal, by history format and model (mean over reversals and episodes; no error bars shown). \devnote{} \todo{add window and change-point summaries}}\label{fig:curves}
-\end{figure*}
+\begin{figure}[t]\centering
+  \includegraphics[width=\columnwidth]{figures/fig_curves.pdf}
+  \caption{After a reversal, no format lets models switch quickly. Probability of following the currently better advisor after a reversal (thick: mean over models; thin: individual models; no error bars). \devnote{} \todo{add window and change-point summaries}}\label{fig:curves}
+\end{figure}
 \begin{figure}[t]\centering
   \figplaceholder{Forgetting rate $\phi$ vs.\ hazard rate: humans (told $h$; our re-analysis of Xiong et al.\ 2023) and models (hidden $h$; told $h$ as secondary).}{4cm}
   \caption{\todo{Human comparison on Psych-101.}}\label{fig:human}

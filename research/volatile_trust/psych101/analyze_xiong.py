@@ -384,7 +384,7 @@ def analyse_source(name, eps, by_h, boot, models=('delta', 'xiong_mf', 'bayes_h'
     return out
 
 
-def read_jsonl(path):
+def read_jsonl(path, strict=False):
     """Rows of a results file; a truncated LAST line (crash mid-write) is skipped, anything else is an error."""
     lines = Path(path).read_text().split('\n')
     rows = []
@@ -394,26 +394,73 @@ def read_jsonl(path):
         try:
             rows.append(json.loads(line))
         except json.JSONDecodeError:
-            if j == len(lines) - 1:           # no trailing newline -> partial last row
+            if j == len(lines) - 1 and not strict:  # exploratory crash recovery only
                 print(f'warning: skipping truncated last line of {path}')
             else:
                 raise
     return rows
 
 
-def load_results(patterns):
+def choice_design_keys(episodes, strict=False):
+    """Expected trial keys; formal replay uses the fixed 30 x 3 x 100 design."""
+    participants = {e['participant'] for e in episodes.values()}
+    cells = collections.Counter((e['participant'], e['hazard']) for e in episodes.values())
+    expected_cells = {(p, h) for p in participants for h in HAZARDS}
+    if strict and (len(participants) != 30 or len(episodes) != 90 or set(cells) != expected_cells
+                   or any(n != 1 for n in cells.values())
+                   or any(e['n_trials'] != 100 or len(e['trials']) != 100 for e in episodes.values())):
+        raise ValueError('formal Psych-101 analysis requires 30 participants x 3 hazards x 100 trials')
+    return {(eid, t) for eid, e in episodes.items() for t in range(1, e['n_trials'] + 1)}
+
+
+def load_results(patterns, episodes=None, strict=False, data_sha256=None):
     """Groups: (model, format, hazard_info, image_px, n_img) -> {(episode, t): P(slot1)}; duplicates are errors.
     P(slot1) = sigmoid(logit_diff) from the saved raw letter logits when present (exact, no saturation);
     older rows without logits fall back to the stored probability. Returns also the readout counts per group."""
+    expected = choice_design_keys(episodes, strict) if episodes is not None else None
+    if strict and (expected is None or not data_sha256):
+        raise ValueError('formal Psych-101 analysis requires episodes and their data sha256')
     rows = []
     for pat in patterns:
-        for f in sorted(glob.glob(pat)):
-            rows += read_jsonl(f)
+        files = sorted(glob.glob(pat))
+        if not files:
+            raise ValueError(f'no result files match {pat}')
+        for f in files:
+            batch = read_jsonl(f, strict=strict)
+            if strict:
+                if not batch:
+                    raise ValueError(f'{f}: empty result file')
+                path = Path(f)
+                fp_path = path.with_name('fingerprint_' + path.stem.removeprefix('results_') + '.json')
+                if not fp_path.exists():
+                    raise ValueError(f'{f}: missing run fingerprint {fp_path.name}')
+                fp = json.loads(fp_path.read_text())
+                payload = {k: v for k, v in fp.items() if k != 'hash'}
+                digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:16]
+                if fp.get('hash') != digest or fp.get('data_sha256') != data_sha256:
+                    raise ValueError(f'{f}: run fingerprint or episode data hash mismatch')
+                for r in batch:
+                    fields = ['model_id', 'model_revision', 'format', 'image_px']
+                    if not r['format'].startswith('perc'):
+                        fields += ['hazard_info', 'n_img']
+                    if r.get('run_fingerprint') != digest or any(r.get(k) != fp.get(k) for k in fields):
+                        raise ValueError(f'{f}: row configuration differs from its run fingerprint')
+            rows += batch
     groups = collections.defaultdict(dict)
     readout = collections.defaultdict(collections.Counter)
     fingerprints = collections.defaultdict(set)
+    revisions = collections.defaultdict(set)
     perc = collections.defaultdict(dict)
     for r in rows:
+        if r['format'] not in ('text', 'image_outcome', 'chart', 'perc_outcome', 'perc_chart'):
+            raise ValueError(f'unknown result format {r["format"]}')
+        if episodes is not None:
+            ep = episodes.get(r['episode_id'])
+            if ep is None or not 1 <= r['t'] <= ep['n_trials']:
+                raise ValueError(f'unexpected episode/trial: {r["episode_id"]}, {r["t"]}')
+            for key in ('participant', 'game', 'hazard'):
+                if (strict or key in r) and r.get(key) != ep[key]:
+                    raise ValueError(f'{r["episode_id"]}: row {key} differs from episode data')
         if r['format'] in ('text', 'image_outcome', 'chart'):
             g = (r['model_id'], r['format'], r['hazard_info'], r.get('image_px'), r.get('n_img'))
             key = (r['episode_id'], r['t'])
@@ -424,13 +471,44 @@ def load_results(patterns):
             else:
                 groups[g][key] = r['p_slot1']
                 readout[g]['probability'] += 1
+            if not np.isfinite(groups[g][key]) or not 0 <= groups[g][key] <= 1:
+                raise ValueError(f'invalid choice probability in group {g}: {key}')
             fingerprints[g].add(r.get('run_fingerprint'))
+            revisions[g].add(r.get('model_revision'))
+            if strict and r.get('labels') != ep['labels']:
+                raise ValueError(f'{r["episode_id"]}: row labels differ from episode data')
         elif r['format'].startswith('perc'):
             g = (r['model_id'], r['format'], r['subtask'], r.get('image_px'))
             assert r['item'] not in perc[g], f"duplicate perception item {r['item']} in {g}"
             perc[g][r['item']] = r
+            fingerprints[g].add(r.get('run_fingerprint'))
+            revisions[g].add(r.get('model_revision'))
     for g, fps in fingerprints.items():
         assert len(fps) == 1, f'group {g} mixes run fingerprints {fps}: analyse them separately'
+        if len(revisions[g]) != 1:
+            raise ValueError(f'group {g} mixes model revisions: analyse them separately')
+        if strict and (not next(iter(fps)) or not next(iter(revisions[g]))):
+            raise ValueError(f'group {g} lacks a run fingerprint or model revision')
+    if strict:
+        for g, tab in groups.items():
+            missing, extra = expected - set(tab), set(tab) - expected
+            if missing or extra:
+                raise ValueError(f'group {g}: incomplete formal Psych-101 replay: {len(tab)}/9000 keys, '
+                                 f'{len(missing)} missing, {len(extra)} unexpected; use --partial for exploration')
+        if perc:
+            try:
+                from .render_xiong import perception_items
+            except ImportError:
+                from render_xiong import perception_items
+            for family in {(g[0], g[1], g[3]) for g in perc}:
+                keys = [g for g in perc if (g[0], g[1], g[3]) == family]
+                wanted = {(item.get('subtask', 'read'), item['item_id']) for ep in episodes.values()
+                          for item in perception_items(ep, family[1])}
+                actual = {(g[2], item) for g in keys for item in perc[g]}
+                if actual != wanted:
+                    raise ValueError(f'group {family}: incomplete perception controls; use --partial for exploration')
+                if len(set.union(*(fingerprints[g] for g in keys))) != 1:
+                    raise ValueError(f'group {family} mixes perception run fingerprints')
     return groups, {g: list(v.values()) for g, v in perc.items()}, {g: dict(v) for g, v in readout.items()}
 
 
@@ -827,6 +905,8 @@ def main():
     ap.add_argument('--boot', type=int, default=200)
     ap.add_argument('--human-long', action='store_true', help='also fit humans on the 1500-trial games (reference)')
     ap.add_argument('--selftest', action='store_true')
+    ap.add_argument('--partial', action='store_true',
+                    help='exploratory: allow incomplete result sets; never label model comparisons primary')
     ap.add_argument('--calibrate', type=int, metavar='N_SEEDS', help='H02 calibration of the paired slope test')
     ap.add_argument('--calib-deltas', type=float, nargs='+', default=[0.0, -0.5, 0.5])
     ap.add_argument('--calib-budget-min', type=float, default=35.0)
@@ -849,8 +929,15 @@ def main():
         selftest()
         return
     eps = load_episodes(args.episodes)
+    # Validate inputs before any costly fitting or report writes.
+    try:
+        groups, perc, readout = load_results(args.results, eps, strict=not args.partial,
+                                             data_sha256=hashlib.sha256(args.episodes.read_bytes()).hexdigest())
+    except (ValueError, AssertionError, OSError) as exc:
+        raise SystemExit(f'ERROR: {exc}') from exc
     report = dict(model_doc=__doc__.split('Usage:')[0], human_results_provenance=HUMAN_PROVENANCE, sources={},
-                  skipped_sources={})
+                  skipped_sources={}, mode='partial' if args.partial else 'formal',
+                  note='All model comparisons are exploratory in --partial mode.' if args.partial else '')
 
     def human(eps_):
         by_h = {}
@@ -871,7 +958,6 @@ def main():
                 'phi_tests': src['tests']['xiong_mf.phi']}
             for n, src in report['sources'].items() if n.startswith('human/')}
 
-    groups, perc, readout = load_results(args.results)
     hum = report['sources']['human/short100']['per_participant_params']['xiong_mf']
     for (mid, fmt, hz, px, nimg), tab in sorted(groups.items(), key=str):
         name = f'{mid}/{fmt}/{hz}/px{px}' + (f'/n{nimg}' if fmt == 'image_outcome' else '')
@@ -886,6 +972,14 @@ def main():
             # slope / Friedman / Page / recovery are defined on all three hazards: refuse partial hazard sets
             report['skipped_sources'][name] = f'complete episodes only for h in {sorted(by_h)}; all of {list(HAZARDS)} required'
             continue
+        if args.partial:
+            common_pids = set.intersection(*[{eps[i]['participant'] for i in by_h[h][0]} for h in HAZARDS])
+            if len(common_pids) < 2:
+                report['skipped_sources'][name] = 'fewer than two participants have complete episodes at all three hazards'
+                continue
+            for h, (ids, c, r, y) in by_h.items():
+                keep = [j for j, i in enumerate(ids) if eps[i]['participant'] in common_pids]
+                by_h[h] = ([ids[j] for j in keep], c[keep], r[keep], y[keep])
         src = analyse_source(name, eps, by_h, args.boot)
         src.update(model_id=mid, format=fmt, hazard_info=hz, image_px=px, n_img=nimg, readout=readout[(mid, fmt, hz, px, nimg)])
         # how well the VLM predicts the human's actual choice (same trials)
@@ -915,7 +1009,8 @@ def main():
         hpp = {h: {int(k): v for k, v in hum[str(h)].items()} for h in hs}
         common = [p_ for p_ in pids if all(p_ in hpp[h] for h in hs)]
         hsl = slopes_of(hpp, hs, common)
-        src['primary'] = hz == args.primary_hazard_info
+        src['primary'] = not args.partial and hz == args.primary_hazard_info
+        src['role'] = 'exploratory' if args.partial else ('primary' if src['primary'] else 'secondary')
         src['model_vs_human_phi_slope'] = dict(
             definition=PRIMARY_TEST, comparison=COMPARISON[hz],
             **paired_test(slopes_of(pp, hs, common), hsl, rng_for(name, 'model_vs_human')),
@@ -987,7 +1082,7 @@ def main():
         if 'sampled_fit' in src:
             sf = src['sampled_fit']
             mv = src['model_vs_human_phi_slope']
-            print(f"{'':45s} [{'PRIMARY' if src['primary'] else 'secondary'}] sampled-fit median phi "
+            print(f"{'':45s} [{src['role']}] sampled-fit median phi "
                   f"{[round(sf['median'][h]['phi'], 3) for h in sorted(sf['median'])]} beta "
                   f"{[round(sf['median'][h]['beta'], 3) for h in sorted(sf['median'])]} | model-human phi slope "
                   f"{mv['median_diff']:.3f} CI {mv['median_diff_ci95']} p={mv['wilcoxon_p']} "

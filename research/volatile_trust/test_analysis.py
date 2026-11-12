@@ -436,9 +436,11 @@ def test_a03_missing_member_counts_as_p1():
 def test_a03_family_members_and_dev_selection(tmp_path):
     epd = make_eps(tmp_path, ['dev000', 'dev001', 'dev002', 'dev003'] + HO6)
     runs_dev = [write_run(tmp_path, f'dev_w{K}', epd, window_logits(K), mode=f'sum_window:{K}', split='development')
-                for K in (5, 10)]
+                for K in (5, 10, 20)]
     # make K=10 the dev winner: K=5 run follows the rule badly (negated)
     runs_dev[0] = write_run(tmp_path, 'dev_w5_bad', epd, lambda ep, s: -window_logits(5)(ep), mode='sum_window:5',
+                            split='development')
+    runs_dev[2] = write_run(tmp_path, 'dev_w20_bad', epd, lambda ep, s: -window_logits(20)(ep), mode='sum_window:20',
                             split='development')
     sel_path = tmp_path / 'dev_sel.json'
     doc = am.write_dev_selection(str(sel_path), runs_dev)
@@ -466,6 +468,56 @@ def test_a03_family_members_and_dev_selection(tmp_path):
                                                                            'C|sum_window:5|text'}
     md = am.to_markdown(res)
     assert 'Secondary family' in md and 'margin 0.02' in md and 'alpha 0.05' in md
+
+
+def test_robust_results_do_not_expand_confirmatory_family(tmp_path):
+    main_eps = make_eps(tmp_path, ['hel000', 'hel001'], name='main')
+    robust_eps = make_eps(tmp_path, ['rob000', 'rob001'], src=ROB, name='robust')
+    main_runs = [write_run(tmp_path, 'main_A', main_eps, noise_logits),
+                 write_run(tmp_path, 'main_C', main_eps, sum_all_logits, mode='sum_all')]
+    robust_runs = [write_run(tmp_path, 'rob_A', robust_eps, noise_logits),
+                   write_run(tmp_path, 'rob_C', robust_eps, sum_all_logits, mode='sum_all')]
+    main = am.analyze(main_runs, n_boot=NB)
+    combined = am.analyze(main_runs + robust_runs, n_boot=NB)
+    assert combined['families']['primary'] == main['families']['primary']
+    primary = [g for g in combined['gaps'] if g['primary']]
+    assert len(primary) == 1
+    assert primary[0]['p_holm'] == main['gaps'][-1]['p_holm']
+    robust_only = am.analyze(robust_runs, n_boot=NB)
+    robust_gaps = [g for g in combined['gaps'] if g['data'].startswith('robust#')]
+    assert robust_gaps == robust_only['gaps']
+    assert [g['role'] for g in robust_gaps if g['domain'] == 'all'] == ['secondary']
+    assert combined['families']['robustness'] == robust_only['families']['robustness']
+    assert not any('/robust#' in k for k in combined['families'])
+
+
+def test_dev_selection_refuses_partial_missing_candidate_and_missing_slot(tmp_path):
+    epd = make_eps(tmp_path, ['dev000', 'dev001'])
+    runs = [write_run(tmp_path, f'w{K}', epd, window_logits(K), mode=f'sum_window:{K}')
+            for K in (5, 10, 20)]
+    dest = tmp_path / 'selection.json'
+    with pytest.raises(am.AnalysisError, match='partial'):
+        am.write_dev_selection(dest, runs, partial=True)
+    with pytest.raises(am.AnalysisError, match='5.*10.*20'):
+        am.write_dev_selection(dest, runs[:2])
+    assert not dest.exists()
+    missing_slot = [write_run(tmp_path, f'scenario_w{K}', epd, window_logits(K), mode=f'sum_window:{K}',
+                              slots=('scenario',)) for K in (5, 10, 20)]
+    with pytest.raises(am.AnalysisError, match='pet.*scenario'):
+        am.write_dev_selection(dest, missing_slot)
+    doc = am.write_dev_selection(dest, runs)
+    assert am.load_k_star(dest, 'M@rev1') in (5, 10, 20)
+    for change in ('partial', 'missing_candidate', 'wrong_winner'):
+        changed = json.loads(json.dumps(doc))
+        if change == 'partial':
+            changed['mode'] = 'partial'
+        elif change == 'missing_candidate':
+            changed['models']['M']['acc_by_k'].pop('20')
+        else:
+            changed['models']['M']['k_star'] = 999
+        dest.write_text(json.dumps(changed))
+        with pytest.raises(am.AnalysisError):
+            am.load_k_star(dest, 'M@rev1')
 
 
 # ----------------------------------------------------------------------------- A04 scenarios

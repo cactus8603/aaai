@@ -78,6 +78,7 @@ DEFAULT_HAZARD = 1 / 15
 N_CURVE = 10
 CLIP = 1e-6
 POSITION_THRESHOLD = 0.05
+DEV_WINDOW_CANDIDATES = (5, 10, 20)
 FP_FIELDS = ('model_id', 'model_revision', 'data_sha256', 'history_mode', 'history_format', 'pixels',
              'hazard', 'readout', 'hint')
 _TWIN_RE = re.compile(r'^(.*\d)t$')
@@ -919,19 +920,28 @@ def select_k_star(paired, ref_format='text'):
         for arm in sorted({c[4] for c in paired if c[:4] == g}):
             cls, hm, fmt = arm_parts(arm)
             if cls == 'C' and hm.startswith('sum_window:') and fmt == ref_format and '|nohint' not in arm:
-                per = arm_metrics(paired, g, [arm], 'all', strict=False)[arm]
+                slots = {c[5] for c in paired if c[:4] == g and c[4] == arm}
+                if slots != {'pet', 'scenario'}:
+                    raise AnalysisError(f'{g[0]}: K* selection requires both pet and scenario slots for {arm}')
+                per = arm_metrics(paired, g, [arm], 'all', strict=True)[arm]
                 if per:
                     cand[int(hm.split(':')[1])] = float(np.mean([m['acc'] for m in per.values()]))
-        if cand:
-            k = min(cand, key=lambda K: (-cand[K], K))
-            model = g[0].split('@')[0]
-            sel[model] = dict(k_star=k, acc_by_k={str(K): v for K, v in sorted(cand.items())}, model_label=g[0],
-                              data=g[1], split=g[2], readout=g[3])
+        if set(cand) != set(DEV_WINDOW_CANDIDATES):
+            raise AnalysisError(f'{g[0]}: K* selection requires complete candidates {DEV_WINDOW_CANDIDATES}; '
+                                f'found {sorted(cand)}')
+        k = min(cand, key=lambda K: (-cand[K], K))
+        model = g[0].split('@')[0]
+        if model in sel:
+            raise AnalysisError(f'{model}: K* selection mixes development datasets or model revisions')
+        sel[model] = dict(k_star=k, acc_by_k={str(K): v for K, v in sorted(cand.items())}, model_label=g[0],
+                          data=g[1], split=g[2], readout=g[3], ref_format=ref_format)
     return sel
 
 
-def load_k_star(path, model_label):
+def load_k_star(path, model_label, ref_format='text', readout='choice'):
     d = json.loads(Path(path).read_text())
+    if d.get('mode') != 'formal':
+        raise AnalysisError(f'{path}: K* selection must be formal, never partial')
     ent = d.get('models', {}).get(model_label.split('@')[0])
     if ent is None:
         return None
@@ -939,7 +949,18 @@ def load_k_star(path, model_label):
         raise AnalysisError(f'{path}: K* for {model_label} was not selected on development data')
     if ent.get('model_label') and ent['model_label'] != model_label:
         raise AnalysisError(f"{path}: K* selected on {ent['model_label']}, analysing {model_label}")
-    return int(ent['k_star'])
+    if ent.get('readout') != readout or ent.get('ref_format', 'text') != ref_format:
+        raise AnalysisError(f'{path}: K* selection uses a different readout or reference format')
+    try:
+        scores = {int(k): float(v) for k, v in ent['acc_by_k'].items()}
+        K = int(ent['k_star'])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise AnalysisError(f'{path}: invalid K* candidate scores') from exc
+    if set(scores) != set(DEV_WINDOW_CANDIDATES) or not all(np.isfinite(v) for v in scores.values()):
+        raise AnalysisError(f'{path}: K* selection requires complete candidates {DEV_WINDOW_CANDIDATES}')
+    if K != min(scores, key=lambda k: (-scores[k], k)):
+        raise AnalysisError(f'{path}: K* does not match the recorded development winner')
+    return K
 
 
 def assign_secondary_family(tests, members, alpha=0.05, label=''):
@@ -970,6 +991,8 @@ def analyze(run_dirs, primary_c='sum_all', ref_format='text', tost_margin=0.02, 
                 untwinned_dropped=rep['untwinned_dropped'],
                 approx_rows=int(sum(not r['_exact'] for r in rows)), n_rows=len(rows))
     groups = sorted({c[:4] for c in paired})
+    robust_groups = {c[:4] for c, per in paired.items() for tr in per.values()
+                     if tr and tr[0]['ep'].get('generator') == 'robust_iid_irregular'}
     notes = []
     out = dict(mode='partial' if partial else 'formal', info=info, notes=notes,
                settings=dict(primary_c=primary_c, ref_format=ref_format, tost_margin=tost_margin, alpha=alpha,
@@ -983,7 +1006,7 @@ def analyze(run_dirs, primary_c='sum_all', ref_format='text', tost_margin=0.02, 
         model, data, split, ro = g
         arms = sorted({c[4] for c in paired if c[:4] == g})
         slots = sorted({c[5] for c in paired if c[:4] == g})
-        formal_ho = strict and split != 'development'
+        formal_ho = strict and split == 'held_out'
         # baselines on the trial mask of the reference A arm (all A trials if absent)
         ref_cells = [c for c in paired if c[:4] == g and c[4] == f'A|full|{ref_format}'] or \
                     [c for c in paired if c[:4] == g]
@@ -1013,10 +1036,13 @@ def analyze(run_dirs, primary_c='sum_all', ref_format='text', tost_margin=0.02, 
                     mm = arm_metrics(paired, g, [aa, arm], dom, strict, notes=notes)
                     gt = paired_test({b: m['acc'] for b, m in mm[aa].items()},
                                      {b: m['acc'] for b, m in mm[arm].items()}, n_boot, seed)
-                    is_primary = (formal_ho and hm == primary_c and fmt == ref_format and
+                    confirmatory = (formal_ho and hm == primary_c and fmt == ref_format and
                                   arm_parts(aa)[2] == ref_format and dom == 'all' and '|nohint' not in arm)
+                    is_robustness = confirmatory and g in robust_groups
+                    is_primary = confirmatory and not is_robustness
                     gt.update(model=model, data=data, split=split, domain=dom, A=aa, C=arm, primary=is_primary,
-                              role='primary' if is_primary else 'exploratory',
+                              robustness=is_robustness,
+                              role='primary' if is_primary else ('secondary' if is_robustness else 'exploratory'),
                               approx=bool(any(m['approx'] > 0 for v in mm.values() for m in v.values())))
                     for k in ('log_score', 'auc10', 'fb_stable', 'fb_volatile'):
                         gk = paired_test({b: m[k] for b, m in mm[aa].items()},
@@ -1082,15 +1108,23 @@ def analyze(run_dirs, primary_c='sum_all', ref_format='text', tost_margin=0.02, 
         x['p_holm'] = a
     out['families']['primary'] = dict(members=[f"{x['model']}: {x['C']} - {x['A']} ({x['domain']})" for x in fam],
                                       test='Wilcoxon signed-rank (two-sided)', correction='Holm', alpha=alpha)
+    # E3(d): repeat the gap test on robustness episodes as a separate secondary family.
+    robust_fam = [x for x in out['gaps'] if x['robustness']]
+    if robust_fam:
+        for x, a in zip(robust_fam, holm([x['p_wilcoxon'] for x in robust_fam])):
+            x['p_holm'] = a
+        out['families']['robustness'] = dict(
+            members=[f"{x['model']}: {x['C']} - {x['A']} ({x['domain']})" for x in robust_fam],
+            role='secondary', test='Wilcoxon signed-rank (two-sided)', correction='Holm', alpha=alpha)
     # ---- secondary family per model: TOST {sum_all, sum_cp, sum_window:K*} (formal, held-out only)
     for g in groups:
-        if not strict or g[2] == 'development':
+        if not strict or g[2] != 'held_out' or g in robust_groups:
             continue
         model = g[0]
         if k_star is not None:
             K = int(k_star)
         elif dev_selection:
-            K = load_k_star(dev_selection, model)
+            K = load_k_star(dev_selection, model, ref_format, readout)
         else:
             K = None
         members = ['sum_all', 'sum_cp', f'sum_window:{K}' if K is not None else 'sum_window:K*']
@@ -1164,6 +1198,10 @@ def to_markdown(res):
     if fam:
         L += ['', f"Primary family ({fam['test']}, {fam['correction']}, alpha={fam['alpha']}): "
               + ('; '.join(fam['members']) if fam['members'] else 'none (requires formal mode on held-out data)')]
+    fam = res['families'].get('robustness')
+    if fam:
+        L += ['', f"Secondary robustness family ({fam['test']}, {fam['correction']}, alpha={fam['alpha']}): "
+              + '; '.join(fam['members'])]
     L += ['', "## B / B' vs A and C vs B (absolute accuracy differences)", '',
           '| model | split | slot | B arm | A arm | n | B-A [95% CI] | Wilcoxon p |', '|---|---|---|---|---|---|---|---|']
     for g in res['b_vs_a']:
@@ -1241,8 +1279,12 @@ def _json_default(o):
 
 
 def write_dev_selection(path, run_dirs, ref_format='text', episodes=None, readout='choice', partial=False):
+    if partial:
+        raise AnalysisError('K* selection cannot be written from partial data')
     rows, _ = load_rows(run_dirs, episodes, strict=not partial)
     rows = [r for r in rows if r['readout'] == readout]
+    if not rows or any(r['_split'] != 'development' for r in rows):
+        raise AnalysisError('K* selection requires development runs only')
     paired = pair_trials(rows, strict=not partial)
     sel = select_k_star(paired, ref_format)
     doc = dict(created_by='analyze_main.py --write-dev-selection', criterion=(

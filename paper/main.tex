@@ -109,7 +109,7 @@ Agents built on large language models (LLMs) and vision-language models (VLMs) i
 
 Cognitive science offers a useful contrast. People choose differently when they are told outcome probabilities than when they learn them from experience, the description--experience gap \citep{hertwig2004decisions,wulff2018metaanalytic}. LLMs show an analogous description--history (DH) gap in risky choice \citep{ge2026dhgap}. In multi-armed bandits, the only LLM configuration that explored satisfactorily received a summarized history rather than a raw history \citep{krishnamurthy2024explore}, and in a counting task, direct answers of open models were close to chance, with recency-weighted integration kernels \citep{xue2026counting}. These studies show that the format of past evidence matters. They do not separate which processing step fails, they do not concern advisors, whose accuracy has to be inferred by comparing each report with the outcome, and they are text-only.
 
-Learning advisor accuracy from a raw record involves three steps: (i) outcome evaluation, deciding on each trial which advisor was correct; (ii) integration of these outcomes across trials; and (iii) use of the integrated estimate when choosing whose advice to follow. We adapt the stable and volatile advisor-accuracy schedule of \citet{behrens2008associative} to frozen VLMs and present the same history in formats that remove these steps one at a time: the raw history (A), the raw history with correctness appended (A$+$), a correctness-coded history in text (B) or as a chart (B$'$), and a summarized history of counts (C). In a separate description condition (D), advisor accuracy is stated directly. The comparison across formats indicates where performance is lost: a model that fails with A but not with B has difficulty with outcome evaluation, and one that fails with B but not with C has difficulty with integration. Because C discards trial order, the comparison is informative only together with the correctness-coded formats and with control conditions that test each step on its own. The stable and volatile phases further allow us to ask whether a model, like human participants, weights recent outcomes more when accuracy is volatile. Reports are given as text or as images, including photographs, so the model must also attach each image to the right advisor. Our contributions are:
+Learning advisor accuracy from a raw record involves three steps: (i) outcome evaluation, deciding on each trial which advisor was correct; (ii) integration of these outcomes across trials; and (iii) use of the integrated estimate when choosing whose advice to follow. We adapt the stable and volatile advisor-accuracy schedule of \citet{behrens2008associative} to frozen VLMs and present the same history in formats that remove these steps one at a time: the raw history, the raw history with correctness appended, a correctness-coded history in text or as a chart, and a summarized history of counts. In a separate stated-reliability condition, advisor accuracy is described directly. The comparison across formats indicates where performance is lost: a model that fails with the raw history but not with the correctness-coded one has difficulty with outcome evaluation, and one that fails with the correctness-coded history but not with the summary has difficulty with integration. Because the summary discards trial order, the comparison is informative only together with the correctness-coded formats and with control conditions that test each step on its own. The stable and volatile phases further allow us to ask whether a model, like human participants, weights recent outcomes more when accuracy is volatile. Reports are given as text or as images, including photographs, so the model must also attach each image to the right advisor. Our contributions are:
 \begin{itemize}
   \item[$\bullet$] An advice-taking task with six text cover stories and one photo cover story, counterbalanced copies of every episode, and history formats that remove processing steps one at a time; the primary test was fixed before held-out evaluation.
   \item[$\bullet$] A test of where the gap between raw and summarized history arises, with integration kernels and strategy agreement to describe behavior under raw histories. \todo{one-sentence finding from held-out results}
@@ -132,33 +132,33 @@ Learning advisor accuracy from a raw record involves three steps: (i) outcome ev
 \paragraph{Advice-taking task.} % two advisors, conflicting binary reports, truth revealed; 80 trials;
 % stable (40 trials, 80% accuracy) and volatile phases (accuracy alternates 0.8/0.2 every 10 trials; adapted from
 % Behrens et al. 2008, Supplementary Information); SV/VS orders; counterbalanced copies; cover stories.
-On every trial, two advisors give conflicting binary reports (for example, one forecasts rain and the other dry), the model predicts the outcome, and the outcome is then revealed (Fig.~\ref{fig:task}a). Because the reports always conflict, predicting the outcome amounts to choosing whose advice to follow. Outcome sequences are pre-generated with full feedback: both advisors' correctness is revealed on every trial, and the model's choices do not affect the subsequent history. An episode has 80 trials. We call the advisor favored on trial~1 advisor~A. In the stable phase (40 trials), A is correct with probability 0.8; in the volatile phase (40 trials), A's accuracy alternates between 0.8 and 0.2 every 10 trials (Fig.~\ref{fig:task}b). The volatile phase follows the 80\%-correct/80\%-incorrect alternation of \citet{behrens2008associative} (Supplementary Information); their stable phases differ from ours, so our schedule is adapted from theirs rather than identical. Half of the episodes run stable then volatile (SV) and half volatile then stable (VS); both orders contain four reversals. Within each 10-trial block, A's realized accuracy equals the scheduled value exactly and the two outcome labels occur five times each (Appendix~B).
+On every trial, two advisors give conflicting binary reports (for example, one forecasts rain and the other dry), the model predicts the outcome, and the outcome is then revealed (Fig.~\ref{fig:task}a). Because the reports always conflict, predicting the outcome amounts to choosing whose advice to follow. Outcome sequences are pre-generated with full feedback: both advisors' correctness is revealed on every trial, and the model's choices do not affect the subsequent history. An episode has 80 trials. We call the advisor favored on trial~1 advisor~A. In the stable phase (40 trials), A is correct with probability 0.8; in the volatile phase (40 trials), A's accuracy alternates between 0.8 and 0.2 every 10 trials (Fig.~\ref{fig:task}b). The volatile phase follows the 80\%-correct/80\%-incorrect alternation of \citet{behrens2008associative} (Supplementary Information); their stable phases differ from ours, so our schedule is adapted from theirs rather than identical. Half of the episodes run stable then volatile (stable-first) and half volatile then stable (volatile-first); both orders contain four reversals. Within each 10-trial block, A's realized accuracy equals the scheduled value exactly and the two outcome labels occur five times each (Appendix~B).
 
 Each episode is shown with two cover stories that share the same outcome sequence: a photo cover story, in which reporters say whether a hidden animal is a cat or a dog, and one of six text cover stories (colors, weather forecasts, stock predictions, sports predictions, medical readings, news claims), assigned in blocks so that cover story is crossed with phase order. The cover stories change only the wording, the answer words and the report images; they are not real-world datasets, and all outcome sequences are synthetic. Current reports are given either as text or as an image: a programmatically drawn icon without text for the text cover stories, and a photograph from the Oxford-IIIT Pet dataset \citep{parkhi2012cats} for the photo cover story. Every episode has a counterbalanced copy in which advisor names, answer labels and the order in which the instructions introduce the advisors are swapped while outcomes and images are identical. Within each trial, the order in which the two reports are listed is random. The instructions say that an advisor's accuracy may change over time (``A forecaster's accuracy may change over time.'') but give no rate. There are 16 development and 48 held-out episodes (128 with counterbalanced copies); the held-out set has eight episodes per text cover story.
 
 \paragraph{History formats.} Before trial $t$, the model sees trials $1,\dots,t-1$ in one of the following formats (Fig.~\ref{fig:task}c; full prompts in Appendix~A).
-\emph{A, raw history}: each past trial lists both reports and the outcome (``Day 3: Ken forecasts rain; Sam forecasts dry. Actual weather: rain.''); the model must carry out steps (i)--(iii).
-\emph{A$+$}: the raw history with a statement of who was correct appended to each trial, which adds correctness information without removing the reports.
-\emph{B, correctness-coded history}: each past trial states only which advisor was correct (``Day 3: Ken was correct; Sam was wrong.''), removing step (i).
-\emph{B$'$, correctness-coded chart}: the same information drawn as a grid image (green for correct, gray for wrong), read visually.
-\emph{C, summarized history}: one line with each advisor's number of correct trials so far (``Summary of all $n$ past days: Ken was correct $x$ times; Sam was correct $y$ times.''), removing steps (i) and (ii).
-C is computed from the same history and adds no observations, but it discards trial order, which matters when accuracy reverses; it is therefore not lossless, and a C$-$A difference cannot be attributed to integration alone.
-Further variants of C apply other integration rules outside the model: counts over the last $K$ trials, over the segment since the last change-point inferred by BOCPD, or since the last true reversal (Appendix~E).
+\emph{Raw history}: each past trial lists both reports and the outcome (``Day 3: Ken forecasts rain; Sam forecasts dry. Actual weather: rain.''); the model must carry out steps (i)--(iii).
+\emph{Raw history with correctness}: the raw history with a statement of who was correct appended to each trial, which adds correctness information without removing the reports.
+\emph{Correctness-coded history}: each past trial states only which advisor was correct (``Day 3: Ken was correct; Sam was wrong.''), removing step (i).
+\emph{Correctness chart}: the same information drawn as a grid image (green for correct, gray for wrong), read visually.
+\emph{Summarized history}: one line with each advisor's number of correct trials so far (``Summary of all $n$ past days: Ken was correct $x$ times; Sam was correct $y$ times.''), removing steps (i) and (ii).
+The summary is computed from the same history and adds no observations, but it discards trial order, which matters when accuracy reverses; it is therefore not lossless, and a difference between summarized and raw history cannot be attributed to integration alone.
+Further summaries apply other integration rules outside the model: counts over the last $K$ trials, over the segment since the last change-point inferred by Bayesian online change-point detection (BOCPD; \citealt{adams2007bocpd}), or since the last true reversal (Appendix~E).
 
-\paragraph{Control conditions.} On development episodes we run control conditions in which the answer is given more directly, to establish that each model can use reliability information. The most important is the description condition D, in which reliability is stated (``Ken was correct on 80\% of past days; Sam was correct on 20\% of past days.''); the D$-$A contrast is our measure of the DH gap. Further controls state counts over the last 10 trials, give short (10-trial) or long (80-trial) histories in which A is correct on every recent trial, in raw and correctness-coded versions, ask which advisor was correct on a single raw trial (step (i) alone), and ask which label a single report image shows (a perception check). Each control crosses all seven cover stories, text and image reports, and four query trials ($t \in \{20,40,60,80\}$).
+\paragraph{Control conditions.} On development episodes we run control conditions in which the answer is given more directly, to establish that each model can use reliability information. The most important is the stated-reliability condition, in which reliability is described in words (``Ken was correct on 80\% of past days; Sam was correct on 20\% of past days.''); its contrast with the raw history is our measure of the description--history (DH) gap. Further controls state counts over the last 10 trials, give short (10-trial) or long (80-trial) histories in which advisor A is correct on every recent trial, in raw and correctness-coded versions, ask which advisor was correct on a single raw trial (step (i) alone), and ask which label a single report image shows (a perception check). Each control crosses all seven cover stories, text and image reports, and four query trials ($t \in \{20,40,60,80\}$).
 
-\paragraph{Models and readout.} We test frozen open-weight VLMs from two language-model families, Qwen and Gemma (Table~\ref{tab:models}). InternVL3.5 uses a Qwen3 language model, so it adds a second vision pipeline but not a third family. Models run in bfloat16 with a float32 output projection. We read the logits of the first generated token for the two answer words, before any logit processing, and normalize them with a softmax over these two tokens to obtain $y_t$, the conditional preference between the two answer options (normalized over the two candidate tokens) for A's current report. Because the normalization ignores all other tokens, $y_t$ is neither the model's free-generation choice probability nor a belief. For every model, format and condition we therefore report the probability mass on the two candidate tokens (mean, minimum and share of trials below 0.5) and the format-following rate, the share of trials on which the greedy output is one of the two answer words (Appendix~K). Decoding is greedy, and reasoning (``thinking'') is switched off wherever the chat template offers it. On text-report trials with raw history we also ask a judgment question (``which forecaster is currently more likely to be correct?''). Reasoning mode is tested on a subset only (Appendix~H).
+\paragraph{Models and readout.} We test frozen open-weight VLMs from two language-model families, Qwen and Gemma (Table~\ref{tab:models}). InternVL3.5 uses a Qwen3 language model, so it adds a second vision pipeline but not a third family. Models run in bfloat16 with a float32 output projection. We read the logits of the first generated token for the two answer words, before any logit processing, and normalize them with a softmax over these two tokens to obtain $y_t$, the conditional preference between the two answer options (normalized over the two candidate tokens) for advisor A's current report. Because the normalization ignores all other tokens, $y_t$ is neither the model's free-generation choice probability nor a belief. For every model, format and condition we therefore report the probability mass on the two candidate tokens (mean, minimum and share of trials below 0.5) and the format-following rate, the share of trials on which the greedy output is one of the two answer words (Appendix~K). Decoding is greedy, and reasoning (``thinking'') is switched off wherever the chat template offers it. On text-report trials with raw history we also ask a judgment question (``which forecaster is currently more likely to be correct?''). Reasoning mode is tested on a subset only (Appendix~H).
 
 \paragraph{Measures.} Within each pair of an episode and its counterbalanced copy we average the label-aligned logit differences, which cancels additive name and label preferences. Accuracy is the expected proportion of trials ($t \ge 2$) on which the followed advisor was correct; it is 0.5 at chance and about 0.8 for an observer who knows the current accuracy. We also report the probability of following the currently more accurate advisor by phase, the log score of the outcome, and learning curves aligned to reversals. To describe behavior, we fit an integration kernel \citep[cf.][]{xue2026counting}: a logistic regression of the preference $y_t$ on which advisor was correct at lags $k=1,\dots,15$, plus a positive-recency regressor (choose the advisor whose current report matches the previous outcome), a label prior and a listing-order term. We also compute strategy agreement (Cohen's $\kappa$) between model choices and simple strategies, including positive recency, following the advisor correct on the previous trial (the CPT regressor of \citealt{behrens2008associative}), counts over all or recent trials, and BOCPD. These analyses describe behavior that is consistent with a strategy; they do not identify a mechanism.
 
-\paragraph{Analysis.} The unit of analysis is the episode pair; all measures are averaged within episode first. The primary test, fixed before held-out evaluation (timestamped commit; not a formal preregistration), is the raw--summarized history gap: accuracy under C minus accuracy under A, for text reports, per core model, tested with a two-sided Wilcoxon signed-rank test with Holm correction across core models; the decision criterion is a gap significantly above zero in both language-model families. We report the paired gap, the absolute accuracy under A and C, and the models and conditions in which the gap holds; A is called near chance only if it lies within $0.5 \pm 0.03$. Secondary tests are two one-sided tests \citep[TOST;][]{lakens2017equivalence} of whether a VLM given a summary matches the accuracy of the summary rule alone, with equivalence bounds of $\pm 2$ percentage points as the smallest effect size of interest; the position of B between A and C, $(\mathrm{acc}_B-\mathrm{acc}_A)/(\mathrm{acc}_C-\mathrm{acc}_A)$, interpreted only when C$-$A exceeds 0.05 and its CI excludes zero (the ratio need not lie in $[0,1]$); and the primary test repeated on episodes with independent outcomes and irregular reversals. We report 95\% bootstrap CIs over episode pairs (10{,}000 resamples), treat cover story as a random factor (per-story estimates and a sign test across the six text cover stories, whose smallest attainable two-sided $p$ is .031), and use development episodes only for setting choices such as the window length $K$. Held-out episodes are run once.
+\paragraph{Analysis.} The unit of analysis is the episode pair; all measures are averaged within episode first. The primary test, fixed before held-out evaluation (timestamped commit; not a formal preregistration), is the raw--summarized history gap: accuracy with the summarized history minus accuracy with the raw history, for text reports, per core model, tested with a two-sided Wilcoxon signed-rank test with Holm correction across core models; the decision criterion is a gap significantly above zero in both language-model families. We report the paired gap, the absolute accuracy under both formats, and the models and conditions in which the gap holds; accuracy with raw history is called near chance only if it lies within $0.5 \pm 0.03$. Secondary tests are two one-sided tests \citep[TOST;][]{lakens2017equivalence} of whether a VLM given a summary matches the accuracy of the summary rule alone, with equivalence bounds of $\pm 2$ percentage points as the smallest effect size of interest; the position of the correctness-coded history between raw and summarized history, $(\mathrm{acc}_\text{coded}-\mathrm{acc}_\text{raw})/(\mathrm{acc}_\text{summary}-\mathrm{acc}_\text{raw})$, interpreted only when the summary--raw gap exceeds 0.05 and its CI excludes zero (the ratio need not lie in $[0,1]$); and the primary test repeated on episodes with independent outcomes and irregular reversals. We report 95\% bootstrap CIs over episode pairs (10{,}000 resamples), treat cover story as a random factor (per-story estimates and a sign test across the six text cover stories, whose smallest attainable two-sided $p$ is .031), and use development episodes only for setting choices such as the window length $K$. Held-out episodes are run once.
 
 \begin{figure*}[t]
   \centering
   \figplaceholder{Fig.~1. (a) Example trial and prompt (one cover story) with an image report. (b) Accuracy schedule:
   true P(advisor A correct) dashed, Bayesian observer estimate solid, stable vs.\ volatile shaded.
-  (c) History formats A/A$+$/B/B$'$/C and description condition D, and which processing steps each removes.}{5cm}
-  \caption{Task and history formats. (a) One trial in the weather cover story. (b) Schedule of advisor A's accuracy in an SV episode. (c) History formats and the processing steps each leaves to the model: (i) outcome evaluation, (ii) integration across trials, (iii) use. \todo{finalize with figure}}
+  (c) History formats and the stated-reliability condition, and which processing steps each removes.}{5cm}
+  \caption{Task and history formats. (a) One trial in the weather cover story. (b) Schedule of advisor A's accuracy in a stable-first episode. (c) History formats and the processing steps each leaves to the model: (i) outcome evaluation, (ii) integration across trials, (iii) use. \todo{finalize with figure}}
   \label{fig:task}
 \end{figure*}
 
@@ -202,9 +202,9 @@ This comparison is supporting and descriptive. Human participants were told the 
 \todo{Reasoning.}
 
 \begin{figure}[t]\centering
-  \figplaceholder{Fig.~2. Main-task accuracy by history format (A raw, A+ raw+correctness, B coded, B$'$ chart, C summarized) per model; D (stated reliability) shown in a separate panel with its own metric;
+  \figplaceholder{Fig.~2. Main-task accuracy by history format (raw, raw with correctness, correctness-coded, chart, summarized) per model; stated reliability shown in a separate panel with its own metric;
   dots = cover stories; dashed = rule alone; 95\% bootstrap CI over episode pairs.}{4.2cm}
-  \caption{\todo{Main-task accuracy by history format; stated reliability (D) in a separate panel.}}\label{fig:gap}
+  \caption{\todo{Main-task accuracy by history format; stated reliability in a separate panel.}}\label{fig:gap}
 \end{figure}
 \begin{figure}[t]\centering
   \figplaceholder{Fig.~3. P(follow better advisor) vs.\ trials after change-point, raw vs.\ summarized variants vs.\ oracle.}{4cm}
@@ -212,7 +212,7 @@ This comparison is supporting and descriptive. Human participants were told the 
 \end{figure}
 \begin{figure}[t]\centering
   \figplaceholder{Fig.~4. (a) Integration kernels (x: Trials in the past; y: Regression weight, log-odds), raw vs.\ summarized.
-  (b) Last-outcome and CPT coefficients; heuristic agreement ($\kappa$).}{4cm}
+  (b) Weights on the previous outcome and on the advisor correct on the previous trial; strategy agreement ($\kappa$).}{4cm}
   \caption{\todo{Integration kernels and strategy agreement under raw and summarized histories.}}\label{fig:kernel}
 \end{figure}
 \begin{figure}[t]\centering
@@ -224,9 +224,9 @@ This comparison is supporting and descriptive. Human participants were told the 
   \setlength{\tabcolsep}{5pt}
   \begin{tabular}{l ccccc c c}
     \toprule
-    & \multicolumn{5}{c}{Main-task accuracy (held-out, 48 episodes)} & & Stated (D) \\
+    & \multicolumn{5}{c}{Main-task accuracy (held-out, 48 episodes)} & & Stated \\
     \cmidrule(lr){2-6}\cmidrule(lr){8-8}
-    Model & A raw & A+ raw+corr. & B coded & B$'$ chart & C summ. & C$-$A [95\% CI] & control acc. \\
+    Model & Raw & Raw+corr. & Coded & Chart & Summary & Summary$-$raw [95\% CI] & reliability \\
     \midrule
     Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
@@ -239,7 +239,7 @@ This comparison is supporting and descriptive. Human participants were told the 
     Rule alone (all-trial counts) & \multicolumn{5}{c}{.632} & -- & -- \\
     \bottomrule
   \end{tabular}
-  \caption{Accuracy on the main task by history format: proportion of trials ($t\ge 2$) on which the model follows the advisor who is correct, averaged over counterbalanced copies in logit space and then over episodes. Text reports; text and pet cover stories pooled (per cover story in Appendix~J). C$-$A: paired difference over episodes with 95\% bootstrap CI. D is the stated-reliability control, run on development episodes with its own metric (accuracy on control items, Table~\ref{tab:controls}), so it is not on the same scale as the main-task columns.}
+  \caption{Accuracy on the main task by history format: proportion of trials ($t\ge 2$) on which the model follows the advisor who is correct, averaged over counterbalanced copies in logit space and then over episodes. Text reports; text and pet cover stories pooled (per cover story in Appendix~J). Raw+corr.: raw history with correctness appended; Coded: correctness-coded history; Chart: correctness chart. Summary$-$raw: paired difference over episodes with 95\% bootstrap CI. Stated reliability is a control condition run on development episodes with its own metric (accuracy on control items, Table~\ref{tab:controls}), so it is not on the same scale as the main-task columns.}
   \label{tab:main}
 \end{table*}
 
@@ -249,9 +249,9 @@ This comparison is supporting and descriptive. Human participants were told the 
   \setlength{\tabcolsep}{4pt}
   \begin{tabular}{l cccc ccc ccc}
     \toprule
-    & \multicolumn{4}{c}{Primary: C$-$A (sum\_all vs.\ raw)} & \multicolumn{6}{c}{Secondary: VLM+summary $-$ rule alone (TOST, $\pm$2 pp)} \\
+    & \multicolumn{4}{c}{Primary: summary $-$ raw} & \multicolumn{6}{c}{Secondary: VLM+summary $-$ rule alone (TOST, $\pm$2 pp)} \\
     \cmidrule(lr){2-5}\cmidrule(lr){6-11}
-    & & & & & \multicolumn{2}{c}{All trials} & \multicolumn{2}{c}{Change-point} & \multicolumn{2}{c}{Last $K^\ast$} \\
+    & & & & & \multicolumn{2}{c}{All trials} & \multicolumn{2}{c}{Change-point} & \multicolumn{2}{c}{Selected window} \\
     \cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-11}
     Model & Est. & 95\% CI & $p$ & $p_\text{Holm}$ & $\Delta$ [90\% CI] & $p_\text{TOST}$ & $\Delta$ [90\% CI] & $p_\text{TOST}$ & $\Delta$ [90\% CI] & $p_\text{TOST}$ \\
     \midrule
@@ -262,7 +262,7 @@ This comparison is supporting and descriptive. Human participants were told the 
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Primary and secondary tests on held-out episodes, fixed before held-out evaluation (timestamped commit, tag prereg-v3); not a formal preregistration. Primary: Wilcoxon signed-rank test over episodes, Holm-corrected across core models; the claim requires a positive, significant gap in both language-model families (Qwen3 and Gemma~3). Secondary: two one-sided tests per model with Holm correction over the three summaries; $K^\ast$ chosen on development episodes (Appendix~E).}
+  \caption{Primary and secondary tests on held-out episodes, fixed before held-out evaluation (timestamped commit); not a formal preregistration. Primary: Wilcoxon signed-rank test over episodes, Holm-corrected across core models; the claim requires a positive, significant gap in both language-model families (Qwen3 and Gemma~3). Secondary: two one-sided tests per model with Holm correction over the three summaries; the window length is selected on development episodes (Appendix~E).}
   \label{tab:tests}
 \end{table*}
 
@@ -284,7 +284,7 @@ This comparison is supporting and descriptive. Human participants were told the 
     Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies). Stated: reliability given as a percentage (D) or as counts. Short/long: an easy history in which one advisor is clearly better, given raw or correctness-coded. Single trial: who was correct on one shown trial. Full results by cover story in Appendix~C.}
+  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies). Stated: reliability given as a percentage or as counts. Short/long: an easy history in which one advisor is clearly better, given raw or correctness-coded. Single trial: who was correct on one shown trial. Full results by cover story in Appendix~C.}
   \label{tab:controls}
 \end{table}
 
@@ -333,7 +333,7 @@ Table~\ref{tab:cover} lists the cover stories. The examples below are rendered b
   \label{tab:cover}
 \end{table}
 
-\paragraph{Example 1: raw history (A), weather, held-out episode, trial 6.}
+\paragraph{Example 1: raw history, weather, held-out episode, trial 6.}
 \begin{quote}\small
 You are observing a sequence of days. On every day, two weather forecasters, Tim and Joe, give conflicting forecasts for the day's weather (rain or dry). After each day, the actual weather is observed. A forecaster's accuracy may change over time.\\
 Past days:\\
@@ -347,9 +347,9 @@ Joe forecasts: dry\\
 Tim forecasts: rain\\
 Predict the actual weather on the current day. Answer with exactly one lowercase word: rain or dry.
 \end{quote}
-The other formats change only the history lines. In A$+$, day 1 reads ``Day 1: Joe forecasts rain; Tim forecasts dry. Actual weather: dry. (Joe was wrong; Tim was correct.)''. In B it reads ``Day 1: Joe was wrong; Tim was correct.''. In C the five history lines and the ``Past days:'' line are replaced by ``Summary of all 5 past days: Joe was correct 0 times; Tim was correct 5 times.''. In B$'$ they are replaced by ``Past days 1-5 are summarized in this chart (days run left to right in four lines of 20; for each day, a green square means that forecaster was correct, a gray square means that forecaster was wrong, an empty square means not yet played):'' followed by the chart (448 px; one row per advisor in each line). In the judgment readout the current reports and question are replaced by ``Before day 6: which forecaster is currently more likely to be correct? Answer with exactly one name: Joe or Tim.''.
+The other formats change only the history lines. In the raw history with correctness, day 1 reads ``Day 1: Joe forecasts rain; Tim forecasts dry. Actual weather: dry. (Joe was wrong; Tim was correct.)''. In the correctness-coded history it reads ``Day 1: Joe was wrong; Tim was correct.''. In the summarized history the five history lines and the ``Past days:'' line are replaced by ``Summary of all 5 past days: Joe was correct 0 times; Tim was correct 5 times.''. In the correctness chart they are replaced by ``Past days 1-5 are summarized in this chart (days run left to right in four lines of 20; for each day, a green square means that forecaster was correct, a gray square means that forecaster was wrong, an empty square means not yet played):'' followed by the chart (448 px; one row per advisor in each line). In the judgment readout the current reports and question are replaced by ``Before day 6: which forecaster is currently more likely to be correct? Answer with exactly one name: Joe or Tim.''.
 
-\paragraph{Example 2: description condition (D), weather, development episode.}
+\paragraph{Example 2: stated reliability, weather, development episode.}
 \begin{quote}\small
 You are observing a sequence of days. On every day, two weather forecasters, Jim and Ken, give conflicting forecasts for the day's weather (rain or dry). After each day, the actual weather is observed. A forecaster's accuracy may change over time.\\
 Summary of past performance: Jim was correct on 80\% of past days; Ken was correct on 20\% of past days.\\
@@ -374,7 +374,7 @@ Predict the true animal on the current trial. Answer with exactly one lowercase 
 \end{quote}
 With text reports the images are replaced by the answer word. \todo{binding-control variants (name printed on image, composite image, attribution after image) with one example each}
 \subsection{B. Episode Generation and Counterbalancing} % schedules, stratification, seeds, splits, counterbalanced copies
-\paragraph{Schedules.} Each episode has 80 trials in eight blocks of 10. Advisor A is the advisor favored on trial~1. SV episodes have a stable phase (A correct with probability 0.8) followed by a volatile phase with blocks at 0.2, 0.8, 0.2, 0.8; VS episodes have a volatile phase with blocks at 0.8, 0.2, 0.8, 0.2 followed by a stable phase at 0.8. Every episode therefore has four reversals (trials 41, 51, 61, 71 in SV; 11, 21, 31, 41 in VS). Advisor B is always correct when A is wrong. For comparison, the advice schedule of \citet{behrens2008associative} (Supplementary Information) has 120 trials: 75\% correct on trials 1--30, alternation between 80\% correct and 80\% incorrect every 10 trials on trials 31--70, and 85\% incorrect on trials 71--120. Our volatile phase matches their alternation; our stable phase does not.
+\paragraph{Schedules.} Each episode has 80 trials in eight blocks of 10. Advisor A is the advisor favored on trial~1. Stable-first episodes have a stable phase (A correct with probability 0.8) followed by a volatile phase with blocks at 0.2, 0.8, 0.2, 0.8; volatile-first episodes have a volatile phase with blocks at 0.8, 0.2, 0.8, 0.2 followed by a stable phase at 0.8. Every episode therefore has four reversals (trials 41, 51, 61, 71 in stable-first and 11, 21, 31, 41 in volatile-first episodes). Advisor B is always correct when A is wrong. For comparison, the advice schedule of \citet{behrens2008associative} (Supplementary Information) has 120 trials: 75\% correct on trials 1--30, alternation between 80\% correct and 80\% incorrect every 10 trials on trials 31--70, and 85\% incorrect on trials 71--120. Our volatile phase matches their alternation; our stable phase does not.
 
 \paragraph{Stratification.} Within each block, A is correct on exactly $10p$ trials ($8$ or $2$) in random order, and each outcome label is the truth on exactly five trials. This keeps realized accuracy equal to the schedule in every episode. It also fixes outcome quotas, which allow a shortcut that ignores the advisors: predicting the label with more occurrences remaining in the current block's quota (which presupposes knowing the quota) reaches 0.661 accuracy on the development episodes. We therefore also use a robustness set (below).
 
@@ -413,7 +413,7 @@ Table~\ref{tab:controls_full} gives each control condition by cover story, and T
   \setlength{\tabcolsep}{4pt}
   \begin{tabular}{l ccccc c}
     \toprule
-    Model & A+$-$A & B$-$A & B$'-$A & C$-$B & C$-$A & (B$-$A)/(C$-$A) \\
+    Model & Raw+corr. & Coded & Chart & Summary$-$coded & Summary & Position \\
     \midrule
     Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
@@ -423,7 +423,7 @@ Table~\ref{tab:controls_full} gives each control condition by cover story, and T
     Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Decomposition of the raw--summarized gap on held-out episodes: paired differences in main-task accuracy with 95\% bootstrap CIs (format: mean [low, high]). The normalized position is reported only when C$-$A exceeds the prespecified threshold and its bootstrap CI excludes 0; otherwise ``n/i''.}
+  \caption{Decomposition of the raw--summarized gap on held-out episodes: paired differences in main-task accuracy relative to raw history (except Summary$-$coded) with 95\% bootstrap CIs (format: mean [low, high]). Position: (coded $-$ raw)/(summary $-$ raw), reported only when the summary--raw gap exceeds the prespecified threshold and its bootstrap CI excludes 0; otherwise ``n/i''.}
   \label{tab:decomp}
 \end{table*}
 \subsection{D. Normative Simulation}                  % rule comparison across contrasts/phase lengths (design_sim)
@@ -441,7 +441,7 @@ We ran two simulations without any VLM to check the design. Both score a rule by
     \toprule
     Summary rule & Development & Held-out & Robustness \\
     \midrule
-    All trials (C) & .630 & .632 & .594 \\
+    All trials & .630 & .632 & .594 \\
     Last 5 trials & .698 & .692 & .675 \\
     Last 10 trials & .620 & .612 & .635 \\
     Last 20 trials & .578 & .579 & .604 \\
@@ -473,7 +473,7 @@ These rule baselines were computed on held-out episodes before any model results
 \subsection{E. Change-Point Controller and Summary Variants} % BOCPD details, hazard, K selection on dev
 \paragraph{Change-point detection.} Let $o_t = 1$ if advisor A was correct on trial $t$. Before trial $t$, the controller runs Bayesian online change-point detection \citep{adams2007bocpd} on $o_1,\dots,o_{t-1}$ with a Bernoulli likelihood, a Beta(1,1) prior for each run and a constant hazard rate $h = 1/15$. This rate lies between the reversal rates of the volatile (1/10) and stable phases and was not tuned (Appendix~D). The controller takes the maximum a posteriori run length $r$, sets it to at least 3, and summarizes trials $\max(1, t-r)$ to $t-1$.
 
-\paragraph{Summary variants.} All variants use the same sentence as C, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The variants are: all past trials (C, primary); the last $K \in \{5, 10, 20\}$ trials; the run since the last inferred change-point (BOCPD); and the trials since the last true reversal up to $t-1$ (reversal-aligned reference). Two further conditions truncate the raw history instead of summarizing it: to the BOCPD run, or to the last 10 trials. The window length used in the secondary tests, $K^\ast$, is the one with the highest model accuracy on development episodes, fixed before held-out evaluation; Table~\ref{tab:variants} reports $K^\ast$ and all variants, and Table~\ref{tab:agree} compares the model with the rule alone.
+\paragraph{Summary variants.} All variants use the same sentence as the summarized history, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The variants are: all past trials (the primary summary); the last $K \in \{5, 10, 20\}$ trials; the run since the last inferred change-point (BOCPD); and the trials since the last true reversal up to $t-1$ (reversal-aligned reference). Two further conditions truncate the raw history instead of summarizing it: to the BOCPD run, or to the last 10 trials. The window length used in the secondary tests is, for each model, the one with the highest accuracy on development episodes, fixed before held-out evaluation; Table~\ref{tab:variants} reports the selected length and all variants, and Table~\ref{tab:agree} compares the model with the rule alone.
 
 % FILL: K* from dev_selection JSON (--write-dev-selection); accuracies from analyze_main.py held-out -> cells (C|sum_*|text, A|cp_hard|text, A|window:10|text).
 \begin{table*}[h]\centering\small
@@ -482,7 +482,7 @@ These rule baselines were computed on held-out episodes before any model results
     \toprule
     & & \multicolumn{6}{c}{Summarized history} & \multicolumn{2}{c}{Truncated raw history} \\
     \cmidrule(lr){3-8}\cmidrule(lr){9-10}
-    Model & $K^\ast$ & All (C) & Last 5 & Last 10 & Last 20 & Change-point & Since reversal & Change-point & Last 10 \\
+    Model & Selected $K$ & All trials & Last 5 & Last 10 & Last 20 & Change-point & Since reversal & Change-point & Last 10 \\
     \midrule
     Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
@@ -507,19 +507,19 @@ These rule baselines were computed on held-out episodes before any model results
     \midrule
     Qwen3-VL-8B & All & \tbd & \tbd & \tbd & \tbd \\
      & CP & \tbd & \tbd & \tbd & \tbd \\
-     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+     & Selected & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-8B & All & \tbd & \tbd & \tbd & \tbd \\
      & CP & \tbd & \tbd & \tbd & \tbd \\
-     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+     & Selected & \tbd & \tbd & \tbd & \tbd \\
     Gemma-3-27B & All & \tbd & \tbd & \tbd & \tbd \\
      & CP & \tbd & \tbd & \tbd & \tbd \\
-     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+     & Selected & \tbd & \tbd & \tbd & \tbd \\
     Qwen3-VL-32B & All & \tbd & \tbd & \tbd & \tbd \\
      & CP & \tbd & \tbd & \tbd & \tbd \\
-     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+     & Selected & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-38B & All & \tbd & \tbd & \tbd & \tbd \\
      & CP & \tbd & \tbd & \tbd & \tbd \\
-     & $K^\ast$ & \tbd & \tbd & \tbd & \tbd \\
+     & Selected & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{VLM with summarized history vs.\ the summary's rule alone on identical trials (held-out). Agree: proportion of non-tied trials on which the model's choice equals the rule's. Equal accuracy does not imply the same strategy; agreement is reported for that reason.}
@@ -537,18 +537,18 @@ These rule baselines were computed on held-out episodes before any model results
     \toprule
     Model & History & Copy last outcome & Follow last correct & Last 5 & All-trial counts & BOCPD & Label prior \\
     \midrule
-    Qwen3-VL-8B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    InternVL3.5-8B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Gemma-3-27B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen3-VL-32B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    InternVL3.5-38B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & A raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & C summ. & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen2.5-VL-72B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{Agreement (Cohen's $\kappa$) between the model's choices and simple strategies on held-out episodes. Copy last outcome: predict the previous trial's outcome label. Follow last correct: follow the advisor who was correct on the previous trial. Label prior: always predict the same label.}
@@ -562,16 +562,16 @@ These rule baselines were computed on held-out episodes before any model results
     \toprule
     Model & History & Best & NLL/trial & $\alpha_\text{stable}$ & $\alpha_\text{volatile}$ \\
     \midrule
-    Qwen3-VL-8B & A & \tbd & \tbd & \tbd & \tbd \\
-     & C & \tbd & \tbd & \tbd & \tbd \\
-    InternVL3.5-8B & A & \tbd & \tbd & \tbd & \tbd \\
-     & C & \tbd & \tbd & \tbd & \tbd \\
-    Gemma-3-27B & A & \tbd & \tbd & \tbd & \tbd \\
-     & C & \tbd & \tbd & \tbd & \tbd \\
-    Qwen3-VL-32B & A & \tbd & \tbd & \tbd & \tbd \\
-     & C & \tbd & \tbd & \tbd & \tbd \\
-    InternVL3.5-38B & A & \tbd & \tbd & \tbd & \tbd \\
-     & C & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B & Raw & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & Raw & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & Raw & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & Raw & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & Raw & \tbd & \tbd & \tbd & \tbd \\
+     & Summary & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{Computational-model fits (leave-one-episode-out cross-validated negative log-likelihood per trial; best of M0--M4) and calibrated effective learning rates by phase.}
@@ -601,9 +601,9 @@ These analyses use development episodes only and are exploratory. \todo{one para
   \setlength{\tabcolsep}{4pt}
   \begin{tabular}{l ccc ccc}
     \toprule
-    & \multicolumn{3}{c}{Legibility controls} & \multicolumn{3}{c}{Main-task accuracy, A raw (development)} \\
+    & \multicolumn{3}{c}{Legibility controls} & \multicolumn{3}{c}{Main-task accuracy, raw history (development)} \\
     \cmidrule(lr){2-4}\cmidrule(lr){5-7}
-    Model & Photo perception & Composite read & Chart read & Text reports & Image reports & Chart history (B$'$) \\
+    Model & Photo perception & Composite read & Chart read & Text reports & Image reports & Chart history \\
     \midrule
     Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
@@ -613,11 +613,11 @@ These analyses use development episodes only and are exploratory. \todo{one para
     Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Multimodal reports (development episodes, exploratory). Chart read below the prespecified 0.8 gate means B$'$ results for that model are not interpreted.}
+  \caption{Multimodal reports (development episodes, exploratory). Chart read below the prespecified 0.8 gate means chart-history results for that model are not interpreted.}
   \label{tab:mm}
 \end{table*}
 \subsection{H. Reasoning Mode}                               % thinking/CoT subset, lengths, truncation
-Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. The main comparison is Qwen3-VL-32B-Instruct with a step-by-step prompt against the same checkpoint answering directly; Qwen3-VL-8B-Thinking and Qwen3-VL-32B-Thinking use their native reasoning templates as a supplement. The subset comprises the main task at trials 20, 40, 60 and 80 with raw (A) and summarized (C) history, and the control conditions D, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. Table~\ref{tab:reason} gives the results. \todo{one paragraph after results}
+Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. The main comparison is Qwen3-VL-32B-Instruct with a step-by-step prompt against the same checkpoint answering directly; Qwen3-VL-8B-Thinking and Qwen3-VL-32B-Thinking use their native reasoning templates as a supplement. The subset comprises the main task at trials 20, 40, 60 and 80 with raw and summarized history, and the stated-reliability, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. Table~\ref{tab:reason} gives the results. \todo{one paragraph after results}
 
 % FILL: analyze_thinking.py -> groups[<model/mode>][<condition>] (acc_valid, valid_rate, truncation_rate, forced_rate, tokens) and gap.
 \begin{table*}[h]\centering\small
@@ -626,7 +626,7 @@ Reasoning is tested on development episodes only, with each episode's own text c
     \toprule
     & \multicolumn{4}{c}{Free-answer accuracy} & & & & \\
     \cmidrule(lr){2-5}
-    Model / mode & A raw & C summ. & C$-$A & D stated & Valid & Truncated & Forced & Median tokens \\
+    Model / mode & Raw & Summary & Summary$-$raw & Stated & Valid & Truncated & Forced & Median tokens \\
     \midrule
     Qwen3-VL-32B, direct & \tbd & \tbd & \tbd & \tbd & -- & -- & -- & 1 \\
     Qwen3-VL-32B, step-by-step & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
@@ -674,7 +674,7 @@ Reasoning is tested on development episodes only, with each episode's own text c
   \setlength{\tabcolsep}{3pt}
   \begin{tabular}{l ccc c}
     \toprule
-    Model & A raw & C summ. & C$-$A [95\% CI] & $p$ \\
+    Model & Raw & Summary & Gap [95\% CI] & $p$ \\
     \midrule
     Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd \\
@@ -704,7 +704,7 @@ Reasoning is tested on development episodes only, with each episode's own text c
     Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{C$-$A by cover story (held-out; eight episodes per text cover story). Pet uses photo reports in its own episode slot and is not part of the sign test.}
+  \caption{Summary$-$raw gap by cover story (held-out; eight episodes per text cover story). Pet uses photo reports in its own episode slot and is not part of the sign test.}
   \label{tab:scenario}
 \end{table*}
 \subsection{K. Models, Revisions and Compute}                % pinned revisions, hardware, cross-platform check

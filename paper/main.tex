@@ -127,7 +127,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
 
 \paragraph{Models and readout.} We test five frozen open-weight VLMs from two language-model families: Qwen3-VL 8B and 32B \citep{bai2025qwen3vl}, InternVL3.5 8B and 38B, which use a Qwen3 language model \citep{wang2025internvl35}, and Gemma-3-27B \citep{gemmateam2025gemma3}. Two proprietary models are tested through their APIs on a subset (Appendix~K). \todo{API runs} All models run without reasoning and answer with one word. The readout is the model's preference $y_t$ for advisor A's report, from the logits of the two answer words at the first generated token; it is a preference between the two options, not a belief. Nearly all probability mass fell on the two answer words (Appendix~K).
 
-\paragraph{Measures and analysis.} Accuracy is the proportion of trials ($t\ge2$) on which the followed advisor was correct, averaged over the counterbalanced copies; chance is 0.5. To describe behavior we fit an integration kernel \citep[cf.][]{xue2026counting}, a regression of $y_t$ on which advisor was correct $k$ trials back plus a regressor for repeating the previous outcome, and compute agreement (Cohen's $\kappa$) with simple strategies. As a human-like reference we run the Bayesian volatility learner that \citet{behrens2007learning,behrens2008associative} fitted to their participants on the same episodes. The primary test, fixed before held-out evaluation, is the summary$-$raw accuracy difference per model (Wilcoxon signed-rank, Holm-corrected; required in both families). Secondary tests and all other details are in Appendix~C.
+\paragraph{Measures and analysis.} Accuracy is the proportion of trials ($t\ge2$) on which the followed advisor was correct, averaged over the counterbalanced copies; chance is 0.5. To describe behavior we fit an integration kernel \citep[cf.][]{xue2026counting}, a regression of $y_t$ on which advisor was correct $k$ trials back plus a regressor for repeating the previous outcome, and compute agreement (Cohen's $\kappa$) with simple strategies. As a human-like reference we run the Bayesian volatility learner that \citet{behrens2007learning,behrens2008associative} fitted to their participants on the same episodes. The unit of analysis is the episode pair (an episode and its counterbalanced copy), and uncertainty is reported as 95\% confidence intervals (CIs) from a bootstrap over episode pairs (10{,}000 resamples). The primary test, fixed before held-out evaluation, is the summary$-$raw accuracy difference per model (Wilcoxon signed-rank test, Holm-corrected; required in both families). Secondary tests and all other details are in Appendix~C.
 
 \section{Results}
 \begin{figure*}[t]\centering
@@ -186,7 +186,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
     Rule alone (all-trial counts) & -- & \multicolumn{5}{c}{.632} & -- & -- \\
     \bottomrule
   \end{tabular}
-  \caption{\devnote{} Raw history is at or below chance in every model; stating who was correct reaches the summary. Accuracy: proportion of trials ($t\ge 2$) on which the model follows the correct advisor, averaged over counterbalanced copies and episodes; text reports. Summary$-$raw: paired difference with 95\% bootstrap CI. Stated accuracy: control items (development). $^{\ast}$API models on a subset, choice read from the generated answer (Appendix~K).}
+  \caption{\devnote{} Raw history is at or below chance in every model; stating who was correct reaches the summary. Accuracy: proportion of trials ($t\ge 2$) on which the model follows the correct advisor, averaged over counterbalanced copies and episodes; text reports. LM: language-model family. Raw+corr.: raw history with who was correct appended; Coded: who was correct only; Chart: who was correct drawn as an image. Summary$-$raw: paired difference with 95\% CI. Stated accuracy: control items (development). $^{\ast}$API models on a subset, choice read from the generated answer (Appendix~K).}
   \label{tab:main}
 \end{table*}
 
@@ -196,7 +196,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
   \setlength{\tabcolsep}{4pt}
   \begin{tabular}{l cccc ccc ccc}
     \toprule
-    & \multicolumn{4}{c}{Primary: summary $-$ raw} & \multicolumn{6}{c}{Secondary: VLM+summary $-$ rule alone (TOST, $\pm$2 pp)} \\
+    & \multicolumn{4}{c}{Primary: summary $-$ raw} & \multicolumn{6}{c}{Secondary: VLM+summary $-$ rule alone (TOST, $\pm$2 points)} \\
     \cmidrule(lr){2-5}\cmidrule(lr){6-11}
     & & & & & \multicolumn{2}{c}{All trials} & \multicolumn{2}{c}{Change-point} & \multicolumn{2}{c}{Selected window} \\
     \cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-11}
@@ -209,7 +209,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Primary and secondary tests on held-out episodes, fixed before held-out evaluation (timestamped commit; not a formal preregistration). Primary: Wilcoxon signed-rank test, Holm-corrected across models; the claim requires a significant positive gap in both families. Secondary: two one-sided tests per model, Holm-corrected over the three summaries; the window length is selected on development episodes (Appendix~E).}
+  \caption{Primary and secondary tests on held-out episodes, fixed before held-out evaluation (timestamped commit; not a formal preregistration). Primary: Wilcoxon signed-rank test, Holm-corrected across models; the claim requires a significant positive gap in both families. Secondary: two one-sided tests (TOST) of equivalence within $\pm$2 percentage points, per model, Holm-corrected over the three summaries; the window length is selected on development episodes (Appendix~E).}
   \label{tab:tests}
 \end{table*}
 

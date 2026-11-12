@@ -7,12 +7,15 @@ priority order across models no matter how many GPUs the lab has free. Differenc
 - a job is claimed with an exclusive create of <output>/_LOCK holding the Slurm job id; a lock whose Slurm job is no
   longer running is stale and is taken over (runners resume, so a killed job just continues);
 - jobs whose model weights are not fully downloaded yet are skipped (download them and the next pick will see them);
+- housekeeping before every pick: delete the weights of a model whose jobs are all complete, and download a model
+  that still has jobs once the group quota has room (one model at a time, list order);
 - the GPU is the one Slurm assigned (CUDA_VISIBLE_DEVICES is inherited, not overwritten).
 The runner command is identical to run_jobs.py.
 """
 import argparse
 import json
 import os
+import shutil
 import socket
 import subprocess
 import sys
@@ -68,6 +71,68 @@ def claim(j, alive):
     return False
 
 
+def free_quota_gb():
+    """Group quota headroom on /work from `quota -gs` (used and limit in G); None if it cannot be read."""
+    try:
+        out = subprocess.run(['quota', '-gs'], capture_output=True, text=True).stdout.split('\n')
+        for i, line in enumerate(out):
+            if '/work' in line:
+                f = line.split()
+                if len(f) < 3:
+                    f = out[i + 1].split()
+                else:
+                    f = f[1:]
+                g = lambda x: float(x.rstrip('*').rstrip('G'))
+                return g(f[2]) - g(f[0])
+    except Exception:
+        pass
+    return None
+
+
+def housekeeping(jobs, reg, root, alive, margin_gb=15):
+    """Swap weights so the list can finish within the quota (2026-11-13):
+    1. a model whose jobs in the list are all complete and none is locked: delete its weights (re-downloadable);
+    2. a model with pending jobs whose weights are missing: download it if quota headroom >= size + margin.
+    Only one worker at a time (lock file holding the Slurm job id)."""
+    lock = root / '.h200_housekeeping_LOCK'
+    try:
+        fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY); os.write(fd, ME.encode()); os.close(fd)
+    except FileExistsError:
+        owner = lock.read_text().strip() if lock.exists() else ''
+        if alive is None or owner in alive or owner == ME:
+            return
+        lock.unlink(missing_ok=True)
+        return
+    try:
+        by_model = {}
+        for j in jobs:
+            by_model.setdefault(j['model'], []).append(j)
+        for key, js in by_model.items():
+            m = reg[key]
+            mdir = root / m['id'].split('/')[1] / m['revision']
+            if mdir.exists() and all(complete(j) for j in js) and not any((ROOT / j['output'] / '_LOCK').exists() for j in js):
+                print(f'{time.strftime("%F %T")} housekeeping: all {len(js)} jobs of {key} complete; deleting {mdir}', flush=True)
+                shutil.rmtree(mdir)
+                if mdir.parent.exists() and not any(mdir.parent.iterdir()):
+                    mdir.parent.rmdir()
+        for key, js in by_model.items():   # list order = priority
+            m = reg[key]
+            mdir = root / m['id'].split('/')[1] / m['revision']
+            if weights_ready(mdir) or all(complete(j) for j in js):
+                continue
+            free = free_quota_gb()
+            if free is None or free < m['gb'] + margin_gb:
+                print(f'{time.strftime("%F %T")} housekeeping: {key} needs {m["gb"]} GB + {margin_gb}, quota headroom {free}; wait', flush=True)
+                break
+            print(f'{time.strftime("%F %T")} housekeeping: downloading {key} ({m["gb"]} GB, headroom {free:.0f} GB)', flush=True)
+            rc = subprocess.run([sys.executable, str(HERE.parent / 'download_models.py'), '--models', key, '--root', str(root)],
+                                cwd=ROOT).returncode
+            print(f'{time.strftime("%F %T")} housekeeping: download {key} rc={rc}', flush=True)
+            break
+    finally:
+        lock.unlink(missing_ok=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--jobs', type=Path, default=HERE / 'jobs_h200.jsonl')
@@ -80,10 +145,11 @@ def main():
     print(f'worker {ME} root {ROOT}', flush=True)
     fails = {}
     while True:
-        jobs = [json.loads(l) for l in open(a.jobs)]
-        jobs = [j for j in jobs if (not a.tier or j.get('tier', 2) in a.tier) and (not a.models or j['model'] in a.models)
+        all_jobs = [json.loads(l) for l in open(a.jobs)]
+        jobs = [j for j in all_jobs if (not a.tier or j.get('tier', 2) in a.tier) and (not a.models or j['model'] in a.models)
                 and j.get('gpus', 1) == 1]
         alive = running_slurm_jobs()
+        housekeeping(all_jobs, reg, a.model_root, alive)   # unfiltered: never delete weights a later tier needs
         picked = None
         for j in jobs:
             m = reg[j['model']]

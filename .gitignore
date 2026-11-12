@@ -21,6 +21,7 @@
 !/paper/aaai2027.sty
 !/paper/aaai2027.bst
 !/paper/README.md
+!/paper/build.sh
 !/paper/figures/
 !/paper/tables/
 __pycache__/

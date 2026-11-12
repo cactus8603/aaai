@@ -17,6 +17,8 @@ This is a **long paper (8 pages plus references and supplementary material, arch
 | `authorkit_original/` | The official AAAI-27 kit (`AuthorKit27.zip`, TemplateVersion 2027.1), downloaded from https://aaai.org/authorkit27/ and unzipped. Treat it as read-only reference material. |
 
 ## Compile
+**Quick way:** `bash paper/build.sh` (from anywhere) compiles `main.pdf` with pdfLaTeX + BibTeX and prints the checks: the page on which References start (main text must fit in 8 pages), overfull boxes, undefined references, fonts that are not embedded or Type 3, and the number of open TODO / DRAFT / ?? markers. `bash paper/build.sh --clean` also removes the aux files. `main.pdf` itself is not tracked in git.
+
 AAAI-27 requires **pdfLaTeX**. `aaai2027.sty` aborts under XeTeX, LuaTeX or tectonic. TeX is installed user-locally through TinyTeX in `~/.TinyTeX`.
 
 ```bash

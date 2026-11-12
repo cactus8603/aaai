@@ -771,11 +771,11 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
     \toprule
     Model & Prompts & Med.\ $|\Delta y|$ & Agree & Pass \\
     \midrule
-    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd \\
-    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B & 320 & .006 & 97.2\% & no \\
+    Qwen3-VL-32B & 320 & .006 & 98.4\% & yes \\
     \bottomrule
   \end{tabular}
-  \caption{Cross-platform check (RTX 3090 vs.\ MI300X, identical prompts).}
+  \caption{Cross-platform check (RTX 3090 vs.\ MI300X, identical prompts matched by hash). Agree: same more probable answer. All disagreements are near ties ($0.46 < y < 0.53$ on both platforms; 9 of 320 for Qwen3-VL-8B, 5 of 320 for Qwen3-VL-32B). All reported results come from MI300X; pilot results are used only for design.}
   \label{tab:xcheck}
 \end{table}
 \subsection{L. Pilot Results on Smaller Models}              % 3B/4B, v1 data caveat

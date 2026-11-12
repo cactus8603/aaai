@@ -7,7 +7,8 @@ Deviations from EXPERIMENTS.md, decided before any held-out model output (see PL
   time before the deadline. The `tier` field is the priority: 1 = primary test and the core evidence chain,
   2 = secondary tests and tables, 3 = only if time remains (revised the same day to a middle ground: cheap
   image/chart, Psych-101 and wording jobs, Gemma-3-12B and part of the reasoning mode added back; development
-  main-task reruns dropped except dev_full_text, which is the per-model cross-platform check). Jobs not listed below are not run on H200.
+  main-task reruns dropped except dev_full_text, which is the per-model cross-platform check; then the lowest-value
+  parts removed: Gemma-3-12B, 32B thinking, wording p1, robustness-set extras). Jobs not listed below are not run on H200.
 Job ids, arguments and output names are unchanged from jobs.jsonl (only `output` moves to runs_h200/ and `tier`
 changes), so a resumed run skips completed jobs.
 
@@ -19,7 +20,6 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 VT = 'research/volatile_trust'
 CORE = ['qwen3vl8b', 'internvl8b', 'qwen3vl32b', 'internvl38b', 'gemma3_27b']   # <= 38B
-GEMMA12 = 'gemma3_12b'   # tier 3: its wording decomposition and masking jobs (dev only), as in jobs.jsonl
 BIG = ['qwen3vl32b', 'internvl38b', 'gemma3_27b']
 
 # priority 1: primary test (held-out summary - raw), its decomposition (coded, raw+correct), stated-reliability and
@@ -36,13 +36,10 @@ P2 = ['ho_sum_cp', 'dev_sum_window5', 'dev_sum_window10', 'dev_sum_window20',
       'psy_perc_outcome_hidden', 'psy_perc_chart_hidden',      # Psych-101: all formats (human comparison)
       'ho_mask_rep_ok', 'ho_mask_out_ok', 'ho_mask_mask_ok']
 # priority 3: only if time remains
-P3 = ['ho_sum_oracle', 'rob_sum_cp', 'rob_sum_window10', 'ho_window10', 'ho_cp_hard', 'rob_full_coded',
-      'para_p2_raw', 'para_p2_raw_coded', 'para_p2_coded', 'para_p2_sum_all',
-      'para_p1_raw', 'para_p1_raw_coded', 'para_p1_coded', 'para_p1_sum_all']
-# reasoning mode (tier 3, after the above): the 8B thinking model in full (4 shards x raw/summary), then half of the
-# 32B thinking model (shards 0-1); the 32B chain-of-thought jobs are not run
-E9 = [f'qwen3vl8b_thinking__e9_thinking_{h}_s{i}' for i in range(4) for h in ('raw', 'summ')] + \
-     [f'qwen3vl32b_thinking__e9_thinking_{h}_s{i}' for i in range(2) for h in ('raw', 'summ')]
+P3 = ['ho_sum_oracle', 'ho_window10', 'ho_cp_hard',
+      'para_p2_raw', 'para_p2_raw_coded', 'para_p2_coded', 'para_p2_sum_all']
+# reasoning mode (tier 3, last): the 8B thinking model in full (4 shards x raw/summary)
+E9 = [f'qwen3vl8b_thinking__e9_thinking_{h}_s{i}' for i in range(4) for h in ('raw', 'summ')]
 PRIORITY = {**{k: 1 for k in P1}, **{k: 2 for k in P2}, **{k: 3 for k in P3}}
 ORDER = {k: i for i, k in enumerate(P1 + P2 + P3)}
 
@@ -63,8 +60,6 @@ for line in open(HERE.parent / 'jobs.jsonl'):
     key, suffix = j['id'].split('__', 1)
     if j['id'] in E9:
         tier = 3
-    elif key == GEMMA12 and j['tier'] == 4:
-        tier = 3
     elif key in CORE and suffix in PRIORITY and (not suffix.startswith('para_') or key in BIG):
         tier = PRIORITY[suffix]
     else:
@@ -76,7 +71,7 @@ jobs += [dict(mask_job(k, v), tier=2) for k in CORE for v in ('rep_ok', 'out_ok'
 def rank(j):
     if j['id'] in E9:
         return 200 + E9.index(j['id'])
-    return 100 if j['model'] == GEMMA12 else ORDER.get(j['id'].split('__', 1)[1], 99)
+    return ORDER.get(j['id'].split('__', 1)[1], 99)
 
 
 jobs.sort(key=lambda j: (j['tier'], rank(j)))

@@ -1,10 +1,12 @@
 # H200 執行計畫（2026-11-13 重新整理；在看到任何 held-out 模型結果之前決定）
 
 原本的清單會跑不完（全部約 240 GPU 小時，其中 E9 推理約 80 小時、72B 約 54 小時）。
-這裡依「論文主張需要什麼」重新分級，`jobs_h200.jsonl` 由 `make_jobs_h200.py` 產生，共 241 個工作、約 124 GPU 小時（同日修訂兩次：第一版 161 個、約 74 小時，砍太多；之後改成折衷版，Psych-101 全部加回，dev 主任務只留跨平台對照）。
+這裡依「論文主張需要什麼」重新分級，`jobs_h200.jsonl` 由 `make_jobs_h200.py` 產生，共 177 個工作、約 97 GPU 小時（同日修訂多次：第一版 161 個、約 74 小時，砍太多；折衷版 241 個、約 124 小時；再刪掉貢獻最小的約 27 小時）。
+
+**2 張 H200 的時程**（工作可分給任一張空卡；H200 速度設為 MI300X 的 0.8／1.0／1.3 倍）：tier 1 完成約 11／13／18 小時，tier 2 約 28／35／46 小時，全部約 39／48／63 小時。不含排隊時間。
 工作 id、參數、輸出目錄名稱都和原清單相同（只有輸出移到 `runs_h200/`、`tier` 改成優先序），所以續跑會自動跳過已完成的工作。
 
-模型：Qwen3-VL-8B、InternVL3.5-8B、Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B（≤ 38B）；Gemma-3-12B 與兩個 thinking 模型只在 tier 3。不跑 Qwen2.5-VL-72B。
+模型：Qwen3-VL-8B、InternVL3.5-8B、Qwen3-VL-32B、InternVL3.5-38B、Gemma-3-27B（≤ 38B）；`qwen3vl8b_thinking` 只在 tier 3。不跑 Qwen2.5-VL-72B。
 
 GPU 小時是用 MI300X 實測的每筆秒數推估的（8B 約 .06–.07 秒、32/38B 約 .17 秒、Gemma-3-27B 約 .28 秒），H200 實際速度請以 stage 1 的 log 為準。
 
@@ -26,18 +28,20 @@ GPU 小時是用 MI300X 實測的每筆秒數推估的（8B 約 .06–.07 秒、
 ## tier 2（次要檢定、人機比較與表格，約 43 GPU 小時）
 依序：`ho_sum_cp`（變化點摘要的 TOST）→ `dev_sum_window{5,10,20}`（在 dev 選 K）→ `ho_sum_window{5,10,20}`（選定視窗的 TOST、Table variants）→ `ho_full_chart`（Table main 的 Chart 欄）→ `ho_full_image`（多模態）→ **Psych-101 全部六種**（`text_hidden`、`text_told`、`image_outcome`、`chart`、`perc_outcome`、`perc_chart`；人與 LLM 的比較，約 15 小時）→ `ho_mask_*`（遮罩結果的 held-out 確認，預測見 `ADDENDUM_masking.md`）。
 
-## tier 3（有時間才跑，約 54 GPU 小時，依序）
-1. 其餘變體：`ho_sum_oracle`、`rob_sum_cp`、`rob_sum_window10`、`ho_window10`、`ho_cp_hard`、`rob_full_coded`。
-2. 三個大模型的措辭對比（p2 精簡表格、p1 換句話說）。
-3. Gemma-3-12B：措辭 2×2×2 拆解與遮罩（dev，探索性，和 8B 在 3090 的拆解對應）。
-4. 推理模式（約 32 GPU 小時，放最後，時間不夠就從這裡砍）：`qwen3vl8b_thinking` 全部（4 個 shard × 原始／摘要），再跑 `qwen3vl32b_thinking` 的一半（shard 0–1）。
+## tier 3（有時間才跑，約 27 GPU 小時，依序）
+1. `ho_sum_oracle`、`ho_window10`、`ho_cp_hard`（Table variants 的「截斷原始歷史」欄；也回答「是不是歷史太長」）。
+2. 三個大模型的精簡表格措辭（p2；Limitations 的排版依賴）。
+3. 推理模式（約 16 GPU 小時，放最後）：`qwen3vl8b_thinking` 全部（4 個 shard × 原始／摘要）。
 
 ## 不在 H200 跑
-- Qwen2.5-VL-72B；E9 的 Qwen3-VL-32B CoT 與 32B thinking 的 shard 2–3。
-- dev 主任務的其他格式（`dev_full_coded`、`dev_full_rawcoded`、`dev_sum_all`、圖片、圖表、`sum_cp`、`sum_oracle`、`cp_hard`、`window10`）：屬於開發，沿用 MI300X。
+- Qwen2.5-VL-72B；E9 的 Qwen3-VL-32B CoT 與 32B thinking（16 小時；一個 thinking 模型就足以回答「推理能不能補救」）。
+- Gemma-3-12B 的措辭拆解與遮罩（約 5 小時；探索性，8B 的拆解已在 3090 做完）。
+- 大模型的措辭 p1（約 3 小時；8B 上 p1 和原始措辭幾乎相同）。
+- 穩健性資料的額外條件 `rob_full_coded`、`rob_sum_cp`、`rob_sum_window10`（約 3 小時；主要比較 `rob_full`／`rob_sum_all` 已在 tier 1）。
+- dev 主任務的其他格式：屬於開發，沿用 MI300X。
 - 8B 的 dev 遮罩和措辭（3090 已做，探索性）；held-out 遮罩確認在 tier 2。
 
 ## 送出
 `submit.sh` 不用改：stage 1 跑 tier 1 的 `dev_` 與 `xcheck`，stage 2 依 tier 1 → 2 → 3 →（4，現在沒有）。
-`MODELS="qwen3vl8b internvl8b qwen3vl32b internvl38b gemma3_27b"`。Gemma-3-12B 和兩個 thinking 模型沒有 tier 1 工作（stage 1 會沒事可做），建議直接送 `--tier 3` 的工作，或等主要模型跑完再用空出的卡跑。
+`MODELS="qwen3vl8b internvl8b qwen3vl32b internvl38b gemma3_27b"`。`qwen3vl8b_thinking` 沒有 tier 1 工作（stage 1 會沒事可做），建議直接送 `--tier 3` 的工作，或等主要模型跑完再用空出的卡跑。
 建議 Gemma-3-27B 用 `NGPU=2`（最慢）。截稿前若 tier 2 跑不完，論文以 tier 1 為主，tier 2 未完成的表格照實標示。

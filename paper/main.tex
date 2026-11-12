@@ -148,7 +148,7 @@ Further summaries apply other integration rules outside the model: counts over t
 
 \paragraph{Control conditions.} On development episodes we run control conditions in which the answer is given more directly, to establish that each model can use reliability information. The most important is the stated-reliability condition, in which reliability is described in words (``Ken was correct on 80\% of past days; Sam was correct on 20\% of past days.''); its contrast with the raw history is our measure of the description--history (DH) gap. Further controls state counts over the last 10 trials, give short (10-trial) or long (80-trial) histories in which advisor A is correct on every recent trial, in raw and correctness-coded versions, ask which advisor was correct on a single raw trial (step (i) alone), and ask which label a single report image shows (a perception check). Each control crosses all seven cover stories, text and image reports, and four query trials ($t \in \{20,40,60,80\}$).
 
-\paragraph{Models and readout.} We test frozen open-weight VLMs from two language-model families, Qwen and Gemma (Table~\ref{tab:models}). InternVL3.5 uses a Qwen3 language model, so it adds a second vision pipeline but not a third family. Models run in bfloat16 with a float32 output projection. We read the logits of the first generated token for the two answer words, before any logit processing, and normalize them with a softmax over these two tokens to obtain $y_t$, the conditional preference between the two answer options (normalized over the two candidate tokens) for advisor A's current report. Because the normalization ignores all other tokens, $y_t$ is neither the model's free-generation choice probability nor a belief. For every model, format and condition we therefore report the probability mass on the two candidate tokens (mean, minimum and share of trials below 0.5) and the format-following rate, the share of trials on which the greedy output is one of the two answer words (Appendix~K). Decoding is greedy, and reasoning (``thinking'') is switched off wherever the chat template offers it. On text-report trials with raw history we also ask a judgment question (``which forecaster is currently more likely to be correct?''). Reasoning mode is tested on a subset only (Appendix~H).
+\paragraph{Models and readout.} We test frozen open-weight VLMs from two language-model families, Qwen and Gemma (Table~\ref{tab:models}). InternVL3.5 uses a Qwen3 language model, so it adds a second vision pipeline but not a third family. Models run in bfloat16 with a float32 output projection. We read the logits of the first generated token for the two answer words, before any logit processing, and normalize them with a softmax over these two tokens to obtain $y_t$, the conditional preference between the two answer options (normalized over the two candidate tokens) for advisor A's current report. Because the normalization ignores all other tokens, $y_t$ is neither the model's free-generation choice probability nor a belief. For every model, format and condition we therefore report the probability mass on the two candidate tokens (mean, minimum and share of trials below 0.5) and the format-following rate, the share of trials on which the greedy output is one of the two answer words (Appendix~K). Decoding is greedy, and reasoning (``thinking'') is switched off wherever the chat template offers it. On text-report trials with raw history we also ask a judgment question (``which forecaster is currently more likely to be correct?''). Reasoning is tested with one reasoning checkpoint on a subset of items (Appendix~H).
 
 \paragraph{Measures.} Within each pair of an episode and its counterbalanced copy we average the label-aligned logit differences, which cancels additive name and label preferences. Accuracy is the expected proportion of trials ($t \ge 2$) on which the followed advisor was correct; it is 0.5 at chance and about 0.8 for an observer who knows the current accuracy. We also report the probability of following the currently more accurate advisor by phase, the log score of the outcome, and learning curves aligned to reversals. To describe behavior, we fit an integration kernel \citep[cf.][]{xue2026counting}: a logistic regression of the preference $y_t$ on which advisor was correct at lags $k=1,\dots,15$, plus a positive-recency regressor (choose the advisor whose current report matches the previous outcome), a label prior and a listing-order term. We also compute strategy agreement (Cohen's $\kappa$) between model choices and simple strategies, including positive recency, following the advisor correct on the previous trial (the CPT regressor of \citealt{behrens2008associative}), counts over all or recent trials, and BOCPD. These analyses describe behavior that is consistent with a strategy; they do not identify a mechanism.
 
@@ -349,7 +349,9 @@ Jim reports: \emph{[image]}\\
 Jon reports: \emph{[image]}\\
 Predict the true animal on the current trial. Answer with exactly one lowercase word: cat or dog.
 \end{quote}
-With text reports the images are replaced by the answer word. \todo{binding-control variants (name printed on image, composite image, attribution after image) with one example each}
+With text reports the images are replaced by the answer word.
+
+\paragraph{Binding variants.} The binding controls change only how the current reports of Example~3 are attached to the advisors (stated reliability, image reports). \emph{Name on image}: the lines are as in Example~3, but each image carries its advisor's name printed in a banner above the picture. \emph{Composite image}: the two report lines are replaced by ``Reports (one panel per reporter, name above each panel): \emph{[image]}'', one image with two panels, each headed by an advisor's name. \emph{Image after name}: each report is given as ``\emph{[image]} (the image above was reported by Jim)'', so the attribution follows the image. The composite-read check shows only the composite image and asks ``The image has two panels, each with a name above it. What animal is in Jim's panel?''.
 \subsection{B. Episode Generation and Counterbalancing} % schedules, stratification, seeds, splits, counterbalanced copies
 \paragraph{Schedules.} Each episode has 80 trials in eight blocks of 10. Advisor A is the advisor favored on trial~1. Stable-first episodes have a stable phase (A correct with probability 0.8) followed by a volatile phase with blocks at 0.2, 0.8, 0.2, 0.8; volatile-first episodes have a volatile phase with blocks at 0.8, 0.2, 0.8, 0.2 followed by a stable phase at 0.8. Every episode therefore has four reversals (trials 41, 51, 61, 71 in stable-first and 11, 21, 31, 41 in volatile-first episodes). Advisor B is always correct when A is wrong. For comparison, the advice schedule of \citet{behrens2008associative} (Supplementary Information) has 120 trials: 75\% correct on trials 1--30, alternation between 80\% correct and 80\% incorrect every 10 trials on trials 31--70, and 85\% incorrect on trials 71--120. Our volatile phase matches their alternation; our stable phase does not.
 
@@ -537,7 +539,13 @@ These rule baselines were computed on held-out episodes before any model results
 
 \paragraph{What the controller is.} The controller is a training-free rule outside the model; it sees only the outcome sequence and does not read model states. It is motivated by change-point models of human learning \citep{nassar2010approximately,nassar2012rational}, but we use it as an integration rule, not as a model of the VLM or of the brain.
 \subsection{F. Computational Models and Parameter Recovery}  % delta-rule variants, calibrated learning rates, LOEO-CV
-\todo{model definitions (M0--M4), fitting procedure and one paragraph after results}
+\paragraph{Models.} Let $o_t=1$ if advisor A was correct on trial $t$ and $y_t$ the model's preference for A. Each computational model maps $o_1,\dots,o_{t-1}$ to a belief $q_t$ that A is correct and predicts $P_t=\sigma(\beta(q_t-0.5)+b)$, with inverse temperature $\beta$ and bias $b$. M0 is a constant bias ($P_t=\sigma(b)$). Win-stay/lose-shift follows the advisor who was correct on the previous trial ($P_t=\sigma(b+w(2o_{t-1}-1))$). Count models use $q_t=(s+1)/(n+2)$ over all past trials or over the last $k$ trials. M1 is a delta rule, $q_{t+1}=q_t+\alpha(o_t-q_t)$ with $q_1=0.5$; M2 uses separate learning rates in the stable and volatile phases; M3 uses separate rates for outcomes that confirm or disconfirm the currently trusted advisor. M4 comprises a Bayesian change-point observer (hazard rate from a grid, or marginalized over it) and a volatility-tracking learner after \citet{behrens2007learning}, each either with a fitted readout or reading out its predictive probability directly.
+
+\paragraph{Fitting and comparison.} Because $y_t$ is a preference rather than a sampled choice, models are fitted by minimizing the soft cross-entropy $-\sum_t [y_t\log P_t+(1-y_t)\log(1-P_t)]$, a pseudo-likelihood. Models are compared by leave-one-episode-out cross-validation: parameters are fitted jointly on all other episodes of a model and history format and scored on the left-out episode. Information criteria are reported only as heuristics. Following the analysis plan, learning-rate analyses are run only for conditions in which a model can use reliability at all (stated reliability $\ge 0.8$ in the control conditions) and tracks the better advisor in the stable phase (probability $\ge 0.6$); on development episodes, stable-phase following under raw histories was .53--.57 in every model, below this criterion, whereas it was .86--.98 with correctness-coded and summarized histories.
+
+\paragraph{Effective learning rate.} The update of the model's preference in logit space after each outcome, regressed on the signed outcome separately for the stable and volatile phases, measures how strongly the model responds to new outcomes. This statistic is not zero for a learner with a single constant learning rate: preferences are more extreme in the stable phase, where the logit stretches updates. We therefore calibrate it against a null in which M1, fitted to the same episode, generates surrogate preferences with the same residual noise (200 surrogates); the calibrated volatile-minus-stable difference and its $z$ score against the null indicate whether a model updates more in the volatile phase than a constant-rate learner would.
+
+\paragraph{Recovery.} In simulations with M1--M3 (100 synthetic learners each, logit noise s.d.\ 0.3), learning rates were recovered with correlations of .998 (M1; M2 stable and volatile rates) and .89--.99 (M3). Model identification was asymmetric: data from M1 were always classified as M1, but data from M2 were classified as M2 in 40\% of cases (70\% when the two rates differed by more than 0.2) and data from M3 rarely as M3 (10\%). The sign of the M2 rate difference was recovered in every case with a clear difference. Phase-specific rates are thus estimable, whereas model comparison favors the simpler M1 unless the difference is large; we therefore base conclusions about volatility on the calibrated effective learning rate rather than on model selection alone. Table~\ref{tab:recovery} checks the strategy and kernel analyses of the main text on synthetic agents run on the same episodes.
 
 % FILL: analyze_mechanism.py -> heuristics[<group>|<arm>]['all'][<heuristic>].kappa (+ kappa_ci95).
 \begin{table*}[h]\centering\small
@@ -567,7 +575,7 @@ These rule baselines were computed on held-out episodes before any model results
   \setlength{\tabcolsep}{3pt}
   \begin{tabular}{ll cccc}
     \toprule
-    Model & History & Best & NLL/trial & $\alpha_\text{stable}$ & $\alpha_\text{volatile}$ \\
+    Model & History & Best & NLL/trial & Vol.$-$stable & $z$ \\
     \midrule
     Qwen3-VL-8B & Raw & \tbd & \tbd & \tbd & \tbd \\
      & Summary & \tbd & \tbd & \tbd & \tbd \\
@@ -581,25 +589,28 @@ These rule baselines were computed on held-out episodes before any model results
      & Summary & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Computational-model fits (leave-one-episode-out cross-validated negative log-likelihood per trial; best of M0--M4) and calibrated effective learning rates by phase.}
+  \caption{Computational-model fits on held-out episodes: best model by leave-one-episode-out cross-validated soft cross-entropy per trial, and the calibrated volatile-minus-stable difference in effective learning rate with its $z$ score against the constant-rate null.}
   \label{tab:cogfit}
 \end{table}
 
 % FILL: analyze_mechanism.py --validate -> validation[<dataset>][<agent>] (true params, recovered kernel / exp_fit).
-\begin{table}[h]\centering\small
-  \begin{tabular}{l cc}
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l lc cc}
     \toprule
-    Synthetic agent & Strategy $\kappa$ & Kernel decay \\
+    Synthetic agent & Best strategy & $\kappa$ & Copy $w$ & Lag-1 $w$ \\
     \midrule
-    Copy last outcome & \tbd & \tbd \\
-    Delta rule ($\alpha=0.3$) & \tbd & \tbd \\
-    Last-5 counts & \tbd & \tbd \\
-    BOCPD & \tbd & \tbd \\
+    Copy last outcome ($w=3$) & Copy last outcome & 1.00 & 3.00 & 0.00 \\
+    Delta rule ($\alpha=0.3$, $\beta=8$) & BOCPD & 0.94 & 0.00 & 1.20 \\
+    50\% copy, 50\% delta & Copy last outcome & 0.49 & 1.21 & 0.56 \\
+    Last-5 counts & Last 5 & 1.00 & 0.02 & 1.08 \\
+    All-trial counts & All-trial counts & 1.00 & 0.05 & 0.27 \\
+    Label prior ($w=3$) & Label prior & 1.00 & 0.00 & 0.00 \\
     \bottomrule
   \end{tabular}
-  \caption{Recovery of strategies and integration kernels from synthetic agents run on the same episodes.}
+  \caption{Strategy and kernel analyses applied to synthetic agents on the main episodes (development and held-out; no VLM). Best strategy: highest Cohen's $\kappa$; Copy $w$ and Lag-1 $w$: kernel regression weights on repeating the previous outcome and on the advisor correct one trial back. For the delta rule the fitted kernel decays geometrically with ratio 0.700 (true $1-\alpha=0.7$); the last-5 agent has a flat kernel up to lag 5. Strategies are correlated on this schedule, so the delta rule agrees best with BOCPD; the kernel, not the best-matching strategy, identifies it. Results on the robustness set were the same.}
   \label{tab:recovery}
-\end{table}
+\end{table*}
 \subsection{G. Icon Design, Multimodal Binding and Chart Legibility}      % icon selection, image_named/composite/after, composite_read, chart_read
 These analyses use development episodes only and are exploratory, and use the selected icons (v3.1) described below. Every model named every single report image correctly (InternVL3.5-8B: .986 for pet photos), so the remaining costs are not recognition failures (Table~\ref{tab:mm}). With stated reliability, accuracy was lowest when the image followed the advisor's name (.52--.70) and higher when the name was printed on the image (.73--.83) or both reports were shown in one composite image (.75--.84), although each panel of a composite image was read correctly on every item. With correctness-coded histories, image reports lowered main-task accuracy from .608--.642 to .529--.553. Reading a single cell of the correctness chart was below the 0.8 gate for every model (.60--.71).
 
@@ -684,6 +695,12 @@ Reasoning is tested on development episodes only, with each episode's own text c
   \label{tab:reason}
 \end{table*}
 \subsection{I. Psych-101 Protocol and Additional Fits}       % hidden/told, sampled-choice fits, long blocks, position
+\paragraph{Task and data.} In the changing bandit of \citet{xiong2023neural}, participants repeatedly choose between two slot machines whose payoffs stay constant until a change point, which occurs with a hazard rate $h$; payoffs are noise-free, so a normative learner forgets the value of the unchosen machine at rate $\phi = h$. We use the 30 participants in Psych-101 \citep{binz2025foundation} and their three 100-trial games ($h = 0.1, 0.2, 0.4$; 90 games, 9{,}000 trials). Participants were told $h$, and each 100-trial game directly preceded a 1{,}500-trial game with the same $h$, so by their second and third 100-trial games participants had played 1{,}600 and 3{,}200 trials; models see each game on its own.
+
+\paragraph{Replay.} Models are conditioned on each participant's previously executed behavior \citep{binz2025foundation}: before trial $t$ the model sees the original instructions and the participant's choices and payoffs on trials $1,\dots,t-1$, and is asked which machine to press (one letter). The readout is the preference between the two letters from the first-token logits, as in the main task. In the primary condition the hazard rate is removed from the instructions (hidden); in a secondary condition the original instructions state it (told). Model and participant thus share the within-game history but not the hazard information (hidden) or the prior experience (both conditions).
+
+\paragraph{Fits.} We fit the myopic model-free learner of \citet{xiong2023neural}, which updates the chosen machine's value and forgets the unchosen one toward the midpoint at rate $\phi$, with a perseveration term, separately for each hazard rate. Humans give binary choices, so for comparability we draw 20 binary choice sequences from the model's preferences in each game, fit each, and take the median. The primary statistic is each participant's slope of $\phi$ on $h$; the comparison is the paired difference between the model's and the human's slope (Wilcoxon test, participant-bootstrap 95\% CI), reported next to the model told versus human comparison and the model's told minus hidden contrast. The human fits are our re-analysis; \citet{xiong2023neural} report no learning rates by hazard rate. In our re-analysis, the median human $\phi$ rose from .079 ($h=0.1$) to .110 and .255 ($h=0.4$; per-participant slope 0.47 per unit $h$, positive in 73\% of participants, Wilcoxon $p=.008$), adjusting for game position did not remove the increase (0.64 [0.23, 1.05]), and in the following 1{,}500-trial games the increase was weaker (median $\phi$ .076, .114, .131; slope test $p=.029$).
+
 \paragraph{Calibration of the human--model comparison.} We simulated the complete pipeline 200 times per condition. Simulated participants follow each real participant's fitted strategy at each hazard rate and play on the real value sequences; the simulated model follows the same strategy with its forgetting-rate slope shifted by $\delta$ and is replayed on the simulated participant's history; both are then fitted exactly as the real data (20 sampled choice sequences per model episode, median fit, paired Wilcoxon test and bootstrap CI). With $\delta = 0$, the test rejected at $p < .05$ in 6.0\% of replications (Monte Carlo SE 1.7\%) and the 95\% CI covered the true difference in 93.5\%, but the estimated difference was biased upward by about $+0.09$. Power was 0.49 for $\delta = -0.5$ and 0.59 for $\delta = +0.5$, where CI coverage was 0.87 and 0.96. We therefore treat the comparison as supporting and descriptive (main text).
 
 % FILL: psych101/analyze_xiong.py -> per_participant[M].phi by hazard, tests, paired slope difference (model - human), for hidden and told runs.
@@ -695,7 +712,7 @@ Reasoning is tested on development episodes only, with each episode's own text c
     \cmidrule(lr){3-5}\cmidrule(lr){7-8}
     Agent & Hazard info & $h=0.1$ & $h=0.2$ & $h=0.4$ & Slope & Est.\ [95\% CI] & $p$ \\
     \midrule
-    Humans ($n=30$) & told & \tbd & \tbd & \tbd & \tbd & -- & -- \\
+    Humans ($n=30$) & told & .079 & .110 & .255 & 0.47 & -- & -- \\
     \midrule
     Qwen3-VL-8B & hidden & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
      & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
@@ -709,10 +726,10 @@ Reasoning is tested on development episodes only, with each episode's own text c
      & told & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Psych-101 changing bandit \citep{xiong2023neural}. Models are conditioned on each participant's history; $\phi$ is fitted to choices sampled from the model (20 draws, median). Slope: of $\phi$ on hazard rate. The paired test has power of about 0.5 and an upward bias of about $+0.09$ (calibration above), so it is descriptive only.}
+  \caption{Psych-101 changing bandit \citep{xiong2023neural}. Models are conditioned on each participant's history; $\phi$ is fitted to choices sampled from the model (20 draws, median). Slope: median over participants of the per-participant slope of $\phi$ on hazard rate (humans: our re-analysis). The paired test has power of about 0.5 and an upward bias of about $+0.09$ (calibration above), so it is descriptive only.}
   \label{tab:psych}
 \end{table*}
-\paragraph{Image and chart formats.} The changing bandit is also run, with hazard rate hidden, with the last five outcomes shown as pictures of the machine's display, and with the history drawn as one scatter chart. Each format has a perception check (reading the number on one machine picture; which machine was higher at a given trial of the chart), and a format is interpreted only if its check passes. \todo{results for image and chart formats and their perception checks}
+\paragraph{Image and chart formats.} With the hazard rate hidden, the changing bandit is also run with the last five payoffs shown as pictures of the machine's display instead of text (224 px), and with the whole history drawn as one scatter chart of payoff by trial for each machine (448 px). Each has a perception check: reading the number on one machine picture (four options; 450 items), and reading which machine was pressed, or which gave more points, at a given trial of the chart (540 items). We report each format's fits next to its perception check, since a model that cannot read the pictures or the chart cannot be expected to learn from them. \todo{results for image and chart formats and their perception checks}
 
 \subsection{J. Robustness}                                   % IID/irregular episodes; per-cover-story results
 \todo{one paragraph after results}
@@ -905,6 +922,7 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
   \caption{Cross-platform checks (identical prompts matched by hash). Agree: same more probable answer. In the 3090--MI300X check all disagreements are near ties ($0.46 < y < 0.53$ on both platforms; 9 of 320 for Qwen3-VL-8B, 5 of 320 for Qwen3-VL-32B).}
   \label{tab:xcheck}
 \end{table}
-\subsection{L. Pilot Results on Smaller Models}              % 3B/4B, v1 data caveat
+\subsection{L. Pilot Results}              % v1 pilot data, seen before the analysis plan was fixed
+Before the analysis plan was fixed, we ran a pilot on RTX 3090 GPUs with an earlier version of the episodes (16 episodes), whose instructions always introduced the advisors in the same order; this confound was removed in the episodes used here, so the pilot only motivated the design. In Qwen3-VL-32B, the change-point summary exceeded the raw history by $+.191$ [.161, .220] and the all-trial summary by $+.145$; the model given a summary matched the rule alone ($+.001$); under raw histories its choices agreed most with repeating the previous outcome ($\kappa=0.25$) and its integration kernel was nearly flat. With photo reports it followed the advisor listed first (1.00 when advisor A's photo came first, .03 when second), and Qwen3-VL-8B read single cells of the correctness chart on .56 of items. These observations shaped the control conditions, the binding checks and the chart gate; none of the pilot data enter the results.
 
 \end{document}

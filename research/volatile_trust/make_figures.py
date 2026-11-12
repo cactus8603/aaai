@@ -22,7 +22,7 @@ MODELS = [('qwen3vl8b', 'Qwen3-VL-8B', 'o', False), ('internvl8b', 'InternVL3.5-
 FAMILY = {'qwen': '#2f6fd1', 'internvl': '#a3449b', 'gemma': '#e0891f'}
 # history formats: (arm key, label, colour) -- colour follows the format wherever formats are coloured
 FORMATS = [('A|full|text', 'Raw', '#d0443a'), ('A+|full|text', 'Raw + correctness', '#e3a008'),
-           ('B|full|text', 'Correctness-coded', '#1baf7a'), ('C|sum_all|text', 'Summarized', '#2a78d6')]
+           ('B|full|text', 'Correctness only', '#1baf7a'), ('C|sum_all|text', 'Summarized', '#2a78d6')]
 INK, INK2, GRID = '#0b0b0b', '#52514e', '#e4e3df'
 
 plt.rcParams.update({
@@ -104,7 +104,7 @@ def fig_gap(D, controls, out, split_label):
         a.axhline(ra, color=INK2, lw=0.7, ls='--')
         a.text(1.0, ra + 0.004, 'count rule alone', va='bottom', ha='center', color=INK2, fontsize=6.3)
     a.set_xticks(range(len(FORMATS)))
-    a.set_xticklabels(['Raw', 'Raw +\ncorrectness', 'Correctness-\ncoded', 'Summarized'])
+    a.set_xticklabels(['Raw', 'Raw +\ncorrectness', 'Correctness\nonly', 'Summarized'])
     a.set_xlim(-0.5, 3.5)
     a.set_ylim(0.40, 0.72)
     a.set_ylabel('Accuracy (main task)')
@@ -115,16 +115,16 @@ def fig_gap(D, controls, out, split_label):
     grid(a)
     model_legend(a, D, loc='lower right', bbox_to_anchor=(1.0, 0.07), fontsize=6.0)
 
-    conds = [('explicit_rel', 'Stated\n%'), ('explicit_counts', 'Stated\ncounts'), ('single_trial_who', 'Single\ntrial'),
-             ('easy_short_coded', 'Short\ncoded'), ('easy_short', 'Short\nraw'), ('easy_long_coded', 'Long\ncoded'),
+    conds = [('explicit_rel', 'Described\n%'), ('explicit_counts', 'Described\ncounts'), ('single_trial_who', 'Single\ntrial'),
+             ('easy_short_coded', 'Short\ncorr. only'), ('easy_short', 'Short\nraw'), ('easy_long_coded', 'Long\ncorr. only'),
              ('easy_long', 'Long\nraw')]
     for i, (key, d) in enumerate(D.items()):
         vals = [controls.get(key, {}).get((c, 'text')) for c, _ in conds]
         xs = [j + offs[i] for j in range(len(conds))]
         b.plot(xs, [np.nan if v is None else v for v in vals], **mstyle(d))
     b.axvspan(2.5, 6.5, color=GRID, alpha=0.35, lw=0)
-    b.text(0.95, 0.42, 'reliability given', ha='center', fontsize=6.0, color=INK2)
-    b.text(4.5, 0.42, 'reliability experienced', ha='center', fontsize=6.0, color=INK2)
+    b.text(0.95, 0.42, 'accuracy described', ha='center', fontsize=6.0, color=INK2)
+    b.text(4.5, 0.42, 'accuracy experienced', ha='center', fontsize=6.0, color=INK2)
     b.axhline(0.5, color=INK2, lw=0.7, ls=':')
     b.set_xticks(range(len(conds)))
     b.set_xticklabels([l for _, l in conds])
@@ -197,7 +197,7 @@ def fig_kernel_models(D, out, split_label):
             ax.plot(x, c['w'], **{**mstyle(D[key], 4), 'mec': col, 'mfc': col if D[key]['large'] else 'white'})
     ax.axhline(0, color=INK2, lw=0.6)
     ax.set_xticks(range(len(FORMATS)))
-    ax.set_xticklabels(['Raw', 'Raw +\ncorr.', 'Coded', 'Summ.'])
+    ax.set_xticklabels(['Raw', 'Raw +\ncorr.', 'Corr.\nonly', 'Summ.'])
     ax.set_title('Weight on previous outcome', loc='left')
     grid(ax)
     ax.set_ylim(-0.25, 1.15)
@@ -211,10 +211,10 @@ def fig_kernel_models(D, out, split_label):
     plt.close(fig)
 
 
-STRATS = [('copy_prev_truth', 'Copy last\noutcome'), ('follow_prev_correct', 'Follow last\ncorrect'),
-          ('last5', 'Last 5'), ('count_all', 'All-trial\ncounts'), ('bocpd', 'BOCPD'), ('label_prior', 'Label\nprior')]
+STRATS = [('copy_prev_truth', 'Repeat last\noutcome'), ('follow_prev_correct', 'Win-stay/\nlose-shift'),
+          ('last5', 'Last 5'), ('count_all', 'All-trial\ncounts'), ('bocpd', 'BOCPD'), ('label_prior', 'Label\nbias')]
 MASK = [('A+', 'Raw +\ncorr.'), ('out_ok', 'Reports\nmasked'), ('rep_ok', 'Outcome\nmasked'),
-        ('mask_ok', 'Both\nmasked'), ('B', 'Coded')]
+        ('mask_ok', 'Both\nmasked'), ('B', 'Correctness\nonly')]
 
 
 def arm_entry(block, arm):
@@ -350,10 +350,10 @@ def fig_teaser(D, controls, out, split_label, reference=None):
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from scenarios import icon
     rows = [('A|full|text', 'Raw history', FORMATS[0][2], (1, 1, 1)),
-            ('A+|full|text', 'Raw + who was correct', FORMATS[1][2], (1, 1, 1)),
-            ('B|full|text', 'Who was correct', FORMATS[2][2], (0, 1, 1)),
+            ('A+|full|text', 'Raw + correctness', FORMATS[1][2], (1, 1, 1)),
+            ('B|full|text', 'Correctness only', FORMATS[2][2], (0, 1, 1)),
             ('C|sum_all|text', 'Summary of counts', FORMATS[3][2], (0, 0, 1)),
-            ('explicit_rel', 'Stated accuracy', INK2, (0, 0, 1))]
+            ('explicit_rel', 'Described accuracy', INK2, (0, 0, 1))]
     fig = plt.figure(figsize=(7.0, 2.45))
     gs = fig.add_gridspec(1, 3, width_ratios=[0.95, 1.2, 1.1], wspace=0.04)
     # (a) the task
@@ -382,7 +382,7 @@ def fig_teaser(D, controls, out, split_label, reference=None):
     b.set_ylim(n - 0.5, -1.25)
     b.axis('off')
     b.set_title('(b) Steps left to the model', loc='left', fontweight='bold')
-    steps = ['(i) score\nwho was\nright', '(ii) inte-\ngrate', '(iii) use']
+    steps = ['(i) judge\nwho was\nright', '(ii) inte-\ngrate', '(iii) use']
     xs = [0.64, 0.79, 0.94]
     for x, st in zip(xs, steps):
         b.text(x, -0.72, st, ha='center', va='center', fontsize=5.4, color=INK2, linespacing=0.95)
@@ -418,12 +418,12 @@ def fig_teaser(D, controls, out, split_label, reference=None):
         c.axvline(reference, color='#2a78d6', lw=0.9, ls='--')
         c.text(reference + 0.008, -0.95, 'human-like\nlearner', ha='left', fontsize=5.8, color='#2a78d6',
                va='center')
-    c.text(0.56, 0.02, 'below chance: copies\nthe previous outcome', fontsize=5.8, color=INK, va='center')
+    c.text(0.56, 0.02, 'below chance: repeats\nthe previous outcome', fontsize=5.8, color=INK, va='center')
     c.set_yticks([])
     c.set_xticks([0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
     c.set_xticklabels(['.4', '.5', '.6', '.7', '.8', '.9', '1'])
     c.spines['left'].set_visible(False)
-    c.set_xlabel('accuracy (dot: mean, ticks: models; stated: control items)', fontsize=5.8)
+    c.set_xlabel('accuracy (dot: mean, ticks: models; described: control items)', fontsize=5.8)
     grid(c, 'x')
     fig.savefig(out / 'fig_teaser.pdf', bbox_inches='tight')
     plt.close(fig)
@@ -480,9 +480,9 @@ def fig_task(out):
     c.set_title('(c) History formats', loc='left')
     rows = [('Raw', 'Joe: rain; Tim: dry; actual: rain', 'iii', '#d0443a'),
             ('Raw+correctness', '...rain (Joe correct; Tim wrong)', 'iii', '#e3a008'),
-            ('Correctness-coded', 'Joe correct; Tim wrong', ' ii', '#1baf7a'),
+            ('Correctness only', 'Joe correct; Tim wrong', ' ii', '#1baf7a'),
             ('Summarized', '5 days: Joe correct 4, Tim 1', '  i', '#2a78d6'),
-            ('Stated reliability', 'Joe correct on 80% of days', '  i', INK2)]
+            ('Described accuracy', 'Joe correct on 80% of days', '  i', INK2)]
     hdr_y = 0.95
     for x, h in ((0.0, 'Format'), (0.355, 'Example (abbreviated)'), (0.865, '(i)'), (0.93, '(ii)'), (0.995, '(iii)')):
         c.text(x, hdr_y, h, fontsize=6.5, color=INK2, va='top', ha='left' if x < 0.8 else 'center')

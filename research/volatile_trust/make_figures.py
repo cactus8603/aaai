@@ -332,8 +332,101 @@ def main():
     mk = Path(a.masking)
     fig_mech(D, json.loads(mk.read_text()) if mk.exists() else {}, out, a.split_label, a.masking_label)
     fig_task(out)
+    ref = Path(__file__).resolve().parent / 'analysis/behrens_reference.json'
+    refacc = None
+    if ref.exists():
+        r = json.loads(ref.read_text())
+        refacc = r.get('held_out' if a.split_label.startswith('held') else 'development', {}).get('acc')
+    fig_teaser(D, C, out, a.split_label, refacc)
     print('wrote', sorted(p.name for p in out.glob('fig_*.pdf')))
 
+
+
+def fig_teaser(D, controls, out, split_label, reference=None):
+    """Fig. 1 (teaser): (a) the task; (b) which processing steps each history format leaves to the model;
+    (c) main-task accuracy for that format, aligned row by row with (b)."""
+    import sys
+    from matplotlib.patches import FancyBboxPatch, Circle
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from scenarios import icon
+    rows = [('A|full|text', 'Raw history', FORMATS[0][2], (1, 1, 1)),
+            ('A+|full|text', 'Raw + who was correct', FORMATS[1][2], (1, 1, 1)),
+            ('B|full|text', 'Who was correct', FORMATS[2][2], (0, 1, 1)),
+            ('C|sum_all|text', 'Summary of counts', FORMATS[3][2], (0, 0, 1)),
+            ('explicit_rel', 'Stated accuracy', INK2, (0, 0, 1))]
+    fig = plt.figure(figsize=(7.0, 2.45))
+    gs = fig.add_gridspec(1, 3, width_ratios=[0.95, 1.2, 1.1], wspace=0.04)
+    # (a) the task
+    a = fig.add_subplot(gs[0])
+    a.set_xlim(0, 1)
+    a.set_ylim(0, 1)
+    a.axis('off')
+    a.set_title('(a) Whom to trust?', loc='left', fontweight='bold')
+    for x, name, lab in ((0.16, 'Ken', 'rain'), (0.58, 'Sam', 'dry')):
+        a.add_patch(Circle((x, 0.62), 0.07, color='#cfd8e6', lw=0))
+        a.text(x, 0.62, name, ha='center', va='center', fontsize=6.8)
+        a.add_patch(FancyBboxPatch((x + 0.06, 0.74), 0.17, 0.13, boxstyle='round,pad=0.01', fc='white', ec=INK2, lw=0.6))
+        ia = a.inset_axes([x + 0.075, 0.745, 0.14, 0.12])
+        ia.imshow(np.asarray(icon('weather', lab, 112)))
+        ia.axis('off')
+    a.add_patch(FancyBboxPatch((0.2, 0.25), 0.5, 0.17, boxstyle='round,pad=0.015', fc='#f2f1ee', ec=INK2, lw=0.6))
+    a.text(0.45, 0.335, 'frozen VLM: follow whom?', ha='center', va='center', fontsize=6.6)
+    a.annotate('', xy=(0.36, 0.43), xytext=(0.2, 0.54), arrowprops=dict(arrowstyle='->', color=INK2, lw=0.6))
+    a.annotate('', xy=(0.54, 0.43), xytext=(0.6, 0.54), arrowprops=dict(arrowstyle='->', color=INK2, lw=0.6))
+    a.text(0.45, 0.13, 'outcome revealed, added to the history;\n80 trials, advisor accuracy stable or volatile',
+           ha='center', va='center', fontsize=5.9, color=INK2)
+    # (b) steps left to the model
+    b = fig.add_subplot(gs[1])
+    n = len(rows)
+    b.set_xlim(-0.05, 1.0)
+    b.set_ylim(n - 0.5, -1.25)
+    b.axis('off')
+    b.set_title('(b) Steps left to the model', loc='left', fontweight='bold')
+    steps = ['(i) score\nwho was\nright', '(ii) inte-\ngrate', '(iii) use']
+    xs = [0.64, 0.79, 0.94]
+    for x, st in zip(xs, steps):
+        b.text(x, -0.72, st, ha='center', va='center', fontsize=5.4, color=INK2, linespacing=0.95)
+    for r, (_, lab, col, on) in enumerate(rows):
+        b.text(-0.02, r, lab, ha='left', va='center', fontsize=6.5)
+        for x, v in zip(xs, on):
+            b.add_patch(FancyBboxPatch((x - 0.06, r - 0.3), 0.12, 0.6, boxstyle='round,pad=0.005',
+                                       fc=col if v else 'white', ec=col if v else GRID, lw=0.7, alpha=0.9 if v else 1))
+    # (c) accuracy aligned with the rows
+    c = fig.add_subplot(gs[2])
+    c.set_ylim(n - 0.5, -1.25)
+    c.set_xlim(0.38, 1.02)
+    c.set_title(f'(c) Accuracy ({split_label})', loc='left', fontweight='bold')
+    for r, (arm, lab, col, _) in enumerate(rows):
+        if arm == 'explicit_rel':
+            vals = [controls.get(k, {}).get(('explicit_rel', 'text')) for k in D]
+        else:
+            vals = [(cell(d['main'], arm) or {}).get('acc') for d in D.values()]
+        vals = [v for v in vals if v is not None]
+        if not vals:
+            continue
+        m = float(np.mean(vals))
+        stated = arm == 'explicit_rel'
+        c.plot([0.5, m], [r, r], color=col, lw=2.2, solid_capstyle='butt', alpha=0.9)
+        for d, v in zip(D.values(), vals):
+            c.plot(v, r, marker='|', ms=6, color=col, mew=0.9, ls='none')
+        c.plot(m, r, marker='o', ms=6.5, color=col if not stated else 'white', mec=col, mew=1.3, ls='none')
+        c.text(m + (0.025 if m >= 0.5 else -0.025), r - 0.33, f'{m:.2f}'.lstrip('0'), va='center',
+               ha='left' if m >= 0.5 else 'right', fontsize=6.3)
+    c.axvline(0.5, color=INK2, lw=0.7, ls=':')
+    c.text(0.5, -0.95, 'chance', ha='center', fontsize=5.8, color=INK2)
+    if reference is not None:
+        c.axvline(reference, color='#2a78d6', lw=0.9, ls='--')
+        c.text(reference + 0.008, -0.95, 'human-like\nlearner', ha='left', fontsize=5.8, color='#2a78d6',
+               va='center')
+    c.text(0.56, 0.02, 'below chance: copies\nthe previous outcome', fontsize=5.8, color=INK, va='center')
+    c.set_yticks([])
+    c.set_xticks([0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+    c.set_xticklabels(['.4', '.5', '.6', '.7', '.8', '.9', '1'])
+    c.spines['left'].set_visible(False)
+    c.set_xlabel('accuracy (dot: mean, ticks: models; stated: control items)', fontsize=5.8)
+    grid(c, 'x')
+    fig.savefig(out / 'fig_teaser.pdf', bbox_inches='tight')
+    plt.close(fig)
 
 
 def fig_task(out):

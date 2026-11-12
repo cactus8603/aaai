@@ -6,7 +6,7 @@ priority order across models no matter how many GPUs the lab has free. Differenc
 - the list is re-read before every pick (edits to jobs_h200.jsonl apply to the next pick);
 - a job is claimed with an exclusive create of <output>/_LOCK holding the Slurm job id; a lock whose Slurm job is no
   longer running is stale and is taken over (runners resume, so a killed job just continues);
-- jobs whose model weights are not downloaded yet are skipped (download them and the next pick will see them);
+- jobs whose model weights are not fully downloaded yet are skipped (download them and the next pick will see them);
 - the GPU is the one Slurm assigned (CUDA_VISIBLE_DEVICES is inherited, not overwritten).
 The runner command is identical to run_jobs.py.
 """
@@ -30,6 +30,18 @@ def running_slurm_jobs():
         return set(out.split())
     except Exception:
         return None
+
+
+def weights_ready(mdir):
+    """All shards named in the safetensors index exist and no download is in progress."""
+    if not (mdir / 'config.json').exists():
+        return False
+    if any((mdir / '.cache').rglob('*.incomplete')):
+        return False
+    idx = mdir / 'model.safetensors.index.json'
+    if idx.exists():
+        return all((mdir / f).exists() for f in set(json.loads(idx.read_text())['weight_map'].values()))
+    return (mdir / 'model.safetensors').exists()
 
 
 def complete(j):
@@ -76,7 +88,7 @@ def main():
         for j in jobs:
             m = reg[j['model']]
             mdir = a.model_root / m['id'].split('/')[1] / m['revision']
-            if complete(j) or fails.get(j['id'], 0) >= 2 or not (mdir / 'config.json').exists():
+            if complete(j) or fails.get(j['id'], 0) >= 2 or not weights_ready(mdir):
                 continue
             if claim(j, alive):
                 picked = (j, mdir)

@@ -14,11 +14,14 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
-MODELS = [('qwen3vl8b', 'Qwen3-VL-8B', 'o'), ('internvl8b', 'InternVL3.5-8B', 's'),
-          ('gemma3_27b', 'Gemma-3-27B', 'D'), ('qwen3vl32b', 'Qwen3-VL-32B', '^'),
-          ('internvl38b', 'InternVL3.5-38B', 'v'), ('qwen25vl72b', 'Qwen2.5-VL-72B', 'P')]
-# history formats: (arm key, label, colour) -- colour follows the format in every figure
-FORMATS = [('A|full|text', 'Raw', '#eb6834'), ('A+|full|text', 'Raw + correctness', '#eda100'),
+# models: (key, name, marker, large). Marker shape = family; filled = 27B and above, hollow = 8B.
+MODELS = [('qwen3vl8b', 'Qwen3-VL-8B', 'o', False), ('internvl8b', 'InternVL3.5-8B', 's', False),
+          ('gemma3_27b', 'Gemma-3-27B', 'D', True), ('qwen3vl32b', 'Qwen3-VL-32B', 'o', True),
+          ('internvl38b', 'InternVL3.5-38B', 's', True)]
+# family colours (Fig. 2 only; validated with the dataviz checks, all pairs, light surface)
+FAMILY = {'qwen': '#2f6fd1', 'internvl': '#a3449b', 'gemma': '#e0891f'}
+# history formats: (arm key, label, colour) -- colour follows the format wherever formats are coloured
+FORMATS = [('A|full|text', 'Raw', '#d0443a'), ('A+|full|text', 'Raw + correctness', '#e3a008'),
            ('B|full|text', 'Correctness-coded', '#1baf7a'), ('C|sum_all|text', 'Summarized', '#2a78d6')]
 INK, INK2, GRID = '#0b0b0b', '#52514e', '#e4e3df'
 
@@ -41,10 +44,11 @@ def cell(main, arm, slot='all'):
 
 def load(ad):
     out = {}
-    for key, name, mk in MODELS:
+    for key, name, mk, large in MODELS:
         p = ad / f'main_{key}.json'
         if p.exists():
-            out[key] = dict(name=name, marker=mk, main=json.loads(p.read_text()),
+            fam = next(f for f in FAMILY if key.startswith(f))
+            out[key] = dict(name=name, marker=mk, large=large, color=FAMILY[fam], main=json.loads(p.read_text()),
                             mech=json.loads((ad / f'mech_{key}.json').read_text())
                             if (ad / f'mech_{key}.json').exists() else None)
     return out
@@ -62,47 +66,66 @@ def grid(ax, axis='y'):
     ax.set_axisbelow(True)
 
 
+def mstyle(d, ms=4.5):
+    """Marker style: shape = family, colour = family, filled = 27B and above, hollow = 8B."""
+    return dict(marker=d['marker'], ms=ms, mec=d['color'], mew=0.9,
+                mfc=d['color'] if d['large'] else 'white', ls='none')
+
+
+def model_legend(ax, D, **kw):
+    for d in D.values():
+        ax.plot([], [], color=d['color'], lw=0.8, label=d['name'], **{k: v for k, v in mstyle(d, 4).items()
+                                                                      if k != 'ls'})
+    ax.legend(handletextpad=0.3, borderaxespad=0.1, **kw)
+
+
 def fig_gap(D, controls, out, split_label):
-    fig, (a, b) = plt.subplots(1, 2, figsize=(7.0, 2.3), gridspec_kw=dict(width_ratios=[1, 1.35], wspace=0.28))
+    """Fig. 2: (a) main-task accuracy by history format, formats ordered by the steps they remove; one thin line per
+    model; (b) control conditions (development), text reports."""
+    fig, (a, b) = plt.subplots(1, 2, figsize=(7.0, 2.35), gridspec_kw=dict(width_ratios=[1, 1.3], wspace=0.25))
     n = len(D)
-    offs = np.linspace(-0.18, 0.18, n) if n > 1 else [0]
+    offs = np.linspace(-0.12, 0.12, n) if n > 1 else [0]
     for i, (key, d) in enumerate(D.items()):
+        xs, ys = [], []
         for j, (arm, lab, col) in enumerate(FORMATS):
             c = cell(d['main'], arm)
             if c is None:
                 continue
-            lo, hi = c['acc_ci95']
-            a.plot([j + offs[i]] * 2, [lo, hi], color=col, lw=1.0)
-            a.plot(j + offs[i], c['acc'], marker=d['marker'], color=col, ms=4.5, mec='white', mew=0.6, ls='none')
+            x = j + offs[i]
+            a.plot([x, x], c['acc_ci95'], color=d['color'], lw=0.8, alpha=0.8)
+            xs.append(x)
+            ys.append(c['acc'])
+        a.plot(xs, ys, color=d['color'], lw=0.7, alpha=0.7)
+        a.plot(xs, ys, **mstyle(d))
     ra = rule_alone(next(iter(D.values()))['main']).get('count_all')
     a.axhline(0.5, color=INK2, lw=0.7, ls=':')
-    a.text(3.45, 0.503, 'chance', va='bottom', ha='right', color=INK2, fontsize=6.3)
+    a.text(1.0, 0.503, 'chance', va='bottom', ha='center', color=INK2, fontsize=6.3)
     if ra is not None:
         a.axhline(ra, color=INK2, lw=0.7, ls='--')
-        a.text(1.0, ra + 0.004, 'summary rule alone', va='bottom', ha='center', color=INK2, fontsize=6.3)
+        a.text(1.0, ra + 0.004, 'count rule alone', va='bottom', ha='center', color=INK2, fontsize=6.3)
     a.set_xticks(range(len(FORMATS)))
     a.set_xticklabels(['Raw', 'Raw +\ncorrectness', 'Correctness-\ncoded', 'Summarized'])
     a.set_xlim(-0.5, 3.5)
     a.set_ylim(0.40, 0.72)
     a.set_ylabel('Accuracy (main task)')
     a.set_title(f'(a) Main task by history format ({split_label})', loc='left')
+    a.annotate('', xy=(3.45, 0.415), xytext=(-0.45, 0.415),
+               arrowprops=dict(arrowstyle='->', color=INK2, lw=0.6))
+    a.text(1.5, 0.419, 'fewer steps left to the model', ha='center', va='bottom', fontsize=6.0, color=INK2)
     grid(a)
-    for key, d in D.items():
-        a.plot([], [], marker=d['marker'], color=INK2, ls='none', ms=4, label=d['name'])
-    a.legend(loc='lower right', handletextpad=0.2, borderaxespad=0.1)
+    model_legend(a, D, loc='lower right', bbox_to_anchor=(1.0, 0.07), fontsize=6.0)
 
-    # (b) control conditions, text reports
     conds = [('explicit_rel', 'Stated\n%'), ('explicit_counts', 'Stated\ncounts'), ('single_trial_who', 'Single\ntrial'),
              ('easy_short_coded', 'Short\ncoded'), ('easy_short', 'Short\nraw'), ('easy_long_coded', 'Long\ncoded'),
              ('easy_long', 'Long\nraw')]
     for i, (key, d) in enumerate(D.items()):
         vals = [controls.get(key, {}).get((c, 'text')) for c, _ in conds]
         xs = [j + offs[i] for j in range(len(conds))]
-        b.plot(xs, [np.nan if v is None else v for v in vals], marker=d['marker'], color=INK, ms=4,
-               mec='white', mew=0.6, ls='none')
+        b.plot(xs, [np.nan if v is None else v for v in vals], **mstyle(d))
+    b.axvspan(2.5, 6.5, color=GRID, alpha=0.35, lw=0)
+    b.text(0.95, 0.42, 'reliability given', ha='center', fontsize=6.0, color=INK2)
+    b.text(4.5, 0.42, 'reliability experienced', ha='center', fontsize=6.0, color=INK2)
     b.axhline(0.5, color=INK2, lw=0.7, ls=':')
-    b.axhline(0.8, color=INK2, lw=0.7, ls='--')
-    b.text(5.0, 0.805, 'prespecified gate', va='bottom', ha='center', color=INK2, fontsize=6.3)
     b.set_xticks(range(len(conds)))
     b.set_xticklabels([l for _, l in conds])
     b.set_xlim(-0.5, len(conds) - 0.5)
@@ -138,7 +161,8 @@ def fig_curves(D, out, split_label):
     plt.close(fig)
 
 
-def fig_kernel(D, out, split_label):
+def fig_kernel_models(D, out, split_label):
+    """Appendix: integration kernels per model and the weight on the previous outcome."""
     keys = [k for k in D if D[k]['mech']]
     fig, axes = plt.subplots(1, len(keys) + 1, figsize=(7.0, 2.0),
                              gridspec_kw=dict(width_ratios=[1] * len(keys) + [1.15], wspace=0.3))
@@ -170,7 +194,7 @@ def fig_kernel(D, out, split_label):
             c = kv['coef']['copy_prev_truth']
             x = j + (i - (len(keys) - 1) / 2) * 0.18
             ax.plot([x, x], c['ci95'], color=col, lw=1.0)
-            ax.plot(x, c['w'], marker=D[key]['marker'], color=col, ms=4, mec='white', mew=0.6, ls='none')
+            ax.plot(x, c['w'], **{**mstyle(D[key], 4), 'mec': col, 'mfc': col if D[key]['large'] else 'white'})
     ax.axhline(0, color=INK2, lw=0.6)
     ax.set_xticks(range(len(FORMATS)))
     ax.set_xticklabels(['Raw', 'Raw +\ncorr.', 'Coded', 'Summ.'])
@@ -179,10 +203,94 @@ def fig_kernel(D, out, split_label):
     ax.set_ylim(-0.25, 1.15)
     h, l = axes[0].get_legend_handles_labels()
     for key in keys:
-        h.append(plt.Line2D([], [], marker=D[key]['marker'], color=INK2, ls='none', ms=4))
+        h.append(plt.Line2D([], [], marker=D[key]['marker'], color=INK2, mfc=INK2 if D[key]['large'] else 'white', ls='none', ms=4))
         l.append(D[key]['name'])
     fig.legend(h, l, loc='lower center', ncol=len(l), bbox_to_anchor=(0.5, -0.2), handlelength=1.5,
                columnspacing=1.2)
+    fig.savefig(out / 'fig_kernel_models.pdf', bbox_inches='tight')
+    plt.close(fig)
+
+
+STRATS = [('copy_prev_truth', 'Copy last\noutcome'), ('follow_prev_correct', 'Follow last\ncorrect'),
+          ('last5', 'Last 5'), ('count_all', 'All-trial\ncounts'), ('bocpd', 'BOCPD'), ('label_prior', 'Label\nprior')]
+MASK = [('A+', 'Raw +\ncorr.'), ('out_ok', 'Reports\nmasked'), ('rep_ok', 'Outcome\nmasked'),
+        ('mask_ok', 'Both\nmasked'), ('B', 'Coded')]
+
+
+def arm_entry(block, arm):
+    return next((v for k, v in block.items() if k.split('/')[-1] == arm), None)
+
+
+def fig_mech(D, masking, out, split_label, mask_label):
+    """Fig. 3: (a) integration kernel per history format, mean over models (band: range over models);
+    (b) agreement (kappa) with simple strategies under the raw history; (c) masking the raw history with
+    correctness: accuracy per model."""
+    keys = [k for k in D if D[k]['mech']]
+    fig = plt.figure(figsize=(7.0, 2.25))
+    gs = fig.add_gridspec(1, 3, width_ratios=[1.0, 1.15, 0.95], wspace=0.5)
+    a = fig.add_subplot(gs[0])
+    for arm, lab, col in FORMATS:
+        ks = [arm_entry(D[k]['mech']['kernels'], arm) for k in keys]
+        ks = [np.array(k['kernel'][:10]) for k in ks if k]
+        if not ks:
+            continue
+        K = np.vstack(ks)
+        x = np.arange(1, K.shape[1] + 1)
+        for row in K:
+            a.plot(x, row, color=col, lw=0.5, alpha=0.35)
+        a.plot(x, K.mean(0), color=col, lw=1.6, label=lab)
+    a.axhline(0, color=INK2, lw=0.6)
+    a.set_xlabel('Trials in the past')
+    a.set_ylabel('Regression weight (log-odds)')
+    a.set_title('(a) Integration kernel', loc='left')
+    a.set_xticks([1, 5, 10])
+    grid(a)
+    a.legend(loc='upper right', fontsize=6.0, handlelength=1.2)
+
+    b = fig.add_subplot(gs[1])
+    M = np.full((len(keys), len(STRATS)), np.nan)
+    for i, k in enumerate(keys):
+        h = arm_entry(D[k]['mech']['heuristics'], FORMATS[0][0])
+        if h:
+            for j, (st, _) in enumerate(STRATS):
+                M[i, j] = h['all']['strategies'][st]['kappa']
+    lim = max(0.4, np.nanmax(np.abs(M)))
+    b.imshow(M, cmap='PuOr_r', vmin=-lim, vmax=lim, aspect='auto')
+    for i in range(M.shape[0]):
+        for j in range(M.shape[1]):
+            if np.isfinite(M[i, j]):
+                b.text(j, i, f'{M[i, j]:.2f}'.replace('0.', '.').replace('-.', '\u2212.'), ha='center',
+                       va='center', fontsize=5.8, color=INK)
+    b.set_xticks(range(len(STRATS)))
+    b.set_xticklabels([l.replace('\n', ' ') for _, l in STRATS], fontsize=5.8, rotation=40, ha='right',
+                      rotation_mode='anchor')
+    b.set_yticks(range(len(keys)))
+    b.set_yticklabels([D[k]['name'] for k in keys], fontsize=6.0)
+    b.tick_params(length=0)
+    for sp in b.spines.values():
+        sp.set_visible(False)
+    b.set_title("(b) Agreement with strategies, raw history ($\\kappa$)", loc='left')
+
+    c = fig.add_subplot(gs[2])
+    name2d = {d['name']: d for d in D.values()}
+    for i, (name, r) in enumerate(masking.items()):
+        d = name2d.get(name)
+        if d is None:
+            continue
+        ys = [r['acc'].get(k, np.nan) for k, _ in MASK]
+        xs = np.arange(len(MASK)) + (i - (len(masking) - 1) / 2) * 0.1
+        c.plot(xs, ys, color=d['color'], lw=0.7, alpha=0.7)
+        c.plot(xs, ys, **mstyle(d))
+    c.axhline(0.5, color=INK2, lw=0.7, ls=':')
+    c.set_xticks(range(len(MASK)))
+    c.set_xticklabels([l.replace('\n', ' ') for _, l in MASK], fontsize=5.8, rotation=40, ha='right',
+                      rotation_mode='anchor')
+    c.set_xlim(-0.5, len(MASK) - 0.5)
+    c.set_ylim(0.45, 0.68)
+    c.set_ylabel('Accuracy (main task)')
+    c.set_title(f'(c) Masking the raw history ({mask_label})', loc='left')
+    grid(c)
+    model_legend(c, {k: d for k, d in D.items() if d['name'] in masking}, loc='lower right', fontsize=5.8)
     fig.savefig(out / 'fig_kernel.pdf', bbox_inches='tight')
     plt.close(fig)
 
@@ -211,6 +319,8 @@ def main():
     ap.add_argument('--analysis-dir', default='analysis/dev3')
     ap.add_argument('--out', default=str(Path(__file__).resolve().parents[2] / 'paper' / 'figures'))
     ap.add_argument('--split-label', default='development')
+    ap.add_argument('--masking', default='analysis/masking/masking.json', help='analyze_masking.py output')
+    ap.add_argument('--masking-label', default='development, 8B')
     a = ap.parse_args()
     ad, out = Path(a.analysis_dir), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -218,7 +328,9 @@ def main():
     C = load_controls(ad)
     fig_gap(D, C, out, a.split_label)
     fig_curves(D, out, a.split_label)
-    fig_kernel(D, out, a.split_label)
+    fig_kernel_models(D, out, a.split_label)
+    mk = Path(a.masking)
+    fig_mech(D, json.loads(mk.read_text()) if mk.exists() else {}, out, a.split_label, a.masking_label)
     fig_task(out)
     print('wrote', sorted(p.name for p in out.glob('fig_*.pdf')))
 
@@ -251,13 +363,20 @@ def fig_task(out):
     t = np.arange(1, 81)
     p = np.where(t <= 40, 0.8, np.where(((t - 41) // 10) % 2 == 0, 0.2, 0.8))
     b.axvspan(40.5, 80.5, color=GRID, alpha=0.6, lw=0)
-    b.step(t, p, where='mid', color='#2a78d6')
-    b.text(20, 0.9, 'stable', ha='center', fontsize=6.8, color=INK2)
-    b.text(60, 0.9, 'volatile', ha='center', fontsize=6.8, color=INK2)
-    b.set_ylim(0, 1)
+    b.step(t, p, where='mid', color=INK2, ls='--', lw=0.9, label='scheduled')
+    # what the summary rules see on one stable-first development episode: share of past trials A was correct
+    eps = [json.loads(x) for x in open(Path(__file__).resolve().parent / 'episodes_v3/episodes.jsonl')]
+    ep = next(e for e in eps if e['split'] == 'development' and e['trials'][0]['phase'] == 'stable')
+    o = np.array([tr['a_correct'] for tr in ep['trials']], float)
+    cum = np.array([o[:k].mean() if k else np.nan for k in range(80)])
+    b.plot(t, cum, color='#2a78d6', lw=1.2, label='share correct so far\n(what the summary shows)')
+    b.legend(loc='lower left', fontsize=5.6, handlelength=1.4, borderaxespad=0.2)
+    b.text(20, 1.02, 'stable', ha='center', fontsize=6.8, color=INK2)
+    b.text(60, 1.02, 'volatile', ha='center', fontsize=6.8, color=INK2)
+    b.set_ylim(0, 1.1)
     b.set_xlim(0.5, 80.5)
     b.set_xlabel('Trial')
-    b.set_ylabel('P(advisor A correct)')
+    b.set_ylabel('Advisor A accuracy')
     b.set_title('(b) Schedule (stable-first)', loc='left')
     grid(b)
     # (c) formats
@@ -266,8 +385,8 @@ def fig_task(out):
     c.set_xlim(0, 1)
     c.set_ylim(0, 1)
     c.set_title('(c) History formats', loc='left')
-    rows = [('Raw', 'Joe: rain; Tim: dry; actual: rain', 'iii', '#eb6834'),
-            ('Raw+correctness', '...rain (Joe correct; Tim wrong)', 'iii', '#eda100'),
+    rows = [('Raw', 'Joe: rain; Tim: dry; actual: rain', 'iii', '#d0443a'),
+            ('Raw+correctness', '...rain (Joe correct; Tim wrong)', 'iii', '#e3a008'),
             ('Correctness-coded', 'Joe correct; Tim wrong', ' ii', '#1baf7a'),
             ('Summarized', '5 days: Joe correct 4, Tim 1', '  i', '#2a78d6'),
             ('Stated reliability', 'Joe correct on 80% of days', '  i', INK2)]

@@ -97,6 +97,13 @@
 % \end{links}
 
 \section{Introduction}
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_task.pdf}
+  \caption{Task and history formats. (a) One trial in the weather cover story. (b) Scheduled accuracy of advisor A in a stable-first episode (dashed) and the share of past trials on which A was correct, which the all-trial summary reports (solid): it tracks the stable phase but lags behind every reversal. (c) History formats and the processing steps each leaves to the model: (i) outcome evaluation, (ii) integration across trials, (iii) use.}
+  \label{fig:task}
+\end{figure*}
+
 % ~0.9 page. P1: learning whom to trust from feedback; humans track advisor accuracy and its volatility
 %   (Behrens 2007, 2008; Yaniv). P2: LLM/VLM agents increasingly combine conflicting sources; whether
 %   they learn source reliability in-context is untested beyond static or single-flip settings (ECL; Learn2Discern).
@@ -148,41 +155,21 @@ Further summaries apply other integration rules outside the model: counts over t
 
 \paragraph{Control conditions.} On development episodes we run control conditions in which the answer is given more directly, to establish that each model can use reliability information. The most important is the stated-reliability condition, in which reliability is described in words (``Ken was correct on 80\% of past days; Sam was correct on 20\% of past days.''); its contrast with the raw history is our measure of the description--history (DH) gap. Further controls state counts over the last 10 trials, give short (10-trial) or long (80-trial) histories in which advisor A is correct on every recent trial, in raw and correctness-coded versions, ask which advisor was correct on a single raw trial (step (i) alone), and ask which label a single report image shows (a perception check). Each control crosses all seven cover stories, text and image reports, and four query trials ($t \in \{20,40,60,80\}$).
 
-\paragraph{Models and readout.} We test frozen open-weight VLMs from two language-model families, Qwen and Gemma (Table~\ref{tab:models}). InternVL3.5 uses a Qwen3 language model, so it adds a second vision pipeline but not a third family. Models run in bfloat16 with a float32 output projection. We read the logits of the first generated token for the two answer words, before any logit processing, and normalize them with a softmax over these two tokens to obtain $y_t$, the conditional preference between the two answer options (normalized over the two candidate tokens) for advisor A's current report. Because the normalization ignores all other tokens, $y_t$ is neither the model's free-generation choice probability nor a belief. For every model, format and condition we therefore report the probability mass on the two candidate tokens (mean, minimum and share of trials below 0.5) and the format-following rate, the share of trials on which the greedy output is one of the two answer words (Appendix~K). Decoding is greedy, and reasoning (``thinking'') is switched off wherever the chat template offers it. On text-report trials with raw history we also ask a judgment question (``which forecaster is currently more likely to be correct?''). Reasoning is tested with one reasoning checkpoint on a subset of items (Appendix~H).
+\paragraph{Models and readout.} We test five frozen, instruction-tuned open-weight VLMs from two language-model families: Qwen3-VL 8B and 32B \citep{bai2025qwen3vl}, InternVL3.5 8B and 38B \citep{wang2025internvl35} and Gemma-3-27B \citep{gemmateam2025gemma3} (Table~\ref{tab:main}; details in Appendix~K). InternVL3.5 uses a Qwen3 language model, so it adds a second vision pipeline but not a third family. Models run in bfloat16 with a float32 output projection. We read the logits of the first generated token for the two answer words, before any logit processing, and normalize them with a softmax over these two tokens to obtain $y_t$, the conditional preference between the two answer options (normalized over the two candidate tokens) for advisor A's current report. Because the normalization ignores all other tokens, $y_t$ is neither the model's free-generation choice probability nor a belief. For every model, format and condition we therefore report the probability mass on the two candidate tokens (mean, minimum and share of trials below 0.5) and the format-following rate, the share of trials on which the greedy output is one of the two answer words (Appendix~K). Decoding is greedy, and reasoning (``thinking'') is switched off wherever the chat template offers it. On text-report trials with raw history we also ask a judgment question (``which forecaster is currently more likely to be correct?''). Reasoning is tested with one reasoning checkpoint on a subset of items (Appendix~H).
 
 \paragraph{Measures.} Within each pair of an episode and its counterbalanced copy we average the label-aligned logit differences, which cancels additive name and label preferences. Accuracy is the expected proportion of trials ($t \ge 2$) on which the followed advisor was correct; it is 0.5 at chance and about 0.8 for an observer who knows the current accuracy. We also report the probability of following the currently more accurate advisor by phase, the log score of the outcome, and learning curves aligned to reversals. To describe behavior, we fit an integration kernel \citep[cf.][]{xue2026counting}: a logistic regression of the preference $y_t$ on which advisor was correct at lags $k=1,\dots,15$, plus a positive-recency regressor (choose the advisor whose current report matches the previous outcome), a label prior and a listing-order term. We also compute strategy agreement (Cohen's $\kappa$) between model choices and simple strategies, including positive recency, following the advisor correct on the previous trial (the CPT regressor of \citealt{behrens2008associative}), counts over all or recent trials, and BOCPD. These analyses describe behavior that is consistent with a strategy; they do not identify a mechanism.
 
 \paragraph{Analysis.} The unit of analysis is the episode pair; all measures are averaged within episode first. The primary test, fixed before held-out evaluation (timestamped commit; not a formal preregistration), is the raw--summarized history gap: accuracy with the summarized history minus accuracy with the raw history, for text reports, per core model, tested with a two-sided Wilcoxon signed-rank test with Holm correction across core models; the decision criterion is a gap significantly above zero in both language-model families. We report the paired gap, the absolute accuracy under both formats, and the models and conditions in which the gap holds; accuracy with raw history is called near chance only if it lies within $0.5 \pm 0.03$. Secondary tests are two one-sided tests \citep[TOST;][]{lakens2017equivalence} of whether a VLM given a summary matches the accuracy of the summary rule alone, with equivalence bounds of $\pm 2$ percentage points as the smallest effect size of interest; the position of the correctness-coded history between raw and summarized history, $(\mathrm{acc}_\text{coded}-\mathrm{acc}_\text{raw})/(\mathrm{acc}_\text{summary}-\mathrm{acc}_\text{raw})$, interpreted only when the summary--raw gap exceeds 0.05 and its CI excludes zero (the ratio need not lie in $[0,1]$); and the primary test repeated on episodes with independent outcomes and irregular reversals. We report 95\% bootstrap CIs over episode pairs (10{,}000 resamples), treat cover story as a random factor (per-story estimates and a sign test across the six text cover stories, whose smallest attainable two-sided $p$ is .031), and use development episodes only for setting choices such as the window length $K$. Held-out episodes are run once.
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{figures/fig_task.pdf}
-  \caption{Task and history formats. (a) One trial in the weather cover story. (b) Schedule of advisor A's accuracy in a stable-first episode. (c) History formats and the processing steps each leaves to the model: (i) outcome evaluation, (ii) integration across trials, (iii) use.}
-  \label{fig:task}
-\end{figure*}
-
-\begin{table}[t]
-  \centering
-  \small
-  \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{llrl}
-    \toprule
-    Model & LM family & Params & Image input \\
-    \midrule
-    Qwen3-VL-8B & Qwen3 & 8B & 224 px \\
-    InternVL3.5-8B & Qwen3 & 8B & 448 px \\
-    Gemma-3-27B & Gemma 3 & 27B & 896 px$^{a}$ \\
-    Qwen3-VL-32B & Qwen3 & 32B & 224 px \\
-    InternVL3.5-38B & Qwen3 & 38B & 448 px \\
-    \midrule
-    Qwen3-VL-8B-Thinking$^{b}$ & Qwen3 & 8B & 224 px \\
-    \bottomrule
-  \end{tabular}
-  \caption{Models (frozen; pinned revisions in Appendix~K). Top block: core models (instruction-tuned). InternVL3.5: one 448-px tile. $^{a}$224-px renders resized by the processor. $^{b}$Reasoning subset only. \citep{bai2025qwen3vl,wang2025internvl35,gemmateam2025gemma3}}
-  \label{tab:models}
-\end{table}
-
 \section{Results}
+\begin{figure*}[t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_gap.pdf}
+  \caption{(a) Accuracy on the main task by history format, text reports; formats are ordered by how many processing steps they leave to the model. One line per model; marker shape and colour give the family (circle: Qwen3-VL; square: InternVL3.5; diamond: Gemma~3), filled markers the larger models; bars: 95\% bootstrap CIs over episode pairs. Dashed: the all-trial count rule that produces the summary, applied without a model. (b) Control conditions with text reports, on their own metric (accuracy on control items). Stated: reliability given as a percentage or as counts. Single trial: who was correct on one shown trial. Short/long: easy 10- or 80-trial histories, raw or correctness-coded. \devnote{}}\label{fig:gap}
+\end{figure*}
+\begin{figure*}[t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_kernel.pdf}
+  \caption{Behavior under raw histories. (a) Integration kernel: logistic-regression weight on which advisor was correct $k$ trials in the past, by history format (thick: mean over models; thin: individual models; per-model kernels with CIs in Appendix~F). Under raw histories the weights on past correctness are near zero. (b) Agreement (Cohen's $\kappa$) between model choices and simple strategies under raw histories; copying the previous outcome agrees best in every model. (c) Masking parts of the raw history with correctness: replacing the outcome label, but not the reports, recovers most of the difference to the coded history (Appendix~J). \devnote{}}\label{fig:kernel}
+\end{figure*}
 % ~3 pages incl. Figs. 2--5 and Table 2. Each paragraph = one claim tied to one figure/table.
 \devnote{}
 
@@ -190,7 +177,7 @@ Further summaries apply other integration rules outside the model: counts over t
 All models used reliability when it was stated (Fig.~\ref{fig:gap}b; Table~\ref{tab:controls} in Appendix~C). With text reports, a stated percentage or stated counts led to the better advisor on 92--100\% of items, and models identified which advisor had been correct on a single shown trial on 100\% of items. The same information given as experience was used much less: with an easy raw history in which one advisor had been correct on every recent trial, accuracy was .60--.70 for 10-trial histories and .53--.56 for 80-trial histories. When the same easy histories were correctness-coded, accuracy rose to .996--1.00 for 10 trials and .68--.85 for 80 trials. Evaluating a single trial is therefore not the difficulty; evaluating and combining many raw trials is, and long histories are hard even when evaluation is removed.
 
 \paragraph{Raw vs.\ summarized history.} % Fig. 2: A, A+, B, B', C per model; text cover stories and pet reported separately; Table 2. Title wording decided by results (R04).
-On the main task, accuracy with the raw history was .435--.487, at or below chance, and accuracy with the summarized history was .616--.632 (Table~\ref{tab:main}, Fig.~\ref{fig:gap}a). The summary--raw gap was $+.129$ to $+.190$ in every model, including Gemma-3-27B from the second language-model family (16 development episode pairs; Wilcoxon $p < .001$ in each model). The correctness-coded history reached .608--.642, about as high as the summary: the coded history recovered 91--120\% of the summary--raw gap (Table~\ref{tab:decomp}). Appending the correctness statement to the raw history, so that the information was present but the reports remained, recovered only $+.035$ to $+.065$, one-fifth to two-fifths of the gap. In that history, replacing each past outcome label with a dash while keeping the correctness statement raised accuracy by 7--10 points, whereas replacing the reports did not; with both replaced, accuracy was about 2 points below the coded history (two 8B models, Appendix~J). The visible outcome label, not the length of the record, keeps the appended statement from being used. The gap therefore arises mainly where the raw reports must be compared with the outcome, not where outcomes must be integrated. Integration over long histories still limits accuracy in the volatile phase, where following the better advisor was near .50 in all formats (Appendix~C, Fig.~\ref{fig:curves}), as it is for the all-trial count rule itself.
+On the main task, accuracy with the raw history was .435--.487, at or below chance, and accuracy with the summarized history was .616--.632 (Table~\ref{tab:main}, Fig.~\ref{fig:gap}a). The summary--raw gap was $+.129$ to $+.190$ in every model, including Gemma-3-27B from the second language-model family (16 development episode pairs; Wilcoxon $p < .001$ in each model). The correctness-coded history reached .608--.642, about as high as the summary: the coded history recovered 91--120\% of the summary--raw gap (Table~\ref{tab:decomp}). Appending the correctness statement to the raw history, so that the information was present but the reports remained, recovered only $+.035$ to $+.065$, one-fifth to two-fifths of the gap. In that history, replacing each past outcome label with a dash while keeping the correctness statement raised accuracy by 7--10 points, whereas replacing the reports did not; with both replaced, accuracy was about 2 points below the coded history (two 8B models; Fig.~\ref{fig:kernel}c, Appendix~J). The visible outcome label, not the length of the record, keeps the appended statement from being used. The gap therefore arises mainly where the raw reports must be compared with the outcome, not where outcomes must be integrated. Integration over long histories still limits accuracy in the volatile phase, where following the better advisor was near .50 in all formats (Appendix~C, Fig.~\ref{fig:curves}), as it is for the all-trial count rule itself.
 
 \paragraph{Behavior under raw histories.} % Fig. 4: integration kernels + heuristic agreement (kappa); 'consistent with', not mechanism (R08).
 Under raw histories, the regression weights on which advisor had been correct were close to zero at every lag, whereas the weight on repeating the previous outcome (following whichever advisor currently reports the last trial's outcome) was positive in every model ($0.28$--$0.78$ log-odds; Fig.~\ref{fig:kernel}). Among simple strategies, repeating the previous outcome agreed best with the models' choices (Cohen's $\kappa = 0.24$--$0.35$; Table~\ref{tab:kappa}); it was the best-matching strategy in 11 to 14 of the 16 episodes for each model. This also explains accuracy below .5: because each outcome label occurs exactly five times in every 10-trial block (Appendix~B), the previous outcome predicts the next one slightly worse than chance, and repeating it scores .439 on these episodes (.479 on the robustness set, whose outcomes are independent). With correctness-coded histories the kernel was recency-weighted (largest weight at lag~1) and the weight on the previous outcome vanished; with appended correctness both components were present. These analyses describe behavior consistent with a strategy and do not identify a mechanism.
@@ -205,14 +192,6 @@ This comparison is supporting and descriptive. Human participants were told the 
 \paragraph{Reasoning mode.} % Thinking/CoT subset: does the gap shrink?
 \todo{Reasoning (runs pending).}
 
-\begin{figure*}[t]\centering
-  \includegraphics[width=\textwidth]{figures/fig_gap.pdf}
-  \caption{(a) Accuracy on the main task by history format, text reports (markers: models; bars: 95\% bootstrap CIs over episode pairs). Dashed: the all-trial count rule that produces the summary, applied without a model. (b) Control conditions with text reports, on their own metric (accuracy on control items). Stated: reliability given as a percentage or as counts. Single trial: who was correct on one shown trial. Short/long: easy 10- or 80-trial histories, raw or correctness-coded. \devnote{}}\label{fig:gap}
-\end{figure*}
-\begin{figure*}[t]\centering
-  \includegraphics[width=\textwidth]{figures/fig_kernel.pdf}
-  \caption{Integration kernels. Left four panels: logistic-regression weights on which advisor was correct $k$ trials in the past (shaded: 95\% bootstrap CI over episodes). Right: weight on repeating the previous outcome, estimated in the same regression. Under raw histories the weights on past correctness are near zero and the weight on the previous outcome is large. \devnote{}}\label{fig:kernel}
-\end{figure*}
 \begin{figure}[t]\centering
   \figplaceholder{Fig.~5. Forgetting rate $\phi$ vs.\ hazard rate: humans (told $h$; our re-analysis of Xiong et al.\ 2023) and models (hidden $h$; told $h$ as secondary).}{4cm}
   \caption{\todo{Human comparison on Psych-101.}}\label{fig:human}
@@ -220,22 +199,22 @@ This comparison is supporting and descriptive. Human participants were told the 
 % FILL: analyze_main.py held-out JSON -> cells / gaps (domain=all); D from analyze_controls.py (explicit_rel hard_acc).
 \begin{table*}[t]\centering\small
   \setlength{\tabcolsep}{5pt}
-  \begin{tabular}{l ccccc c c}
+  \begin{tabular}{ll ccccc c c}
     \toprule
-    & \multicolumn{5}{c}{Main-task accuracy (held-out, 48 episodes)} & & Stated \\
-    \cmidrule(lr){2-6}\cmidrule(lr){8-8}
-    Model & Raw & Raw+corr. & Coded & Chart & Summary & Summary$-$raw [95\% CI] & reliability \\
+    & & \multicolumn{5}{c}{Main-task accuracy (held-out, 48 episodes)} & & Stated \\
+    \cmidrule(lr){3-7}\cmidrule(lr){9-9}
+    Model & LM & Raw & Raw+corr. & Coded & Chart & Summary & Summary$-$raw [95\% CI] & reliability \\
     \midrule
-    Qwen3-VL-8B & .487 & .536 & .642 & -- & .616 & +.129 [.105, .152] & .917 \\
-    InternVL3.5-8B & .471 & .533 & .639 & -- & .628 & +.157 [.141, .173] & 1.000 \\
-    Gemma-3-27B & .435 & .470 & .608 & -- & .625 & +.190 [.170, .211] & .980 \\
-    Qwen3-VL-32B & .463 & .528 & .627 & -- & .632 & +.169 [.152, .185] & 1.000 \\
-    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B & Qwen3 & .487 & .536 & .642 & -- & .616 & +.129 [.105, .152] & .917 \\
+    InternVL3.5-8B & Qwen3 & .471 & .533 & .639 & -- & .628 & +.157 [.141, .173] & 1.000 \\
+    Gemma-3-27B & Gemma 3 & .435 & .470 & .608 & -- & .625 & +.190 [.170, .211] & .980 \\
+    Qwen3-VL-32B & Qwen3 & .463 & .528 & .627 & -- & .632 & +.169 [.152, .185] & 1.000 \\
+    InternVL3.5-38B & Qwen3 & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \midrule
-    Rule alone (all-trial counts) & \multicolumn{5}{c}{.630 (development) / .632 (held-out)} & -- & -- \\
+    Rule alone (all-trial counts) & & \multicolumn{5}{c}{.630 (development) / .632 (held-out)} & -- & -- \\
     \bottomrule
   \end{tabular}
-  \caption{\devnote{} Chart: not yet run. Accuracy on the main task by history format: proportion of trials ($t\ge 2$) on which the model follows the advisor who is correct, averaged over counterbalanced copies in logit space and then over episodes. Text reports; text and pet cover stories pooled (per cover story in Appendix~J). Raw+corr.: raw history with correctness appended; Coded: correctness-coded history; Chart: correctness chart. Summary$-$raw: paired difference over episodes with 95\% bootstrap CI. Stated reliability is a control condition run on development episodes with its own metric (accuracy on control items, Table~\ref{tab:controls}), so it is not on the same scale as the main-task columns.}
+  \caption{\devnote{} Chart: not yet run. Accuracy on the main task by history format: proportion of trials ($t\ge 2$) on which the model follows the advisor who is correct, averaged over counterbalanced copies in logit space and then over episodes. LM: language-model family (InternVL3.5 uses a Qwen3 language model). Text reports; text and pet cover stories pooled (per cover story in Appendix~J). Raw+corr.: raw history with correctness appended; Coded: correctness-coded history; Chart: correctness chart. Summary$-$raw: paired difference over episodes with 95\% bootstrap CI. Stated reliability is a control condition run on development episodes with its own metric (accuracy on control items, Table~\ref{tab:controls}), so it is not on the same scale as the main-task columns.}
   \label{tab:main}
 \end{table*}
 
@@ -570,6 +549,11 @@ These rule baselines were computed on held-out episodes before any model results
   \label{tab:kappa}
 \end{table*}
 
+\begin{figure*}[h]\centering
+  \includegraphics[width=\textwidth]{figures/fig_kernel_models.pdf}
+  \caption{Integration kernels per model (shaded: 95\% bootstrap CI over episodes) and, right, the weight on repeating the previous outcome by history format (bars: 95\% CIs). \devnote{}}\label{fig:kernel_models}
+\end{figure*}
+
 % FILL: cogmodels.py LOEO-CV fits per model x history (NLL per trial, best model, effective learning rate in each phase).
 \begin{table}[h]\centering\small
   \setlength{\tabcolsep}{3pt}
@@ -846,7 +830,28 @@ Reasoning is tested on development episodes only, with each episode's own text c
   \label{tab:wording}
 \end{table*}
 \subsection{K. Models, Revisions and Compute}                % pinned revisions, hardware
-Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revisions. A 72B model was planned as a scale extension and larger reasoning models as a supplement, but neither was run for compute reasons.
+\begin{table}[h]
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llrl}
+    \toprule
+    Model & LM family & Params & Image input \\
+    \midrule
+    Qwen3-VL-8B & Qwen3 & 8B & 224 px \\
+    InternVL3.5-8B & Qwen3 & 8B & 448 px \\
+    Gemma-3-27B & Gemma 3 & 27B & 896 px$^{a}$ \\
+    Qwen3-VL-32B & Qwen3 & 32B & 224 px \\
+    InternVL3.5-38B & Qwen3 & 38B & 448 px \\
+    \midrule
+    Qwen3-VL-8B-Thinking$^{b}$ & Qwen3 & 8B & 224 px \\
+    \bottomrule
+  \end{tabular}
+  \caption{Models (frozen; pinned revisions in Table~\ref{tab:revisions}). Top block: core models (instruction-tuned). InternVL3.5: one 448-px tile. $^{a}$224-px renders resized by the processor. $^{b}$Reasoning subset only.}
+  \label{tab:models}
+\end{table}
+
+Table~\ref{tab:models} lists the models and Table~\ref{tab:revisions} the Hugging Face checkpoints and pinned revisions. A 72B model was planned as a scale extension and larger reasoning models as a supplement, but neither was run for compute reasons.
 
 \begin{table*}[t]
   \centering

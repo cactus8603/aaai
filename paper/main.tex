@@ -164,6 +164,7 @@ Further summaries apply other integration rules outside the model: counts over t
 \begin{table}[t]
   \centering
   \small
+  \setlength{\tabcolsep}{4pt}
   \begin{tabular}{llrl}
     \toprule
     Model & LM family & Params & Image input \\
@@ -174,11 +175,10 @@ Further summaries apply other integration rules outside the model: counts over t
     Qwen3-VL-32B & Qwen3 & 32B & 224 px \\
     InternVL3.5-38B & Qwen3 & 38B & 448 px \\
     \midrule
-    Qwen2.5-VL-72B$^{b}$ & Qwen2.5 & 72B & 224 px \\
-    Qwen3-VL-Thinking$^{c}$ & Qwen3 & 8B/32B & 224 px \\
+    Qwen3-VL-8B-Thinking$^{b}$ & Qwen3 & 8B & 224 px \\
     \bottomrule
   \end{tabular}
-  \caption{Models (frozen; pinned revisions in Appendix~K). Top block: core models (instruction-tuned). InternVL3.5: one 448-px tile. $^{a}$224-px renders resized by the processor. $^{b}$Scale extension. $^{c}$Reasoning subset only. \citep{bai2025qwen3vl,wang2025internvl35,gemmateam2025gemma3,bai2025qwen25vl}}
+  \caption{Models (frozen; pinned revisions in Appendix~K). Top block: core models (instruction-tuned). InternVL3.5: one 448-px tile. $^{a}$224-px renders resized by the processor. $^{b}$Reasoning subset only. \citep{bai2025qwen3vl,wang2025internvl35,gemmateam2025gemma3}}
   \label{tab:models}
 \end{table}
 
@@ -190,7 +190,7 @@ Further summaries apply other integration rules outside the model: counts over t
 All models used reliability when it was stated (Fig.~\ref{fig:gap}b; Table~\ref{tab:controls} in Appendix~C). With text reports, a stated percentage or stated counts led to the better advisor on 92--100\% of items, and models identified which advisor had been correct on a single shown trial on 100\% of items. The same information given as experience was used much less: with an easy raw history in which one advisor had been correct on every recent trial, accuracy was .60--.70 for 10-trial histories and .53--.56 for 80-trial histories. When the same easy histories were correctness-coded, accuracy rose to .996--1.00 for 10 trials and .68--.85 for 80 trials. Evaluating a single trial is therefore not the difficulty; evaluating and combining many raw trials is, and long histories are hard even when evaluation is removed.
 
 \paragraph{Raw vs.\ summarized history.} % Fig. 2: A, A+, B, B', C per model; text cover stories and pet reported separately; Table 2. Title wording decided by results (R04).
-On the main task, accuracy with the raw history was .435--.487, at or below chance, and accuracy with the summarized history was .616--.632 (Table~\ref{tab:main}, Fig.~\ref{fig:gap}a). The summary--raw gap was $+.129$ to $+.190$ in every model, including Gemma-3-27B from the second language-model family (16 development episode pairs; Wilcoxon $p < .001$ in each model). The correctness-coded history reached .608--.642, about as high as the summary: the coded history recovered 91--120\% of the summary--raw gap (Table~\ref{tab:decomp}). Appending the correctness statement to the raw history, so that the information was present but the reports remained, recovered only $+.035$ to $+.065$, one-fifth to two-fifths of the gap. The gap therefore arises mainly where the raw reports must be compared with the outcome, not where outcomes must be integrated. Integration over long histories still limits accuracy in the volatile phase, where following the better advisor was near .50 in all formats (Appendix~C, Fig.~\ref{fig:curves}), as it is for the all-trial count rule itself.
+On the main task, accuracy with the raw history was .435--.487, at or below chance, and accuracy with the summarized history was .616--.632 (Table~\ref{tab:main}, Fig.~\ref{fig:gap}a). The summary--raw gap was $+.129$ to $+.190$ in every model, including Gemma-3-27B from the second language-model family (16 development episode pairs; Wilcoxon $p < .001$ in each model). The correctness-coded history reached .608--.642, about as high as the summary: the coded history recovered 91--120\% of the summary--raw gap (Table~\ref{tab:decomp}). Appending the correctness statement to the raw history, so that the information was present but the reports remained, recovered only $+.035$ to $+.065$, one-fifth to two-fifths of the gap. In that history, replacing each past outcome label with a dash while keeping the correctness statement raised accuracy by 7--10 points, whereas replacing the reports did not; with both replaced, accuracy was about 2 points below the coded history (two 8B models, Appendix~J). The visible outcome label, not the length of the record, keeps the appended statement from being used. The gap therefore arises mainly where the raw reports must be compared with the outcome, not where outcomes must be integrated. Integration over long histories still limits accuracy in the volatile phase, where following the better advisor was near .50 in all formats (Appendix~C, Fig.~\ref{fig:curves}), as it is for the all-trial count rule itself.
 
 \paragraph{Behavior under raw histories.} % Fig. 4: integration kernels + heuristic agreement (kappa); 'consistent with', not mechanism (R08).
 Under raw histories, the regression weights on which advisor had been correct were close to zero at every lag, whereas the weight on repeating the previous outcome (following whichever advisor currently reports the last trial's outcome) was positive in every model ($0.28$--$0.78$ log-odds; Fig.~\ref{fig:kernel}). Among simple strategies, repeating the previous outcome agreed best with the models' choices (Cohen's $\kappa = 0.24$--$0.35$; Table~\ref{tab:kappa}); it was the best-matching strategy in 11 to 14 of the 16 episodes for each model. This also explains accuracy below .5: because each outcome label occurs exactly five times in every 10-trial block (Appendix~B), the previous outcome predicts the next one slightly worse than chance, and repeating it scores .439 on these episodes (.479 on the robustness set, whose outcomes are independent). With correctness-coded histories the kernel was recency-weighted (largest weight at lag~1) and the weight on the previous outcome vanished; with appended correctness both components were present. These analyses describe behavior consistent with a strategy and do not identify a mechanism.
@@ -232,8 +232,6 @@ This comparison is supporting and descriptive. Human participants were told the 
     Qwen3-VL-32B & .463 & .528 & .627 & -- & .632 & +.169 [.152, .185] & 1.000 \\
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \midrule
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    \midrule
     Rule alone (all-trial counts) & \multicolumn{5}{c}{.630 (development) / .632 (held-out)} & -- & -- \\
     \bottomrule
   \end{tabular}
@@ -274,7 +272,7 @@ This comparison is supporting and descriptive. Human participants were told the 
 
 Two practical consequences follow. First, an agent that must learn source reliability from feedback benefits most from an external step that records which source was correct, not necessarily from a full summary; second, once the model follows a summary, the summary's integration rule determines how the agent responds to changes in reliability, so the rule should be chosen for the expected volatility (Appendix~D). At the computational level, this division resembles the separation between a system that evaluates outcomes and one that tracks their statistics in theories of human learning; we make no claim about neural mechanisms. \todo{update with held-out results, Gemma-3, window and change-point summaries, reasoning and human comparison}
 
-\paragraph{Limitations.} The task is binary, with two advisors whose reports always conflict, and fixes advisor accuracy within 10-trial blocks; the fixed outcome quotas allow a quota-based shortcut, which is why we repeat the primary test on episodes with independent outcomes and irregular reversals. Histories are text except for the correctness-coded chart, so images enter only as current reports. The photo-binding and chart-legibility checks use development episodes only and are exploratory. The main readout is an immediate single-token answer; reasoning was tested on a subset only, and longer reasoning may change the picture \citep{xue2026counting}. We tested two language-model families; InternVL3.5 shares the Qwen3 language model. The summarized history is not lossless, so the raw--summarized gap shows that the presentation of past evidence matters but does not by itself isolate integration; the correctness-coded formats and single-trial controls are needed for that step. Instructions mention that accuracy may change. The size of the raw--summarized gap depends on the layout of the history: a terse one-line-per-trial record raised raw-history accuracy and lowered the use of coded and summarized histories, shrinking the gap to 1--3 points (Appendix~J). Cover stories vary wording only and are not real-world datasets. In the Psych-101 comparison, human participants were told the hazard rate and had played earlier games, whereas the models' primary condition hides it, so that comparison is descriptive across conditions, and the human learning-rate fits are our re-analysis; the comparison's estimator is biased upward by about 0.09 and has power of about one half for differences as large as the human slope, so it is supporting evidence only and a null result is uninterpretable. The analysis plan was fixed before held-out evaluation by a timestamped commit, not registered with a third party. Before that commit we had seen pilot results on an earlier version of the episodes, part of one model's control-condition results on development episodes, the rule-only baselines (no model) on held-out episodes, and the outputs of plumbing tests on a few held-out items, which were not analysed. We make no claim about neural mechanisms.
+\paragraph{Limitations.} The task is binary, with two advisors whose reports always conflict, and fixes advisor accuracy within 10-trial blocks; the fixed outcome quotas allow a quota-based shortcut, which is why we repeat the primary test on episodes with independent outcomes and irregular reversals. Histories are text except for the correctness-coded chart, so images enter only as current reports. The photo-binding and chart-legibility checks use development episodes only and are exploratory. The main readout is an immediate single-token answer; reasoning was tested with one 8B reasoning model on a subset of items, and longer reasoning or larger models may change the picture \citep{xue2026counting}. We tested two language-model families; InternVL3.5 shares the Qwen3 language model. The summarized history is not lossless, so the raw--summarized gap shows that the presentation of past evidence matters but does not by itself isolate integration; the correctness-coded formats and single-trial controls are needed for that step. Instructions mention that accuracy may change. The size of the raw--summarized gap depends on the layout of the history: a terse one-line-per-trial record raised raw-history accuracy and lowered the use of coded and summarized histories, shrinking the gap to 1--3 points (Appendix~J). Cover stories vary wording only and are not real-world datasets. In the Psych-101 comparison, human participants were told the hazard rate and had played earlier games, whereas the models' primary condition hides it, so that comparison is descriptive across conditions, and the human learning-rate fits are our re-analysis; the comparison's estimator is biased upward by about 0.09 and has power of about one half for differences as large as the human slope, so it is supporting evidence only and a null result is uninterpretable. The analysis plan was fixed before held-out evaluation by a timestamped commit, not registered with a third party; after that commit, and before any held-out model output existed, evaluation moved from MI300X to H200 GPUs and the 72B model was dropped, for compute reasons (Appendix~K). Before that commit we had seen pilot results on an earlier version of the episodes, part of one model's control-condition results on development episodes, the rule-only baselines (no model) on held-out episodes, and the outputs of plumbing tests on a few held-out items, which were not analysed. We make no claim about neural mechanisms.
 
 % ---------------------------------------------------------------------
 % \section*{Ethical Statement}  % optional
@@ -377,8 +375,6 @@ Table~\ref{tab:controls_full} gives each control condition with text and image r
     Gemma-3-27B & .980 & .973 & .603 & 1.00 & .540 & .850 & 1.00 \\
     Qwen3-VL-32B & 1.00 & 1.00 & .607 & 1.00 & .545 & .750 & 1.00 \\
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    \midrule
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{Control conditions on development episodes, text reports (accuracy on control items, averaged over counterbalanced copies; image reports in Appendix~C). Stated: reliability given as a percentage or as counts. Short/long: an easy history in which one advisor is clearly better, given raw or correctness-coded. Single trial: who was correct on one shown trial. Full results by cover story in Appendix~C.}
@@ -394,32 +390,32 @@ Table~\ref{tab:controls_full} gives each control condition with text and image r
 % FILL: analyze_controls.py -> table[] pooled over cover stories by report type (make_figures.load_controls); per cover story in the released output.
 \begin{table*}[h]\centering\small
   \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{ll cccccc}
+  \begin{tabular}{ll ccccc}
     \toprule
-    Condition & Reports & Qwen3-8B & IVL-8B & Qwen3-32B & Gemma-27B & IVL-38B & Qwen2.5-72B \\
+    Condition & Reports & Qwen3-8B & IVL-8B & Qwen3-32B & Gemma-27B & IVL-38B \\
     \midrule
-    Stated \% & Text & .917 & 1.00 & 1.00 & .980 & \tbd & \tbd \\
-     & Image & .835 & .806 & .656$^\dagger$ & .647 & \tbd & \tbd \\
-    Stated counts & Text & .998 & 1.00 & 1.00 & .973 & \tbd & \tbd \\
-     & Image & .855 & .779 & .644$^\dagger$ & .647 & \tbd & \tbd \\
-    Short raw & Text & .701 & .638 & .607 & .603 & \tbd & \tbd \\
-     & Image & .629 & .545 & .504$^\dagger$ & .612 & \tbd & \tbd \\
-    Short coded & Text & 1.00 & .996 & 1.00 & 1.00 & \tbd & \tbd \\
-     & Image & .940 & .746 & .683$^\dagger$ & .683 & \tbd & \tbd \\
-    Long raw & Text & .533 & .562 & .545 & .540 & \tbd & \tbd \\
-     & Image & .540 & .518 & .409$^\dagger$ & .507 & \tbd & \tbd \\
-    Long coded & Text & .681 & .676 & .750 & .850 & \tbd & \tbd \\
-     & Image & .598 & .429 & .477$^\dagger$ & .603 & \tbd & \tbd \\
-    Single trial & Text & 1.00 & 1.00 & 1.00 & 1.00 & \tbd & \tbd \\
+    Stated \% & Text & .917 & 1.00 & 1.00 & .980 & \tbd \\
+     & Image & .835 & .806 & .656$^\dagger$ & .647 & \tbd \\
+    Stated counts & Text & .998 & 1.00 & 1.00 & .973 & \tbd \\
+     & Image & .855 & .779 & .644$^\dagger$ & .647 & \tbd \\
+    Short raw & Text & .701 & .638 & .607 & .603 & \tbd \\
+     & Image & .629 & .545 & .504$^\dagger$ & .612 & \tbd \\
+    Short coded & Text & 1.00 & .996 & 1.00 & 1.00 & \tbd \\
+     & Image & .940 & .746 & .683$^\dagger$ & .683 & \tbd \\
+    Long raw & Text & .533 & .562 & .545 & .540 & \tbd \\
+     & Image & .540 & .518 & .409$^\dagger$ & .507 & \tbd \\
+    Long coded & Text & .681 & .676 & .750 & .850 & \tbd \\
+     & Image & .598 & .429 & .477$^\dagger$ & .603 & \tbd \\
+    Single trial & Text & 1.00 & 1.00 & 1.00 & 1.00 & \tbd \\
     \midrule
-    Stated \%, name on image & Image & .821 & .830 & .759 & .734 & \tbd & \tbd \\
-    Stated \%, composite image & Image & .748 & .842 & .770 & .824 & \tbd & \tbd \\
-    Stated \%, image after name & Image & .596 & .696 & .549 & .520 & \tbd & \tbd \\
-    Composite read & Image & 1.00 & 1.00 & 1.00 & 1.00 & \tbd & \tbd \\
-    Chart read & Chart & .630 & .688 & .672 & .604 & .714 & \tbd \\
+    Stated \%, name on image & Image & .821 & .830 & .759 & .734 & \tbd \\
+    Stated \%, composite image & Image & .748 & .842 & .770 & .824 & \tbd \\
+    Stated \%, image after name & Image & .596 & .696 & .549 & .520 & \tbd \\
+    Composite read & Image & 1.00 & 1.00 & 1.00 & 1.00 & \tbd \\
+    Chart read & Chart & .630 & .688 & .672 & .604 & .714 \\
     \bottomrule
   \end{tabular}
-  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies and pooled over cover stories). Lower block: binding variants of the stated-reliability condition with image reports (advisor name printed on the image; both reports in one composite image; image given after the name), reading one panel of the composite image, and reading one cell of the correctness chart. Qwen3/Qwen2.5: Qwen-VL models; IVL: InternVL3.5. Image reports use the selected icons (v3.1). $^\dagger$Partial run (413 of 448 items per cell). Results by cover story are in the released analysis output.}
+  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies and pooled over cover stories). Lower block: binding variants of the stated-reliability condition with image reports (advisor name printed on the image; both reports in one composite image; image given after the name), reading one panel of the composite image, and reading one cell of the correctness chart. Qwen3: Qwen3-VL; IVL: InternVL3.5. Image reports use the selected icons (v3.1). $^\dagger$Partial run (413 of 448 items per cell). Results by cover story are in the released analysis output.}
   \label{tab:controls_full}
 \end{table*}
 
@@ -435,7 +431,6 @@ Table~\ref{tab:controls_full} gives each control condition with text and image r
     Gemma-3-27B & +.035 & +.172 & -- & +.018 & +.190 & 0.91 [0.85, 0.96] \\
     Qwen3-VL-32B & +.065 & +.164 & -- & +.005 & +.169 & 0.97 [0.85, 1.08] \\
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{\devnote{} Decomposition of the raw--summarized gap: paired differences in main-task accuracy relative to raw history (except Summary$-$coded) with 95\% bootstrap CIs (format: mean [low, high]). Position: (coded $-$ raw)/(summary $-$ raw), reported only when the summary--raw gap exceeds the prespecified threshold and its bootstrap CI excludes 0; otherwise ``n/i''.}
@@ -504,7 +499,6 @@ These rule baselines were computed on held-out episodes before any model results
     Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \midrule
     Rule alone & -- & .632 & .692 & .612 & .579 & .678 & .744 & -- & -- \\
     \bottomrule
@@ -561,8 +555,6 @@ These rule baselines were computed on held-out episodes before any model results
     Qwen3-VL-32B & Raw & 0.28 & $-$0.01 & $-$0.03 & 0.01 & $-$0.02 & $-$0.16 \\
      & Summary & 0.00 & 0.07 & 0.13 & 0.79 & 0.13 & 0.01 \\
     InternVL3.5-38B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-     & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & Raw & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
      & Summary & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
@@ -625,7 +617,6 @@ These analyses use development episodes only and are exploratory, and use the se
     Gemma-3-27B & 1.000 & 1.000 & .604 & .608 & .534 & -- \\
     Qwen3-VL-32B & 1.000 & 1.000 & .672 & .627 & .529 & -- \\
     InternVL3.5-38B & 1.000 & \tbd & .714 & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{Multimodal reports (development episodes, exploratory; selected icons, v3.1). Image naming: single-image naming over all cover stories (photos and icons). Main-task columns use correctness-coded history, removing outcome evaluation; because every model names the images, the drop with image reports reflects their use in context, including advisor binding. Chart history: not yet run. Chart read below the prespecified 0.8 gate means chart-history results for that model are not interpreted.}
@@ -673,7 +664,7 @@ These analyses use development episodes only and are exploratory, and use the se
 \end{table*}
 
 \subsection{H. Reasoning Mode}                               % thinking/CoT subset, lengths, truncation
-Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. The main comparison is Qwen3-VL-32B-Instruct with a step-by-step prompt against the same checkpoint answering directly; Qwen3-VL-8B-Thinking and Qwen3-VL-32B-Thinking use their native reasoning templates as a supplement. The subset comprises the main task at trials 20, 40, 60 and 80 with raw and summarized history, and the stated-reliability, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. Table~\ref{tab:reason} gives the results. \todo{one paragraph after results}
+Reasoning is tested on development episodes only, with each episode's own text cover story and text reports. Qwen3-VL-8B-Thinking, the reasoning checkpoint of the same model family and size as Qwen3-VL-8B-Instruct, answers with its native reasoning template; the direct answers of Qwen3-VL-8B-Instruct on the same items are the reference. Because the two are different checkpoints, the comparison bounds what reasoning adds at this scale but does not isolate reasoning within one checkpoint; for compute reasons we did not run larger reasoning models or a step-by-step prompt. The subset comprises the main task at trials 20, 40, 60 and 80 with raw and summarized history, and the stated-reliability, short and long histories and their correctness-coded versions at trials 40 and 80. Generation is greedy with up to 16{,}384 new tokens. We report free-answer accuracy, the valid-answer rate, truncation and forced-answer rates, and token cost separately; a probability read after the generated reasoning is conditional on that reasoning and is not compared directly with the direct-answer readout. Table~\ref{tab:reason} gives the results. \todo{one paragraph after results}
 
 % FILL: analyze_thinking.py -> groups[<model/mode>][<condition>] (acc_valid, valid_rate, truncation_rate, forced_rate, tokens) and gap.
 \begin{table*}[h]\centering\small
@@ -684,13 +675,12 @@ Reasoning is tested on development episodes only, with each episode's own text c
     \cmidrule(lr){2-5}
     Model / mode & Raw & Summary & Summary$-$raw & Stated & Valid & Truncated & Forced & Median tokens \\
     \midrule
-    Qwen3-VL-32B, direct & \tbd & \tbd & \tbd & \tbd & -- & -- & -- & 1 \\
-    Qwen3-VL-32B, step-by-step & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-8B-Instruct, direct & \tbd & \tbd & \tbd & \tbd & -- & -- & -- & 1 \\
     Qwen3-VL-8B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     Qwen3-VL-32B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
-  \caption{Reasoning subset (development episodes; main task at trials 20, 40, 60, 80; controls at 40 and 80). Accuracy is over valid free answers; Valid, Truncated and Forced are proportions of all items.}
+  \caption{Reasoning subset (development episodes; main task at trials 20, 40, 60, 80; controls at 40 and 80). Direct: the instruction-tuned checkpoint's single-token answer on the same items. Accuracy is over valid free answers; Valid, Truncated and Forced are proportions of all items.}
   \label{tab:reason}
 \end{table*}
 \subsection{I. Psych-101 Protocol and Additional Fits}       % hidden/told, sampled-choice fits, long blocks, position
@@ -722,6 +712,8 @@ Reasoning is tested on development episodes only, with each episode's own text c
   \caption{Psych-101 changing bandit \citep{xiong2023neural}. Models are conditioned on each participant's history; $\phi$ is fitted to choices sampled from the model (20 draws, median). Slope: of $\phi$ on hazard rate. The paired test has power of about 0.5 and an upward bias of about $+0.09$ (calibration above), so it is descriptive only.}
   \label{tab:psych}
 \end{table*}
+\paragraph{Image and chart formats.} The changing bandit is also run, with hazard rate hidden, with the last five outcomes shown as pictures of the machine's display, and with the history drawn as one scatter chart. Each format has a perception check (reading the number on one machine picture; which machine was higher at a given trial of the chart), and a format is interpreted only if its check passes. \todo{results for image and chart formats and their perception checks}
+
 \subsection{J. Robustness}                                   % IID/irregular episodes; per-cover-story results
 \todo{one paragraph after results}
 
@@ -757,14 +749,40 @@ Reasoning is tested on development episodes only, with each episode's own text c
     Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \bottomrule
   \end{tabular}
   \caption{Summary$-$raw gap by cover story (held-out; eight episodes per text cover story). Pet uses photo reports in its own episode slot and is not part of the sign test.}
   \label{tab:scenario}
 \end{table*}
 
-\paragraph{Prompt wording (exploratory, development episodes).} We re-ran the four text history formats for Qwen3-VL-8B and InternVL3.5-8B with two alternative wordings; episodes, names, answer words, list order and readout were unchanged. Reworded sentences keep the original layout with different phrasing (``In trial 3, Sam said cat and Ken said dog; it turned out cat.''; ``Tally over the 3 previous trials: Ken was right 2 times and Sam was right 1 times.''). A terse record uses one line per trial (``\#3 | Sam=cat | Ken=dog | truth=cat''; ``Correct counts so far (3 trials): Ken=2, Sam=1.''). The original wording re-run on our workstation reproduced the main-platform results to within .003 in every format (Table~\ref{tab:wording}). With reworded sentences, every result was preserved: raw history at .47--.49, summary$-$raw $+.12$ and $+.15$, the correctness-coded history at or above the summary, appending correctness recovering about 40\% of the gap, and a positive weight on the previous outcome. The terse record changed the picture in both directions. Raw-history accuracy rose to .55--.56 and the weight on the previous outcome fell, whereas the correctness-coded and summarized formats fell to .56--.60, and InternVL3.5-8B followed the count summary on only 72\% of non-tied trials (98\% with the original wording). The summary$-$raw gap shrank to $+.03$ [.01, .06] (Qwen3-VL-8B) and $+.01$ [$-.02$, .05] (InternVL3.5-8B). Raw-history accuracy stayed below the count rule (.63) in every wording, but the size of the raw--summarized gap depends on how the history is laid out, and we interpret it only for the natural-language layout used in all main conditions.
+\paragraph{Which part of the raw history blocks the correctness statement.} Appending who was correct to the raw history recovered only part of the summary--raw gap, and the weight on repeating the previous outcome stayed large. To find out why, we kept the layout and length of that history and replaced parts of each past trial with a dash (``Day 3: Ken forecasts ---; Sam forecasts ---. Actual weather: rain. (Ken was correct; Sam was wrong.)''): the outcome label, the two reports, or both. With both replaced the history carries the same information as the correctness-coded history at nearly the length of the raw history with correctness. On development episodes (Table~\ref{tab:mask}), replacing the outcome label raised accuracy by 7.4 and 9.6 points (main effects; 95\% CIs [5.2, 9.5] and [7.6, 11.5]) and lowered the weight on the previous outcome from .48--.50 to .12, whereas replacing the reports had no effect on its own ($+1.1$ and $-0.2$ points). With both replaced, accuracy was 1.5--2.1 points below the correctness-coded history, so length and layout account for 14--20\% of the difference between the raw history with correctness and the coded history, and the visible outcome label for the rest. The outcome label thus elicits the copying of the previous outcome even when who was correct is stated. Predictions for the held-out replication in five models were written before it was run. \todo{held-out replication}
+
+% Evidence: research/volatile_trust/analysis/masking/summary.txt (analyze_masking.py; runs/masking/*); held-out: analyze_masking.py --root runs_h200 --split ho.
+\begin{table*}[h]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cc cc cc cc cc}
+    \toprule
+    & \multicolumn{2}{c}{Raw + correctness} & \multicolumn{2}{c}{Reports shown} & \multicolumn{2}{c}{Outcome shown} & \multicolumn{2}{c}{Both replaced} & \multicolumn{2}{c}{Coded} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(lr){10-11}
+    Model & Acc. & Copy & Acc. & Copy & Acc. & Copy & Acc. & Copy & Acc. & Copy \\
+    \midrule
+    \multicolumn{11}{l}{\textit{Development episodes}} \\
+    Qwen3-VL-8B & .534 & .50 & .576 & .12 & .513 & .48 & .620 & .04 & .640 & .03 \\
+    InternVL3.5-8B & .530 & .48 & .602 & .12 & .504 & .27 & .625 & .02 & .640 & .01 \\
+    \midrule
+    \multicolumn{11}{l}{\textit{Held-out episodes}} \\
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd & \tbd \\
+    \bottomrule
+  \end{tabular}
+  \caption{Masking parts of the raw history with correctness (text reports; twin-averaged accuracy, $t\ge 2$). Reports shown: outcome label replaced; Outcome shown: reports replaced; Both replaced: same information as the coded history. Copy: regression weight on repeating the previous outcome. Development rows are exploratory (RTX 3090); held-out predictions were fixed beforehand: replacing the outcome label raises accuracy, replacing both beats the raw history with correctness, and replacing the outcome label matters more than replacing the reports.}
+  \label{tab:mask}
+\end{table*}
+
+\paragraph{Prompt wording (exploratory, development episodes).} We re-ran the four text history formats for Qwen3-VL-8B and InternVL3.5-8B with two alternative wordings; episodes, names, answer words, list order and readout were unchanged. Reworded sentences keep the original layout with different phrasing (``In trial 3, Sam said cat and Ken said dog; it turned out cat.''; ``Tally over the 3 previous trials: Ken was right 2 times and Sam was right 1 times.''). A terse record uses one line per trial (``\#3 | Sam=cat | Ken=dog | truth=cat''; ``Correct counts so far (3 trials): Ken=2, Sam=1.''). The original wording re-run on RTX 3090 GPUs reproduced the MI300X results to within .003 in every format (Table~\ref{tab:wording}). With reworded sentences, every result was preserved: raw history at .47--.49, summary$-$raw $+.12$ and $+.15$, the correctness-coded history at or above the summary, appending correctness recovering about 40\% of the gap, and a positive weight on the previous outcome. The terse record changed the picture in both directions. Raw-history accuracy rose to .55--.56 and the weight on the previous outcome fell, whereas the correctness-coded and summarized formats fell to .56--.60, and InternVL3.5-8B followed the count summary on only 72\% of non-tied trials (98\% with the original wording). The summary$-$raw gap shrank to $+.03$ [.01, .06] (Qwen3-VL-8B) and $+.01$ [$-.02$, .05] (InternVL3.5-8B). Raw-history accuracy stayed below the count rule (.63) in every wording, but the size of the raw--summarized gap depends on how the history is laid out, and we interpret it only for the natural-language layout used in all main conditions. The terse record is also run for the three larger models. \todo{larger models, terse record}
 
 \paragraph{Which part of the terse record matters.} The terse record changes three parts of the prompt: the task description, the history lines together with the count summary, and the current-trial line together with the question. We crossed the original and terse version of each part ($2^3$ prompts; the all-original prompt reproduces the runner's prompts byte for byte; Table~\ref{tab:wordfact}). No single part accounts for the change. Each terse part, on its own, lowered the summary$-$raw gap by 0.3--5.4 points (main effects of 2.7--6.3 points), and the gap stayed positive with a 95\% CI above zero in all six mixed prompts. The largest single changes were these: the terse question lowered accuracy with the correctness-coded history (main effect $-3.6$ and $-4.3$ points); the terse task description and count notation lowered agreement with the count rule (InternVL3.5-8B: $-8.6$ and $-10.2$ points); and for InternVL3.5-8B raw-history accuracy rose mainly when both the history lines and the current trial used the same one-line record (.477 and .491 with either alone, .559 with both). This last pattern fits the outcome-evaluation account: the gain under the raw history appeared when each past trial's reports and outcome were aligned in the same layout as the current reports, which makes deciding who was correct easier.
 
@@ -809,11 +827,11 @@ Reasoning is tested on development episodes only, with each episode's own text c
     & Terse & .550 & .559 & .593 & .564 & $+.014$ [$-.019$, .045] & .13 \\
     \bottomrule
   \end{tabular}
-  \caption{Prompt-wording check (development episodes, text reports; accuracy twin-averaged, $t\ge 2$). Original: main-platform runs; Orig., re-run: same prompts on a second platform. Copy: regression weight on the previous outcome under the raw history.}
+  \caption{Prompt-wording check (development episodes, text reports; accuracy twin-averaged, $t\ge 2$). Original: MI300X runs; Orig., re-run: same prompts on RTX 3090. Copy: regression weight on the previous outcome under the raw history.}
   \label{tab:wording}
 \end{table*}
 \subsection{K. Models, Revisions and Compute}                % pinned revisions, hardware, cross-platform check
-Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revisions. Two larger mixture-of-experts models (Qwen3-VL-235B-A22B, InternVL3.5-241B-A28B) and Gemma-3-12B-it are pinned but optional. Gemma-3 is a gated model; if access is not granted, Mistral-Small-3.2-24B replaces it as the independent family. \todo{confirm Gemma-3 runs or the replacement}
+Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revisions. A 72B model was planned as a scale extension and larger reasoning models as a supplement, but neither was run for compute reasons.
 
 \begin{table*}[t]
   \centering
@@ -827,9 +845,7 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
     Gemma-3-27B & google/gemma-3-27b-it & 005ad3404e59d6023443cb575daa05336842228a \\
     Qwen3-VL-32B & Qwen/Qwen3-VL-32B-Instruct & 0cfaf48183f594c314753d30a4c4974bc75f3ccb \\
     InternVL3.5-38B & OpenGVLab/InternVL3\_5-38B-HF & 7c830fc25e874f9a861087e3c70587f2b9b555f3 \\
-    Qwen2.5-VL-72B & Qwen/Qwen2.5-VL-72B-Instruct & 89c86200743eec961a297729e7990e8f2ddbc4c5 \\
     Qwen3-VL-8B-Thinking & Qwen/Qwen3-VL-8B-Thinking & 92f3c4b4feadd3a016ef468d103bb5f58b2a2c6b \\
-    Qwen3-VL-32B-Thinking & Qwen/Qwen3-VL-32B-Thinking & 7edd10ffd1196091948fb245ff63e406ccb2d4d1 \\
     \bottomrule
   \end{tabular}
   \caption{Checkpoints and pinned revisions (resolved 2026-11-11).}
@@ -838,7 +854,7 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
 
 \paragraph{Image preprocessing.} Icons and photos are rendered at 224 px for Qwen models and at 448 px (one tile, no tiling) for InternVL3.5. For Gemma-3, 224-px renders are resized by the processor to the fixed 896-px input (256 image tokens; pan-and-scan off). The correctness-coded chart is rendered at 448 px for all models.
 
-\paragraph{Software and hardware.} All reported runs use AMD MI300X GPUs (192 GB), one per model, with PyTorch 2.6.0 (ROCm) and Transformers 4.57.1; all conditions of a model run on the same platform. Each run stores the rendered prompt hash, the raw candidate logits, the probability mass on the two answer tokens, and a fingerprint of the configuration. GPU-hours are in Table~\ref{tab:readout}.
+\paragraph{Software and hardware.} Development runs (prompt and icon design, the development main task and the exploratory checks) used AMD MI300X GPUs (192 GB; PyTorch 2.6.0 with ROCm) and NVIDIA RTX 3090 GPUs. All held-out, robustness and Psych-101 evaluations, the development-only control conditions and the development runs used to select the window length were run on NVIDIA H200 GPUs (141 GB), one per model, with PyTorch 2.6.0 (CUDA) and Transformers 4.57.1, so every reported test compares conditions run on the same platform. Each run stores the rendered prompt hash, the raw candidate logits, the probability mass on the two answer tokens, and a fingerprint of the configuration. GPU-hours are in Table~\ref{tab:readout}.
 
 \paragraph{Readout quality.} Because $y_t$ is normalized over the two candidate tokens only, we report for every model, format and condition the probability mass on the two candidates (mean, minimum and share of trials below 0.5) and the format-following rate (share of trials on which the greedy output is one of the two answer words); see Table~\ref{tab:readout}.
 
@@ -856,9 +872,7 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
     Gemma-3-27B & \tbd & \tbd & \tbd & \tbd & \tbd \\
     Qwen3-VL-32B & .996 & .907 & .000 & 1.000 & \tbd \\
     InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen2.5-VL-72B & \tbd & \tbd & \tbd & \tbd & \tbd \\
     Qwen3-VL-8B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd \\
-    Qwen3-VL-32B-Thinking & \tbd & \tbd & \tbd & \tbd & \tbd \\
     \midrule
     Total & & & & & \tbd \\
     \bottomrule
@@ -867,7 +881,7 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
   \label{tab:readout}
 \end{table*}
 
-\paragraph{Cross-platform check.} Pilot runs used an NVIDIA RTX 3090. For the models run on both platforms we compare the same prompts (two development episodes of the pilot data, text reports, raw history) and require a median $|\Delta y| < 0.02$ and agreement of the more probable answer above 98\%; see Table~\ref{tab:xcheck}.
+\paragraph{Cross-platform check.} For every model, the development main task with raw history and text reports was run on both MI300X and H200 and compared item by item (matched by prompt hash). Two models were also compared between RTX 3090 and MI300X on two pilot episodes. We require a median $|\Delta y| < 0.02$ and agreement of the more probable answer above 98\%; see Table~\ref{tab:xcheck}.
 
 % FILL: xcheck runs (run_jobs.py --only xcheck) vs pilot 3090 outputs, matched on prompt hash.
 \begin{table}[h]\centering\small
@@ -876,11 +890,19 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
     \toprule
     Model & Prompts & Med.\ $|\Delta y|$ & Agree & Pass \\
     \midrule
+    \multicolumn{5}{l}{\textit{MI300X vs.\ H200 (development main task)}} \\
+    Qwen3-VL-8B & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-8B & \tbd & \tbd & \tbd & \tbd \\
+    Gemma-3-27B & \tbd & \tbd & \tbd & \tbd \\
+    Qwen3-VL-32B & \tbd & \tbd & \tbd & \tbd \\
+    InternVL3.5-38B & \tbd & \tbd & \tbd & \tbd \\
+    \midrule
+    \multicolumn{5}{l}{\textit{RTX 3090 vs.\ MI300X (pilot episodes)}} \\
     Qwen3-VL-8B & 320 & .006 & 97.2\% & no \\
     Qwen3-VL-32B & 320 & .006 & 98.4\% & yes \\
     \bottomrule
   \end{tabular}
-  \caption{Cross-platform check (RTX 3090 vs.\ MI300X, identical prompts matched by hash). Agree: same more probable answer. All disagreements are near ties ($0.46 < y < 0.53$ on both platforms; 9 of 320 for Qwen3-VL-8B, 5 of 320 for Qwen3-VL-32B). All reported results come from MI300X; pilot results are used only for design.}
+  \caption{Cross-platform checks (identical prompts matched by hash). Agree: same more probable answer. In the 3090--MI300X check all disagreements are near ties ($0.46 < y < 0.53$ on both platforms; 9 of 320 for Qwen3-VL-8B, 5 of 320 for Qwen3-VL-32B).}
   \label{tab:xcheck}
 \end{table}
 \subsection{L. Pilot Results on Smaller Models}              % 3B/4B, v1 data caveat

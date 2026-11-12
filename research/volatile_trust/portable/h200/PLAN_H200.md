@@ -42,6 +42,8 @@ GPU 小時是用 MI300X 實測的每筆秒數推估的（8B 約 .06–.07 秒、
 - 8B 的 dev 遮罩和措辭（3090 已做，探索性）；held-out 遮罩確認在 tier 2。
 
 ## 送出
+**2026-11-13 改用工作者（`worker.py`、`submit_workers.sh`）**：每個工作者 1 張卡，依本清單的順序跨模型挑下一個工作（重新讀清單、用 `_LOCK` 記 Slurm job id 認領、權重沒下載的先跳過），實驗室有幾張空卡就跑幾個。`NWORK=4 NCHAIN=3 bash research/volatile_trust/portable/h200/submit_workers.sh`。跨平台對照不再擋後面的工作：`dev_full_text` 一完成就和 MI300X 比，不一致就 `scancel` 所有工作者。以下是舊的每模型送法，保留備查。
+
 `submit.sh` 不用改：stage 1 跑 tier 1 的 `dev_` 與 `xcheck`，stage 2 依 tier 1 → 2 → 3 →（4，現在沒有）。
 `MODELS="qwen3vl8b internvl8b qwen3vl32b internvl38b gemma3_27b"`。`qwen3vl8b_thinking` 沒有 tier 1 工作（stage 1 會沒事可做），建議直接送 `--tier 3` 的工作，或等主要模型跑完再用空出的卡跑。
 建議 Gemma-3-27B 用 `NGPU=2`（最慢）。截稿前若 tier 2 跑不完，論文以 tier 1 為主，tier 2 未完成的表格照實標示。

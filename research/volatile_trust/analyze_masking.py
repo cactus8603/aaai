@@ -38,13 +38,27 @@ LABELS = {'A': 'raw', 'A+': 'raw+correct', 'B': 'coded', 'C': 'summary', 'rep_ok
           'out_ok': 'outcome+correct', 'mask_ok': 'masked+correct'}
 
 
-def dirs_for(m):
-    if len(m) == 1:      # 3090 runs (q, i)
+GEMMA12 = {'A': 'para_orig_raw', 'A+': 'para_orig_raw_coded', 'B': 'para_orig_coded', 'C': 'para_orig_sum_all'}
+SERVER_KEY = {'q': 'qwen3vl8b', 'i': 'internvl8b'}
+
+
+def dirs_for(m, root='local', split='dev'):
+    if root == 'local':
+        if len(m) > 1 or split != 'dev':     # 3090 runs: 8B models, dev only
+            return {}
         d = {k: HERE / 'runs/paraphrase' / f'{v}_{m}' for k, v in BASE.items()}
         d.update({k: HERE / 'runs/masking' / f'{k}_{m}' for k in MASKED})
-    else:                # MI300X runs
-        d = {k: HERE / 'runs_mi300x' / m / v for k, v in AMD.items()}
-        d.update({k: HERE / 'runs_mi300x' / m / f'mask_{k}' for k in MASKED})
+    else:                                    # runs_mi300x / runs_h200
+        key = SERVER_KEY.get(m, m)
+        if key == 'gemma3_12b':              # no dev_* jobs; the original-wording baseline is para_orig_*
+            if split != 'dev':
+                return {}
+            base = GEMMA12
+        else:
+            base = {k: v.replace('dev_', f'{split}_', 1) for k, v in AMD.items()}
+        pre = '' if split == 'dev' else f'{split}_'
+        d = {k: HERE / root / key / v for k, v in base.items()}
+        d.update({k: HERE / root / key / f'{pre}mask_{k}' for k in MASKED})
     return {k: v for k, v in d.items() if v.exists() and any(v.glob('results_*'))}
 
 
@@ -52,11 +66,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--out-dir', type=Path, default=HERE / 'analysis/masking')
     ap.add_argument('--partial', action='store_true')
+    ap.add_argument('--root', default='local', choices=['local', 'runs_mi300x', 'runs_h200'],
+                    help='local = 3090 runs (8B, dev); otherwise the server output directory')
+    ap.add_argument('--split', default='dev', choices=['dev', 'ho'])
     a = ap.parse_args()
+    if a.out_dir == HERE / 'analysis/masking' and (a.root, a.split) != ('local', 'dev'):
+        a.out_dir = HERE / f'analysis/masking_{a.root}_{a.split}'
     a.out_dir.mkdir(parents=True, exist_ok=True)
     out, lines = {}, []
     for m, name in MODELS.items():
-        D = dirs_for(m)
+        D = dirs_for(m, a.root, a.split)
         if not a.partial:
             D = {k: v for k, v in D.items() if any(v.glob('_COMPLETE*'))}
         if len(D) < 2:
@@ -79,7 +98,8 @@ def main():
             v = {k: np.array([acc[k][b] for b in eps]) for k in ('A+', 'rep_ok', 'out_ok', 'mask_ok')}
             fx = {'hide outcome (main)': (v['rep_ok'] + v['mask_ok'] - v['A+'] - v['out_ok']) / 2,
                   'hide reports (main)': (v['out_ok'] + v['mask_ok'] - v['A+'] - v['rep_ok']) / 2,
-                  'interaction': v['mask_ok'] - v['out_ok'] - v['rep_ok'] + v['A+']}
+                  'interaction': v['mask_ok'] - v['out_ok'] - v['rep_ok'] + v['A+'],
+                  'outcome minus reports effect': (v['rep_ok'] - v['out_ok'])}   # = hide-outcome main - hide-reports main
             for k, d in fx.items():
                 res['contrasts'][k] = dict(mean=float(d.mean()), ci95=am.boot_mean_ci(d, 10000, 0),
                                            p=am.wilcoxon_p(d), n=len(d))

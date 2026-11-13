@@ -37,8 +37,10 @@ P2 = ['ho_sum_cp', 'dev_sum_window5', 'dev_sum_window10', 'dev_sum_window20',
 # priority 3: only if time remains
 P3 = ['ho_sum_oracle', 'ho_window10', 'ho_cp_hard',
       'para_p2_raw', 'para_p2_raw_coded', 'para_p2_coded', 'para_p2_sum_all']
-# reasoning mode (tier 3, last): the 8B thinking model in full (4 shards x raw/summary)
-E9 = [f'qwen3vl8b_thinking__e9_thinking_{h}_s{i}' for i in range(4) for h in ('raw', 'summ')]
+# reasoning mode (tier 3, last): the 8B thinking model in full (4 shards x raw/correctness-only/summary).
+# The correctness-only arm (added 2026-11-13, after the Fable 5.2 API result) asks whether reasoning supplies the
+# outcome-evaluation step itself; it is derived from the raw job (same items, no control conditions).
+E9 = [f'qwen3vl8b_thinking__e9_thinking_{h}_s{i}' for i in range(4) for h in ('raw', 'coded', 'summ')]
 PRIORITY = {**{k: 1 for k in P1}, **{k: 2 for k in P2}, **{k: 3 for k in P3}}
 ORDER = {k: i for i, k in enumerate(P1 + P2 + P3)}
 
@@ -66,6 +68,14 @@ for line in open(HERE.parent / 'jobs.jsonl'):
     assert j['output'].startswith(f'{VT}/runs_mi300x/') and not any('runs_mi300x' in x for x in j['args'])
     j.update(output=j['output'].replace('runs_mi300x/', 'runs_h200/', 1), gpus=1, tier=tier)
     jobs.append(j)
+    if j['id'] in E9 and '_raw_' in j['id']:
+        c = json.loads(json.dumps(j))
+        c['id'] = j['id'].replace('_raw_', '_coded_')
+        c['output'] = j['output'].replace('e9_thinking_raw', 'e9_thinking_coded')
+        a = c['args']
+        a[a.index('--history-format') + 1] = 'coded'
+        c['args'] = a[:a.index('--controls') + 1]   # no control conditions (already in the raw job)
+        jobs.append(c)
 jobs += [dict(mask_job(k, v), tier=2) for k in CORE for v in ('rep_ok', 'out_ok', 'mask_ok')]
 def rank(j):
     if j['id'] in E9:

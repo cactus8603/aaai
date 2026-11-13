@@ -31,7 +31,7 @@ GPU 小時是用 MI300X 實測的每筆秒數推估的（8B 約 .06–.07 秒、
 ## tier 3（有時間才跑，約 27 GPU 小時，依序）
 1. `ho_sum_oracle`、`ho_window10`、`ho_cp_hard`（Table variants 的「截斷原始歷史」欄；也回答「是不是歷史太長」）。
 2. 三個大模型的精簡表格措辭（p2；Limitations 的排版依賴）。
-3. 推理模式（約 16 GPU 小時，放最後）：`qwen3vl8b_thinking` 全部（4 個 shard × 原始／摘要）。
+3. 推理模式（約 24 GPU 小時，放最後）：`qwen3vl8b_thinking` 全部（4 個 shard × 原始／只給誰對／摘要）。「只給誰對」（`e9_thinking_coded_s*`，2026-11-13 加入）檢查推理能否自己補上「判斷誰對」這一步。
 
 ## 不在 H200 跑
 - Qwen2.5-VL-72B；E9 的 Qwen3-VL-32B CoT 與 32B thinking（16 小時；一個 thinking 模型就足以回答「推理能不能補救」）。

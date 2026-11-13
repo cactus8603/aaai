@@ -1,0 +1,25 @@
+{
+ "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+ "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+ "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+ "renderer_sha256": "1a0ec149ff677600cfbf0b6fdfdc84c6bcfce59a1041c96199d7df1f6095ee98",
+ "split": "development",
+ "pixels": 448,
+ "hazard": 0.06666666666666667,
+ "history_mode": "full",
+ "history_format": "coded",
+ "hint": true,
+ "readouts": [
+  "choice"
+ ],
+ "domains": [
+  "pet",
+  "scenario"
+ ],
+ "formats": [
+  "text"
+ ],
+ "trials": null,
+ "max_episodes": null,
+ "icon_version": "v3.1"
+}

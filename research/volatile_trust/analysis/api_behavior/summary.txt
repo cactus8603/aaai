@@ -1,0 +1,92 @@
+rules alone (same items): repeat_outcome 0.458, wsls 0.623, count_all 0.585, last5 0.679, bayes 0.629, quota (hidden) 0.702, always_A (hidden) 0.604
+
+Claude Fable 5.2   raw          acc 0.629 [0.592, 0.665]  valid 0.998  stable 0.729 volatile 0.529  since-rev 1-3/4-6/7-10 0.30/0.49/0.75
+    kappa: repeat_outcome 0.02, wsls 0.43, count_all 0.12, last5 0.79, bayes 0.87, quota (hidden) 0.07, always_A (hidden) agree 0.77
+    quota-vs-bayes disagree n=412 follow bayes 0.96; repeat-vs-bayes n=480 follow bayes 0.95
+    regression: lag1 +3.25 [+2.84,+6.69], lag2 +2.58 [+2.18,+5.21], lag3 +1.36 [+0.96,+2.83], lag5 +1.35 [+0.72,+3.47], lag10 +0.85 [+0.23,+2.14], repeat_outcome +0.57 [-0.02,+1.53]
+Claude Fable 5.2   correct_only acc 0.624 [0.590, 0.658]  valid 0.996  stable 0.731 volatile 0.515  since-rev 1-3/4-6/7-10 0.25/0.48/0.77
+    kappa: repeat_outcome -0.01, wsls 0.43, count_all 0.12, last5 0.80, bayes 0.88, quota (hidden) 0.10, always_A (hidden) agree 0.77
+    quota-vs-bayes disagree n=412 follow bayes 0.95; repeat-vs-bayes n=480 follow bayes 0.96
+    regression: lag1 +3.75 [+3.13,+9.64], lag2 +3.11 [+2.63,+7.72], lag3 +1.77 [+1.29,+4.43], lag5 +1.25 [+0.78,+3.82], lag10 +0.84 [+0.06,+2.24], repeat_outcome +0.09 [-0.78,+0.81]
+Claude Fable 5.2   summary      acc 0.585 [0.544, 0.627]  valid 1.000  stable 0.742 volatile 0.429  since-rev 1-3/4-6/7-10 0.38/0.48/0.44
+    kappa: repeat_outcome 0.02, wsls 0.05, count_all 1.00, last5 0.11, bayes 0.13, quota (hidden) -0.03, always_A (hidden) agree 0.98
+    quota-vs-bayes disagree n=414 follow bayes 0.82; repeat-vs-bayes n=480 follow bayes 0.80
+    regression: lag1 +2.23 [-2.34,+11.80], lag2 +1.72 [-0.39,+12.16], lag3 +1.57 [-0.98,+9.74], lag5 +0.94 [-0.49,+8.66], lag10 +1.26 [-1.73,+9.57], repeat_outcome +1.18 [-1.97,+15.09]
+
+GPT-6-Astra        raw          acc 0.628 [0.586, 0.667]  valid 1.000  stable 0.721 volatile 0.535  since-rev 1-3/4-6/7-10 0.26/0.51/0.79
+    kappa: repeat_outcome -0.03, wsls 0.41, count_all 0.09, last5 0.77, bayes 0.78, quota (hidden) 0.10, always_A (hidden) agree 0.72
+    quota-vs-bayes disagree n=414 follow bayes 0.91; repeat-vs-bayes n=480 follow bayes 0.94
+    regression: lag1 +2.10 [+1.71,+3.19], lag2 +2.14 [+1.86,+3.34], lag3 +1.49 [+1.16,+2.54], lag5 +0.68 [+0.24,+1.38], lag10 +0.58 [+0.15,+1.28], repeat_outcome -0.01 [-0.53,+0.61]
+GPT-6-Astra        correct_only acc 0.623 [0.586, 0.657]  valid 1.000  stable 0.721 volatile 0.525  since-rev 1-3/4-6/7-10 0.23/0.52/0.79
+    kappa: repeat_outcome -0.04, wsls 0.38, count_all 0.09, last5 0.75, bayes 0.78, quota (hidden) 0.11, always_A (hidden) agree 0.72
+    quota-vs-bayes disagree n=414 follow bayes 0.90; repeat-vs-bayes n=480 follow bayes 0.94
+    regression: lag1 +1.69 [+1.27,+2.39], lag2 +2.00 [+1.65,+2.84], lag3 +1.33 [+1.02,+1.99], lag5 +0.84 [+0.48,+1.40], lag10 +0.46 [+0.13,+0.93], repeat_outcome -0.04 [-0.54,+0.44]
+GPT-6-Astra        summary      acc 0.585 [0.544, 0.627]  valid 1.000  stable 0.742 volatile 0.429  since-rev 1-3/4-6/7-10 0.38/0.48/0.44
+    kappa: repeat_outcome 0.02, wsls 0.05, count_all 1.00, last5 0.11, bayes 0.13, quota (hidden) -0.03, always_A (hidden) agree 0.98
+    quota-vs-bayes disagree n=414 follow bayes 0.82; repeat-vs-bayes n=480 follow bayes 0.80
+    regression: lag1 +2.23 [-1.70,+12.11], lag2 +1.72 [-0.13,+12.06], lag3 +1.57 [-0.99,+10.15], lag5 +0.94 [-0.54,+8.45], lag10 +1.26 [-1.51,+9.88], repeat_outcome +1.18 [-1.79,+15.06]
+
+Qwen3-VL-8B        raw          acc 0.486 [0.451, 0.522]  valid 1.000  stable 0.527 volatile 0.446  since-rev 1-3/4-6/7-10 0.41/0.44/0.48
+    kappa: repeat_outcome 0.20, wsls 0.01, count_all 0.01, last5 0.02, bayes 0.03, quota (hidden) -0.21, always_A (hidden) agree 0.59
+    quota-vs-bayes disagree n=414 follow bayes 0.69; repeat-vs-bayes n=480 follow bayes 0.47
+    regression: lag1 +0.11 [-0.09,+0.31], lag2 -0.01 [-0.15,+0.13], lag3 -0.03 [-0.24,+0.17], lag5 -0.08 [-0.22,+0.05], lag10 -0.00 [-0.16,+0.14], repeat_outcome +0.41 [+0.26,+0.56]
+Qwen3-VL-8B        correct_only acc 0.562 [0.528, 0.600]  valid 1.000  stable 0.652 volatile 0.473  since-rev 1-3/4-6/7-10 0.43/0.56/0.46
+    kappa: repeat_outcome -0.03, wsls 0.06, count_all 0.03, last5 0.06, bayes 0.07, quota (hidden) 0.04, always_A (hidden) agree 0.70
+    quota-vs-bayes disagree n=414 follow bayes 0.62; repeat-vs-bayes n=480 follow bayes 0.66
+    regression: lag1 +0.09 [-0.05,+0.23], lag2 -0.11 [-0.23,+0.03], lag3 +0.14 [+0.00,+0.26], lag5 +0.12 [+0.01,+0.25], lag10 -0.06 [-0.18,+0.05], repeat_outcome -0.05 [-0.17,+0.05]
+Qwen3-VL-8B        summary      acc 0.551 [0.521, 0.583]  valid 1.000  stable 0.627 volatile 0.475  since-rev 1-3/4-6/7-10 0.40/0.56/0.48
+    kappa: repeat_outcome -0.02, wsls 0.07, count_all 0.04, last5 0.10, bayes 0.10, quota (hidden) 0.00, always_A (hidden) agree 0.74
+    quota-vs-bayes disagree n=414 follow bayes 0.68; repeat-vs-bayes n=480 follow bayes 0.69
+    regression: lag1 +0.10 [-0.03,+0.25], lag2 -0.02 [-0.15,+0.13], lag3 +0.13 [+0.02,+0.24], lag5 +0.07 [-0.06,+0.19], lag10 +0.01 [-0.11,+0.15], repeat_outcome -0.06 [-0.17,+0.05]
+
+InternVL3.5-8B     raw          acc 0.495 [0.459, 0.532]  valid 1.000  stable 0.519 volatile 0.471  since-rev 1-3/4-6/7-10 0.52/0.43/0.45
+    kappa: repeat_outcome 0.09, wsls 0.00, count_all 0.02, last5 0.01, bayes 0.02, quota (hidden) -0.11, always_A (hidden) agree 0.54
+    quota-vs-bayes disagree n=414 follow bayes 0.59; repeat-vs-bayes n=480 follow bayes 0.49
+    regression: lag1 +0.04 [-0.07,+0.15], lag2 +0.05 [-0.07,+0.18], lag3 -0.05 [-0.16,+0.06], lag5 +0.06 [-0.08,+0.18], lag10 -0.03 [-0.13,+0.06], repeat_outcome +0.21 [+0.09,+0.34]
+InternVL3.5-8B     correct_only acc 0.569 [0.525, 0.612]  valid 1.000  stable 0.671 volatile 0.467  since-rev 1-3/4-6/7-10 0.39/0.47/0.53
+    kappa: repeat_outcome 0.02, wsls 0.07, count_all 0.06, last5 0.08, bayes 0.08, quota (hidden) 0.05, always_A (hidden) agree 0.85
+    quota-vs-bayes disagree n=414 follow bayes 0.70; repeat-vs-bayes n=480 follow bayes 0.72
+    regression: lag1 +0.12 [-0.06,+0.34], lag2 +0.01 [-0.16,+0.21], lag3 +0.18 [+0.02,+0.33], lag5 +0.01 [-0.24,+0.24], lag10 -0.02 [-0.18,+0.15], repeat_outcome +0.10 [-0.07,+0.25]
+InternVL3.5-8B     summary      acc 0.584 [0.537, 0.630]  valid 1.000  stable 0.700 volatile 0.469  since-rev 1-3/4-6/7-10 0.38/0.47/0.55
+    kappa: repeat_outcome 0.02, wsls 0.05, count_all 0.22, last5 0.16, bayes 0.17, quota (hidden) 0.03, always_A (hidden) agree 0.88
+    quota-vs-bayes disagree n=414 follow bayes 0.76; repeat-vs-bayes n=480 follow bayes 0.76
+    regression: lag1 +0.08 [-0.09,+0.29], lag2 -0.08 [-0.29,+0.13], lag3 +0.40 [+0.22,+0.63], lag5 +0.07 [-0.19,+0.33], lag10 -0.01 [-0.23,+0.22], repeat_outcome +0.14 [-0.05,+0.32]
+
+Gemma-3-27B        raw          acc 0.467 [0.438, 0.500]  valid 1.000  stable 0.506 volatile 0.427  since-rev 1-3/4-6/7-10 0.47/0.40/0.41
+    kappa: repeat_outcome 0.31, wsls 0.00, count_all 0.04, last5 -0.01, bayes 0.01, quota (hidden) -0.36, always_A (hidden) agree 0.67
+    quota-vs-bayes disagree n=414 follow bayes 0.80; repeat-vs-bayes n=480 follow bayes 0.45
+    regression: lag1 +0.12 [-0.03,+0.29], lag2 +0.04 [-0.09,+0.18], lag3 -0.18 [-0.34,-0.04], lag5 +0.08 [-0.11,+0.24], lag10 +0.13 [+0.01,+0.27], repeat_outcome +0.68 [+0.46,+0.94]
+Gemma-3-27B        correct_only acc 0.558 [0.522, 0.596]  valid 1.000  stable 0.635 volatile 0.481  since-rev 1-3/4-6/7-10 0.40/0.44/0.57
+    kappa: repeat_outcome -0.01, wsls 0.15, count_all 0.04, last5 0.20, bayes 0.20, quota (hidden) 0.01, always_A (hidden) agree 0.72
+    quota-vs-bayes disagree n=414 follow bayes 0.71; repeat-vs-bayes n=480 follow bayes 0.71
+    regression: lag1 +0.32 [+0.18,+0.48], lag2 +0.05 [-0.09,+0.21], lag3 +0.06 [-0.08,+0.20], lag5 +0.15 [+0.01,+0.29], lag10 +0.09 [-0.04,+0.22], repeat_outcome +0.02 [-0.11,+0.13]
+Gemma-3-27B        summary      acc 0.533 [0.507, 0.561]  valid 1.000  stable 0.598 volatile 0.469  since-rev 1-3/4-6/7-10 0.43/0.46/0.51
+    kappa: repeat_outcome 0.02, wsls 0.01, count_all 0.05, last5 0.09, bayes 0.08, quota (hidden) -0.05, always_A (hidden) agree 0.69
+    quota-vs-bayes disagree n=414 follow bayes 0.67; repeat-vs-bayes n=480 follow bayes 0.63
+    regression: lag1 +0.05 [-0.06,+0.17], lag2 -0.07 [-0.22,+0.07], lag3 +0.02 [-0.12,+0.16], lag5 +0.01 [-0.10,+0.12], lag10 +0.03 [-0.08,+0.14], repeat_outcome +0.05 [-0.05,+0.16]
+
+Qwen3-VL-32B       raw          acc 0.490 [0.476, 0.503]  valid 1.000  stable 0.506 volatile 0.473  since-rev 1-3/4-6/7-10 0.49/0.44/0.48
+    kappa: repeat_outcome 0.08, wsls 0.01, count_all 0.01, last5 0.01, bayes 0.02, quota (hidden) -0.09, always_A (hidden) agree 0.54
+    quota-vs-bayes disagree n=414 follow bayes 0.59; repeat-vs-bayes n=480 follow bayes 0.50
+    regression: lag1 +0.05 [-0.01,+0.12], lag2 -0.01 [-0.08,+0.05], lag3 -0.04 [-0.09,+0.02], lag5 +0.01 [-0.03,+0.05], lag10 +0.06 [+0.01,+0.10], repeat_outcome +0.08 [+0.04,+0.15]
+Qwen3-VL-32B       correct_only acc 0.523 [0.498, 0.551]  valid 1.000  stable 0.581 volatile 0.465  since-rev 1-3/4-6/7-10 0.43/0.43/0.52
+    kappa: repeat_outcome 0.02, wsls 0.05, count_all 0.03, last5 0.10, bayes 0.11, quota (hidden) -0.03, always_A (hidden) agree 0.65
+    quota-vs-bayes disagree n=414 follow bayes 0.65; repeat-vs-bayes n=480 follow bayes 0.62
+    regression: lag1 +0.08 [+0.00,+0.18], lag2 +0.06 [-0.05,+0.17], lag3 +0.04 [-0.04,+0.12], lag5 +0.04 [-0.07,+0.15], lag10 +0.06 [-0.01,+0.15], repeat_outcome +0.06 [-0.04,+0.16]
+Qwen3-VL-32B       summary      acc 0.576 [0.535, 0.616]  valid 1.000  stable 0.712 volatile 0.440  since-rev 1-3/4-6/7-10 0.36/0.43/0.51
+    kappa: repeat_outcome 0.01, wsls 0.06, count_all 0.25, last5 0.15, bayes 0.17, quota (hidden) -0.01, always_A (hidden) agree 0.90
+    quota-vs-bayes disagree n=414 follow bayes 0.79; repeat-vs-bayes n=480 follow bayes 0.78
+    regression: lag1 +0.25 [+0.05,+0.51], lag2 -0.09 [-0.30,+0.12], lag3 +0.28 [-0.00,+0.61], lag5 +0.02 [-0.26,+0.28], lag10 -0.01 [-0.29,+0.28], repeat_outcome +0.06 [-0.18,+0.30]
+
+InternVL3.5-38B    raw          acc 0.503 [0.473, 0.533]  valid 1.000  stable 0.583 volatile 0.423  since-rev 1-3/4-6/7-10 0.43/0.42/0.42
+    kappa: repeat_outcome 0.08, wsls 0.04, count_all 0.05, last5 0.06, bayes 0.08, quota (hidden) -0.18, always_A (hidden) agree 0.69
+    quota-vs-bayes disagree n=414 follow bayes 0.74; repeat-vs-bayes n=480 follow bayes 0.60
+    regression: lag1 +0.10 [-0.05,+0.26], lag2 +0.05 [-0.09,+0.20], lag3 -0.07 [-0.24,+0.12], lag5 +0.11 [-0.10,+0.27], lag10 +0.09 [-0.03,+0.22], repeat_outcome +0.15 [-0.00,+0.31]
+InternVL3.5-38B    correct_only acc 0.589 [0.548, 0.628]  valid 1.000  stable 0.708 volatile 0.469  since-rev 1-3/4-6/7-10 0.35/0.49/0.56
+    kappa: repeat_outcome -0.02, wsls 0.21, count_all 0.13, last5 0.29, bayes 0.35, quota (hidden) 0.06, always_A (hidden) agree 0.85
+    quota-vs-bayes disagree n=414 follow bayes 0.79; repeat-vs-bayes n=480 follow bayes 0.82
+    regression: lag1 +0.56 [+0.28,+0.93], lag2 +0.02 [-0.22,+0.29], lag3 +0.29 [+0.05,+0.54], lag5 +0.40 [+0.20,+0.60], lag10 +0.13 [-0.13,+0.40], repeat_outcome -0.06 [-0.25,+0.12]
+InternVL3.5-38B    summary      acc 0.590 [0.549, 0.630]  valid 1.000  stable 0.740 volatile 0.440  since-rev 1-3/4-6/7-10 0.38/0.48/0.47
+    kappa: repeat_outcome 0.01, wsls 0.07, count_all 0.68, last5 0.14, bayes 0.16, quota (hidden) -0.00, always_A (hidden) agree 0.96
+    quota-vs-bayes disagree n=414 follow bayes 0.81; repeat-vs-bayes n=480 follow bayes 0.80
+    regression: lag1 +0.71 [+0.10,+2.04], lag2 -0.13 [-0.84,+0.62], lag3 +0.25 [-0.28,+1.05], lag5 +0.39 [+0.03,+0.99], lag10 -0.02 [-0.60,+1.23], repeat_outcome +0.14 [-0.49,+1.04]

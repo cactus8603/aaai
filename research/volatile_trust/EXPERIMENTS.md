@@ -383,3 +383,11 @@ robust 資料（IID）：window:5 .675、sum_cp .663、window:10 .635、window:2
 - **探索性分析：是否依波動調整學習（2026-11-13，凍結之後；只用既有條件，不新增工作）。** 依工作坊主題（context-dependent adaptation）加入 `analyze_volatility.py`：把積分核分成穩定期與波動期各自擬合，比較最近三回合權重和的「波動／穩定」比值（配對 episode bootstrap）。固定學習率的合成 delta 學習者在同一批 episode 上的比值約 0.96（估計本身略偏低），人類的特徵（Behrens 2007、2008）應大於 1。dev 結果（4 個模型）：逐回合標正確 0.58–0.82、摘要 0.49–0.66、原始＋標正確 0.27–0.59，全部小於 1 → 模型在波動期反而較不看最近結果。held-out 用 `ho_full_coded`、`ho_full_rawcoded`、`ho_sum_all` 重做（已在 H200 tier 1）。論文正文新增「Adaptation to volatility」段，Methods 與 Limitations 註明是凍結後指定的探索性分析。
 
 - **更正（2026-11-13，同日）：上一筆「波動／穩定比值」分析不能解讀為模型沒有依波動調整學習。** 驗證：Behrens 式貝氏波動學習者（`cogmodels.volatile_belief`）在波動期的隱含學習率確實較高（held-out .100 → .115），但它的比值只有 0.84–0.90，低於固定學習率學習者的 0.96；附錄 F 的校正有效學習率對它也是 +0.002 [−0.010, 0.014]。80 回合的 episode 太短，這兩個指標都測不出依波動調整，所以論文撤回「模型在波動期不加速學習」的說法。改報告：(1) Behrens 學習者在我們的 episode 上的準確率（held-out .668 [.661, .674]，`analyze_volatility.py --reference`），作為「像人一樣的學習者」的參考；(2) 原研究的受試者不用「顧問重複上一次行為」的捷徑，模型卻照抄上一回合結果；(3) 依波動調整學習改由 Psych-101（hazard rate 操弄）檢驗。附錄 B 新增與原研究的逐項比較表（tab:behrens）。
+
+
+- **論文檢查後的分析修正與探索性補充（2026-11-13；已看過 held-out 結果）。** 主要 summary−raw 準確率檢定及原始推論輸出不變，未啟動新 GPU 或 API 推論。
+  - 修正 API reversal 對齊：只納入真正的反轉，以反轉區塊第一回合為 offset 0；報告 offset 0–2、3–6、7–9。正確答案 accuracy 與跟隨目前較準顧問的比例分開。
+  - 新增完整 48 pairs 的逐份讀出敏感度分析：先各自選較高 logit 的答案再平均，保留全部 trials，不依 candidate mass 篩選。五模型 summary−raw 差距仍為正（8.79–13.86 個百分點）；這是事後穩健性檢查，不替換既定主要讀出。
+  - stale-value regression 新增 2,000 次受試者整群 bootstrap，human–model 使用相同重抽樣；區間為未做多重比較調整的 pointwise CI，與主要 hazard-slope 檢定分開。
+  - 認知模型 CV 改為同一 episode 的兩種 cover stories 同時留出；有效單位為 `(data, split, episode_id)`。舊開發集 32 folds／held-out 96 folds 的 CV 不符合此分組，不能填入新表；文中舊 development loss 與最佳模型結論已移除。完整修正版 CPU fitting 尚待執行，既有與進行中的輸出保留。
+  - 相關全文比較與指標適用界線記錄於 `paper/README.md`。正文使用 accuracy、百分點差距及已定義的策略／回歸分析；不以 gap-normalized recovery 當作主要計分。原先指定的比值與校正有效學習率保留為附錄診斷，後者不能支持 volatility adaptation 的結論。

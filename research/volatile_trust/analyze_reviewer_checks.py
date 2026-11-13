@@ -14,6 +14,7 @@
 
 All open-model items: held-out, twin-averaged as in the main analysis. Usage: python analyze_reviewer_checks.py
 """
+import argparse
 import collections
 import json
 import sys
@@ -130,16 +131,30 @@ def position(E):
     return res
 
 
-def logit_fit(X, y, ridge=1e-4, iters=100):
+def logit_fit(X, y, ridge=1e-4, iters=100, weights=None):
+    weights = np.ones(len(y)) if weights is None else np.asarray(weights, float)
     w = np.zeros(X.shape[1])
     for _ in range(iters):
         p = 1 / (1 + np.exp(-np.clip(X @ w, -30, 30)))
-        g = X.T @ (y - p) - ridge * w
-        H = (X * (p * (1 - p))[:, None]).T @ X + ridge * np.eye(len(w))
+        g = X.T @ (weights * (y - p)) - ridge * w
+        H = (X * (weights * p * (1 - p))[:, None]).T @ X + ridge * np.eye(len(w))
         st = np.linalg.solve(H, g); w += st
         if np.abs(st).max() < 1e-9:
             break
     return w
+
+
+def cluster_weight_draws(X, y, participant, n_boot=2000, seed=20261113):
+    """Refit after resampling whole participants; sorted IDs keep paired draws aligned."""
+    ids, inverse = np.unique(participant, return_inverse=True)
+    if len(ids) < 2:
+        raise ValueError('participant bootstrap requires at least two participants')
+    rng = np.random.default_rng(seed)
+    draws = np.empty((n_boot, X.shape[1]))
+    for b in range(n_boot):
+        counts = np.bincount(rng.integers(len(ids), size=len(ids)), minlength=len(ids))
+        draws[b] = logit_fit(X, y, weights=counts[inverse])
+    return ids.tolist(), draws
 
 
 def psych101():
@@ -196,7 +211,7 @@ def psych101():
     return res
 
 
-def psych101_staleness():
+def psych101_staleness(n_boot=2000, seed=20261113):
     """Value weight when the older of the two last-observed values is fresh (seen <= 2 trials ago) vs stale
     (>= 4 trials ago), per hazard rate. A learner that forgets the unchosen machine weights stale differences less."""
     eps = {}
@@ -219,7 +234,7 @@ def psych101_staleness():
             fs = sorted((HERE / f'runs_h200/{key}/psy_text_{info}').glob('results_*.jsonl'))
             if fs:
                 agents[f'{name} ({info})'] = fs[0]
-    res = {}
+    res, sampled, human_masks = {}, {}, {}
     for ag, f in agents.items():
         Y = {}
         if f is None:
@@ -232,7 +247,7 @@ def psych101_staleness():
                 Y[(r['episode_id'], r['item'])] = 1 / (1 + np.exp(-(lg[lab[0]] - lg[lab[1]])))
         res[ag] = {}
         for h in (0.1, 0.2, 0.4):
-            X, y = [], []
+            X, y, pid, item_keys = [], [], [], []
             for (e, t), v in Y.items():
                 if eps[e]['hazard'] != h or t not in D[e]:
                     continue
@@ -240,15 +255,49 @@ def psych101_staleness():
                 fresh, stale = float(st <= 2), float(st >= 4)
                 if fresh or stale:
                     X.append([1.0, dv * fresh, dv * stale, prev, stale]); y.append(v)
-            w = logit_fit(np.array(X), np.array(y))
-            res[ag][str(h)] = dict(fresh=float(w[1]), stale=float(w[2]), ratio=float(w[2] / w[1]), n=len(y))
+                    pid.append(eps[e]['participant'])
+                    item_keys.append((e, t))
+            if ag == 'Human':
+                human_masks[h] = set(item_keys)
+            elif set(item_keys) != human_masks[h]:
+                raise ValueError(f'{ag}, h={h}: trial mask differs from the human replay comparison')
+            X, y = np.array(X), np.array(y)
+            w = logit_fit(X, y)
+            ids, draws = cluster_weight_draws(X, y, pid, n_boot=n_boot, seed=seed)
+            delta = draws[:, 2] - draws[:, 1]
+            sampled[(ag, str(h))] = (ids, delta)
+            res[ag][str(h)] = dict(fresh=float(w[1]), stale=float(w[2]), ratio=float(w[2] / w[1]), n=len(y),
+                                   n_participants=len(ids), stale_minus_fresh=float(w[2] - w[1]),
+                                   stale_minus_fresh_ci95=np.quantile(delta, [.025, .975]).tolist(),
+                                   bootstrap_replicates=n_boot, bootstrap_seed=seed)
+    # Resampling the same participant IDs couples each model to the human histories it saw.
+    for ag in res:
+        if ag == 'Human':
+            continue
+        for h, row in res[ag].items():
+            ids, delta = sampled[(ag, h)]
+            human_ids, human_delta = sampled[('Human', h)]
+            if ids != human_ids:
+                raise ValueError(f'{ag}, h={h}: participant sets differ from the human comparison')
+            row['stale_minus_fresh_model_minus_human'] = row['stale_minus_fresh'] - res['Human'][h]['stale_minus_fresh']
+            row['stale_minus_fresh_model_minus_human_ci95'] = np.quantile(delta - human_delta, [.025, .975]).tolist()
     return res
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--staleness-only', action='store_true', help='update only staleness in the existing report')
+    parser.add_argument('--bootstrap', type=int, default=2000)
+    args = parser.parse_args()
+    if args.bootstrap < 100:
+        parser.error('--bootstrap must be at least 100')
     E = episodes()
     OUT.mkdir(parents=True, exist_ok=True)
-    res = dict(judgment=judgment(E), position=position(E), psych101=psych101(), psych101_staleness=psych101_staleness())
+    if args.staleness_only:
+        res = json.loads((OUT / 'reviewer_checks.json').read_text())
+    else:
+        res = dict(judgment=judgment(E), position=position(E), psych101=psych101())
+    res['psych101_staleness'] = psych101_staleness(n_boot=args.bootstrap)
     (OUT / 'reviewer_checks.json').write_text(json.dumps(res, indent=1))
     L = ['== judgment (raw history, held-out, twin-averaged)']
     for m, r in res['judgment'].items():
@@ -268,7 +317,8 @@ def main():
                                            f" {r['frac_participants_value_pos']:.0%}>0) pers {r['persev']:+.2f}" for h, r in d.items()))
     L.append('\n== psych101 staleness (value weight fresh <= 2 vs stale >= 4 trials; ratio stale/fresh)')
     for ag, d in res['psych101_staleness'].items():
-        L.append(f"{ag:26s} " + '  '.join(f"h={h}: fresh {r['fresh']:+.2f} stale {r['stale']:+.2f} ratio {r['ratio']:.2f}" for h, r in d.items()))
+        L.append(f"{ag:26s} " + '  '.join(f"h={h}: fresh {r['fresh']:+.2f} stale {r['stale']:+.2f} ratio {r['ratio']:.2f} "
+                   f"delta {r['stale_minus_fresh']:+.2f} CI {r['stale_minus_fresh_ci95']}" for h, r in d.items()))
     (OUT / 'summary.txt').write_text('\n'.join(L))
     print('\n'.join(L))
 

@@ -203,3 +203,132 @@ def test_loeo_cv_prefers_generating_model():
     r1 = cm.loeo_cv("M1_delta", eps)
     r2 = cm.loeo_cv("M2_phase", eps)
     assert r1["n_folds"] == 6 and r2["heldout_nll"] < r1["heldout_nll"]
+
+
+EPISODE_KEYS = ("data", "split", "episode_id")
+
+
+def _repeated_rows():
+    # The two views of an episode have identical targets. Leaving just one view
+    # out gives the bias fit access to its held-out episode's target distribution.
+    return [dict(data="toy", split="held_out", episode_id=f"e{i}", domain=slot,
+                 model="toyVLM", format="raw", a_correct=[1, 0, 1, 0],
+                 phase=["stable", "stable", "volatile", "volatile"], y=[p] * 4)
+            for i, p in enumerate((0.1, 0.9)) for slot in ("pet", "scenario")]
+
+
+def test_grouped_cv_excludes_other_view_and_scores_both():
+    rows = _repeated_rows()
+    grouped = cm.loeo_cv("M0_bias", rows, n_restarts=1, episode_group_by=EPISODE_KEYS)
+    # Each fold must train only on the opposite episode: predict .9 for .1 and
+    # .1 for .9. This analytic loss fails if either held-out view leaks into train.
+    expected = -(0.1 * np.log(0.9) + 0.9 * np.log(0.1))
+    assert grouped["heldout_nll_per_trial"] == pytest.approx(expected, abs=1e-5)
+    assert grouped["n_folds"] == grouped["n_independent_episodes"] == 2
+    assert grouped["n_rows"] == 4 and grouped["n_trials"] == 16
+    assert [p["n_rows"] for p in grouped["per_episode"]] == [2, 2]
+    assert [p["n"] for p in grouped["per_episode"]] == [8, 8]
+    assert grouped["episode_group_by"] == list(EPISODE_KEYS)
+    assert grouped["per_episode"][0]["episode_group"]["episode_id"] == "e0"
+
+    # Omission preserves the generic API's former row-level behavior.
+    legacy = cm.loeo_cv("M0_bias", rows, n_restarts=1)
+    assert legacy["n_folds"] == 4
+    assert legacy["heldout_nll_per_trial"] < grouped["heldout_nll_per_trial"]
+
+    reordered = cm.loeo_cv("M0_bias", [rows[i] for i in (3, 0, 2, 1)], n_restarts=1,
+                            episode_group_by=EPISODE_KEYS)
+    assert reordered["heldout_nll"] == pytest.approx(grouped["heldout_nll"])
+    one = cm.loeo_cv("M0_bias", rows, n_restarts=1, folds=[1], episode_group_by=EPISODE_KEYS)
+    assert one["n_folds"] == 1 and one["n_rows"] == 2 and one["n_trials"] == 8
+    assert one["per_episode"][0]["episode_id"] == "e1"
+
+
+def test_grouped_cv_keeps_dataset_and_split_in_identity():
+    rows = _repeated_rows()[:2]
+    rows += [dict(rows[0], data="other"), dict(rows[0], split="development")]
+    result = cm.loeo_cv("M0_bias", rows, n_restarts=1, episode_group_by=EPISODE_KEYS)
+    assert result["n_folds"] == 3
+    assert [p["n_rows"] for p in result["per_episode"]] == [2, 1, 1]
+    with pytest.raises(ValueError, match="at least two independent episodes"):
+        cm.loeo_cv("M0_bias", rows[:2], episode_group_by=EPISODE_KEYS)
+
+
+def _elr_row(eid, value, **meta):
+    return dict(data="toy", split="held_out", episode_id=eid,
+                eff_lr_calibrated={"calibrated": {"diff_signed": value, "diff_pe": value}}, **meta)
+
+
+def test_elr_groups_views_before_uncertainty_and_is_duplicate_invariant():
+    rows = [_elr_row("e0", 1.0), _elr_row("e0", 3.0), _elr_row("e1", 10.0)]
+    grouped = cm.summarize_calibrated_elr(rows, EPISODE_KEYS)
+    for k, r in grouped.items():
+        assert r["n"] == 2 and r["n_rows"] == r["n_valid_rows"] == 3
+        assert r["mean"] == pytest.approx(6.0)  # equal weight for means 2 and 10
+        assert r["sd"] == pytest.approx(np.std([2, 10], ddof=1))
+        assert r["t"] == pytest.approx(1.5)
+        doubled = cm.summarize_calibrated_elr(rows + rows, EPISODE_KEYS)[k]
+        for statistic in ("n", "mean", "sd", "t"):
+            assert doubled[statistic] == pytest.approx(r[statistic])
+    legacy = cm.summarize_calibrated_elr(rows)["diff_signed"]
+    assert legacy["n"] == 3 and legacy["mean"] == pytest.approx(14 / 3)
+
+
+def test_elr_missing_values_and_dataset_identity():
+    rows = [_elr_row("e0", 2), _elr_row("e0", float("nan")), _elr_row("e1", float("nan"))]
+    rows += [dict(rows[0], data="other", eff_lr_calibrated={"calibrated": {"diff_signed": 6, "diff_pe": 6}})]
+    r = cm.summarize_calibrated_elr(rows, EPISODE_KEYS)["diff_signed"]
+    assert r["n"] == 2 and r["n_rows"] == 4 and r["n_valid_rows"] == 2
+    assert r["mean"] == pytest.approx(4)
+
+
+def test_fit_file_validates_group_metadata_before_fitting(tmp_path, monkeypatch):
+    inp = tmp_path / "missing_id.jsonl"
+    inp.write_text(json.dumps({"data": "toy", "split": "held_out"}) + "\n")
+
+    def should_not_fit(*args):
+        pytest.fail("expensive fitting started before validating episode identity")
+
+    monkeypatch.setattr(cm, "_fit_task", should_not_fit)
+    with pytest.raises(ValueError, match="missing grouping metadata.*episode_id"):
+        cm.fit_file(str(inp), episode_group_by=EPISODE_KEYS)
+
+
+def test_fit_file_propagates_episode_grouping(tmp_path):
+    inp = tmp_path / "grouped.jsonl"
+    rows = []
+    for i in range(2):
+        sched = cm.make_schedule(rng=np.random.default_rng(i))
+        for slot, beta in (("pet", 8), ("scenario", 12)):
+            y = cm.simulate("M1_delta", [0.3, beta, 0.0], sched)
+            rows.append(dict(sched, y=y.tolist(), model="toyVLM", format="raw", data="toy",
+                             split="held_out", episode_id=f"e{i}", domain=slot))
+    inp.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    outp = tmp_path / "fits.json"
+    cm.main(["fit", "--input", str(inp), "--output", str(outp), "--models", "M0_bias", "M1_delta",
+             "--group-by", "model", "format", "--episode-group-by", *EPISODE_KEYS,
+             "--restarts", "1", "--cv-restarts", "1", "--jobs", "1", "--no-pooled"])
+    out = json.loads(outp.read_text())
+    g = "model=toyVLM|format=raw"
+    assert out["episode_group_by"] == list(EPISODE_KEYS)
+    assert len(out["episodes"]) == 4  # preserve the separate cover-story fits
+    assert out["cv"][g]["M0_bias"]["n_folds"] == 2
+    assert out["cv"][g]["M0_bias"]["n_rows"] == 4
+    assert out["eff_lr_calibrated_summary"][g]["diff_signed"]["n"] == 2
+    assert out["comparison_heuristic"][g]["n_rows"] == 4
+    assert out["comparison_heuristic"][g]["n_independent_episodes"] == 2
+    assert "descriptive only" in out["comparison_heuristic"][g]["unit"]
+
+
+def test_volatile_adapter_requests_episode_grouping(tmp_path, monkeypatch):
+    import analyze_cogmodels as ac
+
+    def fake_fit_file(path, **kwargs):
+        assert kwargs["episode_group_by"] == EPISODE_KEYS
+        assert len(open(path).readlines()) == 4
+        return {"cv": {}}
+
+    monkeypatch.setattr(ac, "export", lambda *args: [dict(r, p_a=[0.8] * 4) for r in _repeated_rows()])
+    monkeypatch.setattr(cm, "fit_file", fake_fit_file)
+    monkeypatch.setattr(sys, "argv", ["analyze_cogmodels.py", "unused", "--out", str(tmp_path / "fits.json")])
+    ac.main()

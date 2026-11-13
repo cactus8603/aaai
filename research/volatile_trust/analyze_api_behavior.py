@@ -8,7 +8,8 @@ as the API answers.
 
 Per agent x history format:
   * accuracy (per-copy choices, averaged within episode pair, then over pairs; 95% bootstrap CI over pairs)
-  * accuracy by phase, and in the volatile phase by trials since the last reversal (1-3, 4-6, 7-10)
+  * accuracy by phase; separately, accuracy and hard-choice follow-better in the volatile phase
+    on the first 1-3, middle 4-7, and last 8-10 trials after a genuine reversal (offsets 0-2, 3-6, 7-9)
   * agreement (%, Cohen's kappa) with strategies: repeat the previous outcome, win-stay/lose-shift on advisors
     (follow the advisor correct on the previous trial), all-trial count, last-5 count, Bayesian volatility
     learner, and two diagnostics that use hidden generator information (outcome quota, always follow A)
@@ -30,6 +31,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import cogmodels as cm  # noqa: E402
+from analyze_main import true_reversals  # noqa: E402
 
 EPISODES = [f'hel{i:03d}' for i in range(24)]
 TRIALS = list(range(4, 81, 4))
@@ -39,6 +41,7 @@ OPEN = {'Qwen3-VL-8B': 'qwen3vl8b', 'InternVL3.5-8B': 'internvl8b', 'Gemma-3-27B
 OPEN_RUNS = {'raw': 'ho_full_text', 'correct_only': 'ho_full_coded', 'summary': 'ho_sum_all'}
 CONDS = ['raw', 'correct_only', 'summary']
 LAGS = 10
+REVERSAL_WINDOWS = ((1, 3), (4, 7), (8, 10))
 RULES = ['repeat_outcome', 'wsls', 'count_all', 'last5', 'bayes', 'quota (hidden)', 'always_A (hidden)']
 
 
@@ -74,8 +77,34 @@ def rules_for(ep):
 
 
 def since_reversal(ep):
-    rev = [0] + sorted(ep['reversals'])
-    return [min(t - r for r in rev if r < t) if any(r < t for r in rev) else t for t in range(1, len(ep['trials']) + 1)]
+    """Zero-based offset from the latest genuine reversal; None before the first.
+
+    Match analyze_main: r > 1 excludes the initial block, and r <= t includes the
+    reversal trial itself at offset 0. Window selection below retains offsets 0-9.
+    """
+    rev = true_reversals(ep)
+    return [t - max(prior) if (prior := [r for r in rev if r <= t]) else None
+            for t in range(1, len(ep['trials']) + 1)]
+
+
+def reversal_summary(rows):
+    """Distinct accuracy and follow-better estimates, with episode-pair CIs."""
+    out = {}
+    for lo, hi in REVERSAL_WINDOWS:
+        sel = [r for r in rows if r['phase'] == 'volatile' and r['sr'] is not None
+               and lo - 1 <= r['sr'] <= hi - 1]
+        entry = dict(trials_after_reversal=[lo, hi], offsets=[lo - 1, hi - 1], n_items=len(sel))
+        for metric in ('correct', 'follow_better'):
+            by_pair = collections.defaultdict(list)
+            for r in sel:
+                if r[metric] is not None:
+                    by_pair[r['base']].append(r[metric])
+            v = [float(np.mean(x)) for x in by_pair.values()]
+            entry['accuracy' if metric == 'correct' else metric] = dict(
+                estimate_ci95=boot_ci(v) if v else None, n_pairs=len(v),
+                n_items=sum(map(len, by_pair.values())))
+        out[f'{lo}_{hi}'] = entry
+    return out
 
 
 def load_api(path):
@@ -135,6 +164,7 @@ def analyse(choices, eps, R, SR):
             continue
         ep = eps[eid]; tr = ep['trials'][t - 1]
         rows.append(dict(eid=eid, base=eid.rstrip('t'), t=t, c=c, correct=float(c == tr['a_correct']),
+                         follow_better=float(c == (tr['p_a'] > 0.5)) if tr['p_a'] != 0.5 else None,
                          phase=tr['phase'], sr=SR[eid][t - 1], **{k: R[eid][k][t - 1] for k in RULES}))
     n_items = len(choices); n_valid = len(rows)
     by_pair = collections.defaultdict(list)
@@ -145,10 +175,7 @@ def analyse(choices, eps, R, SR):
     for ph in ('stable', 'volatile'):
         out[f'acc_{ph}'] = boot_ci([np.mean([r['correct'] for r in v if r['phase'] == ph]) for v in by_pair.values()
                                     if any(r['phase'] == ph for r in v)])
-    for lo, hi in ((1, 3), (4, 6), (7, 10)):
-        sel = [r for r in rows if r['phase'] == 'volatile' and lo <= r['sr'] <= hi]
-        out[f'acc_volatile_since_rev_{lo}_{hi}'] = dict(acc=float(np.mean([r['correct'] for r in sel])) if sel else None,
-                                                       n=len(sel))
+    out['volatile_reversal_windows'] = reversal_summary(rows)
     agree = {}
     for k in RULES:
         sel = [r for r in rows if not np.isnan(r[k]) and r[k] != 0.5]
@@ -196,7 +223,13 @@ def main():
     agents = {k: load_api(v) for k, v in API.items()}
     agents.update({k: load_open(v) for k, v in OPEN.items()})
     # rules alone on the same items (each rule's choice; ties count .5)
-    res = dict(rules={}, agents={})
+    res = dict(rules={}, agents={}, reversal_definition=dict(
+        genuine_reversal='r > 1; latest r <= t; offset = t - r; initial block excluded',
+        windows='first 1-3 / middle 4-7 / last 8-10 trials = offsets 0-2 / 3-6 / 7-9',
+        accuracy='hard choice agrees with realized outcome (a_correct)',
+        follow_better='hard choice follows scheduled better advisor (p_a > 0.5); p_a = 0.5 excluded',
+        aggregation='per-copy scores averaged within episode pair, then equal weight over pairs',
+        uncertainty='95% percentile bootstrap CI over episode pairs; 10000 resamples, seed 0'))
     for k in RULES:
         acc = collections.defaultdict(list)
         for e, ep in eps.items():
@@ -208,13 +241,22 @@ def main():
         res['agents'][ag] = {c: analyse(d[c], eps, R, SR) for c in CONDS if c in d}
     a.out.mkdir(parents=True, exist_ok=True)
     (a.out / 'api_behavior.json').write_text(json.dumps(res, indent=1))
-    L = ['rules alone (same items): ' + ', '.join(f'{k} {v[0]:.3f}' for k, v in res['rules'].items()), '']
+    L = ['rules alone (same items): ' + ', '.join(f'{k} {v[0]:.3f}' for k, v in res['rules'].items()),
+         'Reversal windows: r > 1, latest r <= t; trials 1-3/4-7/8-10 = offsets 0-2/3-6/7-9; initial block excluded.',
+         'Reversal accuracy and hard-choice follow-better are distinct; means and 95% CIs use episode pairs.', '']
     for ag, dc in res['agents'].items():
         for c, r in dc.items():
             ag_ = r['agreement']; rg = r['regression']
             L.append(f"{ag:18s} {c:12s} acc {r['acc'][0]:.3f} [{r['acc'][1]:.3f}, {r['acc'][2]:.3f}]  valid {r['valid_rate']:.3f}  "
-                     f"stable {r['acc_stable'][0]:.3f} volatile {r['acc_volatile'][0]:.3f}  since-rev 1-3/4-6/7-10 "
-                     + '/'.join(f"{r[f'acc_volatile_since_rev_{lo}_{hi}']['acc']:.2f}" for lo, hi in ((1, 3), (4, 6), (7, 10))))
+                     f"stable {r['acc_stable'][0]:.3f} volatile {r['acc_volatile'][0]:.3f}")
+            for metric in ('accuracy', 'follow_better'):
+                values = []
+                for lo, hi in REVERSAL_WINDOWS:
+                    ent = r['volatile_reversal_windows'][f'{lo}_{hi}'][metric]
+                    ci = ent['estimate_ci95']
+                    values.append(f"{lo}-{hi}: {ci[0]:.3f} [{ci[1]:.3f},{ci[2]:.3f}] n={ent['n_items']} pairs={ent['n_pairs']}"
+                                  if ci else f'{lo}-{hi}: undefined')
+                L.append(f"    reversal {metric}: " + '; '.join(values))
             L.append('    kappa: ' + ', '.join(f"{k} {v['kappa']:.2f}" if v['kappa'] is not None else f"{k} agree {v['agree']:.2f}"
                                            for k, v in ag_.items()))
             L.append(f"    quota-vs-bayes disagree n={r['quota_vs_bayes_disagree']['n']} follow bayes {r['quota_vs_bayes_disagree']['follow_bayes']:.2f}; "

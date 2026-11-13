@@ -1,0 +1,104 @@
+All-trial held-out readout sensitivity; no candidate-mass selection.
+t = 2..80; both counterbalanced copies; equal pet/scenario weights; 48 episode pairs.
+Accuracy %, paired gaps in percentage points; 95% percentile bootstrap CIs over pairs.
+Exact-zero logits receive half credit in both scoring methods.
+
+Qwen3-VL-8B
+  twin_averaged_logit
+    raw         : 48.63 [47.28, 49.96]
+    correct_only: 61.87 [60.63, 62.95]
+    summary     : 62.08 [61.22, 62.88]
+    correct_only_minus_raw: +13.24 [+11.62, +14.74]
+    summary_minus_raw: +13.45 [+12.18, +14.65]
+    summary_minus_correct_only: +0.21 [-0.94, +1.40]
+  per_copy_hard_choice
+    raw         : 49.27 [48.20, 50.28]
+    correct_only: 58.65 [57.48, 59.70]
+    summary     : 59.41 [58.67, 60.12]
+    correct_only_minus_raw: +9.38 [+8.21, +10.50]
+    summary_minus_raw: +10.15 [+9.03, +11.21]
+    summary_minus_correct_only: +0.76 [-0.15, +1.71]
+  candidate mass (same all-trial mask, individual copies)
+    raw         : mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    correct_only: mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    summary     : mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+
+InternVL3.5-8B
+  twin_averaged_logit
+    raw         : 47.86 [46.81, 48.95]
+    correct_only: 63.57 [62.80, 64.16]
+    summary     : 63.46 [63.04, 63.83]
+    correct_only_minus_raw: +15.70 [+14.29, +16.97]
+    summary_minus_raw: +15.60 [+14.46, +16.67]
+    summary_minus_correct_only: -0.11 [-0.74, +0.62]
+  per_copy_hard_choice
+    raw         : 48.99 [48.23, 49.75]
+    correct_only: 61.00 [59.94, 61.95]
+    summary     : 61.88 [61.24, 62.49]
+    correct_only_minus_raw: +12.01 [+10.71, +13.24]
+    summary_minus_raw: +12.89 [+11.91, +13.88]
+    summary_minus_correct_only: +0.88 [+0.05, +1.81]
+  candidate mass (same all-trial mask, individual copies)
+    raw         : mean 0.999; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    correct_only: mean 0.995; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    summary     : mean 0.997; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+
+Gemma-3-27B
+  twin_averaged_logit
+    raw         : 47.02 [45.65, 48.34]
+    correct_only: 60.18 [59.05, 61.23]
+    summary     : 61.75 [61.00, 62.46]
+    correct_only_minus_raw: +13.16 [+11.58, +14.79]
+    summary_minus_raw: +14.73 [+13.17, +16.31]
+    summary_minus_correct_only: +1.57 [+0.58, +2.53]
+  per_copy_hard_choice
+    raw         : 47.15 [46.10, 48.17]
+    correct_only: 56.25 [55.27, 57.21]
+    summary     : 55.94 [54.79, 57.07]
+    correct_only_minus_raw: +9.10 [+7.67, +10.53]
+    summary_minus_raw: +8.79 [+7.29, +10.25]
+    summary_minus_correct_only: -0.31 [-1.18, +0.54]
+  candidate mass (same all-trial mask, individual copies)
+    raw         : mean 1.000; mass < .5 0.01%; greedy valid candidate 99.99%; n=15168
+    correct_only: mean 0.981; mass < .5 1.54%; greedy valid candidate 98.50%; n=15168
+    summary     : mean 0.604; mass < .5 39.54%; greedy valid candidate 60.55%; n=15168
+
+Qwen3-VL-32B
+  twin_averaged_logit
+    raw         : 46.80 [45.42, 48.19]
+    correct_only: 62.80 [62.08, 63.48]
+    summary     : 63.15 [62.70, 63.57]
+    correct_only_minus_raw: +16.01 [+14.58, +17.46]
+    summary_minus_raw: +16.35 [+14.99, +17.68]
+    summary_minus_correct_only: +0.34 [-0.42, +1.11]
+  per_copy_hard_choice
+    raw         : 48.31 [47.70, 48.92]
+    correct_only: 58.40 [57.44, 59.36]
+    summary     : 62.16 [61.69, 62.62]
+    correct_only_minus_raw: +10.09 [+9.06, +11.14]
+    summary_minus_raw: +13.86 [+13.13, +14.58]
+    summary_minus_correct_only: +3.76 [+3.00, +4.54]
+  candidate mass (same all-trial mask, individual copies)
+    raw         : mean 0.995; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    correct_only: mean 0.993; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    summary     : mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+
+InternVL3.5-38B
+  twin_averaged_logit
+    raw         : 54.91 [53.81, 55.96]
+    correct_only: 62.49 [61.74, 63.20]
+    summary     : 63.29 [62.87, 63.67]
+    correct_only_minus_raw: +7.58 [+6.49, +8.73]
+    summary_minus_raw: +8.39 [+7.41, +9.36]
+    summary_minus_correct_only: +0.80 [-0.08, +1.64]
+  per_copy_hard_choice
+    raw         : 53.90 [53.00, 54.82]
+    correct_only: 61.68 [60.96, 62.38]
+    summary     : 63.14 [62.74, 63.52]
+    correct_only_minus_raw: +7.78 [+6.86, +8.68]
+    summary_minus_raw: +9.24 [+8.39, +10.05]
+    summary_minus_correct_only: +1.46 [+0.69, +2.20]
+  candidate mass (same all-trial mask, individual copies)
+    raw         : mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    correct_only: mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168
+    summary     : mean 1.000; mass < .5 0.00%; greedy valid candidate 100.00%; n=15168

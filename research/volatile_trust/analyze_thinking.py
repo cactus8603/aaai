@@ -5,13 +5,18 @@ Inputs
              run_metadata_shard{i}of{n}.jsonl and _COMPLETE_shard{i}of{n} markers. Shards of one job are merged.
   --direct : direct-answer runs of the same checkpoint (run_volatile results_shard*.jsonl, e.g. dev_full_text,
              dev_sum_all; run_controls controls*.jsonl, e.g. dev_controls) for the matched comparison.
+  --cross-checkpoint E9_MODEL_ID DIRECT_MODEL_ID : explicitly request a separate matched comparison
+             across checkpoints (e.g. Qwen/Qwen3-VL-8B-Thinking and Qwen/Qwen3-VL-8B-Instruct).
+             This does not relax the same-checkpoint gate and does not isolate a reasoning-only effect.
 
 Units
   group     = (model_id@revision, reasoning_mode). Every row of a group must share one fingerprint apart from
               history_mode / history_format (revision, data hash, hazard, max_new_tokens, pixels); a mix is refused
               in every mode. Rows of the direct-answer side must come from the same model_id AND revision and the
-              same episodes file, otherwise the comparison is refused.
-  condition = control name ('control|easy_short', ...) or main arm '<A|C>|<history_mode>|<history_format>|<readout>'.
+              same episodes file, otherwise the same-checkpoint comparison is refused. An explicitly
+              requested cross-checkpoint comparison permits different IDs/revisions but requires a single
+              identified revision on each side and the same episode/trial/domain matching and completeness.
+  condition = control name ('control|easy_short', ...) or main arm '<A|B|C>|<history_mode>|<history_format>|<readout>'.
 
 Per group x condition (rows, both twins counted separately; CIs: bootstrap over episode pairs)
   valid_rate         share of rows with a valid, naturally generated answer (== natural readout; checked)
@@ -67,6 +72,8 @@ DEFAULT_CONTROLS = ['explicit_rel', 'easy_short', 'easy_short_coded', 'easy_long
 E9_SPEC = dict(split='development', domain='scenario', control_t=[40, 80], main_trials=[20, 40, 60, 80],
                readouts=['choice'])
 E9_JOBS = {('full', 'raw'): DEFAULT_CONTROLS, ('sum_all', 'raw'): []}
+# The H200 job plan also includes a correctness-only arm; older E9 plans omit it.
+E9_OPTIONAL_JOBS = {('full', 'coded'): []}
 GROUP_FP_KEYS = ('model_id', 'model_revision', 'data_sha256', 'reasoning_mode', 'hazard', 'max_new_tokens', 'pixels')
 TREATMENTS = ('valid_only', 'invalid_wrong', 'invalid_half')
 _SHARD_RE = re.compile(r'thinking_shard(\d+)of(\d+)\.jsonl$')
@@ -314,10 +321,11 @@ def spec_deviation(args: dict):
         if got != v:
             out.append(f'{k}={got!r} (spec {v!r})')
     hk = (args.get('history_mode'), args.get('history_format'))
-    if hk not in E9_JOBS:
+    jobs = E9_JOBS | E9_OPTIONAL_JOBS
+    if hk not in jobs:
         out.append(f'history {hk} not an E9 job')
-    elif (am._parse_arg(args.get('controls')) or []) != E9_JOBS[hk]:
-        out.append(f'controls={am._parse_arg(args.get("controls"))!r} (spec {E9_JOBS[hk]!r})')
+    elif (am._parse_arg(args.get('controls')) or []) != jobs[hk]:
+        out.append(f'controls={am._parse_arg(args.get("controls"))!r} (spec {jobs[hk]!r})')
     return '; '.join(out)
 
 
@@ -568,17 +576,43 @@ def matched_comparison(e9_rows, d_items, n_boot=10000, seed=0):
 
 # ----------------------------------------------------------------------------- driver
 
-def analyze(e9_paths, direct_paths=(), episodes=None, partial=False, n_boot=10000, seed=0):
+def compare_direct_rows(g, rs, direct_rows, strict, n_boot, seed):
+    """Shared episode/trial/domain matching; model identity is checked by the caller."""
+    shas = {r['_ep_sha'] for r in direct_rows} | {r['_ep_sha'] for r in rs}
+    if len(shas) > 1:
+        raise AnalysisError(f'{_group_label(g)}: E9 and direct rows use different episodes files (refused)')
+    slots = {r.get('domain_slot') for r in rs if r.get('task') == 'main'}
+    ekeys = {(r['_cond'], r['_base'], r['t'], r['domain']) for r in rs}
+    direct_rows = [r for r in direct_rows if (r['_cond'], r['_base'], r['t'], r['domain']) in ekeys and
+                   (r['_cond'].startswith('control|') or r.get('domain_slot') in slots)]
+    d_items, ip = direct_items(direct_rows, strict)
+    matched = matched_comparison(rs, d_items, n_boot, seed)
+    matched['direct_problems'] = ip
+    matched['direct_runs'] = sorted({r['_src'] for r in direct_rows})
+    probs = list(ip)
+    if matched['unmatched_e9_items']:
+        probs.append(f"{len(matched['unmatched_e9_items'])} E9 items have no direct counterpart "
+                     f"(e.g. {matched['unmatched_e9_items'][:2]})")
+    if strict and probs:
+        raise AnalysisError(f'{_group_label(g)} matched comparison refused (use --partial):\n  '
+                            + '\n  '.join(probs[:20]))
+    return matched
+
+
+def analyze(e9_paths, direct_paths=(), episodes=None, partial=False, n_boot=10000, seed=0,
+            cross_checkpoint_pairs=()):
     strict = not partial
     rows, info = load_e9(e9_paths, episodes, strict)
     by_group = defaultdict(list)
     for r in rows:
         by_group[r['_group']].append(r)
     res = dict(mode='partial' if partial else 'formal', e9_inputs=info, groups={}, matched={},
+               cross_checkpoint_matched={},
                note=('P after reasoning is conditional on the generated reasoning and is not the same quantity as '
                      'the direct-answer P. FORCED_* columns come from forced read-outs and are excluded from all '
                      'accuracy and P numbers. Thinking and Instruct are different checkpoints; the main comparison '
-                     'is CoT vs direct answering of the same checkpoint (R07).'))
+                     'is CoT vs direct answering of the same checkpoint (R07). Explicit cross-checkpoint '
+                     'comparisons are reported separately and cannot attribute differences solely to reasoning.'))
     for g, rs in sorted(by_group.items(), key=str):
         by_cond = defaultdict(list)
         for r in rs:
@@ -596,25 +630,30 @@ def analyze(e9_paths, direct_paths=(), episodes=None, partial=False, n_boot=1000
             if revs != {rev}:
                 raise AnalysisError(f'{_group_label(g)}: direct rows come from revision(s) {sorted(map(str, revs))}, '
                                     f'not {rev} (different checkpoint; refused)')
-            shas = {r['_ep_sha'] for r in same} | {r['_ep_sha'] for r in rs}
-            if len(shas) > 1:
-                raise AnalysisError(f'{_group_label(g)}: E9 and direct rows use different episodes files (refused)')
-            slots = {r.get('domain_slot') for r in rs if r.get('task') == 'main'}
-            ekeys = {(r['_cond'], r['_base'], r['t'], r['domain']) for r in rs}
-            same = [r for r in same if (r['_cond'], r['_base'], r['t'], r['domain']) in ekeys and
-                    (r['_cond'].startswith('control|') or r.get('domain_slot') in slots)]
-            d_items, ip = direct_items(same, strict)
-            m = matched_comparison(rs, d_items, n_boot, seed)
-            m['direct_problems'] = ip
-            m['direct_runs'] = sorted({r['_src'] for r in same})
-            probs = list(ip)
-            if m['unmatched_e9_items']:
-                probs.append(f"{len(m['unmatched_e9_items'])} E9 items have no direct counterpart "
-                             f"(e.g. {m['unmatched_e9_items'][:2]})")
-            if strict and probs:
-                raise AnalysisError(f'{_group_label(g)} matched comparison refused (use --partial):\n  '
-                                    + '\n  '.join(probs[:20]))
-            res['matched'][_group_label(g)] = m
+            res['matched'][_group_label(g)] = compare_direct_rows(g, rs, same, strict, n_boot, seed)
+    elif cross_checkpoint_pairs:
+        raise AnalysisError('--cross-checkpoint requires --direct inputs')
+    for source_id, direct_id in cross_checkpoint_pairs:
+        if source_id == direct_id:
+            raise AnalysisError('cross-checkpoint pairs must have different model IDs; use the strict same-checkpoint comparison')
+        sources = [(g, rs) for g, rs in by_group.items() if g[0] == source_id]
+        direct_rows = [r for r in drows if r['_model_id'] == direct_id]
+        if not sources or not direct_rows:
+            raise AnalysisError(f'cross-checkpoint {source_id} vs {direct_id}: requested model has no input rows')
+        revisions = {r['_rev'] for r in direct_rows}
+        if len(revisions) != 1 or None in revisions or '' in revisions:
+            raise AnalysisError(f'cross-checkpoint {direct_id}: require one known direct revision, got {revisions}')
+        direct_rev = next(iter(revisions))
+        for g, rs in sources:
+            if not g[1]:
+                raise AnalysisError(f'cross-checkpoint {source_id}: require a known E9 revision')
+            m = compare_direct_rows(g, rs, direct_rows, strict, n_boot, seed)
+            m.update(comparison_type='cross_checkpoint', source_model_id=source_id, source_revision=g[1],
+                     source_mode=g[2], direct_model_id=direct_id, direct_revision=direct_rev,
+                     interpretation='Matched behavioral comparison across checkpoints; training, prompting and readout '
+                                    'can differ, so differences cannot be attributed solely to reasoning.')
+            label = f'{_group_label(g)} vs {am.short_model(direct_id)}@{direct_rev[:8]}'
+            res['cross_checkpoint_matched'][label] = m
     return res
 
 
@@ -647,8 +686,15 @@ def to_markdown(res):
                      f"| {f(s['forced_rate'])} | {f(s['reasoning_tokens_mean'], 0)} / {f(s['reasoning_tokens_median'], 0)} "
                      f"| {s['generated_tokens_total']} | {f(s['generated_tokens_per_valid_answer'], 0)} "
                      f"| {f(s['p_natural'])} | {f(s['mass_natural'])} | {s['FORCED_n']} / {f(s['FORCED_p'])} |")
-    for g, m in res.get('matched', {}).items():
-        L += ['', f'## Matched comparison: {g} vs direct answering (same checkpoint)', '',
+    comparisons = [(f'Matched comparison: {g} vs direct answering (same checkpoint)', m)
+                   for g, m in res.get('matched', {}).items()]
+    comparisons += [(f'Cross-checkpoint matched comparison: {g}', m)
+                    for g, m in res.get('cross_checkpoint_matched', {}).items()]
+    for title, m in comparisons:
+        L += ['', f'## {title}', '']
+        if m.get('interpretation'):
+            L += [m['interpretation'], '']
+        L += [
               f"Direct runs: {', '.join(m['direct_runs'])}. Unmatched E9 items: {len(m['unmatched_e9_items'])}. "
               'diff = E9 - direct; unit = episode pair (twins averaged where both are available).', '',
               '| condition | treatment | items | pairs | acc E9 | acc direct | diff [95% CI] | p (Wilcoxon) |',
@@ -676,7 +722,11 @@ def to_markdown(res):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('runs', nargs='+', help='E9 run directories (searched recursively) or thinking_shard files')
-    ap.add_argument('--direct', nargs='*', default=[], help='direct-answer run dirs of the same checkpoint')
+    ap.add_argument('--direct', nargs='*', default=[],
+                    help='direct-answer run dirs: same checkpoint or explicitly mapped with --cross-checkpoint')
+    ap.add_argument('--cross-checkpoint', nargs=2, action='append', default=[],
+                    metavar=('E9_MODEL_ID', 'DIRECT_MODEL_ID'),
+                    help='explicit separate comparison across model IDs using the supplied --direct runs; repeatable')
     ap.add_argument('--out-dir', default=str(HERE / 'analysis'))
     ap.add_argument('--tag', default='e9')
     ap.add_argument('--partial', action='store_true',
@@ -686,7 +736,8 @@ def main(argv=None):
     ap.add_argument('--episodes', default=None, help='override episodes.jsonl (default: run metadata data_dir)')
     a = ap.parse_args(argv)
     try:
-        res = analyze(a.runs, a.direct, a.episodes, a.partial, a.n_boot, a.seed)
+        res = analyze(a.runs, a.direct, a.episodes, a.partial, a.n_boot, a.seed,
+                      cross_checkpoint_pairs=a.cross_checkpoint)
     except AnalysisError as e:
         sys.exit(f'ERROR: {e}')
     od = Path(a.out_dir)

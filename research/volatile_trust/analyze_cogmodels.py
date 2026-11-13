@@ -3,7 +3,9 @@
 Exports each episode pair's choice probabilities (averaged over the counterbalanced copies, label-aligned) per
 model x history format x cover-story slot into the JSONL format of cogmodels.py, then runs cogmodels.fit_file:
 per-episode fits, leave-one-episode-out cross-validated comparison of M0-M4 (the recommended comparison), and the
-calibrated volatile-minus-stable effective learning rate. Text reports, choice readout.
+calibrated volatile-minus-stable effective learning rate. Both cover-story rows of
+the same (data, split, episode_id) are held out together in CV and averaged within
+episode for ELR uncertainty. Text reports, choice readout.
 
 The analysis plan restricts learning-rate interpretation to conditions in which the model tracks the better
 advisor (stable-phase following >= 0.6) and uses stated reliability (>= 0.8); the gate is reported per group.
@@ -24,6 +26,7 @@ import cogmodels as cm  # noqa: E402
 
 ARMS = {'A|full|text': 'raw', 'A+|full|text': 'raw_plus_correct', 'B|full|text': 'correct_only',
         'C|sum_all|text': 'summary'}
+EPISODE_GROUP_BY = ('data', 'split', 'episode_id')
 
 
 def export(run_dirs, partial):
@@ -68,7 +71,7 @@ def main():
         for e in eps:
             f.write(json.dumps(e) + '\n')
     res = cm.fit_file(str(jl), group_by=['model', 'format'], n_restarts=a.restarts, jobs=a.jobs, pooled=False,
-                      cv=True, cv_restarts=2)
+                      cv=True, cv_restarts=2, episode_group_by=EPISODE_GROUP_BY)
     gate = {}
     for e in eps:
         gate.setdefault(f"model={e['model']}|format={e['format']}", []).append(stable_following(e))
@@ -80,6 +83,7 @@ def main():
         ranked = sorted((m for m in d if m != 'best_by_cv'), key=lambda m: d[m]['heldout_nll_per_trial'])
         elr = res['eff_lr_calibrated_summary'].get(g, {})
         lines.append(f"{g:45} best {best:12} nll/trial {d[best]['heldout_nll_per_trial']:.3f}  2nd {ranked[1]:12} "
+                     f"episodes {d[best]['n_independent_episodes']} rows {d[best]['n_rows']}  "
                      f"stable-following {res['stable_following'].get(g, float('nan')):.2f}  "
                      f"ELR {json.dumps(elr)[:120]}")
     print('\n'.join(lines))

@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from figure_pdf import save_outlined_pdf
 
 import matplotlib
 matplotlib.use('Agg')
@@ -216,7 +217,10 @@ def draw_teaser(data, out):
             if extension == 'svg':
                 metadata = {'Date': None}
             path = out / f'fig_teaser.{extension}'
-            fig.savefig(path, dpi=300, metadata=metadata)
+            if extension == 'pdf':
+                save_outlined_pdf(fig, path, dpi=300, metadata=metadata)
+            else:
+                fig.savefig(path, dpi=300, metadata=metadata)
             if extension == 'svg':
                 # Matplotlib leaves spaces at the ends of multiline path commands.
                 path.write_text('\n'.join(row.rstrip() for row in path.read_text().splitlines()) + '\n')

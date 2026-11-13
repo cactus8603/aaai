@@ -79,7 +79,7 @@ def shard_jobs(hist, controls, i, n):
 
 
 def write_job(root, hist, policy=correct_policy, n=4, shards=None, drop_rows=0, marker=True, fp=None, **fpkw):
-    controls = at.E9_JOBS[hist]
+    controls = (at.E9_JOBS | at.E9_OPTIONAL_JOBS)[hist]
     fp = fp or fingerprint(hist, **fpkw)
     root = Path(root)
     for i in (range(n) if shards is None else shards):
@@ -365,6 +365,75 @@ def test_thinking_groups_without_direct_rows(tmp_path):
     res = at.analyze(runs + think, direct, n_boot=NB)
     assert set(res['groups']) == {'Qwen3-VL-32B-Instruct@rev32b [cot]', 'Qwen3-VL-8B-Thinking@r8 [thinking]'}
     assert set(res['matched']) == {'Qwen3-VL-32B-Instruct@rev32b [cot]'}
+
+
+def cross_checkpoint_setup(tmp_path):
+    source = 'Qwen/Qwen3-VL-8B-Thinking'
+    target = 'Qwen/Qwen3-VL-8B-Instruct'
+    runs = write_e9(tmp_path / 'thinking', mode='thinking', model=source, rev='thinkingrev')
+    direct = [write_direct_main(tmp_path / 'instruct_raw', FULL, lambda b, t: -1, model=target, rev='instructrev'),
+              write_direct_main(tmp_path / 'instruct_sum', SUMM, lambda b, t: 1, model=target, rev='instructrev'),
+              write_direct_controls(tmp_path / 'instruct_controls', lambda c, b, t: 1,
+                                    model=target, rev='instructrev')]
+    return runs, direct, (source, target)
+
+
+def test_cross_checkpoint_requires_explicit_mapping_and_separate_label(tmp_path):
+    runs, direct, pair = cross_checkpoint_setup(tmp_path)
+    default = at.analyze(runs, direct, n_boot=NB)
+    assert not default['matched'] and not default['cross_checkpoint_matched']
+    out = tmp_path / 'cross_output'
+    res = at.main([*map(str, runs), '--direct', *map(str, direct), '--cross-checkpoint', *pair,
+                   '--out-dir', str(out), '--n-boot', str(NB)])
+    assert not res['matched']
+    m, = res['cross_checkpoint_matched'].values()
+    assert m['comparison_type'] == 'cross_checkpoint'
+    assert m['source_revision'] == 'thinkingrev' and m['direct_revision'] == 'instructrev'
+    a = m['conditions']['A|full|raw|choice']['valid_only']
+    assert a['n_items_matched'] == len(DEV) // 2 * len(MT)
+    assert a['diff_e9_minus_direct'] == 1.
+    assert m['gap']['choice']['valid_only']['delta_gap_e9_minus_direct'] == -1.
+    markdown = (out / 'e9.md').read_text()
+    assert 'Cross-checkpoint matched comparison' in markdown
+    assert 'cannot be attributed solely to reasoning' in markdown
+
+
+def test_cross_checkpoint_keeps_dataset_revision_and_twin_checks(tmp_path, monkeypatch):
+    runs, direct, pair = cross_checkpoint_setup(tmp_path)
+    # A different checkpoint is permitted, but two revisions on its direct side are not.
+    extra = write_direct_main(tmp_path / 'second_revision', FULL, lambda b, t: 1,
+                              model=pair[1], rev='otherrev')
+    with pytest.raises(AnalysisError, match='one known direct revision'):
+        at.analyze(runs, direct + [extra], cross_checkpoint_pairs=[pair], n_boot=NB)
+    with pytest.raises(AnalysisError, match='no direct counterpart'):
+        at.analyze(runs, direct[:2], cross_checkpoint_pairs=[pair], n_boot=NB)
+    one = write_direct_main(tmp_path / 'one_twin', FULL, lambda b, t: 1,
+                            model=pair[1], rev='instructrev', twins=(False,))
+    with pytest.raises(AnalysisError, match='only one twin'):
+        at.analyze(runs, [one, *direct[1:]], cross_checkpoint_pairs=[pair], n_boot=NB)
+    load = at.load_direct
+    def other_dataset(*args, **kwargs):
+        rows, problems = load(*args, **kwargs)
+        for r in rows:
+            r['_ep_sha'] = 'a_different_episode_file'
+        return rows, problems
+    monkeypatch.setattr(at, 'load_direct', other_dataset)
+    with pytest.raises(AnalysisError, match='different episodes files'):
+        at.analyze(runs, direct, cross_checkpoint_pairs=[pair], n_boot=NB)
+
+
+def test_planned_correctness_only_e9_job_is_optional_and_comparable(tmp_path):
+    runs, direct, pair = cross_checkpoint_setup(tmp_path)
+    coded = ('full', 'coded')
+    runs.append(write_job(tmp_path / 'thinking_coded', coded, mode='thinking', model=pair[0], rev='thinkingrev'))
+    direct.append(write_direct_main(tmp_path / 'instruct_coded', coded, lambda b, t: 1,
+                                    model=pair[1], rev='instructrev'))
+    res = at.analyze(runs, direct, cross_checkpoint_pairs=[pair], n_boot=NB)
+    m, = res['cross_checkpoint_matched'].values()
+    assert m['conditions']['B|full|coded|choice']['valid_only']['diff_e9_minus_direct'] == 0.
+    # Even with the optional arm present, every group still needs the planned raw and summary jobs.
+    with pytest.raises(AnalysisError, match='sum_all/raw missing'):
+        at.analyze([runs[0], runs[2]], direct, cross_checkpoint_pairs=[pair], n_boot=NB)
 
 
 def test_cli_writes_json_and_markdown(tmp_path):

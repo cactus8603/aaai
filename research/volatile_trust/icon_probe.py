@@ -229,7 +229,8 @@ def make_figure(out_pdf):
                     fig.text((icon_left + icon_size / 2) / width,
                              (image_y - 0.07) / height, label,
                              ha='center', va='top', fontsize=9)
-        fig.savefig(out_pdf)
+        from figure_pdf import save_outlined_pdf
+        save_outlined_pdf(fig, out_pdf)
         plt.close(fig)
 
 

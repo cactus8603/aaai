@@ -594,22 +594,52 @@ def compare_models(episode_fits: Sequence[dict], models: Sequence[str] | None = 
     return out
 
 
+def _episode_groups(episodes: Sequence[Episode | dict], group_by: Sequence[str] | None) -> list[list[int]]:
+    """Row indices for independent episodes, in first-occurrence order.
+
+    Without explicit metadata keys each row remains an independent episode, as in
+    the original generic API. Explicit keys must exist on every row: silently
+    grouping missing IDs together would invalidate both CV and uncertainty.
+    """
+    if group_by is None:
+        return [[i] for i in range(len(episodes))]
+    if not group_by:
+        raise ValueError("episode_group_by must contain at least one metadata key")
+    groups = {}
+    for i, e in enumerate(episodes):
+        meta = e.meta if isinstance(e, Episode) else e
+        missing = [k for k in group_by if meta.get(k) is None]
+        if missing:
+            raise ValueError(f"episode row {i} missing grouping metadata: {missing}")
+        key = tuple(meta[k] for k in group_by)
+        groups.setdefault(key, []).append(i)
+    return list(groups.values())
+
+
 def loeo_cv(model: str, episodes: Sequence[Episode | dict], n_restarts: int = 3, seed: int = 0,
-            folds: Sequence[int] | None = None) -> dict:
+            folds: Sequence[int] | None = None, episode_group_by: Sequence[str] | None = None) -> dict:
     """Leave-one-episode-out cross-validation of a pooled (shared-parameter) fit.
 
     For each held-out episode, fit the model pooled over the remaining episodes and
-    score the held-out soft cross-entropy. This is the recommended model-comparison
+    score the held-out soft cross-entropy. With ``episode_group_by``, every row with
+    the same metadata key is held out together (e.g. both cover stories of an
+    episode pair). Their losses and trial counts are summed within one fold.
+    This is the recommended model-comparison
     score; unlike the heuristic AIC/BIC it does not rely on treating soft targets as
     Bernoulli observations. ``folds`` restricts the run to a subset (used for
-    parallelism); the totals then cover only those folds.
+    parallelism); the totals then cover only those folds. Fold indices refer to
+    independent groups in first-occurrence order, or rows when grouping is omitted.
     """
     eps = [Episode.from_dict(e) if isinstance(e, dict) else e for e in episodes]
+    units = _episode_groups(eps, episode_group_by)
+    if len(units) < 2:
+        raise ValueError("leave-one-episode-out CV requires at least two independent episodes")
     m = MODELS[model]
-    idx = range(len(eps)) if folds is None else folds
+    idx = range(len(units)) if folds is None else folds
     per = []
     for i in idx:
-        train = [e for j, e in enumerate(eps) if j != i]
+        heldout = set(units[i])
+        train = [e for j, e in enumerate(eps) if j not in heldout]
         if m.bounds or m.grid_name:
             r = fit_model(m, train, n_restarts, seed)
             theta = np.array([r["params"][p] for p in m.params])
@@ -618,18 +648,25 @@ def loeo_cv(model: str, episodes: Sequence[Episode | dict], n_restarts: int = 3,
                 g = int(g)
         else:
             theta, g = np.zeros(0), None
-        p = m.predict(theta, m.prepare(eps[i], g))
-        nll = soft_nll(eps[i].y, p)
-        per.append({"fold": int(i), "heldout_nll": nll, "heldout_excess_nll": nll - entropy_sum(eps[i].y),
-                    "n": eps[i].T, "episode_id": eps[i].meta.get("episode_id")})
-    return _cv_summary(model, per)
+        test = [eps[j] for j in units[i]]
+        nll = sum(soft_nll(e.y, m.predict(theta, m.prepare(e, g))) for e in test)
+        rec = {"fold": int(i), "heldout_nll": nll,
+               "heldout_excess_nll": nll - sum(entropy_sum(e.y) for e in test),
+               "n": sum(e.T for e in test), "n_rows": len(test),
+               "episode_id": test[0].meta.get("episode_id")}
+        if episode_group_by is not None:
+            rec["episode_group"] = {k: test[0].meta[k] for k in episode_group_by}
+        per.append(rec)
+    return _cv_summary(model, per, episode_group_by)
 
 
-def _cv_summary(model: str, per: list[dict]) -> dict:
+def _cv_summary(model: str, per: list[dict], episode_group_by: Sequence[str] | None = None) -> dict:
     n = sum(r["n"] for r in per)
     tot = sum(r["heldout_nll"] for r in per)
     exc = sum(r["heldout_excess_nll"] for r in per)
-    return {"model": model, "n_folds": len(per), "n_trials": n, "heldout_nll": tot,
+    return {"model": model, "n_folds": len(per), "n_independent_episodes": len(per),
+            "n_rows": sum(r.get("n_rows", 1) for r in per), "n_trials": n,
+            "episode_group_by": None if episode_group_by is None else list(episode_group_by), "heldout_nll": tot,
             "heldout_nll_per_trial": tot / n, "heldout_excess_nll_per_trial": exc / n,
             "per_episode": sorted(per, key=lambda r: r["fold"])}
 
@@ -760,8 +797,9 @@ def _fit_task(args):
 
 
 def _cv_task(args):
-    rows, model, fold, n_restarts, seed = args
-    return model, loeo_cv(model, rows, n_restarts, seed, folds=[fold])["per_episode"][0]
+    rows, model, fold, n_restarts, seed, episode_group_by = args
+    return model, loeo_cv(model, rows, n_restarts, seed, folds=[fold],
+                          episode_group_by=episode_group_by)["per_episode"][0]
 
 
 def _group_key(meta: dict, keys: Sequence[str]) -> str:
@@ -782,36 +820,54 @@ def _map(fn, tasks, jobs):
     return [fn(t) for t in tasks]
 
 
-def summarize_calibrated_elr(episode_fits: Sequence[dict]) -> dict:
-    """Across-episode summary of the M1-calibrated volatile-minus-stable ELR difference."""
+def summarize_calibrated_elr(episode_fits: Sequence[dict], episode_group_by: Sequence[str] | None = None) -> dict:
+    """Summarize calibrated ELR over independent episodes.
+
+    With explicit grouping, first average the finite row values within each
+    episode, then compute mean, SD and t over those episode means. ``n`` counts
+    independent episodes with finite values, never repeated cover-story rows.
+    Without grouping, the generic API retains its original per-row behavior.
+    """
+    units = _episode_groups(episode_fits, episode_group_by)
     out = {}
     for k in ("diff_signed", "diff_pe"):
-        v = np.array([e["eff_lr_calibrated"]["calibrated"][k] for e in episode_fits], float)
-        v = v[np.isfinite(v)]
+        raw = np.array([e["eff_lr_calibrated"]["calibrated"][k] for e in episode_fits], float)
+        v = np.array([raw[idx][np.isfinite(raw[idx])].mean() for idx in units
+                      if np.isfinite(raw[idx]).any()])
         n = len(v)
         sd = float(v.std(ddof=1)) if n > 1 else float("nan")
         out[k] = {"mean": float(v.mean()) if n else float("nan"), "sd": sd, "n": n,
+                  "n_rows": len(raw), "n_valid_rows": int(np.isfinite(raw).sum()),
                   "t": float(v.mean() / (sd / math.sqrt(n))) if n > 1 and sd > 0 else float("nan")}
     return out
 
 
 def fit_file(input_path: str, models: Sequence[str] = DEFAULT_MODELS, group_by: Sequence[str] = ("model", "domain", "format"),
              n_restarts: int = 6, seed: int = 0, jobs: int = 1, pooled: bool = True, cv: bool = True,
-             cv_restarts: int = 3) -> dict:
+             cv_restarts: int = 3, episode_group_by: Sequence[str] | None = None) -> dict:
     """Fit all episodes in a JSONL file.
 
     Returns per-episode fits, per-group heuristic comparison (summed pseudo-BIC, BMS),
     pooled fits, the leave-one-episode-out CV score per group and model (``cv``, the
     recommended comparison), and the across-episode calibrated-ELR summary.
+    ``episode_group_by`` identifies repeated rows of the same independent episode
+    for CV and ELR uncertainty; per-row fits and heuristic comparisons are unchanged.
     """
     with open(input_path) as fh:
         rows = [json.loads(line) for line in fh if line.strip()]
+    _episode_groups(rows, episode_group_by)  # validate metadata before expensive fits
     eps = _map(_fit_task, [(d, list(models), n_restarts, seed) for d in rows], jobs)
     groups: dict[str, list[int]] = {}
     for i, e in enumerate(eps):
         groups.setdefault(_group_key(e, group_by), []).append(i)
     comparison = {g: compare_models([eps[i] for i in idx], models) for g, idx in groups.items()}
-    elr = {g: summarize_calibrated_elr([eps[i] for i in idx]) for g, idx in groups.items()}
+    if episode_group_by is not None:
+        for g, idx in groups.items():
+            comparison[g].update(
+                n_rows=len(idx),
+                n_independent_episodes=len(_episode_groups([eps[i] for i in idx], episode_group_by)),
+                unit="row (descriptive only); n_episodes is the legacy row count, not independent episodes")
+    elr = {g: summarize_calibrated_elr([eps[i] for i in idx], episode_group_by) for g, idx in groups.items()}
     pooled_out: dict = {}
     if pooled:
         keys = [(g, m) for g in groups for m in models]
@@ -820,17 +876,22 @@ def fit_file(input_path: str, models: Sequence[str] = DEFAULT_MODELS, group_by: 
             pooled_out.setdefault(g, {})[m] = r
     cv_out: dict = {}
     if cv:
-        keys = [(g, m, f) for g, idx in groups.items() if len(idx) >= 2 for m in models for f in range(len(idx))]
-        res = _map(_cv_task, [([rows[i] for i in groups[g]], m, f, cv_restarts, seed) for g, m, f in keys], jobs)
+        n_units = {g: len(_episode_groups([rows[i] for i in idx], episode_group_by))
+                   for g, idx in groups.items()}
+        keys = [(g, m, f) for g, n in n_units.items() if n >= 2 for m in models for f in range(n)]
+        res = _map(_cv_task, [([rows[i] for i in groups[g]], m, f, cv_restarts, seed, episode_group_by)
+                              for g, m, f in keys], jobs)
         per: dict = {}
         for (g, m, _), (_, r) in zip(keys, res):
             per.setdefault(g, {}).setdefault(m, []).append(r)
         for g, d in per.items():
-            cv_out[g] = {m: _cv_summary(m, v) for m, v in d.items()}
+            cv_out[g] = {m: _cv_summary(m, v, episode_group_by) for m, v in d.items()}
             cv_out[g]["best_by_cv"] = min(d, key=lambda m: cv_out[g][m]["heldout_nll"])
     return {"models": {m: {"params": MODELS[m].params, "grid": MODELS[m].grid_name, "k": MODELS[m].k,
                            "description": MODELS[m].description} for m in models},
-            "group_by": list(group_by), "episodes": eps, "comparison_heuristic": comparison,
+            "group_by": list(group_by),
+            "episode_group_by": None if episode_group_by is None else list(episode_group_by),
+            "episodes": eps, "comparison_heuristic": comparison,
             "cv": cv_out, "eff_lr_calibrated_summary": elr, "pooled": pooled_out}
 
 
@@ -850,6 +911,7 @@ def main(argv=None):
     f.add_argument("--output", required=True)
     f.add_argument("--models", nargs="+", default=DEFAULT_MODELS, choices=DEFAULT_MODELS)
     f.add_argument("--group-by", nargs="+", default=["model", "domain", "format"])
+    f.add_argument("--episode-group-by", nargs="+", help="metadata keys for independent CV/ELR episodes; default: each row")
     f.add_argument("--restarts", type=int, default=6)
     f.add_argument("--seed", type=int, default=0)
     f.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) // 2))
@@ -865,7 +927,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     if a.cmd == "fit":
         out = fit_file(a.input, a.models, a.group_by, a.restarts, a.seed, a.jobs, not a.no_pooled,
-                       not a.no_cv, a.cv_restarts)
+                       not a.no_cv, a.cv_restarts, a.episode_group_by)
     else:
         out = parameter_recovery(a.n, a.noise, a.seed, a.jobs)
         summary = {g: {p: round(v["pearson"], 3) for p, v in pr.items()} for g, pr in out["param_recovery"].items()}

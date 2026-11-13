@@ -1,0 +1,3 @@
+status in_progress {'canceled': 0, 'errored': 0, 'expired': 0, 'processing': 2880, 'succeeded': 0}
+status ended {'canceled': 0, 'errored': 0, 'expired': 0, 'processing': 0, 'succeeded': 2880}
+wrote 2880 runs_api/planA_fable52.jsonl

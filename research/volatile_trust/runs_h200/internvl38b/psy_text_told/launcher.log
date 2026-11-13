@@ -1,0 +1,93 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:00<00:11,  1.29it/s]Loading checkpoint shards:  12%|█▎        | 2/16 [00:01<00:10,  1.35it/s]Loading checkpoint shards:  19%|█▉        | 3/16 [00:02<00:09,  1.42it/s]Loading checkpoint shards:  25%|██▌       | 4/16 [00:02<00:08,  1.46it/s]Loading checkpoint shards:  31%|███▏      | 5/16 [00:03<00:07,  1.48it/s]Loading checkpoint shards:  38%|███▊      | 6/16 [00:04<00:06,  1.50it/s]Loading checkpoint shards:  44%|████▍     | 7/16 [00:04<00:05,  1.52it/s]Loading checkpoint shards:  50%|█████     | 8/16 [00:05<00:05,  1.53it/s]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:06<00:04,  1.52it/s]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:06<00:03,  1.52it/s]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:07<00:03,  1.53it/s]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:08<00:02,  1.51it/s]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:08<00:02,  1.49it/s]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:09<00:01,  1.48it/s]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:10<00:00,  1.49it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:10<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:10<00:00,  1.52it/s]
+{"episode": "p00_g1", "rows": 100, "sec_per_row": 0.13072620391845702}
+{"episode": "p00_g3", "rows": 200, "sec_per_row": 0.12752120137214662}
+{"episode": "p00_g5", "rows": 300, "sec_per_row": 0.12599634726842243}
+{"episode": "p01_g1", "rows": 400, "sec_per_row": 0.12523164808750153}
+{"episode": "p01_g3", "rows": 500, "sec_per_row": 0.1248612093925476}
+{"episode": "p01_g5", "rows": 600, "sec_per_row": 0.12451314727465311}
+{"episode": "p02_g1", "rows": 700, "sec_per_row": 0.12445138352257865}
+{"episode": "p02_g3", "rows": 800, "sec_per_row": 0.12424421787261963}
+{"episode": "p02_g5", "rows": 900, "sec_per_row": 0.12419547425376044}
+{"episode": "p04_g1", "rows": 1000, "sec_per_row": 0.12406162285804749}
+{"episode": "p04_g3", "rows": 1100, "sec_per_row": 0.12396879759701815}
+{"episode": "p04_g5", "rows": 1200, "sec_per_row": 0.12388083577156067}
+{"episode": "p06_g1", "rows": 1300, "sec_per_row": 0.12381834543668306}
+{"episode": "p06_g3", "rows": 1400, "sec_per_row": 0.12375373210225786}
+{"episode": "p06_g5", "rows": 1500, "sec_per_row": 0.12371035226186117}
+{"episode": "p07_g1", "rows": 1600, "sec_per_row": 0.1236537566781044}
+{"episode": "p07_g3", "rows": 1700, "sec_per_row": 0.12366284482619341}
+{"episode": "p07_g5", "rows": 1800, "sec_per_row": 0.12362575345569186}
+{"episode": "p08_g1", "rows": 1900, "sec_per_row": 0.12359292256204706}
+{"episode": "p08_g3", "rows": 2000, "sec_per_row": 0.12355082476139069}
+{"episode": "p08_g5", "rows": 2100, "sec_per_row": 0.12351837703159878}
+{"episode": "p09_g1", "rows": 2200, "sec_per_row": 0.12349456906318665}
+{"episode": "p09_g3", "rows": 2300, "sec_per_row": 0.12344494508660359}
+{"episode": "p09_g5", "rows": 2400, "sec_per_row": 0.1233939602971077}
+{"episode": "p10_g1", "rows": 2500, "sec_per_row": 0.12334148397445678}
+{"episode": "p10_g3", "rows": 2600, "sec_per_row": 0.1233078487102802}
+{"episode": "p10_g5", "rows": 2700, "sec_per_row": 0.12324855513042873}
+{"episode": "p11_g1", "rows": 2800, "sec_per_row": 0.12326143937451499}
+{"episode": "p11_g3", "rows": 2900, "sec_per_row": 0.12323292337614915}
+{"episode": "p11_g5", "rows": 3000, "sec_per_row": 0.12320748456319174}
+{"episode": "p12_g1", "rows": 3100, "sec_per_row": 0.1231908288309651}
+{"episode": "p12_g3", "rows": 3200, "sec_per_row": 0.12316754542291164}
+{"episode": "p12_g5", "rows": 3300, "sec_per_row": 0.12312228101672548}
+{"episode": "p13_g1", "rows": 3400, "sec_per_row": 0.12310736515942741}
+{"episode": "p13_g3", "rows": 3500, "sec_per_row": 0.12309304332733154}
+{"episode": "p13_g5", "rows": 3600, "sec_per_row": 0.12308156424098544}
+{"episode": "p14_g1", "rows": 3700, "sec_per_row": 0.12306623265549943}
+{"episode": "p14_g3", "rows": 3800, "sec_per_row": 0.12305570715352109}
+{"episode": "p14_g5", "rows": 3900, "sec_per_row": 0.12305209844540327}
+{"episode": "p15_g1", "rows": 4000, "sec_per_row": 0.12303999954462051}
+{"episode": "p15_g3", "rows": 4100, "sec_per_row": 0.12302156227390941}
+{"episode": "p15_g5", "rows": 4200, "sec_per_row": 0.1230152928829193}
+{"episode": "p16_g1", "rows": 4300, "sec_per_row": 0.1230056572514911}
+{"episode": "p16_g3", "rows": 4400, "sec_per_row": 0.12299345352432944}
+{"episode": "p16_g5", "rows": 4500, "sec_per_row": 0.12298744699690077}
+{"episode": "p17_g1", "rows": 4600, "sec_per_row": 0.12297193563502767}
+{"episode": "p17_g3", "rows": 4700, "sec_per_row": 0.1229669570415578}
+{"episode": "p17_g5", "rows": 4800, "sec_per_row": 0.12295535941918691}
+{"episode": "p18_g1", "rows": 4900, "sec_per_row": 0.12294759847679916}
+{"episode": "p18_g3", "rows": 5000, "sec_per_row": 0.12293996133804322}
+{"episode": "p18_g5", "rows": 5100, "sec_per_row": 0.12293503167582494}
+{"episode": "p19_g1", "rows": 5200, "sec_per_row": 0.12295490998488207}
+{"episode": "p19_g3", "rows": 5300, "sec_per_row": 0.12292146660246939}
+{"episode": "p19_g5", "rows": 5400, "sec_per_row": 0.12290939980083042}
+{"episode": "p20_g1", "rows": 5500, "sec_per_row": 0.1228962792483243}
+{"episode": "p20_g3", "rows": 5600, "sec_per_row": 0.12288623920508794}
+{"episode": "p20_g5", "rows": 5700, "sec_per_row": 0.12288090546925863}
+{"episode": "p21_g1", "rows": 5800, "sec_per_row": 0.12287270636394106}
+{"episode": "p21_g3", "rows": 5900, "sec_per_row": 0.12286875365144115}
+{"episode": "p21_g5", "rows": 6000, "sec_per_row": 0.12285875689983368}
+{"episode": "p22_g1", "rows": 6100, "sec_per_row": 0.12285105744346243}
+{"episode": "p22_g3", "rows": 6200, "sec_per_row": 0.12284021454472696}
+{"episode": "p22_g5", "rows": 6300, "sec_per_row": 0.1228381769997733}
+{"episode": "p23_g1", "rows": 6400, "sec_per_row": 0.12283222001045942}
+{"episode": "p23_g3", "rows": 6500, "sec_per_row": 0.1228314924973708}
+{"episode": "p23_g5", "rows": 6600, "sec_per_row": 0.12282775322596232}
+{"episode": "p24_g1", "rows": 6700, "sec_per_row": 0.1228238925649159}
+{"episode": "p24_g3", "rows": 6800, "sec_per_row": 0.12282370931961957}
+{"episode": "p24_g5", "rows": 6900, "sec_per_row": 0.12282525128212528}
+{"episode": "p25_g1", "rows": 7000, "sec_per_row": 0.12282244120325361}
+{"episode": "p25_g3", "rows": 7100, "sec_per_row": 0.12282199819323043}
+{"episode": "p25_g5", "rows": 7200, "sec_per_row": 0.1228238559100363}
+{"episode": "p26_g1", "rows": 7300, "sec_per_row": 0.1228222381252132}
+{"episode": "p26_g3", "rows": 7400, "sec_per_row": 0.12281996340365023}
+{"episode": "p26_g5", "rows": 7500, "sec_per_row": 0.12281703917185466}
+{"episode": "p27_g1", "rows": 7600, "sec_per_row": 0.12281049053919943}
+{"episode": "p27_g3", "rows": 7700, "sec_per_row": 0.12280882169673969}
+{"episode": "p27_g5", "rows": 7800, "sec_per_row": 0.12279998935185946}
+{"episode": "p29_g1", "rows": 7900, "sec_per_row": 0.12279623445076278}
+{"episode": "p29_g3", "rows": 8000, "sec_per_row": 0.12279660946130752}
+{"episode": "p29_g5", "rows": 8100, "sec_per_row": 0.12279362148708767}
+{"episode": "p30_g1", "rows": 8200, "sec_per_row": 0.12279330573430876}
+{"episode": "p30_g3", "rows": 8300, "sec_per_row": 0.12278281122805124}
+{"episode": "p30_g5", "rows": 8400, "sec_per_row": 0.12277769591127123}
+{"episode": "p31_g1", "rows": 8500, "sec_per_row": 0.12277492040746352}
+{"episode": "p31_g3", "rows": 8600, "sec_per_row": 0.12277486731839735}
+{"episode": "p31_g5", "rows": 8700, "sec_per_row": 0.122775607246092}
+{"episode": "p32_g1", "rows": 8800, "sec_per_row": 0.12277557836337523}
+{"episode": "p32_g3", "rows": 8900, "sec_per_row": 0.12277679421928492}
+{"episode": "p32_g5", "rows": 9000, "sec_per_row": 0.12277438603507147}
+{"tag": "text_told_px448_n5", "shard": "0/1", "fingerprint": "7b3e42898ad01432", "full_design": true, "design_keys_all_shards": 9000, "expected": 9000, "written": 9000, "rows": 9000, "duplicates": 0, "missing": 0, "unexpected": 0, "foreign_fingerprint": 0, "complete": true}

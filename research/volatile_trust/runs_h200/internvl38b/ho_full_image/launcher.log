@@ -1,0 +1,99 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:00<00:10,  1.48it/s]Loading checkpoint shards:  12%|█▎        | 2/16 [00:01<00:09,  1.44it/s]Loading checkpoint shards:  19%|█▉        | 3/16 [00:02<00:08,  1.47it/s]Loading checkpoint shards:  25%|██▌       | 4/16 [00:02<00:08,  1.48it/s]Loading checkpoint shards:  31%|███▏      | 5/16 [00:03<00:07,  1.50it/s]Loading checkpoint shards:  38%|███▊      | 6/16 [00:04<00:06,  1.51it/s]Loading checkpoint shards:  44%|████▍     | 7/16 [00:04<00:05,  1.52it/s]Loading checkpoint shards:  50%|█████     | 8/16 [00:05<00:05,  1.53it/s]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:05<00:04,  1.52it/s]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:06<00:03,  1.51it/s]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:07<00:03,  1.52it/s]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:07<00:02,  1.51it/s]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:08<00:02,  1.48it/s]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:09<00:01,  1.47it/s]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:10<00:00,  1.48it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:10<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:10<00:00,  1.52it/s]
+{"episode": "hel000", "rows": 160, "sec_per_row": 0.2614904284477234}
+{"episode": "hel001", "rows": 320, "sec_per_row": 0.2594593860208988}
+{"episode": "hel002", "rows": 480, "sec_per_row": 0.2586846058567365}
+{"episode": "hel003", "rows": 640, "sec_per_row": 0.2580105993896723}
+{"episode": "hel004", "rows": 800, "sec_per_row": 0.258132022023201}
+{"episode": "hel005", "rows": 960, "sec_per_row": 0.25815695747733114}
+{"episode": "hel006", "rows": 1120, "sec_per_row": 0.2580851565514292}
+{"episode": "hel007", "rows": 1280, "sec_per_row": 0.2580158442258835}
+{"episode": "hel008", "rows": 1440, "sec_per_row": 0.25813760923014745}
+{"episode": "hel009", "rows": 1600, "sec_per_row": 0.2581996090710163}
+{"episode": "hel010", "rows": 1760, "sec_per_row": 0.25822613510218534}
+{"episode": "hel011", "rows": 1920, "sec_per_row": 0.25827425767978035}
+{"episode": "hel012", "rows": 2080, "sec_per_row": 0.2582506883602876}
+{"episode": "hel013", "rows": 2240, "sec_per_row": 0.2581718865249838}
+{"episode": "hel014", "rows": 2400, "sec_per_row": 0.2581273943185806}
+{"episode": "hel015", "rows": 2560, "sec_per_row": 0.25806981259956957}
+{"episode": "hel016", "rows": 2720, "sec_per_row": 0.2580933978452402}
+{"episode": "hel017", "rows": 2880, "sec_per_row": 0.25809935025042957}
+{"episode": "hel018", "rows": 3040, "sec_per_row": 0.25811594073709687}
+{"episode": "hel019", "rows": 3200, "sec_per_row": 0.25812856160104275}
+{"episode": "hel020", "rows": 3360, "sec_per_row": 0.25803137783493313}
+{"episode": "hel021", "rows": 3520, "sec_per_row": 0.257877924090082}
+{"episode": "hel022", "rows": 3680, "sec_per_row": 0.25773206469805343}
+{"episode": "hel023", "rows": 3840, "sec_per_row": 0.2575893697018425}
+{"episode": "hel024", "rows": 4000, "sec_per_row": 0.25754620534181594}
+{"episode": "hel025", "rows": 4160, "sec_per_row": 0.2575038447402991}
+{"episode": "hel026", "rows": 4320, "sec_per_row": 0.25746711051022564}
+{"episode": "hel027", "rows": 4480, "sec_per_row": 0.2574444837868214}
+{"episode": "hel028", "rows": 4640, "sec_per_row": 0.2574403002344329}
+{"episode": "hel029", "rows": 4800, "sec_per_row": 0.25746486261487006}
+{"episode": "hel030", "rows": 4960, "sec_per_row": 0.2574537434885579}
+{"episode": "hel031", "rows": 5120, "sec_per_row": 0.2574318660888821}
+{"episode": "hel032", "rows": 5280, "sec_per_row": 0.2574101815621058}
+{"episode": "hel033", "rows": 5440, "sec_per_row": 0.2574026143726181}
+{"episode": "hel034", "rows": 5600, "sec_per_row": 0.2573995991264071}
+{"episode": "hel035", "rows": 5760, "sec_per_row": 0.25739597268402575}
+{"episode": "hel036", "rows": 5920, "sec_per_row": 0.2573899195403666}
+{"episode": "hel037", "rows": 6080, "sec_per_row": 0.2573653979521049}
+{"episode": "hel038", "rows": 6240, "sec_per_row": 0.2573550515067883}
+{"episode": "hel039", "rows": 6400, "sec_per_row": 0.2573504440486431}
+{"episode": "hel040", "rows": 6560, "sec_per_row": 0.25734029564915634}
+{"episode": "hel041", "rows": 6720, "sec_per_row": 0.2573472720171724}
+{"episode": "hel042", "rows": 6880, "sec_per_row": 0.2573500735815181}
+{"episode": "hel043", "rows": 7040, "sec_per_row": 0.2573597322472117}
+{"episode": "hel044", "rows": 7200, "sec_per_row": 0.2573017534613609}
+{"episode": "hel045", "rows": 7360, "sec_per_row": 0.25723656973113185}
+{"episode": "hel046", "rows": 7520, "sec_per_row": 0.25718989610037907}
+{"episode": "hel047", "rows": 7680, "sec_per_row": 0.25714504830539225}
+{"episode": "hel000t", "rows": 7840, "sec_per_row": 0.25714204141071867}
+{"episode": "hel001t", "rows": 8000, "sec_per_row": 0.2571387581527233}
+{"episode": "hel002t", "rows": 8160, "sec_per_row": 0.25713420372967627}
+{"episode": "hel003t", "rows": 8320, "sec_per_row": 0.25712808645688573}
+{"episode": "hel004t", "rows": 8480, "sec_per_row": 0.2571433954362599}
+{"episode": "hel005t", "rows": 8640, "sec_per_row": 0.2571522414960243}
+{"episode": "hel006t", "rows": 8800, "sec_per_row": 0.25715667849237267}
+{"episode": "hel007t", "rows": 8960, "sec_per_row": 0.2571645217548524}
+{"episode": "hel008t", "rows": 9120, "sec_per_row": 0.2571752017265872}
+{"episode": "hel009t", "rows": 9280, "sec_per_row": 0.25719238041803755}
+{"episode": "hel010t", "rows": 9440, "sec_per_row": 0.2572073995309361}
+{"episode": "hel011t", "rows": 9600, "sec_per_row": 0.25721744450430073}
+{"episode": "hel012t", "rows": 9760, "sec_per_row": 0.25721609404341117}
+{"episode": "hel013t", "rows": 9920, "sec_per_row": 0.2572087503488987}
+{"episode": "hel014t", "rows": 10080, "sec_per_row": 0.25721844444199216}
+{"episode": "hel015t", "rows": 10240, "sec_per_row": 0.25721905601676553}
+{"episode": "hel016t", "rows": 10400, "sec_per_row": 0.25723087086127355}
+{"episode": "hel017t", "rows": 10560, "sec_per_row": 0.2572384324489218}
+{"episode": "hel018t", "rows": 10720, "sec_per_row": 0.2572539654240679}
+{"episode": "hel019t", "rows": 10880, "sec_per_row": 0.25727049075067043}
+{"episode": "hel020t", "rows": 11040, "sec_per_row": 0.257237712542216}
+{"episode": "hel021t", "rows": 11200, "sec_per_row": 0.257210379583495}
+{"episode": "hel022t", "rows": 11360, "sec_per_row": 0.2571865364489421}
+{"episode": "hel023t", "rows": 11520, "sec_per_row": 0.25715875116487347}
+{"episode": "hel024t", "rows": 11680, "sec_per_row": 0.25715856635815476}
+{"episode": "hel025t", "rows": 11840, "sec_per_row": 0.25714887209437987}
+{"episode": "hel026t", "rows": 12000, "sec_per_row": 0.2571485088070234}
+{"episode": "hel027t", "rows": 12160, "sec_per_row": 0.2571502842793339}
+{"episode": "hel028t", "rows": 12320, "sec_per_row": 0.25716498412869193}
+{"episode": "hel029t", "rows": 12480, "sec_per_row": 0.2571770935868606}
+{"episode": "hel030t", "rows": 12640, "sec_per_row": 0.25719080914424947}
+{"episode": "hel031t", "rows": 12800, "sec_per_row": 0.2572074845805764}
+{"episode": "hel032t", "rows": 12960, "sec_per_row": 0.2572162910927961}
+{"episode": "hel033t", "rows": 13120, "sec_per_row": 0.25721385664329294}
+{"episode": "hel034t", "rows": 13280, "sec_per_row": 0.2572223572486855}
+{"episode": "hel035t", "rows": 13440, "sec_per_row": 0.2572371139058045}
+{"episode": "hel036t", "rows": 13600, "sec_per_row": 0.2572463577635148}
+{"episode": "hel037t", "rows": 13760, "sec_per_row": 0.2572602869119755}
+{"episode": "hel038t", "rows": 13920, "sec_per_row": 0.2572618272797815}
+{"episode": "hel039t", "rows": 14080, "sec_per_row": 0.257271830144931}
+{"episode": "hel040t", "rows": 14240, "sec_per_row": 0.25727233391129567}
+{"episode": "hel041t", "rows": 14400, "sec_per_row": 0.25727608846293554}
+{"episode": "hel042t", "rows": 14560, "sec_per_row": 0.2572752229787491}
+{"episode": "hel043t", "rows": 14720, "sec_per_row": 0.2572805935597938}
+{"episode": "hel044t", "rows": 14880, "sec_per_row": 0.2572590147615761}
+{"episode": "hel045t", "rows": 15040, "sec_per_row": 0.25723544268849047}
+{"episode": "hel046t", "rows": 15200, "sec_per_row": 0.2572118335178024}
+{"episode": "hel047t", "rows": 15360, "sec_per_row": 0.25718789937285086}
+COMPLETE 15360 rows

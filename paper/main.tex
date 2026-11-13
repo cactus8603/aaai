@@ -119,7 +119,7 @@ We decompose learning whom to trust into three steps: (i) judging which advisor 
 \section{Task and Methods}
 \paragraph{Advice-taking task.} On each trial, two advisors give conflicting binary reports (for example, rain and dry), the model predicts the outcome, which amounts to choosing whom to follow, and the outcome is then revealed. An episode has 80 trials. Advisor A is correct with probability 0.8 in a stable phase of 40 trials; in a volatile phase of 40 trials its accuracy alternates between 0.8 and 0.2 every 10 trials, following \citet{behrens2008associative} (comparison in Appendix~B). Half of the episodes start with each phase. Outcome sequences are pre-generated, so the model's choices do not change the history, and within each 10-trial block A's realized accuracy equals the scheduled value. The instructions say that an advisor's accuracy may change but give no rate.
 
-Each episode is shown with a photo cover story, in which reporters say whether a hidden animal is a cat or a dog, and with one of six text cover stories (colors, weather, stocks, sports, medical tests, news; Appendix~A). Current reports are given as text or as an image: a drawn icon for the text cover stories and a photograph \citep{parkhi2012cats} for the photo cover story. Every episode has a counterbalanced copy in which advisor names and answer labels are swapped while outcomes are identical; averaging over the two cancels name and label biases. There are 16 development and 48 held-out episodes, and a robustness set of 24 episodes with independent outcomes and irregular reversals.
+Each episode is shown with a pet cover story, in which reporters say whether a hidden animal is a cat or a dog, and with one of six other cover stories, called text cover stories below (colors, weather, stocks, sports, medical tests, news; Appendix~A). Current reports are given as text or as an image: a drawn icon for the text cover stories and a photograph \citep{parkhi2012cats} for the pet cover story; with text reports, both cover stories are text only. Every episode has a counterbalanced copy in which advisor names and answer labels are swapped while outcomes are identical; averaging over the two cancels name and label biases. There are 16 development and 48 held-out episodes, and a robustness set of 24 episodes with independent outcomes and irregular reversals.
 
 \paragraph{History formats.} Before trial $t$, the model sees trials $1,\dots,t-1$ in one format (examples in Fig.~\ref{fig:teaser}b; full prompts in Appendix~A). The \emph{raw history} lists both reports and the outcome (``Day 3: Ken forecasts rain; Sam forecasts dry. Actual weather: rain.''). \emph{Raw + correctness} appends ``(Ken was correct; Sam was wrong.)'' to each trial. \emph{Correctness only} keeps only that statement, removing step (i). The \emph{summary} gives each advisor's number of correct trials so far, removing steps (i) and (ii); it discards trial order. Further summaries count over the last $K$ trials or since a change point inferred by Bayesian online change-point detection (BOCPD; \citealt{adams2007bocpd}; Appendix~E), and a chart draws who was correct as an image.
 
@@ -185,7 +185,7 @@ Each episode is shown with a photo cover story, in which reporters say whether a
     Count rule (all trials) & -- & \multicolumn{5}{c}{.632 (development: .630)} & -- & -- \\
     \bottomrule
   \end{tabular}
-  \caption{Raw history is at or below chance in four of five models; stating who was correct reaches the summary. Accuracy: proportion of trials ($t\ge 2$) on which the model follows the correct advisor, averaged over counterbalanced copies and episodes; text reports. LM: language-model family. Raw+corr.: raw history with who was correct appended; Corr.\ only: who was correct only; Chart: who was correct drawn as an image. Summary$-$raw: paired difference with 95\% CI. Described accuracy: control items (development). $^{\ast}$API models on a subset, choice read from the generated answer (Appendix~K).}
+  \caption{Raw history is at or below chance in four of five models; stating who was correct reaches the summary. Accuracy: proportion of trials ($t\ge 2$) on which the model follows the correct advisor, averaged over counterbalanced copies, over the two cover stories of each episode (pet and text) and over episodes; text reports in both cover stories. LM: language-model family. Raw+corr.: raw history with who was correct appended; Corr.\ only: who was correct only; Chart: who was correct drawn as an image. Summary$-$raw: paired difference with 95\% CI. Described accuracy: control items (development). $^{\ast}$API models on a subset, choice read from the generated answer (Appendix~K).}
   \label{tab:main}
 \end{table*}
 
@@ -232,7 +232,7 @@ The VLMs used described accuracy and followed a summary as faithfully as its rul
 \subsection{A. Prompts and Cover Stories}            % exact templates for all 7 cover stories, A/B/B'/C/D, icons
 Every prompt has four parts: instructions naming the two advisors and the cover story, the history in one of the formats of the main text, the current reports, and the question. Prompts are passed through each model's chat template as a single user message. For InternVL3.5 the template adds the model's default system message (in Chinese) and the suffix ``Answer the question using a single word or phrase.'' All answer words are single tokens in every tokenizer used.
 
-\paragraph{Task details.} Each episode is shown with two cover stories that share the same outcome sequence: a photo cover story, in which reporters say whether a hidden animal is a cat or a dog, and one of six text cover stories (colors, weather forecasts, stock predictions, sports predictions, medical readings, news claims), assigned in blocks so that cover story is crossed with phase order (Fig.~\ref{fig:task}). Cover stories change only the wording, the answer words and the report images; all outcome sequences are synthetic. Current reports are text or an image: a programmatically drawn icon without text for the text cover stories, and a photograph from the Oxford-IIIT Pet dataset \citep{parkhi2012cats} for the photo cover story. Both advisors' correctness is revealed on every trial (full feedback). In the counterbalanced copy, advisor names, answer labels and the order in which the instructions introduce the advisors are swapped while outcomes and images are identical; within each trial the two reports are listed in random order. The instructions say that an advisor's accuracy may change over time but give no rate. The held-out set has eight episodes per text cover story.
+\paragraph{Task details.} Each episode is shown with two cover stories that share the same outcome sequence: a pet cover story, in which reporters say whether a hidden animal is a cat or a dog, and one of six other cover stories (colors, weather forecasts, stock predictions, sports predictions, medical readings, news claims), assigned in blocks so that cover story is crossed with phase order (Fig.~\ref{fig:task}). Cover stories change only the wording, the answer words and the report images; all outcome sequences are synthetic. Current reports are text or an image: a programmatically drawn icon without text for the text cover stories, and a photograph from the Oxford-IIIT Pet dataset \citep{parkhi2012cats} for the pet cover story (with text reports the pet cover story is text only, like the others). Both advisors' correctness is revealed on every trial (full feedback). In the counterbalanced copy, advisor names, answer labels and the order in which the instructions introduce the advisors are swapped while outcomes and images are identical; within each trial the two reports are listed in random order. The instructions say that an advisor's accuracy may change over time but give no rate. The held-out set has eight episodes per text cover story.
 
 \begin{figure*}[h]
   \centering
@@ -257,7 +257,7 @@ Table~\ref{tab:cover} lists the cover stories. The examples below are rendered b
     sports & commentators & win/lose & happy/sad face \\
     medical & doctors & positive/negative & plus/minus \\
     news & news sources & true/false & tick, cross \\
-    pet (photo) & reporters & cat/dog & photograph \\
+    pet & reporters & cat/dog & photograph \\
     \bottomrule
   \end{tabular}
   \caption{Cover stories with the selected icon set (v3.1). Trials are called trials (color, pet), days, weeks, games, cases or stories. Icons are drawn by code and contain no answer words. Appendix~G shows the original and selected medical and sports icons and identifies results obtained with the original set.}
@@ -291,7 +291,7 @@ Predict the actual weather on the current day. Answer with exactly one lowercase
 \end{quote}
 The described-counts control replaces the summary line with ``Summary of the last 10 days: Jim was correct 8 times; Ken was correct 2 times.''.
 
-\paragraph{Example 3: photo cover story with image reports, held-out episode, trial 4.}
+\paragraph{Example 3: pet cover story with image reports, held-out episode, trial 4.}
 \begin{quote}\small
 You are observing a sequence of trials. On every trial, two reporters, Jon and Jim, give conflicting reports about a hidden animal. After each trial, the true animal is revealed. A reporter's accuracy may change over time.\\
 Past trials:\\
@@ -744,7 +744,7 @@ Reasoning is tested on development episodes only, with each episode's own text c
     \toprule
     & \multicolumn{6}{c}{Text cover stories} & & \\
     \cmidrule(lr){2-7}
-    Model & Color & Weather & Stock & Sports & Medical & News & Sign test $p$ & Pet (photo) \\
+    Model & Color & Weather & Stock & Sports & Medical & News & Sign test $p$ & Pet \\
     \midrule
     Qwen3-VL-8B & +.109 & +.095 & +.157 & +.131 & +.097 & +.134 & .031 & +.148 \\
     InternVL3.5-8B & +.172 & +.157 & +.136 & +.117 & +.101 & +.116 & .031 & +.179 \\
@@ -753,7 +753,7 @@ Reasoning is tested on development episodes only, with each episode's own text c
     InternVL3.5-38B & +.055 & +.101 & +.127 & +.087 & +.087 & +.068 & .031 & +.080 \\
     \bottomrule
   \end{tabular}
-  \caption{Summary$-$raw gap by cover story (held-out; eight episodes per text cover story). Pet uses photo reports in its own episode slot and is not part of the sign test.}
+  \caption{Summary$-$raw gap by cover story (held-out; eight episodes per text cover story). Pet: the pet cover story, shown in every episode alongside its other cover story (text reports here; photographs only in image-report conditions); it is not part of the sign test.}
   \label{tab:scenario}
 \end{table*}
 

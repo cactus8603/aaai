@@ -1,7 +1,5 @@
 # Mechanism analysis (analyze_mechanism.py)
 
-> **EXPLORATORY (--partial): incomplete data.**
-
 All results are behavioural descriptions: "behaviour consistent with" a strategy and "effective weight on past outcomes", not evidence about internal computation. C-arm kernels reflect the external summary and the model jointly.
 
 ## Behaviour consistent with simple strategies (domains pooled): agreement / chance / kappa [95% CI]
@@ -13,6 +11,8 @@ All results are behavioural descriptions: "behaviour consistent with" a strategy
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/B|full|image | 0.49/0.50/**-0.01** [-0.03, 0.02] | 0.54/0.52/**0.04** [0.01, 0.07] | 0.56/0.56/**0.01** [0.00, 0.02] | 0.53/0.52/**0.02** [-0.01, 0.06] | 0.54/0.53/**0.04** [0.00, 0.07] | 0.55/0.53/**0.05** [0.01, 0.08] | 0.55/0.53/**0.04** [0.00, 0.07] | 0.54/0.53/**0.02** [-0.01, 0.06] | 0.51/0.50/**0.02** [-0.01, 0.05] | last10:12, follow_prev_correct:9, label_prior:6, last5:4, copy_prev_truth:4, last3:4, count_all:3, oracle:3, bocpd:3 |
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/B|full|text | 0.49/0.49/**-0.00** [-0.02, 0.01] | 0.71/0.61/**0.26** [0.22, 0.31] | 0.91/0.89/**0.16** [0.10, 0.22] | 0.76/0.66/**0.29** [0.25, 0.34] | 0.79/0.68/**0.34** [0.28, 0.39] | 0.82/0.70/**0.39** [0.33, 0.45] | 0.80/0.69/**0.37** [0.31, 0.42] | 0.73/0.69/**0.12** [0.09, 0.16] | 0.50/0.50/**0.01** [-0.01, 0.03] | last10:25, bocpd:12, last5:5, follow_prev_correct:2, last3:2, count_all:2 |
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/C|sum_all|text | 0.49/0.49/**0.01** [-0.00, 0.02] | 0.66/0.64/**0.06** [0.04, 0.08] | 1.00/0.98/**0.98** [0.94, 1.00] | 0.72/0.70/**0.09** [0.06, 0.13] | 0.76/0.73/**0.12** [0.08, 0.17] | 0.79/0.75/**0.15** [0.10, 0.20] | 0.77/0.73/**0.13** [0.09, 0.18] | 0.73/0.73/**-0.00** [-0.03, 0.02] | 0.50/0.50/**0.01** [-0.00, 0.02] | copy_prev_truth:21, count_all:18, last10:7, bocpd:2 |
+| InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/mask_ok|full|text | 0.49/0.49/**-0.01** [-0.03, 0.02] | 0.75/0.61/**0.35** [0.31, 0.41] | 0.88/0.87/**0.12** [0.08, 0.17] | 0.78/0.65/**0.37** [0.31, 0.42] | 0.80/0.67/**0.39** [0.33, 0.45] | 0.81/0.69/**0.39** [0.34, 0.45] | 0.81/0.68/**0.43** [0.36, 0.48] | 0.74/0.68/**0.20** [0.16, 0.25] | 0.50/0.50/**0.00** [-0.01, 0.02] | bocpd:18, follow_prev_correct:9, last10:8, last5:8, last3:4, count_all:1 |
+| InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/out_ok|full|text | 0.63/0.49/**0.28** [0.25, 0.30] | 0.68/0.57/**0.25** [0.22, 0.28] | 0.76/0.74/**0.05** [0.03, 0.07] | 0.69/0.60/**0.24** [0.20, 0.27] | 0.70/0.62/**0.22** [0.19, 0.26] | 0.71/0.63/**0.21** [0.18, 0.25] | 0.71/0.62/**0.25** [0.21, 0.29] | 0.66/0.62/**0.11** [0.08, 0.15] | 0.49/0.50/**-0.01** [-0.04, 0.03] | copy_prev_truth:23, follow_prev_correct:10, bocpd:5, last10:4, last3:4, label_prior:1, last5:1 |
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/rep_ok|full|text | 0.53/0.49/**0.08** [0.06, 0.11] | 0.70/0.58/**0.28** [0.25, 0.31] | 0.80/0.79/**0.06** [0.04, 0.09] | 0.70/0.62/**0.22** [0.19, 0.25] | 0.72/0.64/**0.22** [0.19, 0.26] | 0.72/0.65/**0.21** [0.18, 0.24] | 0.72/0.64/**0.24** [0.20, 0.27] | 0.68/0.64/**0.12** [0.09, 0.15] | 0.48/0.50/**-0.03** [-0.07, 0.01] | follow_prev_correct:24, last5:8, last10:5, last3:5, bocpd:3, label_prior:1, copy_prev_truth:1, count_all:1 |
 
 ## Same trial mask: kappa_common (model vs strategy) and strategy-by-strategy kappa
@@ -87,6 +87,34 @@ All results are behavioural descriptions: "behaviour consistent with" a strategy
 | oracle | 0.00 | -0.03 | 0.44 | 0.00 | 0.55 | 0.52 | 0.26 | 0.50 | 1.00 | -0.01 |
 | label_prior | 0.01 | 0.01 | 0.01 | 0.00 | -0.00 | -0.02 | -0.00 | 0.00 | -0.01 | 1.00 |
 
+**InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/mask_ok|full|text** (common mask: 6796 of 7584 trials, 0.90)
+
+| | model | copy_prev_truth | follow_prev_correct | count_all | last3 | last5 | last10 | bocpd | oracle | label_prior |
+|---|---|---|---|---|---|---|---|---|---|---|
+| copy_prev_truth | 0.00 | 1.00 | -0.01 | 0.01 | 0.01 | -0.01 | -0.01 | -0.00 | -0.03 | 0.01 |
+| follow_prev_correct | 0.33 | -0.01 | 1.00 | 0.04 | 0.54 | 0.40 | 0.23 | 0.49 | 0.44 | 0.01 |
+| count_all | 0.14 | 0.01 | 0.04 | 1.00 | 0.07 | 0.08 | 0.08 | 0.09 | 0.00 | 0.00 |
+| last3 | 0.34 | 0.01 | 0.54 | 0.07 | 1.00 | 0.70 | 0.47 | 0.78 | 0.55 | -0.00 |
+| last5 | 0.36 | -0.01 | 0.40 | 0.08 | 0.70 | 1.00 | 0.70 | 0.82 | 0.52 | -0.02 |
+| last10 | 0.34 | -0.01 | 0.23 | 0.08 | 0.47 | 0.70 | 1.00 | 0.66 | 0.26 | -0.00 |
+| bocpd | 0.40 | -0.00 | 0.49 | 0.09 | 0.78 | 0.82 | 0.66 | 1.00 | 0.50 | 0.00 |
+| oracle | 0.20 | -0.03 | 0.44 | 0.00 | 0.55 | 0.52 | 0.26 | 0.50 | 1.00 | -0.01 |
+| label_prior | -0.00 | 0.01 | 0.01 | 0.00 | -0.00 | -0.02 | -0.00 | 0.00 | -0.01 | 1.00 |
+
+**InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/out_ok|full|text** (common mask: 6796 of 7584 trials, 0.90)
+
+| | model | copy_prev_truth | follow_prev_correct | count_all | last3 | last5 | last10 | bocpd | oracle | label_prior |
+|---|---|---|---|---|---|---|---|---|---|---|
+| copy_prev_truth | 0.27 | 1.00 | -0.01 | 0.01 | 0.01 | -0.01 | -0.01 | -0.00 | -0.03 | 0.01 |
+| follow_prev_correct | 0.24 | -0.01 | 1.00 | 0.04 | 0.54 | 0.40 | 0.23 | 0.49 | 0.44 | 0.01 |
+| count_all | 0.05 | 0.01 | 0.04 | 1.00 | 0.07 | 0.08 | 0.08 | 0.09 | 0.00 | 0.00 |
+| last3 | 0.22 | 0.01 | 0.54 | 0.07 | 1.00 | 0.70 | 0.47 | 0.78 | 0.55 | -0.00 |
+| last5 | 0.19 | -0.01 | 0.40 | 0.08 | 0.70 | 1.00 | 0.70 | 0.82 | 0.52 | -0.02 |
+| last10 | 0.18 | -0.01 | 0.23 | 0.08 | 0.47 | 0.70 | 1.00 | 0.66 | 0.26 | -0.00 |
+| bocpd | 0.22 | -0.00 | 0.49 | 0.09 | 0.78 | 0.82 | 0.66 | 1.00 | 0.50 | 0.00 |
+| oracle | 0.10 | -0.03 | 0.44 | 0.00 | 0.55 | 0.52 | 0.26 | 0.50 | 1.00 | -0.01 |
+| label_prior | -0.01 | 0.01 | 0.01 | 0.00 | -0.00 | -0.02 | -0.00 | 0.00 | -0.01 | 1.00 |
+
 **InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/rep_ok|full|text** (common mask: 6796 of 7584 trials, 0.90)
 
 | | model | copy_prev_truth | follow_prev_correct | count_all | last3 | last5 | last10 | bocpd | oracle | label_prior |
@@ -110,4 +138,6 @@ All results are behavioural descriptions: "behaviour consistent with" a strategy
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/B|full|image | 0.11 [0.08, 0.16] | 0.06 [0.02, 0.10] | 0.05 [0.02, 0.08] | 0.05 [0.02, 0.07] | 0.01 [-0.02, 0.04] | 0.58 | 0.87 (0.58) | 0.00 [-0.02, 0.03] | 0.02 [-0.03, 0.07] | 1.79 [1.60, 2.00] | 0.28 [0.18, 0.40] |
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/B|full|text | 0.69 [0.64, 0.75] | 0.26 [0.23, 0.30] | 0.21 [0.18, 0.24] | 0.20 [0.17, 0.23] | 0.14 [0.11, 0.17] | 2.72 | 0.81 (0.69) | 0.01 [-0.02, 0.04] | 0.01 [-0.03, 0.06] | 0.28 [0.19, 0.38] | 1.03 [0.83, 1.22] |
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/C|sum_all|text | 0.78 [0.66, 0.91] | 0.65 [0.51, 0.78] | 0.52 [0.38, 0.67] | 0.45 [0.37, 0.55] | 0.38 [0.25, 0.50] | 5.90 | 0.91 (0.88) | 0.10 [-0.04, 0.25] | 0.09 [-0.05, 0.23] | 0.43 [0.23, 0.62] | 3.62 [3.38, 3.98] |
+| InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/mask_ok|full|text | 0.77 [0.73, 0.82] | 0.25 [0.22, 0.28] | 0.22 [0.19, 0.25] | 0.15 [0.13, 0.18] | 0.12 [0.08, 0.16] | 2.49 | 0.69 (0.78) | 0.02 [-0.01, 0.05] | -0.00 [-0.04, 0.03] | 0.52 [0.43, 0.60] | 0.92 [0.75, 1.08] |
+| InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/out_ok|full|text | 0.32 [0.30, 0.34] | 0.12 [0.11, 0.14] | 0.10 [0.08, 0.11] | 0.05 [0.04, 0.07] | 0.04 [0.02, 0.06] | 0.96 | 0.58 (0.87) | 0.37 [0.35, 0.39] | 0.01 [-0.04, 0.06] | 0.42 [0.38, 0.45] | 0.34 [0.27, 0.40] |
 | InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice/rep_ok|full|text | 0.51 [0.48, 0.55] | 0.14 [0.10, 0.17] | 0.11 [0.09, 0.14] | 0.10 [0.06, 0.13] | 0.07 [0.03, 0.10] | 1.49 | 0.47 (0.76) | 0.23 [0.20, 0.26] | -0.04 [-0.12, 0.05] | 0.69 [0.60, 0.78] | 0.73 [0.59, 0.87] |

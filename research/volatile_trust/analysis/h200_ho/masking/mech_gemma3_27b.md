@@ -1,7 +1,5 @@
 # Mechanism analysis (analyze_mechanism.py)
 
-> **EXPLORATORY (--partial): incomplete data.**
-
 All results are behavioural descriptions: "behaviour consistent with" a strategy and "effective weight on past outcomes", not evidence about internal computation. C-arm kernels reflect the external summary and the model jointly.
 
 ## Behaviour consistent with simple strategies (domains pooled): agreement / chance / kappa [95% CI]
@@ -13,6 +11,8 @@ All results are behavioural descriptions: "behaviour consistent with" a strategy
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/B|full|image | 0.50/0.50/**0.00** [-0.03, 0.04] | 0.57/0.53/**0.09** [0.06, 0.11] | 0.61/0.61/**0.02** [0.01, 0.02] | 0.58/0.54/**0.08** [0.06, 0.11] | 0.60/0.55/**0.10** [0.08, 0.13] | 0.61/0.56/**0.11** [0.08, 0.14] | 0.60/0.55/**0.10** [0.07, 0.13] | 0.58/0.55/**0.05** [0.02, 0.08] | 0.50/0.50/**-0.01** [-0.05, 0.04] | last10:13, follow_prev_correct:10, label_prior:6, last5:5, bocpd:4, oracle:4, copy_prev_truth:3, last3:3 |
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/B|full|text | 0.49/0.49/**0.00** [-0.02, 0.02] | 0.66/0.61/**0.14** [0.12, 0.17] | 0.89/0.87/**0.12** [0.08, 0.16] | 0.72/0.65/**0.20** [0.17, 0.23] | 0.76/0.68/**0.25** [0.21, 0.29] | 0.80/0.70/**0.34** [0.29, 0.39] | 0.76/0.68/**0.26** [0.23, 0.30] | 0.70/0.68/**0.04** [0.01, 0.07] | 0.49/0.50/**-0.01** [-0.04, 0.02] | last10:36, bocpd:7, last5:2, last3:1, copy_prev_truth:1, label_prior:1 |
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/C|sum_all|text | 0.49/0.49/**0.01** [-0.01, 0.02] | 0.64/0.62/**0.05** [0.03, 0.08] | 0.93/0.92/**0.21** [0.12, 0.28] | 0.70/0.67/**0.10** [0.07, 0.13] | 0.74/0.70/**0.12** [0.08, 0.16] | 0.77/0.72/**0.17** [0.12, 0.22] | 0.74/0.70/**0.13** [0.09, 0.17] | 0.71/0.70/**0.01** [-0.02, 0.03] | 0.50/0.50/**-0.00** [-0.04, 0.04] | last10:21, label_prior:7, count_all:7, copy_prev_truth:6, bocpd:2, last3:2, oracle:1, follow_prev_correct:1, last5:1 |
+| gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/mask_ok|full|text | 0.49/0.49/**0.01** [-0.01, 0.02] | 0.68/0.60/**0.18** [0.15, 0.21] | 0.87/0.86/**0.08** [0.05, 0.11] | 0.72/0.64/**0.20** [0.17, 0.24] | 0.74/0.67/**0.22** [0.18, 0.26] | 0.76/0.69/**0.25** [0.19, 0.29] | 0.75/0.67/**0.23** [0.19, 0.28] | 0.70/0.67/**0.08** [0.05, 0.11] | 0.49/0.50/**-0.02** [-0.05, 0.02] | last10:19, bocpd:8, last3:6, follow_prev_correct:6, last5:4, label_prior:3, oracle:1, count_all:1 |
+| gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/out_ok|full|text | 0.64/0.50/**0.28** [0.25, 0.31] | 0.58/0.54/**0.09** [0.07, 0.11] | 0.65/0.64/**0.02** [0.01, 0.03] | 0.60/0.56/**0.09** [0.06, 0.12] | 0.59/0.57/**0.06** [0.03, 0.09] | 0.61/0.58/**0.09** [0.06, 0.12] | 0.61/0.57/**0.09** [0.06, 0.12] | 0.57/0.57/**-0.00** [-0.03, 0.03] | 0.52/0.50/**0.04** [-0.06, 0.14] | copy_prev_truth:27, label_prior:14, follow_prev_correct:2, bocpd:2, last3:1, last10:1, last5:1 |
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/rep_ok|full|text | 0.53/0.50/**0.07** [0.05, 0.09] | 0.65/0.55/**0.21** [0.18, 0.25] | 0.69/0.68/**0.03** [0.02, 0.05] | 0.66/0.57/**0.21** [0.18, 0.25] | 0.66/0.58/**0.20** [0.16, 0.24] | 0.67/0.59/**0.19** [0.15, 0.22] | 0.68/0.58/**0.22** [0.18, 0.26] | 0.62/0.58/**0.10** [0.06, 0.13] | 0.43/0.50/**-0.13** [-0.24, -0.02] | follow_prev_correct:11, last10:8, last5:8, label_prior:8, bocpd:6, last3:5, copy_prev_truth:2 |
 
 ## Same trial mask: kappa_common (model vs strategy) and strategy-by-strategy kappa
@@ -87,6 +87,34 @@ All results are behavioural descriptions: "behaviour consistent with" a strategy
 | oracle | 0.01 | -0.03 | 0.44 | 0.00 | 0.55 | 0.52 | 0.26 | 0.50 | 1.00 | -0.01 |
 | label_prior | -0.00 | 0.01 | 0.01 | 0.00 | -0.00 | -0.02 | -0.00 | 0.00 | -0.01 | 1.00 |
 
+**gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/mask_ok|full|text** (common mask: 6796 of 7584 trials, 0.90)
+
+| | model | copy_prev_truth | follow_prev_correct | count_all | last3 | last5 | last10 | bocpd | oracle | label_prior |
+|---|---|---|---|---|---|---|---|---|---|---|
+| copy_prev_truth | 0.00 | 1.00 | -0.01 | 0.01 | 0.01 | -0.01 | -0.01 | -0.00 | -0.03 | 0.01 |
+| follow_prev_correct | 0.17 | -0.01 | 1.00 | 0.04 | 0.54 | 0.40 | 0.23 | 0.49 | 0.44 | 0.01 |
+| count_all | 0.09 | 0.01 | 0.04 | 1.00 | 0.07 | 0.08 | 0.08 | 0.09 | 0.00 | 0.00 |
+| last3 | 0.19 | 0.01 | 0.54 | 0.07 | 1.00 | 0.70 | 0.47 | 0.78 | 0.55 | -0.00 |
+| last5 | 0.20 | -0.01 | 0.40 | 0.08 | 0.70 | 1.00 | 0.70 | 0.82 | 0.52 | -0.02 |
+| last10 | 0.20 | -0.01 | 0.23 | 0.08 | 0.47 | 0.70 | 1.00 | 0.66 | 0.26 | -0.00 |
+| bocpd | 0.21 | -0.00 | 0.49 | 0.09 | 0.78 | 0.82 | 0.66 | 1.00 | 0.50 | 0.00 |
+| oracle | 0.09 | -0.03 | 0.44 | 0.00 | 0.55 | 0.52 | 0.26 | 0.50 | 1.00 | -0.01 |
+| label_prior | -0.02 | 0.01 | 0.01 | 0.00 | -0.00 | -0.02 | -0.00 | 0.00 | -0.01 | 1.00 |
+
+**gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/out_ok|full|text** (common mask: 6796 of 7584 trials, 0.90)
+
+| | model | copy_prev_truth | follow_prev_correct | count_all | last3 | last5 | last10 | bocpd | oracle | label_prior |
+|---|---|---|---|---|---|---|---|---|---|---|
+| copy_prev_truth | 0.28 | 1.00 | -0.01 | 0.01 | 0.01 | -0.01 | -0.01 | -0.00 | -0.03 | 0.01 |
+| follow_prev_correct | 0.08 | -0.01 | 1.00 | 0.04 | 0.54 | 0.40 | 0.23 | 0.49 | 0.44 | 0.01 |
+| count_all | 0.03 | 0.01 | 0.04 | 1.00 | 0.07 | 0.08 | 0.08 | 0.09 | 0.00 | 0.00 |
+| last3 | 0.09 | 0.01 | 0.54 | 0.07 | 1.00 | 0.70 | 0.47 | 0.78 | 0.55 | -0.00 |
+| last5 | 0.05 | -0.01 | 0.40 | 0.08 | 0.70 | 1.00 | 0.70 | 0.82 | 0.52 | -0.02 |
+| last10 | 0.07 | -0.01 | 0.23 | 0.08 | 0.47 | 0.70 | 1.00 | 0.66 | 0.26 | -0.00 |
+| bocpd | 0.09 | -0.00 | 0.49 | 0.09 | 0.78 | 0.82 | 0.66 | 1.00 | 0.50 | 0.00 |
+| oracle | 0.00 | -0.03 | 0.44 | 0.00 | 0.55 | 0.52 | 0.26 | 0.50 | 1.00 | -0.01 |
+| label_prior | 0.04 | 0.01 | 0.01 | 0.00 | -0.00 | -0.02 | -0.00 | 0.00 | -0.01 | 1.00 |
+
 **gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/rep_ok|full|text** (common mask: 6796 of 7584 trials, 0.90)
 
 | | model | copy_prev_truth | follow_prev_correct | count_all | last3 | last5 | last10 | bocpd | oracle | label_prior |
@@ -110,4 +138,6 @@ All results are behavioural descriptions: "behaviour consistent with" a strategy
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/B|full|image | 0.21 [0.17, 0.26] | 0.16 [0.12, 0.21] | 0.10 [0.06, 0.14] | 0.05 [-0.00, 0.09] | 0.06 [0.02, 0.10] | 1.17 | 0.85 (0.70) | 0.02 [-0.02, 0.07] | -0.05 [-0.15, 0.06] | 1.30 [1.19, 1.44] | 0.37 [0.26, 0.49] |
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/B|full|text | 0.48 [0.41, 0.56] | 0.27 [0.20, 0.35] | 0.27 [0.22, 0.31] | 0.23 [0.17, 0.29] | 0.18 [0.12, 0.27] | 3.18 | 0.91 (0.82) | 0.00 [-0.06, 0.06] | -0.03 [-0.17, 0.11] | -0.54 [-0.70, -0.38] | 1.36 [1.14, 1.60] |
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/C|sum_all|text | 0.19 [0.12, 0.27] | 0.21 [0.13, 0.29] | 0.16 [0.10, 0.23] | 0.15 [0.10, 0.21] | 0.13 [0.08, 0.19] | 1.83 | 0.91 (0.88) | 0.02 [-0.03, 0.08] | -0.05 [-0.24, 0.14] | 0.26 [0.01, 0.51] | 1.90 [1.72, 2.13] |
+| gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/mask_ok|full|text | 0.60 [0.52, 0.71] | 0.23 [0.16, 0.31] | 0.23 [0.17, 0.30] | 0.20 [0.13, 0.26] | 0.12 [0.06, 0.19] | 2.71 | 0.86 (0.61) | 0.04 [-0.03, 0.09] | -0.02 [-0.16, 0.13] | -0.83 [-1.00, -0.67] | 1.35 [1.08, 1.64] |
+| gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/out_ok|full|text | 0.25 [0.20, 0.30] | 0.10 [0.05, 0.16] | 0.09 [0.04, 0.14] | 0.03 [-0.02, 0.08] | 0.09 [0.04, 0.14] | 1.16 | 0.91 (0.25) | 0.65 [0.60, 0.72] | 0.10 [-0.13, 0.35] | -0.53 [-0.61, -0.45] | 0.37 [0.26, 0.47] |
 | gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice/rep_ok|full|text | 0.44 [0.38, 0.52] | 0.15 [0.10, 0.20] | 0.17 [0.11, 0.22] | 0.08 [0.03, 0.14] | 0.06 [0.02, 0.11] | 1.56 | 0.71 (0.69) | 0.18 [0.15, 0.22] | -0.31 [-0.56, -0.05] | -0.35 [-0.46, -0.25] | 0.36 [0.23, 0.49] |

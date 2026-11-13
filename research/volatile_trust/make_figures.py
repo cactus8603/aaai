@@ -217,27 +217,11 @@ def main():
 
 
 def fig_task(out):
-    """Appendix: trial, schedule, and format-specific computation requirements."""
-    import sys
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from scenarios import icon
-    fig = plt.figure(figsize=(FULL_WIDTH, 4.05))
-    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.13], width_ratios=[1, 1.3],
-                          left=.075, right=.985, top=.94, bottom=.08, hspace=.42, wspace=.3)
-    a = fig.add_subplot(gs[0, 0])
-    a.set_xlim(0, 1)
-    a.set_ylim(0, 1)
-    a.axis('off')
-    a.set_title('(a) One trial (weather)', loc='left', fontweight='bold')
-    a.text(0, .88, 'Day 6 of 80', color=INK2)
-    for y, name, lab in ((.67, 'Joe', 'dry'), (.43, 'Tim', 'rain')):
-        a.text(0, y, f'{name} forecasts:', va='center')
-        ia = a.inset_axes([.45, y - .1, .13, .2])
-        ia.imshow(np.asarray(icon('weather', lab, 112)))
-        ia.axis('off')
-    a.text(0, .20, 'Predict rain or dry, then observe feedback.', va='center')
-    a.text(0, .02, 'Record feedback for subsequent trials.', color=INK2)
-    b = fig.add_subplot(gs[0, 1])
+    """Appendix: retain the original schedule and pre-trial cumulative accuracy."""
+    from matplotlib.text import Text
+
+    fig, b = plt.subplots(figsize=(COLUMN_WIDTH, 2.40))
+    fig.subplots_adjust(left=.18, right=.98, top=.84, bottom=.36)
     t = np.arange(1, 81)
     scheduled = np.where(t <= 40, .8, np.where(((t - 41) // 10) % 2 == 0, .2, .8))
     b.axvspan(40.5, 80.5, color=GRID, alpha=.6, lw=0)
@@ -247,39 +231,29 @@ def fig_task(out):
     observations = np.array([tr['a_correct'] for tr in ep['trials']], float)
     cumulative = [observations[:k].mean() if k else np.nan for k in range(80)]
     b.plot(t, cumulative, color=FORMATS[3][2], lw=1.2, label='Share correct so far')
-    b.legend(loc='lower center', handlelength=1.5, ncol=2, columnspacing=.9)
-    b.text(20, 1.02, 'Stable', ha='center', color=INK2)
-    b.text(60, 1.02, 'Volatile', ha='center', color=INK2)
+    fig.legend(*b.get_legend_handles_labels(), loc='lower center', ncol=1,
+               bbox_to_anchor=(.57, .025), handlelength=2,
+               handletextpad=.6, labelspacing=.35, borderaxespad=0)
+    b.text(20, 1.05, 'Stable', ha='center', color=INK2)
+    b.text(60, 1.05, 'Volatile', ha='center', color=INK2)
     b.set_ylim(0, 1.16)
     b.set_xlim(.5, 80.5)
     b.set_yticks([0, .5, 1])
     b.set_xticks([1, 20, 40, 60, 80])
-    b.set_xlabel('Trial')
-    b.set_ylabel('Advisor A accuracy')
-    b.set_title('(b) Example schedule (stable first)', loc='left', fontweight='bold')
+    b.set_xlabel('Trial', labelpad=3)
+    b.set_ylabel('Advisor A accuracy', labelpad=4)
+    b.set_title('Example schedule (stable first)', loc='left', fontweight='bold', pad=9)
     grid(b)
-    c = fig.add_subplot(gs[1, :])
-    c.axis('off')
-    c.set_xlim(0, 1)
-    c.set_ylim(0, 1)
-    c.set_title('(c) History formats and steps left to the model', loc='left', fontweight='bold')
-    rows = [('Raw', 'Joe: rain; Tim: dry; actual: rain', (1, 1, 1), FORMATS[0][2]),
-            ('Raw + correctness', '...rain (Joe correct; Tim wrong)', (0, 1, 1), FORMATS[1][2]),
-            ('Correctness only', 'Joe correct; Tim wrong', (0, 1, 1), FORMATS[2][2]),
-            ('Summarized', '5 days: Joe correct 4, Tim 1', (0, 0, 1), FORMATS[3][2]),
-            ('Described accuracy', 'Joe correct on 80% of days', (0, 0, 1), INK2)]
-    for x, h in ((.02, 'Format'), (.285, 'Example (abbreviated)'), (.82, '(i)'), (.9, '(ii)'), (.98, '(iii)')):
-        c.text(x, .98, h, color=INK2, va='top', ha='left' if x < .8 else 'center')
-    for i, (name, example, steps, col) in enumerate(rows):
-        y = .78 - i * .15
-        c.plot(0, y, marker='s', color=col, ms=5, clip_on=False)
-        c.text(.02, y, name, va='center')
-        c.text(.285, y, example, va='center')
-        for j, on in enumerate(steps):
-            c.plot(.82 + j * .08, y, marker='o', ms=5, mfc=INK if on else 'white',
-                   mec=INK2, mew=.7, clip_on=False)
-    c.text(0, -.06, 'Filled: step left to the model. (i) Judge correctness; (ii) integrate history; (iii) use estimate.',
-           color=INK2, va='top')
+
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    for artist in fig.findobj(Text):
+        if not artist.get_visible() or not artist.get_text().strip():
+            continue
+        bounds = artist.get_window_extent(renderer)
+        if (bounds.x0 < -.25 or bounds.y0 < -.25 or
+                bounds.x1 > fig.bbox.width + .25 or bounds.y1 > fig.bbox.height + .25):
+            raise ValueError(f'fig_task: text outside canvas: {artist.get_text()}')
     save_figure(fig, out, 'fig_task')
 
 

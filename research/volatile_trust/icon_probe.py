@@ -186,52 +186,85 @@ if __name__ == '__main__' and '--figure' not in sys.argv:
 
 
 def make_figure(out_pdf):
-    """All probed icon pairs, with readable labels at a 7-inch print width."""
+    """Compact publication examples of the original and selected icon pairs.
+
+    The complete candidate inventory remains available through VARIANTS and
+    the saved probe outputs. This gallery preserves both the original and
+    selected medical/sports pairs without changing any model input drawing.
+    """
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    names = {'v3_strip': 'test strip\n(original)', 'strip_big': 'large strip',
-             'plus_minus': 'plus / minus\n(selected)',
-             'plus_minus_color': 'plus / minus,\ncoloured', 'virus': 'virus / empty',
-             'v3_trophy_x': 'trophy / cross\n(original)',
-             'trophy_sad': 'trophy / sad face',
-             'faces': 'happy / sad face\n(selected)', 'medal': 'medal /\ncracked medal'}
+    from matplotlib.text import Text
+    from PIL import ImageChops
+    from figure_pdf import save_outlined_pdf
+
     style = {'font.family': 'serif',
              'font.serif': ['Times New Roman', 'Times', 'Nimbus Roman', 'DejaVu Serif'],
-             'font.size': 9, 'pdf.fonttype': 42}
-    # Positions are in inches so the PDF retains its intended label sizes when
-    # included at full text width. Native 224-pixel icons print above 380 dpi.
-    width, height = 7.0, 3.15
-    pair_width, icon_size, icon_gap = 1.34, 0.58, 0.04
+             'font.size': 9, 'pdf.fonttype': 42, 'svg.fonttype': 'path'}
+    examples = {'medical': ('v3_strip', 'plus_minus'),
+                'sports': ('v3_trophy_x', 'faces')}
+    # Check both native input resolutions. The selected probe drawings must
+    # remain byte-for-byte equivalent to the actual v3.1 task icons.
+    for dom, (_, selected) in examples.items():
+        for label in SCENARIOS[dom]['labels']:
+            for pixels in (224, 448):
+                probe = VARIANTS[dom][selected](label, pixels)
+                task = icon_v3(dom, label, pixels, version='v3.1')
+                if ImageChops.difference(probe, task).getbbox() is not None:
+                    raise ValueError(f'Selected icon differs from task input: {dom}, {label}, {pixels}px')
+
+    # Fixed physical positions preserve 9pt labels at one-column print width.
+    # The unaltered 224-pixel icons print at approximately 393 dpi.
+    width, height = 3.3125, 2.45
+    icon_size, icon_gap = .57, .04
     with plt.rc_context(style):
         fig = plt.figure(figsize=(width, height))
-        for dom, heading_y, title_y, image_y in (
-                ('medical', 3.04, 2.78, 1.91),
-                ('sports', 1.52, 1.27, 0.40)):
-            variants = VARIANTS[dom]
-            left = (width - len(variants) * pair_width) / 2
-            fig.text(0.15 / width, heading_y / height, dom.capitalize(),
-                     fontsize=10, fontweight='bold', va='top')
-            for j, (variant, draw_icon) in enumerate(variants.items()):
-                center = left + (j + 0.5) * pair_width
-                fig.text(center / width, title_y / height, names[variant],
-                         ha='center', va='top', fontsize=9,
-                         fontweight='bold' if variant in ('plus_minus', 'faces') else 'normal')
+        for column, title in enumerate(('Original', 'Selected')):
+            fig.text((.25 + .5 * column), 2.37 / height, title,
+                     fontsize=9.5, fontweight='bold', ha='center', va='top')
+        for dom, heading_y, image_y in (('medical', 2.16, 1.44),
+                                         ('sports', 1.16, .42)):
+            fig.text(.08 / width, heading_y / height, dom.capitalize(),
+                     fontsize=9, fontweight='bold', va='top')
+            for column, variant in enumerate(examples[dom]):
+                draw_icon = VARIANTS[dom][variant]
+                center = width * (.25 + .5 * column)
                 pair_left = center - (2 * icon_size + icon_gap) / 2
                 for i, label in enumerate(SCENARIOS[dom]['labels']):
                     icon_left = pair_left + i * (icon_size + icon_gap)
                     ax = fig.add_axes([icon_left / width, image_y / height,
                                        icon_size / width, icon_size / height])
-                    # Match the saved probe previews exactly; do not redraw at
-                    # a smaller resolution or interpolate their source pixels.
+                    # Use the exact native drawings with no source-pixel edits.
                     ax.imshow(draw_icon(label, 224), interpolation='none')
                     ax.set_axis_off()
                     fig.text((icon_left + icon_size / 2) / width,
-                             (image_y - 0.07) / height, label,
+                             (image_y - .06) / height, label,
                              ha='center', va='top', fontsize=9)
-        from figure_pdf import save_outlined_pdf
-        save_outlined_pdf(fig, out_pdf)
+        fig.canvas.draw()
+        renderer = fig.canvas.get_renderer()
+        texts = [text for text in fig.findobj(Text)
+                 if text.get_visible() and text.get_text().strip()]
+        if min(text.get_fontsize() for text in texts) < 9:
+            raise ValueError('Icon gallery contains text smaller than 9pt')
+        bounds = [text.get_window_extent(renderer) for text in texts]
+        for text, box in zip(texts, bounds):
+            if (box.x0 < -.25 or box.y0 < -.25 or
+                    box.x1 > fig.bbox.x1 + .25 or box.y1 > fig.bbox.y1 + .25):
+                raise ValueError(f'Icon gallery text outside canvas: {text.get_text()}')
+        for i, box in enumerate(bounds):
+            for j in range(i):
+                other = bounds[j]
+                if (min(box.x1, other.x1) - max(box.x0, other.x0) > .5 and
+                        min(box.y1, other.y1) - max(box.y0, other.y0) > .5):
+                    raise ValueError(f'Icon gallery labels overlap: {texts[i].get_text()}, {texts[j].get_text()}')
+        out_pdf = Path(out_pdf)
+        save_outlined_pdf(fig, out_pdf, facecolor='white')
+        fig.savefig(out_pdf.with_suffix('.png'), dpi=300, facecolor='white')
+        fig.savefig(out_pdf.with_suffix('.svg'), facecolor='white')
         plt.close(fig)
+    print('fig_icons: 3.3125 x 2.45in; min text 9pt; original and selected pairs; '
+          'selected drawings verified at 224px and 448px')
 
 
 if __name__ == '__main__' and '--figure' in sys.argv:

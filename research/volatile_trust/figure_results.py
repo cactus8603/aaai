@@ -1,10 +1,10 @@
-"""Primary accuracy figures, separating full-set and matched-subset estimates."""
+"""Matched-subset accuracy and development-control figures."""
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from make_figures import FORMATS, FULL_WIDTH, GRID, INK, INK2, cell, grid, save_figure
+from make_figures import FORMATS, FULL_WIDTH, GRID, INK, INK2, grid, save_figure
 
 
 def _marker(model, color, size=4):
@@ -13,70 +13,39 @@ def _marker(model, color, size=4):
 
 
 def fig_gap(D, controls, out, split_label, api=None):
-    """Full-set estimates above; matched per-copy subset in three format facets.
+    """Compare all seven systems on the same per-copy-scored subset.
 
-    The matched panel shares seven model rows across facets, so each row carries
-    one estimate rather than three vertically offset intervals. The full-set
-    panel gives each open model a separate four-row facet, with no overlaid
-    model trajectories. Both panels use the same horizontal accuracy scale.
+    Three history-format panels share model rows and an accuracy scale. Full-set
+    estimates are reported separately in the manuscript's main table.
     """
     if not api:
         raise ValueError('The redesigned results figure requires the matched API analysis; '
                          'pass --api-analysis with analyze_api_behavior.py output.')
-    fig = plt.figure(figsize=(FULL_WIDTH, 4.3))
+    fig = plt.figure(figsize=(FULL_WIDTH, 2.80))
     models = list(D.values())
     if len(models) != 5:
         raise ValueError('The primary accuracy figure requires all five open VLMs')
-    full_count = 0
-    labels = ['Raw', 'Raw + correctness', 'Correctness only', 'Summary']
-    fig.text(.095, .96, '(a) Full test set: 48 episode pairs', fontsize=9.5, fontweight='bold')
-    fig.text(.095, .918, 'Copies combined before scoring', fontsize=9, color=INK2)
-    fig.text(.985, .918, 'Dashed lines: 50% chance', fontsize=9, color=INK2, ha='right')
-    for i, d in enumerate(models):
-        a = fig.add_axes([.225 + i * .154, .595, .132, .215])
-        for j, (arm, label, color) in enumerate(FORMATS):
-            result = cell(d['main'], arm)
-            if result is None:
-                raise ValueError(f'{d["name"]}/{arm}: missing full-set result')
-            if result['n_episodes'] != 48:
-                raise ValueError('The full-set panel requires all 48 held-out episode pairs')
-            ci = np.asarray(result['acc_ci95']) * 100
-            a.plot(ci, [j, j], color=color, lw=.9, zorder=2)
-            # Short caps keep genuinely small CIs visible beside each mean;
-            # they preserve the exact endpoints without inflating uncertainty.
-            for bound in ci:
-                a.plot([bound, bound], [j - .15, j + .15], color=color, lw=.7, zorder=2)
-            a.plot(result['acc'] * 100, j, **_marker(d, color, 3.7), zorder=4)
-            full_count += 1
-        a.axvline(50, color=INK2, lw=.7, ls='--')
-        a.set(yticks=range(4), yticklabels=labels if i == 0 else [],
-              xlim=(40, 72), xticks=[40, 50, 60, 70], ylim=(3.5, -.5))
-        a.tick_params(axis='y', length=0, pad=5)
-        a.tick_params(axis='x', pad=3)
-        a.set_title(d['name'], fontsize=9, fontweight='bold', pad=7)
-        a.spines['left'].set_visible(False)
-        grid(a, 'x')
-    fig.text(.615, .523, 'Accuracy (%)', fontsize=9, ha='center', color=INK2)
-
     entries = [(d['name'], d) for d in models]
     entries += [('GPT-6-Astra', dict(marker='^', large=True)),
                 ('Claude Fable 5.2', dict(marker='v', large=True))]
     arms = [('raw', 'Raw', FORMATS[0][2]),
             ('correct_only', 'Correctness only', FORMATS[2][2]),
             ('summary', 'Summary', FORMATS[3][2])]
-    fig.text(.095, .475, '(b) Same test trials across systems',
+    fig.text(.095, .96, 'Same test trials across systems',
              fontsize=9.5, fontweight='bold')
-    fig.text(.095, .434, '24 episode pairs; copies scored separately', fontsize=9, color=INK2)
-    fig.text(.985, .434, 'Dashed lines: 50% chance', fontsize=9, color=INK2, ha='right')
+    fig.text(.095, .895, '24 episode pairs; copies scored separately', fontsize=9, color=INK2)
+    fig.text(.985, .895, 'Dashed lines: 50% chance', fontsize=9, color=INK2, ha='right')
     bs, matched_count = [], 0
     for j, (arm, label, color) in enumerate(arms):
-        b = fig.add_axes([.225 + j * .26, .108, .24, .27])
+        b = fig.add_axes([.225 + j * .26, .22, .24, .55])
         bs.append(b)
         for i, (name, d) in enumerate(entries):
             result = api['agents'][name][arm]
             mean, lo, hi = np.asarray(result['acc'], dtype=float) * 100
             if result['n_items'] != 960:
                 raise ValueError(f'{name}/{arm}: expected the 960-item matched subset')
+            if not np.isfinite([mean, lo, hi]).all() or not 40 <= lo <= mean <= hi <= 72:
+                raise ValueError(f'{name}/{arm}: invalid estimate or CI outside the accuracy scale')
             b.plot([lo, hi], [i] * 2, color=color, lw=.9, zorder=2)
             b.plot(mean, i, **_marker(d, color, 4), zorder=3)
             matched_count += 1
@@ -99,11 +68,11 @@ def fig_gap(D, controls, out, split_label, api=None):
     for label, row in [('Open', 2), ('API', 5.5)]:
         y = bs[0].transData.transform((40, row))[1] / fig.bbox.height
         fig.text(.025, y, label, fontsize=9, color=INK2, ha='left', va='center')
-    fig.text(.615, .018, 'Accuracy (%)', fontsize=9, ha='center', color=INK2)
+    fig.text(.615, .035, 'Accuracy (%)', fontsize=9, ha='center', color=INK2)
 
     # Do not silently omit an estimate or allow text to leave the fixed canvas.
-    if (full_count, matched_count) != (20, 21):
-        raise ValueError('Expected 20 full-set and 21 matched-subset estimates')
+    if matched_count != 21:
+        raise ValueError('Expected 21 matched-subset estimates')
     from matplotlib.text import Text
     fig.canvas.draw()
     renderer = fig.canvas.get_renderer()

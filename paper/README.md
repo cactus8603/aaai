@@ -31,8 +31,10 @@ The three prompt bubbles show the same past trial in separate history formats;
 each model query receives its own history. The result panel directly labels the
 equal-weight mean accuracy for each format. Its blue open diamond uses the same
 models under all-trial-summary histories, rather than a standalone count rule.
-Model-level variation and episode-pair bootstrap confidence intervals appear in
-Figure 2a; Figure 1 does not display uncertainty intervals for the model means.
+Model-level accuracies and paired summary–raw confidence intervals appear in
+Table 1; individual episode-pair bootstrap accuracy intervals are consolidated
+with recovery ratios in Appendix C. Figure 1 does not display uncertainty intervals
+for the model means.
 Update the snapshot and caption together if the underlying analysis changes. PDF text is exported as vector outlines for the AAAI font requirements; the teaser SVG retains editable text. Ghostscript (`gs`) is required for PDF figure export.
 
 AAAI-27 requires **pdfLaTeX**. `aaai2027.sty` aborts under XeTeX, LuaTeX or tectonic. TeX is installed user-locally through TinyTeX in `~/.TinyTeX`.
@@ -154,22 +156,25 @@ labels are at least 9pt. PDF text is outlined while all curves remain vector gra
 Figure 1 preserves the full prediction--feedback loop, uses prompt bubbles for
 the three trial-level history formats, and directly labels four model-mean
 accuracies, including the all-trial-summary reference.
-The primary results figure separates the full-set, pair-averaged-logit estimator
-from per-copy scores on the matched API trial mask. Its full-set panel separates
-the five models into individual panels with four history-format rows, so no
-model curves overlap. Its matched-subset panel uses
-one facet per history format and shared model rows, so each row contains one
-confidence interval per facet. Figure 3 exposes the crossed
-reports/outcome masking design with five per-model 2x2 accuracy matrices; rows
-encode outcome visibility and columns report visibility. All four conditions
-retain the correctness statements. Every cell displays a descriptive accuracy
-mean, with one colour scale shared across models. The 15 stored paired masking contrasts and their 95% CIs are
-retained in `fig_masking_effects.pdf` in Appendix J, rather than being used as
-intervals for absolute accuracy. The complete strategy matrix is retained in
-`fig_strategies.pdf`. Development controls and per-model reversal trajectories
-are retained in `fig_controls.pdf` and `fig_curves_models.pdf` in the supplement.
-The main accuracy table reports percentages and percentage-point differences;
-the full primary/TOST test table is in Appendix C. Psych-101 hazard curves and
+Table 1 carries the full-set, pair-averaged-logit results. Figure 2 shows only
+per-copy scores on the matched API trial mask: one facet per history format and
+seven shared model rows, with one confidence interval per row in each facet.
+The full-set and matched-subset estimates remain separate. The former full-set
+panel's 20 marginal accuracy CIs are preserved as interval-only columns in the
+existing Appendix C recovery table, without duplicating the main means.
+Figure 3 is a single-column correctness-integration kernel with four unchanged
+10-lag curves. Table 2 replaces the former five masking matrices with five model
+rows and four conditions grouped by outcome/report visibility. Correctness
+statements remain visible in all four conditions. The 20 descriptive accuracy
+means are unchanged. The 15 stored paired masking contrasts and their 95% CIs
+remain in `fig_masking_effects.pdf` in Appendix I; they are not intervals for
+absolute accuracy. Raw-history strategy comparisons remain in
+`fig_strategies.pdf`; per-model reversal trajectories remain in
+`fig_curves_models.pdf`. Development text/image/binding controls appear once in
+a consolidated table; the generated `fig_controls.pdf` is retained as a research
+asset but is no longer included in the reader PDF. The main accuracy table
+reports percentages and percentage-point differences. Appendix C combines
+secondary TOST tests and rule agreement, without repeating primary test results. Psych-101 hazard curves and
 table medians use the declared sampled-choice estimator, consistently with the
 paired comparisons; their pointwise CIs are unadjusted, and the figure states
 that all five hidden-hazard comparisons fail the Holm threshold. Regeneration
@@ -181,11 +186,30 @@ The review added three analyses using existing outputs only:
 - `analyze_readout_sensitivity.py`: per-copy choice accuracy on all 48 held-out episode pairs, alongside the original counterbalanced-logit estimator; no candidate-mass filtering.
 - `analyze_reviewer_checks.py --staleness-only`: 2,000 participant-cluster bootstrap refits for stale-minus-fresh value weights and paired model–human contrasts. This updates the existing reviewer-check report.
 
-Pending GPU-result placeholders remain intentionally in this working draft.
-Do not treat them as failed or absent experiments. In particular:
+Pending analyses remain part of the work plan. Empty result tables and unknown
+GPU-hour columns are omitted from the reader PDF; pending work is described
+explicitly and must not be treated as a failed or null experiment. In particular:
 
 - Cognitive fits must use the corrected episode grouping: both cover stories of the same `(data, split, episode_id)` are left out together. Old development fits used 32 folds instead of 16 independent pairs; old held-out fits used 96 instead of 48. Both splits require corrected CPU fitting runs. `analyze_cogmodels.py` now applies this grouping, but old results cannot fill the corrected tables or support model-selection claims. Existing outputs were not overwritten.
-- For the planned Thinking/Instruct comparison, `analyze_thinking.py --cross-checkpoint Qwen/Qwen3-VL-8B-Thinking Qwen/Qwen3-VL-8B-Instruct` works with `--direct`. Results are separate from same-checkpoint comparisons and cannot isolate reasoning from checkpoint/readout differences.
+- For the planned Thinking/Instruct comparison, `analyze_thinking.py --cross-checkpoint Qwen/Qwen3-VL-8B-Thinking Qwen/Qwen3-VL-8B-Instruct` works with `--direct`. Results are separate from same-checkpoint comparisons and cannot isolate reasoning from checkpoint/readout differences. The planned subset uses development episodes with text reports at trials 20, 40, 60 and 80, plus controls at 40 and 80, greedy generation up to 16,384 tokens. Report free-answer accuracy, valid-answer rate, truncation, forced answer-token readouts (used when no valid answer was generated) and token cost separately; these planned settings are not empirical support in the reader PDF.
+
+### Appendix scope and layout (2026-11-13)
+
+The supplement is organized around task reproducibility, alternative explanations,
+readout validity, and limits of the human comparison. The primary result is shown
+once; repeated control/strategy presentations, candidate-icon search logs, compact
+prompt factorial logs and historical pilot effect sizes are omitted. The compact
+prompt counterexample, unsuccessful equivalence tests, weak parameter identification,
+chart-reading failures, Gemma readout failures, and Holm-null human comparisons are
+retained. Pilot exposure and plan deviations remain explicit disclosures.
+
+The task illustration now contains only the unique schedule/count-lag panel; the
+icon figure shows original and selected inputs only. Both are native single-column
+figures. Appendix double-column floats use standard `[!t]` placement, with late result
+tables declared before their accompanying prose, to avoid an end-of-document
+float queue; single-column tables use `[tbp]`, except the cover-story table, which
+uses `[!ht]` to follow the appendix heading and its introduction. Raw analysis outputs and research assets are preserved;
+removing their repeated presentation does not rerun or modify an experiment.
 
 After compiling and checking the manuscript, `python3 paper/sync_overleaf.py overleaf`
 copies the manuscript, bibliography and PDF figures into the Overleaf-linked checkout,
@@ -222,7 +246,7 @@ limit.
   diagnosis → masking → reliability judgment → computational reference → summary
   lag. Proprietary-model results now follow this explanation as a boundary
   condition. The former long mechanism paragraph is split into separate claims;
-  the main masking account and Figure 3b now use all five held-out models.
+  the main masking account and Table 2 use all five held-out models.
 - Define the outcome quota, higher-logit decision rule and half-credit ties in
   Methods. Introduce the Psych-101 participant-history replay and fitted
   forgetting-rate comparison there, before reporting the human comparison.

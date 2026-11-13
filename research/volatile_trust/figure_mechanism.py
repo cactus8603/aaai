@@ -6,7 +6,6 @@ particular, masking intervals come from the episode-paired contrasts in
 """
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.lines import Line2D
 import numpy as np
 
@@ -18,9 +17,6 @@ INTERVENTIONS = (
     ("rep_ok", "Outcome masked", "#6a4fc4", "--"),
     ("mask_ok", "Both masked", "#303f49", "-"),
 )
-# Rows: outcome shown/masked; columns: reports shown/masked. Correctness
-# statements remain visible in all four conditions.
-MASKING_ARMS = (("A+", "out_ok"), ("rep_ok", "mask_ok"))
 
 
 def _check_text_bounds(fig):
@@ -129,101 +125,6 @@ def _correctness_kernel(ax, D, keys, common):
               borderaxespad=0, labelspacing=.25)
 
 
-def _masking_design_key(fig, common):
-    """Show the crossed intervention design with manuscript-facing labels."""
-    fig.text(.625, .974, "History masking design", fontweight="bold",
-             fontsize=9.5, va="top")
-    fig.text(.625, .920, "Correctness statements always shown", color=common.INK2,
-             va="top", fontsize=9)
-    key = fig.add_axes([.650, .610, .330, .200])
-    key.set_xlim(-.5, 1.5)
-    key.set_ylim(1.5, -.5)
-    labels = (("Raw +\ncorrectness", "Reports\nmasked"),
-              ("Outcome\nmasked", "Both\nmasked"))
-    fills = ("#f1edf6", "#e9f4f2")
-    for i, row in enumerate(labels):
-        for j, label in enumerate(row):
-            key.add_patch(plt.Rectangle((j - .5, i - .5), 1, 1,
-                                       fc=fills[j], ec="white", lw=1.2))
-            key.text(j, i, label, ha="center", va="center", fontsize=9,
-                     color=common.INK, linespacing=1.05)
-    key.set_xticks([0, 1], labels=["Reports shown", "Reports masked"])
-    key.xaxis.tick_top()
-    key.tick_params(axis="x", length=0, pad=5)
-    key.set_yticks([0, 1], labels=["Outcome\nshown", "Outcome\nmasked"])
-    key.tick_params(axis="y", length=0, pad=7)
-    for spine in key.spines.values():
-        spine.set_visible(False)
-
-
-def _model_title(name):
-    """Put model size on a separate line to fit five full-width panels."""
-    family, size = name.rsplit("-", 1)
-    return f"{family}\n{size}"
-
-
-def _cell_label_colour(rgba):
-    """Select the higher-contrast black/white label from actual cell luminance."""
-    channels = np.asarray(rgba[:3], dtype=float)
-    linear = np.where(channels <= .04045, channels / 12.92,
-                      ((channels + .055) / 1.055) ** 2.4)
-    luminance = float(linear @ [.2126, .7152, .0722])
-    contrasts = ((luminance + .05) / .05, 1.05 / (luminance + .05))
-    if max(contrasts) < 4.5:
-        raise ValueError(f"Cell-label contrast below 4.5:1: {max(contrasts)}")
-    return "#000000" if contrasts[0] >= contrasts[1] else "#ffffff"
-
-
-def _masking_matrices(fig, D, masking, mask_keys, common):
-    """Show all four descriptive means without suggesting a continuous path."""
-    # Keep the matrix panels at their established physical size while giving
-    # panel (a) additional height. Repeated labels make every matrix readable
-    # without finding a detached shared axis title.
-    height = fig.get_figheight()
-    fig.text(.078, 1.862 / height, "(b) Accuracy after masking (%)", fontweight="bold",
-             va="center", fontsize=9.5)
-    cmap = LinearSegmentedColormap.from_list(
-        "masking_accuracy", ["#f4f5f7", "#adc7d9", "#275e86"])
-    norm = Normalize(48, 66)
-    left, right, gap = .090, .978, .033
-    width = (right - left - gap * (len(mask_keys) - 1)) / len(mask_keys)
-    for idx, key in enumerate(mask_keys):
-        model = D[key]
-        ax = fig.add_axes([left + idx * (width + gap), .722 / height,
-                           width, .684 / height])
-        result = masking[model["name"]]
-        values = 100 * np.asarray([[result["acc"][arm] for arm in row]
-                                   for row in MASKING_ARMS], dtype=float)
-        if not np.isfinite(values).all():
-            raise ValueError(f"Missing masking accuracy means for {model['name']}")
-        if values.min() < norm.vmin or values.max() > norm.vmax:
-            raise ValueError(f"Masking means exceed the fixed accuracy scale: {model['name']}")
-        image = ax.imshow(values, cmap=cmap, norm=norm, aspect="auto")
-        for row in range(2):
-            for column in range(2):
-                ax.text(column, row, f"{values[row, column]:.1f}", ha="center", va="center",
-                        fontsize=10, fontweight="bold",
-                        color=_cell_label_colour(cmap(norm(values[row, column]))))
-        ax.set_xticks([0, 1], labels=["Reports\nshown", "Reports\nmasked"])
-        ax.set_yticks([0, 1], labels=["Outcome\nshown", "Outcome\nmasked"]
-                     if idx == 0 else ["", ""])
-        ax.tick_params(axis="x", length=0, pad=4)
-        ax.tick_params(axis="y", length=0, pad=6)
-        ax.set_xticks([-.5, .5, 1.5], minor=True)
-        ax.set_yticks([-.5, .5, 1.5], minor=True)
-        ax.grid(which="minor", color="white", linewidth=1.5)
-        ax.tick_params(which="minor", bottom=False, left=False)
-        for spine in ax.spines.values():
-            spine.set_visible(False)
-        ax.set_title(_model_title(model["name"]), fontsize=9, pad=5,
-                     linespacing=1.03)
-    colour_ax = fig.add_axes([.38, .190 / height, .35, .0399 / height])
-    colour_bar = fig.colorbar(image, cax=colour_ax, orientation="horizontal", ticks=[48, 54, 60, 66])
-    colour_bar.ax.tick_params(length=2, pad=2)
-    colour_bar.outline.set_visible(False)
-    fig.text(.34, .209 / height, "Accuracy (%)", ha="right", va="center", fontsize=9)
-
-
 def _masking_effects_appendix(D, masking, mask_keys, out, mask_label, common):
     """Preserve all 15 stored paired contrasts and confidence intervals."""
     fig = plt.figure(figsize=(common.FULL_WIDTH, 3.10))
@@ -286,13 +187,11 @@ def fig_mech(D, masking, out, split_label, mask_label, *, include_strategy=True,
     if not mask_keys:
         raise ValueError("The masking figure requires stored accuracy means and paired contrasts")
 
-    fig = plt.figure(figsize=(common.FULL_WIDTH, 4.40))
-    left = fig.add_axes([.105, .550, .430, .318])
-    fig.text(.078, .974, "(a) Correctness integration", fontweight="bold",
+    fig = plt.figure(figsize=(common.COLUMN_WIDTH, 2.80))
+    left = fig.add_axes([.190, .170, .770, .600])
+    fig.text(.190, .965, "Correctness integration", fontweight="bold",
              va="top", fontsize=9.5)
     _correctness_kernel(left, D, keys, common)
-    _masking_design_key(fig, common)
-    _masking_matrices(fig, D, masking, mask_keys, common)
     _check_text_bounds(fig)
     common.save_figure(fig, out, "fig_kernel")
     if include_effects:

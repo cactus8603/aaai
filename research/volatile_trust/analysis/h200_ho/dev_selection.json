@@ -1,0 +1,72 @@
+{
+ "created_by": "analyze_main.py --write-dev-selection",
+ "criterion": "K* = argmax development accuracy of C|sum_window:K|text (domains pooled; ties -> smaller K)",
+ "mode": "formal",
+ "models": {
+  "InternVL3_5-38B-HF": {
+   "k_star": 5,
+   "acc_by_k": {
+    "5": 0.6993670886075949,
+    "10": 0.620253164556962,
+    "20": 0.5806962025316456
+   },
+   "model_label": "InternVL3_5-38B-HF@7c830fc2",
+   "data": "episodes_v3#e00b8793",
+   "split": "development",
+   "readout": "choice",
+   "ref_format": "text"
+  },
+  "InternVL3_5-8B-HF": {
+   "k_star": 5,
+   "acc_by_k": {
+    "5": 0.6871044303797468,
+    "10": 0.6170886075949367,
+    "20": 0.5834651898734178
+   },
+   "model_label": "InternVL3_5-8B-HF@741a7d03",
+   "data": "episodes_v3#e00b8793",
+   "split": "development",
+   "readout": "choice",
+   "ref_format": "text"
+  },
+  "Qwen3-VL-32B-Instruct": {
+   "k_star": 5,
+   "acc_by_k": {
+    "5": 0.6946202531645569,
+    "10": 0.6182753164556962,
+    "20": 0.5799050632911392
+   },
+   "model_label": "Qwen3-VL-32B-Instruct@0cfaf481",
+   "data": "episodes_v3#e00b8793",
+   "split": "development",
+   "readout": "choice",
+   "ref_format": "text"
+  },
+  "Qwen3-VL-8B-Instruct": {
+   "k_star": 5,
+   "acc_by_k": {
+    "5": 0.6637658227848102,
+    "10": 0.6091772151898733,
+    "20": 0.5929588607594937
+   },
+   "model_label": "Qwen3-VL-8B-Instruct@0c351dd0",
+   "data": "episodes_v3#e00b8793",
+   "split": "development",
+   "readout": "choice",
+   "ref_format": "text"
+  },
+  "gemma-3-27b-it": {
+   "k_star": 5,
+   "acc_by_k": {
+    "5": 0.6942246835443038,
+    "10": 0.6174841772151898,
+    "20": 0.5810917721518987
+   },
+   "model_label": "gemma-3-27b-it@005ad340",
+   "data": "episodes_v3#e00b8793",
+   "split": "development",
+   "readout": "choice",
+   "ref_format": "text"
+  }
+ }
+}

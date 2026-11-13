@@ -1,0 +1,59 @@
+== judgment (raw history, held-out, twin-averaged)
+Qwen3-VL-8B      judgment names better 0.633  choice follows better 0.523  choice acc 0.486  choice follows own judgment 0.579  kappa(j,c) 0.09  names A 0.75
+    kappa judgment: count_all 0.03, last5 0.02, bayes 0.04, wsls 0.04 | choice: count_all 0.01, last5 -0.01, bayes 0.00, wsls -0.01
+InternVL3.5-8B   judgment names better 0.674  choice follows better 0.524  choice acc 0.479  choice follows own judgment 0.527  kappa(j,c) -0.02  names A 0.82
+    kappa judgment: count_all 0.04, last5 0.09, bayes 0.11, wsls 0.07 | choice: count_all 0.01, last5 0.02, bayes 0.04, wsls 0.05
+Gemma-3-27B      judgment names better 0.602  choice follows better 0.531  choice acc 0.470  choice follows own judgment 0.576  kappa(j,c) 0.07  names A 0.68
+    kappa judgment: count_all 0.01, last5 0.05, bayes 0.04, wsls 0.03 | choice: count_all 0.02, last5 -0.03, bayes 0.01, wsls 0.01
+Qwen3-VL-32B     judgment names better 0.607  choice follows better 0.532  choice acc 0.468  choice follows own judgment 0.537  kappa(j,c) -0.00  names A 0.70
+    kappa judgment: count_all 0.02, last5 0.05, bayes 0.05, wsls 0.01 | choice: count_all 0.01, last5 -0.03, bayes -0.01, wsls -0.00
+InternVL3.5-38B  judgment names better 0.672  choice follows better 0.633  choice acc 0.549  choice follows own judgment 0.691  kappa(j,c) 0.12  names A 0.79
+    kappa judgment: count_all 0.05, last5 0.17, bayes 0.17, wsls 0.10 | choice: count_all 0.04, last5 0.11, bayes 0.14, wsls 0.07
+
+== position (share choosing first-listed report; accuracy when correct advisor listed first / second)
+Qwen3-VL-8B      raw/text             first 0.326  acc first 0.315  second 0.661
+Qwen3-VL-8B      raw/image            first 0.341  acc first 0.335  second 0.654
+Qwen3-VL-8B      correct_only/text    first 0.455  acc first 0.571  second 0.663
+Qwen3-VL-8B      correct_only/image   first 0.523  acc first 0.571  second 0.525
+InternVL3.5-8B   raw/text             first 0.542  acc first 0.519  second 0.435
+InternVL3.5-8B   raw/image            first 0.573  acc first 0.541  second 0.399
+InternVL3.5-8B   correct_only/text    first 0.526  acc first 0.661  second 0.610
+InternVL3.5-8B   correct_only/image   first 0.803  acc first 0.847  second 0.243
+Gemma-3-27B      raw/text             first 0.480  acc first 0.445  second 0.485
+Gemma-3-27B      raw/image            first 0.581  acc first 0.544  second 0.381
+Gemma-3-27B      correct_only/text    first 0.438  acc first 0.539  second 0.666
+Gemma-3-27B      correct_only/image   first 0.792  acc first 0.828  second 0.243
+Qwen3-VL-32B     raw/text             first 0.574  acc first 0.541  second 0.393
+Qwen3-VL-32B     raw/image            first 0.927  acc first 0.917  second 0.063
+Qwen3-VL-32B     correct_only/text    first 0.537  acc first 0.664  second 0.590
+Qwen3-VL-32B     correct_only/image   first 0.918  acc first 0.941  second 0.105
+InternVL3.5-38B  raw/text             first 0.579  acc first 0.620  second 0.462
+InternVL3.5-38B  raw/image            first 0.882  acc first 0.877  second 0.115
+InternVL3.5-38B  correct_only/text    first 0.524  acc first 0.648  second 0.600
+InternVL3.5-38B  correct_only/image   first 0.903  acc first 0.920  second 0.114
+
+== psych101 value sensitivity (logistic weight per 10 points of last-observed value difference; perseveration)
+Human                      h=0.1: v +0.42 (pp median +0.48, 100%>0) pers +0.51  h=0.2: v +0.31 (pp median +0.36, 97%>0) pers +0.27  h=0.4: v +0.23 (pp median +0.26, 97%>0) pers -0.24
+Qwen3-VL-8B (hidden)       h=0.1: v +0.25 (pp median +0.40, 97%>0) pers +0.39  h=0.2: v +0.16 (pp median +0.28, 97%>0) pers +0.40  h=0.4: v +0.15 (pp median +0.17, 100%>0) pers +0.27
+Qwen3-VL-8B (told)         h=0.1: v +0.24 (pp median +0.36, 97%>0) pers +0.42  h=0.2: v +0.16 (pp median +0.25, 97%>0) pers +0.38  h=0.4: v +0.13 (pp median +0.16, 97%>0) pers +0.24
+InternVL3.5-8B (hidden)    h=0.1: v +0.22 (pp median +0.25, 100%>0) pers +0.33  h=0.2: v +0.16 (pp median +0.17, 100%>0) pers +0.36  h=0.4: v +0.12 (pp median +0.14, 100%>0) pers +0.18
+InternVL3.5-8B (told)      h=0.1: v +0.18 (pp median +0.18, 100%>0) pers +0.27  h=0.2: v +0.13 (pp median +0.13, 100%>0) pers +0.27  h=0.4: v +0.10 (pp median +0.12, 100%>0) pers +0.14
+Gemma-3-27B (hidden)       h=0.1: v +0.11 (pp median +0.10, 87%>0) pers +0.29  h=0.2: v +0.12 (pp median +0.13, 93%>0) pers +0.23  h=0.4: v +0.07 (pp median +0.07, 90%>0) pers +0.13
+Gemma-3-27B (told)         h=0.1: v +0.10 (pp median +0.07, 77%>0) pers +0.28  h=0.2: v +0.11 (pp median +0.10, 90%>0) pers +0.25  h=0.4: v +0.09 (pp median +0.09, 97%>0) pers +0.12
+Qwen3-VL-32B (hidden)      h=0.1: v +0.24 (pp median +0.25, 93%>0) pers +0.39  h=0.2: v +0.16 (pp median +0.18, 93%>0) pers +0.36  h=0.4: v +0.13 (pp median +0.14, 100%>0) pers +0.25
+Qwen3-VL-32B (told)        h=0.1: v +0.23 (pp median +0.27, 93%>0) pers +0.42  h=0.2: v +0.16 (pp median +0.16, 97%>0) pers +0.38  h=0.4: v +0.13 (pp median +0.12, 97%>0) pers +0.25
+InternVL3.5-38B (hidden)   h=0.1: v +0.45 (pp median +0.48, 100%>0) pers +0.33  h=0.2: v +0.36 (pp median +0.39, 100%>0) pers +0.26  h=0.4: v +0.26 (pp median +0.27, 100%>0) pers +0.01
+InternVL3.5-38B (told)     h=0.1: v +0.49 (pp median +0.51, 100%>0) pers +0.42  h=0.2: v +0.38 (pp median +0.41, 100%>0) pers +0.33  h=0.4: v +0.27 (pp median +0.26, 100%>0) pers +0.11
+
+== psych101 staleness (value weight fresh <= 2 vs stale >= 4 trials; ratio stale/fresh)
+Human                      h=0.1: fresh +0.63 stale +0.37 ratio 0.58  h=0.2: fresh +0.35 stale +0.30 ratio 0.86  h=0.4: fresh +0.25 stale +0.21 ratio 0.84
+Qwen3-VL-8B (hidden)       h=0.1: fresh +0.23 stale +0.27 ratio 1.21  h=0.2: fresh +0.18 stale +0.17 ratio 0.95  h=0.4: fresh +0.12 stale +0.21 ratio 1.76
+Qwen3-VL-8B (told)         h=0.1: fresh +0.22 stale +0.27 ratio 1.25  h=0.2: fresh +0.17 stale +0.16 ratio 0.89  h=0.4: fresh +0.11 stale +0.19 ratio 1.79
+InternVL3.5-8B (hidden)    h=0.1: fresh +0.17 stale +0.27 ratio 1.59  h=0.2: fresh +0.13 stale +0.19 ratio 1.42  h=0.4: fresh +0.09 stale +0.17 ratio 2.01
+InternVL3.5-8B (told)      h=0.1: fresh +0.15 stale +0.20 ratio 1.39  h=0.2: fresh +0.11 stale +0.15 ratio 1.40  h=0.4: fresh +0.07 stale +0.14 ratio 1.93
+Gemma-3-27B (hidden)       h=0.1: fresh +0.08 stale +0.13 ratio 1.61  h=0.2: fresh +0.10 stale +0.14 ratio 1.34  h=0.4: fresh +0.05 stale +0.10 ratio 2.07
+Gemma-3-27B (told)         h=0.1: fresh +0.08 stale +0.11 ratio 1.32  h=0.2: fresh +0.09 stale +0.12 ratio 1.32  h=0.4: fresh +0.06 stale +0.13 ratio 2.05
+Qwen3-VL-32B (hidden)      h=0.1: fresh +0.22 stale +0.26 ratio 1.18  h=0.2: fresh +0.15 stale +0.17 ratio 1.18  h=0.4: fresh +0.10 stale +0.20 ratio 1.99
+Qwen3-VL-32B (told)        h=0.1: fresh +0.23 stale +0.25 ratio 1.08  h=0.2: fresh +0.15 stale +0.17 ratio 1.11  h=0.4: fresh +0.11 stale +0.20 ratio 1.83
+InternVL3.5-38B (hidden)   h=0.1: fresh +0.39 stale +0.53 ratio 1.38  h=0.2: fresh +0.35 stale +0.39 ratio 1.11  h=0.4: fresh +0.23 stale +0.34 ratio 1.45
+InternVL3.5-38B (told)     h=0.1: fresh +0.43 stale +0.57 ratio 1.32  h=0.2: fresh +0.38 stale +0.41 ratio 1.09  h=0.4: fresh +0.24 stale +0.33 ratio 1.41

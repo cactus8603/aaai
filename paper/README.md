@@ -27,8 +27,12 @@ exactly seven inches wide, with text at least 9pt at its included size. The snap
 contains the five-model held-out results (48 episode pairs), source paths and SHA256 hashes; add
 `--verify-sources` to compare every plotted value with the original local analysis
 JSON files. Those larger analysis files are not required to redraw the figure.
-The small dots show individual models, not confidence intervals; the blue reference
-uses the same models under count-summary histories, not a standalone count rule.
+The three prompt bubbles show the same past trial in separate history formats;
+each model query receives its own history. The result panel directly labels the
+equal-weight mean accuracy for each format. Its blue open diamond uses the same
+models under all-trial-summary histories, rather than a standalone count rule.
+Model-level variation and episode-pair bootstrap confidence intervals appear in
+Figure 2a; Figure 1 does not display uncertainty intervals for the model means.
 Update the snapshot and caption together if the underlying analysis changes. PDF text is exported as vector outlines for the AAAI font requirements; the teaser SVG retains editable text. Ghostscript (`gs`) is required for PDF figure export.
 
 AAAI-27 requires **pdfLaTeX**. `aaai2027.sty` aborts under XeTeX, LuaTeX or tectonic. TeX is installed user-locally through TinyTeX in `~/.TinyTeX`.
@@ -141,11 +145,35 @@ authblk, babel, balance, CJK, epsf, epsfig, euler, float, flushend, fullpage, ge
 Regenerate the six statistical/task figures from completed held-out outputs:
 
 ```bash
-.venv/bin/python research/volatile_trust/make_figures.py --analysis-dir research/volatile_trust/analysis/h200_ho --split-label held-out --masking research/volatile_trust/analysis/h200_ho/masking/masking.json --masking-label held-out --skip-teaser
+.venv/bin/python research/volatile_trust/make_figures.py --analysis-dir research/volatile_trust/analysis/h200_ho --split-label held-out --masking research/volatile_trust/analysis/h200_ho/masking/masking.json --masking-label held-out --api-analysis research/volatile_trust/analysis/api_behavior/api_behavior.json --skip-teaser
 ```
 
 The figure canvas matches the final 7-inch text width or 3.3125-inch column width;
 labels are at least 9pt. PDF text is outlined while all curves remain vector graphics.
+
+Figure 1 preserves the full prediction--feedback loop, uses prompt bubbles for
+the three trial-level history formats, and directly labels four model-mean
+accuracies, including the all-trial-summary reference.
+The primary results figure separates the full-set, pair-averaged-logit estimator
+from per-copy scores on the matched API trial mask. Its full-set panel separates
+the five models into individual panels with four history-format rows, so no
+model curves overlap. Its matched-subset panel uses
+one facet per history format and shared model rows, so each row contains one
+confidence interval per facet. Figure 3 exposes the crossed
+reports/outcome masking design with five per-model 2x2 accuracy matrices; rows
+encode outcome visibility and columns report visibility. All four conditions
+retain the correctness statements. Every cell displays a descriptive accuracy
+mean, with one colour scale shared across models. The 15 stored paired masking contrasts and their 95% CIs are
+retained in `fig_masking_effects.pdf` in Appendix J, rather than being used as
+intervals for absolute accuracy. The complete strategy matrix is retained in
+`fig_strategies.pdf`. Development controls and per-model reversal trajectories
+are retained in `fig_controls.pdf` and `fig_curves_models.pdf` in the supplement.
+The main accuracy table reports percentages and percentage-point differences;
+the full primary/TOST test table is in Appendix C. Psych-101 hazard curves and
+table medians use the declared sampled-choice estimator, consistently with the
+paired comparisons; their pointwise CIs are unadjusted, and the figure states
+that all five hidden-hazard comparisons fail the Holm threshold. Regeneration
+does not rerun any model or change stored analysis results.
 
 The review added three analyses using existing outputs only:
 
@@ -194,7 +222,7 @@ limit.
   diagnosis → masking → reliability judgment → computational reference → summary
   lag. Proprietary-model results now follow this explanation as a boundary
   condition. The former long mechanism paragraph is split into separate claims;
-  the main masking account and Figure 3c now use all five held-out models.
+  the main masking account and Figure 3b now use all five held-out models.
 - Define the outcome quota, higher-logit decision rule and half-credit ties in
   Methods. Introduce the Psych-101 participant-history replay and fitted
   forgetting-rate comparison there, before reporting the human comparison.

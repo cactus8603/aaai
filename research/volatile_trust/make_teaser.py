@@ -16,14 +16,14 @@ from figure_pdf import save_outlined_pdf
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch  # noqa: E402
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Polygon  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 ARMS = ('A|full|text', 'A+|full|text', 'B|full|text', 'C|sum_all|text')
 LABELS = ('Raw', 'Raw + correctness', 'Correctness only')
 COLORS = ('#9F4232', '#865B12', '#006B54')
 INK, MUTED, RULE, BLUE = '#202A36', '#56616E', '#D8DDE2', '#17619C'
-WIDTH, HEIGHT = 504, 344  # points; exactly the paper's seven-inch text width
+WIDTH, HEIGHT = 504, 302.4  # points; exactly 7 × 4.2 inches at the final paper width
 
 
 def validate(data):
@@ -127,14 +127,29 @@ def draw_teaser(data, out):
             ax.add_patch(FancyArrowPatch((x1, y1), (x2, y2), arrowstyle='-|>',
                          mutation_scale=7, color=MUTED, lw=.8, shrinkA=0, shrinkB=0))
 
-        # (a) A concrete trial, with the prediction before any outcome feedback.
+        def bubble(y, h, col, fill, title, excerpts):
+            # Separate input messages, each with the actual history wording.
+            # No answer bubbles or invented multi-turn dialogue are shown.
+            x, width = 12, 300
+            box(x, y, width, h, fill=fill, edge=col, lw=.75, radius=7)
+            ax.add_patch(Polygon([(x + .5, y + 14), (x - 7, y + 21),
+                                  (x + .5, y + 23)], closed=True,
+                                 fc=fill, ec=col, lw=.75))
+            line(x + .55, y + 14.3, x + .55, y + 22.6, fill, 1.7)
+            text(x + 10, y + 10.5, title, 10.2, col, bold=True)
+            for i, excerpt in enumerate(excerpts):
+                text(x + 10, y + 25 + i * 11.8, excerpt, 9.5,
+                     COLORS[2] if 'was correct' in excerpt else INK)
+
+        # The original boxed trial sequence keeps the temporal boundary visible:
+        # feedback arrives after prediction and is reused only on the next trial.
         text(2, 8, '(a) Predict first, observe feedback afterwards', 10.5, bold=True)
         box(2, 25, 128, 44, fill='#F7F8FA')
         text(12, 38, 'Ken reports: rain', 10)
         text(12, 55, 'Sam reports: dry', 10)
         arrow(134, 47, 149, 47)
         box(153, 25, 138, 44, fill='#F0F3F7', edge='#AAB5C2')
-        text(222, 38, 'VLM predicts', 10, bold=True, ha='center')
+        text(222, 38, 'Model predicts', 10, bold=True, ha='center')
         text(222, 55, 'rain or dry?', 11, ha='center')
         arrow(295, 47, 310, 47)
         box(314, 25, 96, 44)
@@ -150,61 +165,49 @@ def draw_teaser(data, out):
         text(345, 82, 'Reformat history for the next trial', 9, MUTED, ha='center',
              bbox=dict(fc='white', ec='none', pad=2))
 
-        # (b) Aligned schematic excerpts. Struck text is an editorial omission cue,
-        # never a claim about tokens included in the correctness-only prompt.
-        text(2, 103, '(b) Reformat the same past feedback', 10.5, bold=True)
-        text(502, 103, 'One past trial shown', 9, MUTED, ha='right')
-        lefts, centers = (2, 173, 344), (81, 252, 423)
-        removed = []
-        for j, (x, col, label) in enumerate(zip(lefts, COLORS, LABELS)):
-            box(x, 117, 158, 91, fill='white', edge=col, lw=.8)
-            text(x + 10, 131, label, 11, col, bold=True)
-            line(x + 10, 141, x + 148, 141, RULE)
-            report = text(x + 10, 154, 'Ken: rain; Sam: dry.', 10, MUTED if j == 2 else INK)
-            outcome = text(x + 10, 170, 'Outcome: rain.', 10, MUTED if j == 2 else INK)
-            if j > 0:
-                box(x + 6, 181, 146, 21, fill='#EAF4EF', edge='none', radius=2)
-                text(x + 10, 191.5, 'Ken correct; Sam wrong.', 10, COLORS[2])
-            if j == 2:
-                removed += [report, outcome]
+        text(2, 105, '(b) Three history formats', 10.5, bold=True)
+        text(2, 119, 'One past trial shown; each format is queried separately', 9, MUTED)
+        bubble(131, 47, COLORS[0], '#FFF7F4', LABELS[0], (
+            'Day 3: Ken forecasts rain; Sam forecasts dry.',
+            'Actual weather: rain.',
+        ))
+        bubble(188, 59, COLORS[1], '#FFFBF1', LABELS[1], (
+            'Day 3: Ken forecasts rain; Sam forecasts dry.',
+            'Actual weather: rain.',
+            '(Ken was correct; Sam was wrong.)',
+        ))
+        bubble(257, 35, COLORS[2], '#F1FAF6', LABELS[2], (
+            'Day 3: Ken was correct; Sam was wrong.',
+        ))
 
-        # (c) Equal-weight model means and the underlying model values. The blue
-        # reference uses exactly those models in C|sum_all|text, not a count agent.
-        text(2, 227, '(c) Accuracy across four VLMs' if len(data['models']) == 4
-             else f'(c) Accuracy across {len(data["models"])} VLMs', 10.5, bold=True)
-        ax.plot(349, 227, 'o', ms=6, color=INK)
-        text(358, 227, 'Mean', 9, MUTED)
-        ax.plot(400, 227, 'o', ms=2.8, color=INK)
-        text(407, 227, 'Individual model', 9, MUTED)
-        y = lambda v: 314 - (v - .4) * 210
+        # The teaser shows one directly labelled metric. The summary is a
+        # separate reference row, not a fourth trial-level message. Model-level
+        # variation and paired episode CIs are reported in Figure 2; these mean
+        # points have no independently computed uncertainty intervals.
+        text(328, 105, '(c) Prediction accuracy', 10.5, bold=True)
+        text(328, 119, f'Mean across {len(data["models"])} open models', 9, MUTED)
+        left, right, top, bottom = 334, 494, 137, 279
+        x = lambda value: left + (value - .4) / .3 * (right - left)
+        box(326, 244, 177, 34, fill='#F3F7FC', edge='none', radius=3)
         for tick in (.4, .5, .6, .7):
-            text(27, y(tick), f'{tick:.1f}'.lstrip('0'), 9, MUTED, ha='right')
-            if tick in (.4, .6):
-                line(36, y(tick), 502, y(tick), '#E5E8EB', .55)
-        line(36, y(.5), 502, y(.5), MUTED, .65, ls=(0, (1, 2.5)))
-        text(498, y(.5) - 6, 'Chance', 9, MUTED, ha='right',
-             bbox=dict(fc='white', ec='none', pad=1))
-        line(36, y(means[3]), 502, y(means[3]), BLUE, .9, ls=(0, (4, 3)))
-        text(42, y(means[3]) - 9, f'Summary mean {means[3]:.3f}'.replace('0.', '.'), 9, BLUE,
-             bbox=dict(fc='white', ec='none', pad=1))
-        for x, col, vals, mean in zip(centers, COLORS, values, means):
-            offsets = [0] if len(vals) == 1 else [-18 + 36 * i / (len(vals) - 1) for i in range(len(vals))]
-            ax.plot([x + off for off in offsets], [y(v) for v in vals], 'o', ms=2.8,
-                    color=col, ls='none', zorder=3)
-            ax.plot(x, y(mean), 'o', ms=7, color=col, mec='white', mew=.9, zorder=4)
-            text(x, y(mean) - 13, f'{mean:.3f}'.lstrip('0'), 12, col, bold=True, ha='center',
-                 bbox=dict(fc='white', ec='none', pad=.6), zorder=5)
-        for x, col, label in zip(centers, COLORS, LABELS):
-            text(x, 326, label, 10, col, ha='center')
-        split_label = data['split'].replace('_', '-')
-        text(502, 338, f'Text reports · {data["n_episode_pairs"]} episode pairs · {split_label}',
-             9, MUTED, ha='right')
+            line(x(tick), top, x(tick), bottom, RULE, .5)
+            text(x(tick), 291, f'{tick:.0%}', 9, MUTED, ha='center')
+        line(x(.5), top, x(.5), bottom, MUTED, .8, ls=(0, (2.5, 2.5)))
+        text(x(.5), 131, 'Chance', 9, MUTED, ha='center')
+        labels = (*LABELS, 'Summary (reference)')
+        for j, (label, row, col, mean) in enumerate(zip(
+                labels, (156, 194, 232, 270), (*COLORS, BLUE), means)):
+            fill = '#F3F7FC' if j == 3 else 'white'
+            text(334, row - 15, label, 9.2, col, bold=j < 3,
+                 bbox=dict(fc=fill, ec='none', pad=.3))
+            ax.plot(x(mean), row, 'D' if j == 3 else 'o', ms=6.8,
+                    color=col, mec=col if j == 3 else 'white',
+                    mfc='white' if j == 3 else col, mew=.9, zorder=4)
+            text(x(mean) + 8, row, f'{mean:.1%}', 9.5, col, bold=True, zorder=5,
+                 bbox=dict(fc=fill, ec='none', pad=.3))
 
         fig.canvas.draw()
         renderer = fig.canvas.get_renderer()
-        for artist in removed:
-            bounds = artist.get_window_extent(renderer).transformed(ax.transData.inverted())
-            line(bounds.x0, artist.get_position()[1], bounds.x1, artist.get_position()[1], MUTED, .7)
         for artist in texts:
             if artist.get_fontsize() < 9:
                 raise ValueError(f'Figure text smaller than 9 pt: {artist.get_text()}')

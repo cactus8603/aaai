@@ -186,6 +186,8 @@ def main():
                     help='analyze_masking.py output')
     ap.add_argument('--masking-label', default='development, 8B')
     ap.add_argument('--skip-teaser', action='store_true', help='Leave the separately maintained teaser unchanged.')
+    ap.add_argument('--api-analysis', default=None,
+                    help='Matched per-copy analyze_api_behavior.py JSON for the redesigned results figure.')
     a = ap.parse_args()
     ad, out = Path(a.analysis_dir), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -193,13 +195,23 @@ def main():
     C = load_controls(ad)
     if not a.skip_teaser:
         fig_teaser(D, out, a.split_label)
-    fig_gap(D, C, out, a.split_label)
-    fig_curves(D, out, a.split_label)
+    from figure_results import fig_gap as results_figure, fig_controls
+    from figure_mechanism import fig_mech as mechanism_figure
+    from figure_dynamics import fig_curves as reversal_figure, fig_human as human_figure
+    api_path = Path(a.api_analysis) if a.api_analysis else None
+    if api_path is None and a.split_label == 'held-out':
+        api_path = Path(__file__).resolve().parent / 'analysis/api_behavior/api_behavior.json'
+    if api_path is not None:
+        results_figure(D, C, out, a.split_label, json.loads(api_path.read_text()))
+    else:
+        fig_gap(D, C, out, a.split_label)
+    fig_controls(D, C, out)
+    reversal_figure(D, out, a.split_label)
     fig_kernel_models(D, out, a.split_label)
     mk = Path(a.masking)
-    fig_mech(D, json.loads(mk.read_text()) if mk.exists() else {}, out, a.split_label, a.masking_label)
+    mechanism_figure(D, json.loads(mk.read_text()) if mk.exists() else {}, out, a.split_label, a.masking_label)
     fig_task(out)
-    fig_human(ad, out)
+    human_figure(ad, out)
     print('wrote', sorted(p.name for p in out.glob('fig_*.pdf')))
 
 
@@ -346,154 +358,18 @@ def arm_entry(block, arm):
 
 
 def fig_mech(D, masking, out, split_label, mask_label):
-    """Fig. 3: (a) weight on past correctness by format (mean over models, thin lines per model, direct labels);
-    (b) agreement (kappa) with simple strategies under raw histories; (c) masking the raw history with correctness."""
-    keys = [k for k in D if D[k]['mech']]
-    fig = plt.figure(figsize=(FULL_WIDTH, 3.65))
-    gs = fig.add_gridspec(2, 2, width_ratios=[1, 1.05], height_ratios=[1.0, .85],
-                          left=.15, right=.985, bottom=.23, top=.93, wspace=.3, hspace=.75)
-    a = fig.add_subplot(gs[0, 0])
-    for arm, lab, col in FORMATS:
-        ks = [arm_entry(D[k]['mech']['kernels'], arm) for k in keys]
-        ks = [np.array(k['kernel'][:10]) for k in ks if k]
-        if not ks:
-            continue
-        K = np.vstack(ks)
-        x = np.arange(1, K.shape[1] + 1)
-        for row in K:
-            a.plot(x, row, color=col, lw=0.4, alpha=0.3)
-        a.plot(x, K.mean(0), color=col, lw=1.6, label=lab)
-    a.legend(loc='upper right', ncol=2, handlelength=1.1, labelspacing=.25, columnspacing=.7)
-    a.axhline(0, color=INK2, lw=0.5)
-    a.set_xlabel('Trials back')
-    a.set_ylabel('Correctness weight')
-    a.set_title('(a) Integration kernel', loc='left', fontweight='bold')
-    a.set_xticks([1, 5, 10])
-    a.set_xlim(0.7, 10.3)
-    a.set_yticks([0, .4, .8])
-    grid(a)
-
-    b = fig.add_subplot(gs[1, 0])
-    M = np.full((len(keys), len(STRATS)), np.nan)
-    for i, k in enumerate(keys):
-        h = arm_entry(D[k]['mech']['heuristics'], FORMATS[0][0])
-        if h:
-            for j, (st, _) in enumerate(STRATS):
-                M[i, j] = h['all']['strategies'][st]['kappa']
-    lim = max(0.4, np.nanmax(np.abs(M)))
-    b.imshow(M, cmap='PuOr_r', vmin=-lim, vmax=lim, aspect='auto')
-    for i in range(M.shape[0]):
-        for j in range(M.shape[1]):
-            if np.isfinite(M[i, j]):
-                b.text(j, i, f'{M[i, j]:.2f}'.replace('0.', '.').replace('-.', '−.'), ha='center',
-                       va='center', color='white' if abs(M[i, j]) > 0.6 * lim else INK)
-    b.set_xticks(range(len(STRATS)))
-    b.set_xticklabels([l for _, l in STRATS])
-    b.set_yticks(range(len(keys)))
-    b.set_yticklabels([D[k]['name'] for k in keys])
-    b.tick_params(length=0)
-    for sp in b.spines.values():
-        sp.set_visible(False)
-    b.set_title("(b) Strategy agreement ($\\kappa$)", loc='left', fontweight='bold')
-
-    c = fig.add_subplot(gs[:, 1])
-    for i, d in enumerate(D.values()):
-        r = masking.get(d['name'])
-        if r is None:
-            continue
-        ys = [r['acc'].get(k, np.nan) for k, _ in MASK]
-        xs = np.arange(len(MASK)) + (i - (len(masking) - 1) / 2) * 0.1
-        c.plot(xs, ys, color=d['color'], lw=0.7, alpha=0.7)
-        c.plot(xs, ys, **mstyle(d, 4.2))
-    c.axhline(0.5, color=INK2, lw=0.6, ls=':')
-    c.set_xticks(range(len(MASK)))
-    c.set_xticklabels([l for _, l in MASK])
-    c.set_xlim(-0.5, len(MASK) - 0.5)
-    c.set_ylim(0.47, 0.67)
-    c.set_ylabel('Accuracy')
-    c.set_title(f'(c) Masking ({mask_label})', loc='left', fontweight='bold')
-    grid(c)
-    handles = [plt.Line2D([], [], color=d['color'], **{k: v for k, v in mstyle(d, 4).items() if k != 'ls'})
-               for d in D.values() if d['name'] in masking]
-    labels = [d['name'] for d in D.values() if d['name'] in masking]
-    fig.legend(handles, labels, loc='lower center', ncol=3,
-               bbox_to_anchor=(.53, .005), handlelength=1.4, columnspacing=1.6)
-    save_figure(fig, out, 'fig_kernel')
+    from figure_mechanism import fig_mech as draw
+    return draw(D, masking, out, split_label, mask_label)
 
 
 def fig_curves(D, out, split_label):
-    """Fig. 4 (single column): following the better advisor after a reversal; mean over models (thick) and
-    models (thin), by history format, with direct labels."""
-    fig, ax = plt.subplots(figsize=(COLUMN_WIDTH, 2.6))
-    fig.subplots_adjust(left=.17, right=.985, top=.96, bottom=.36)
-    for arm, lab, col in FORMATS:
-        cs = [np.array((cell(d['main'], arm) or {}).get('curve') or [np.nan] * 10, float) for d in D.values()]
-        cs = [c for c in cs if np.isfinite(c).any()]
-        if not cs:
-            continue
-        C = np.vstack(cs)
-        x = np.arange(C.shape[1])
-        for row in C:
-            ax.plot(x, row, color=col, lw=0.4, alpha=0.3)
-        m = np.nanmean(C, 0)
-        ax.plot(x, m, color=col, lw=1.6, label=lab)
-    # summaries over recent trials: model means only (dashed), to keep the panel readable
-    for arm, lab, col, ls in [('C|sum_cp|text', 'Change-point summ.', '#6a4fc4', (0, (3, 1.5))),
-                              ('C|sum_window:5|text', 'Last-5 summ.', '#4b4a47', (0, (1, 1)))]:
-        cs = [np.array((cell(d['main'], arm) or {}).get('curve') or [np.nan] * 10, float) for d in D.values()]
-        cs = [c for c in cs if np.isfinite(c).any()]
-        if cs:
-            ax.plot(np.arange(len(cs[0])), np.nanmean(np.vstack(cs), 0), color=col, lw=1.4, ls=ls, label=lab)
-    handles, labels = ax.get_legend_handles_labels()
-    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(.52, .005),
-               handlelength=1.5, labelspacing=.25, ncol=2, columnspacing=.9)
-    ax.axhline(0.5, color=INK2, lw=0.6, ls=':')
-    ax.set_xlabel('Trials since reversal')
-    ax.set_ylabel('P(follow better advisor)')
-    ax.set_xlim(-0.3, 9.3)
-    ax.set_xticks([0, 3, 6, 9])
-    ax.set_ylim(0, 1.0)
-    grid(ax)
-    save_figure(fig, out, 'fig_curves')
+    from figure_dynamics import fig_curves as draw
+    return draw(D, out, split_label)
 
 
 def fig_human(ad, out):
-    """Fig. 5 (single column): median forgetting rate phi by hazard rate, humans vs models (Psych-101)."""
-    pj = ad / 'psych101.json'
-    if not pj.exists():
-        return
-    S = json.loads(pj.read_text())['sources']
-    H = ['0.1', '0.2', '0.4']
-    hx = [float(h) for h in H]
-    fig, axs = plt.subplots(1, 2, figsize=(COLUMN_WIDTH, 2.05), sharey=True)
-    fig.subplots_adjust(left=.18, right=.98, bottom=.25, top=.83, wspace=.18)
-    hum = S['human/short100']['per_participant']['xiong_mf']
-    names = {'Qwen/Qwen3-VL-8B-Instruct': 'qwen3vl8b', 'OpenGVLab/InternVL3_5-8B-HF': 'internvl8b',
-             'google/gemma-3-27b-it': 'gemma3_27b', 'Qwen/Qwen3-VL-32B-Instruct': 'qwen3vl32b',
-             'OpenGVLab/InternVL3_5-38B-HF': 'internvl38b'}
-    style = {k: (mk, large) for k, _, mk, large in MODELS}
-    for ax, cond, title in zip(axs, ['text/hidden', 'text/told'], ['(a) $h$ hidden', '(b) $h$ stated']):
-        ax.plot(hx, hx, color=GRID, lw=1.0, ls='--', zorder=0)
-        ax.plot(hx, [hum[h]['phi'] for h in H], color=INK, lw=1.8, marker='o', ms=3.5, label='Humans')
-        for m, key in names.items():
-            k = [k for k in S if k.startswith(m + '/' + cond)]
-            if not k:
-                continue
-            pp = S[k[0]]['per_participant']['xiong_mf']
-            fam = next(f for f in FAMILY if key.startswith(f))
-            mk, large = style[key]
-            ax.plot(hx, [pp[h]['phi'] for h in H], color=FAMILY[fam], lw=0.9, marker=mk, ms=3,
-                    mfc=FAMILY[fam] if large else 'white', mec=FAMILY[fam], mew=0.8)
-        ax.set_title(title, loc='left', fontweight='bold')
-        ax.set_xticks(hx)
-        ax.set_xticklabels(['.1', '.2', '.4'])
-        ax.set_xlabel('Hazard rate $h$')
-        grid(ax)
-    axs[0].set_ylabel('Forgetting rate $\\phi$')
-    axs[0].set_ylim(-0.02, 0.42)
-    axs[0].text(0.4, 0.27, 'Humans', ha='right', va='bottom')
-    axs[0].text(0.4, 0.06, 'VLMs', ha='right', va='bottom', color=INK2)
-    save_figure(fig, out, 'fig_human')
+    from figure_dynamics import fig_human as draw
+    return draw(ad, out)
 
 
 if __name__ == '__main__':

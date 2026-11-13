@@ -462,7 +462,7 @@ These rule baselines were computed on held-out episodes before any model results
 \subsection{E. Change-Point Controller and Summary Variants} % BOCPD details, hazard, K selection on dev
 \paragraph{Change-point detection.} Let $o_t = 1$ if advisor A was correct on trial $t$. Before trial $t$, the controller runs Bayesian online change-point detection \citep{adams2007bocpd} on $o_1,\dots,o_{t-1}$ with a Bernoulli likelihood, a Beta(1,1) prior for each run and a constant hazard rate $h = 1/15$. This rate lies between the reversal rates of the volatile (1/10) and stable phases and was not tuned (Appendix~D). The controller takes the maximum a posteriori run length $r$, sets it to at least 3, and summarizes trials $\max(1, t-r)$ to $t-1$.
 
-\paragraph{Summary variants.} All variants use the same sentence as the summarized history, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The variants are: all past trials (the primary summary); the last $K \in \{5, 10, 20\}$ trials; the run since the last inferred change-point (BOCPD); and the trials since the last true reversal up to $t-1$ (reversal-aligned reference). Two further conditions truncate the raw history instead of summarizing it: to the BOCPD run, or to the last 10 trials. The window length used in the secondary tests is, for each model, the one with the highest accuracy on development episodes, fixed before held-out evaluation; Table~\ref{tab:variants} reports the selected length and all variants, and Table~\ref{tab:agree} compares the model with the rule alone. The last five trials were selected for every model. On held-out episodes, accuracy followed the rule in every variant: last 5 trials .667--.691 (rule alone .692), change point .666--.677 (.678), last 10 trials .605--.616 (.612), last 20 trials .581--.586 (.579). The model thus adds little to, and takes little from, the rule it is given; the choice of rule decides accuracy.
+\paragraph{Summary variants.} All variants use the same sentence as the summarized history, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The variants are: all past trials (the primary summary); the last $K \in \{5, 10, 20\}$ trials; the run since the last inferred change-point (BOCPD); and the trials since the last true reversal up to $t-1$ (reversal-aligned reference). Two further conditions truncate the raw history instead of summarizing it: to the BOCPD run, or to the last 10 trials. The window length used in the secondary tests is, for each model, the one with the highest accuracy on development episodes, fixed before held-out evaluation; Table~\ref{tab:variants} reports the selected length and all variants, and Table~\ref{tab:agree} compares the model with the rule alone. The last five trials were selected for every model. On held-out episodes, accuracy followed the rule in every variant: last 5 trials .667--.691 (rule alone .692), change point .666--.677 (.678), last 10 trials .605--.616 (.612), last 20 trials .581--.586 (.579). The model thus adds little to, and takes little from, the rule it is given; the choice of rule decides accuracy. The same holds for the reversal-aligned reference (.727--.744; rule alone .744). Truncating the raw history did not help: with only the last 10 raw trials, accuracy was .391--.467, at or below the full raw history (.468--.549) in every model, and truncating to the change-point run gave .472--.477 in the two 8B models. A shorter raw record therefore does not replace the count; what the models lack is the evaluation of who was correct, not a shorter memory.
 
 % FILL: K* from dev_selection JSON (--write-dev-selection); accuracies from analyze_main.py held-out -> cells (C|sum_*|text, A|cp_hard|text, A|window:10|text).
 \begin{table*}[h]\centering\small
@@ -473,16 +473,16 @@ These rule baselines were computed on held-out episodes before any model results
     \cmidrule(lr){3-8}\cmidrule(lr){9-10}
     Model & Selected $K$ & All trials & Last 5 & Last 10 & Last 20 & Change-point & Since reversal & Change-point & Last 10 \\
     \midrule
-    Qwen3-VL-8B & 5 & .621 & .667 & .605 & .582 & .666 & -- & -- & -- \\
-    InternVL3.5-8B & 5 & .635 & .681 & .613 & .586 & .673 & -- & -- & -- \\
-    Gemma-3-27B & 5 & .617 & .677 & .609 & .581 & .667 & -- & -- & -- \\
-    Qwen3-VL-32B & 5 & .631 & .691 & .615 & .582 & .675 & -- & -- & -- \\
-    InternVL3.5-38B & 5 & .633 & .691 & .616 & .581 & .677 & -- & -- & -- \\
+    Qwen3-VL-8B & 5 & .621 & .667 & .605 & .582 & .666 & .727 & .477 & .458 \\
+    InternVL3.5-8B & 5 & .635 & .681 & .613 & .586 & .673 & .737 & .472 & .467 \\
+    Gemma-3-27B & 5 & .617 & .677 & .609 & .581 & .667 & .728 & \tbd & .391 \\
+    Qwen3-VL-32B & 5 & .631 & .691 & .615 & .582 & .675 & .740 & \tbd & .429 \\
+    InternVL3.5-38B & 5 & .633 & .691 & .616 & .581 & .677 & .744 & \tbd & .450 \\
     \midrule
     Rule alone & -- & .632 & .692 & .612 & .579 & .678 & .744 & -- & -- \\
     \bottomrule
   \end{tabular}
-  \caption{Main-task accuracy for every summary variant and the truncated raw histories (held-out). Rule alone: the summary's majority rule without a model (Table~\ref{tab:normsim}). Selected $K$: chosen on development episodes. Since reversal and the truncated raw histories: lower-priority conditions, not yet run (--). \todo{fill if run}}
+  \caption{Main-task accuracy for every summary variant and the truncated raw histories (held-out). Rule alone: the summary's majority rule without a model (Table~\ref{tab:normsim}). Selected $K$: chosen on development episodes. Since reversal: uses the true reversal times, hidden from the models, and is a reference, not a strategy. Truncated raw histories have no rule (--). \todo{truncated change-point raw history for the three larger models}}
   \label{tab:variants}
 \end{table*}
 

@@ -1,0 +1,94 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.37it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.35it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.35it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.61it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.51it/s]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}. If this is not desired, please set these values explicitly.
+{"episode": "p00_g1", "rows": 100, "sec_per_row": 0.043612239360809324}
+{"episode": "p00_g3", "rows": 200, "sec_per_row": 0.04050855994224548}
+{"episode": "p00_g5", "rows": 300, "sec_per_row": 0.038961691856384276}
+{"episode": "p01_g1", "rows": 400, "sec_per_row": 0.03829231560230255}
+{"episode": "p01_g3", "rows": 500, "sec_per_row": 0.037851696014404294}
+{"episode": "p01_g5", "rows": 600, "sec_per_row": 0.03745637694994609}
+{"episode": "p02_g1", "rows": 700, "sec_per_row": 0.03736617020198277}
+{"episode": "p02_g3", "rows": 800, "sec_per_row": 0.037118569910526276}
+{"episode": "p02_g5", "rows": 900, "sec_per_row": 0.03701351006825765}
+{"episode": "p04_g1", "rows": 1000, "sec_per_row": 0.036833890676498414}
+{"episode": "p04_g3", "rows": 1100, "sec_per_row": 0.036703854257410226}
+{"episode": "p04_g5", "rows": 1200, "sec_per_row": 0.036578456163406374}
+{"episode": "p06_g1", "rows": 1300, "sec_per_row": 0.03649055334237906}
+{"episode": "p06_g3", "rows": 1400, "sec_per_row": 0.03640873619488307}
+{"episode": "p06_g5", "rows": 1500, "sec_per_row": 0.03638994773228963}
+{"episode": "p07_g1", "rows": 1600, "sec_per_row": 0.03631703183054924}
+{"episode": "p07_g3", "rows": 1700, "sec_per_row": 0.03630814187666949}
+{"episode": "p07_g5", "rows": 1800, "sec_per_row": 0.0362483537197113}
+{"episode": "p08_g1", "rows": 1900, "sec_per_row": 0.036189817503878945}
+{"episode": "p08_g3", "rows": 2000, "sec_per_row": 0.03614324569702149}
+{"episode": "p08_g5", "rows": 2100, "sec_per_row": 0.03610601095926194}
+{"episode": "p09_g1", "rows": 2200, "sec_per_row": 0.036082231456583194}
+{"episode": "p09_g3", "rows": 2300, "sec_per_row": 0.03604166082713915}
+{"episode": "p09_g5", "rows": 2400, "sec_per_row": 0.03600319931904475}
+{"episode": "p10_g1", "rows": 2500, "sec_per_row": 0.03596892910003662}
+{"episode": "p10_g3", "rows": 2600, "sec_per_row": 0.03594011673560509}
+{"episode": "p10_g5", "rows": 2700, "sec_per_row": 0.03596566023649993}
+{"episode": "p11_g1", "rows": 2800, "sec_per_row": 0.03599634621824537}
+{"episode": "p11_g3", "rows": 2900, "sec_per_row": 0.03597064840382543}
+{"episode": "p11_g5", "rows": 3000, "sec_per_row": 0.035944785277048745}
+{"episode": "p12_g1", "rows": 3100, "sec_per_row": 0.03592264767616026}
+{"episode": "p12_g3", "rows": 3200, "sec_per_row": 0.035905291587114335}
+{"episode": "p12_g5", "rows": 3300, "sec_per_row": 0.03588248195070209}
+{"episode": "p13_g1", "rows": 3400, "sec_per_row": 0.03587290679707247}
+{"episode": "p13_g3", "rows": 3500, "sec_per_row": 0.035855132307325094}
+{"episode": "p13_g5", "rows": 3600, "sec_per_row": 0.035838275021976895}
+{"episode": "p14_g1", "rows": 3700, "sec_per_row": 0.03582200675397306}
+{"episode": "p14_g3", "rows": 3800, "sec_per_row": 0.035806258916854856}
+{"episode": "p14_g5", "rows": 3900, "sec_per_row": 0.035792101346529444}
+{"episode": "p15_g1", "rows": 4000, "sec_per_row": 0.035776830852031705}
+{"episode": "p15_g3", "rows": 4100, "sec_per_row": 0.03576526362721513}
+{"episode": "p15_g5", "rows": 4200, "sec_per_row": 0.035759840863091606}
+{"episode": "p16_g1", "rows": 4300, "sec_per_row": 0.03574641327525294}
+{"episode": "p16_g3", "rows": 4400, "sec_per_row": 0.03573442637920379}
+{"episode": "p16_g5", "rows": 4500, "sec_per_row": 0.03572283442815145}
+{"episode": "p17_g1", "rows": 4600, "sec_per_row": 0.03571133800174879}
+{"episode": "p17_g3", "rows": 4700, "sec_per_row": 0.03570384025573731}
+{"episode": "p17_g5", "rows": 4800, "sec_per_row": 0.03569520011544228}
+{"episode": "p18_g1", "rows": 4900, "sec_per_row": 0.0356866412746663}
+{"episode": "p18_g3", "rows": 5000, "sec_per_row": 0.0356757095336914}
+{"episode": "p18_g5", "rows": 5100, "sec_per_row": 0.03566988856184716}
+{"episode": "p19_g1", "rows": 5200, "sec_per_row": 0.035680125309870796}
+{"episode": "p19_g3", "rows": 5300, "sec_per_row": 0.035667004000465824}
+{"episode": "p19_g5", "rows": 5400, "sec_per_row": 0.035659027011306195}
+{"episode": "p20_g1", "rows": 5500, "sec_per_row": 0.03564982808719982}
+{"episode": "p20_g3", "rows": 5600, "sec_per_row": 0.03564188978501728}
+{"episode": "p20_g5", "rows": 5700, "sec_per_row": 0.035633872350056967}
+{"episode": "p21_g1", "rows": 5800, "sec_per_row": 0.035625767132331586}
+{"episode": "p21_g3", "rows": 5900, "sec_per_row": 0.03561921742002843}
+{"episode": "p21_g5", "rows": 6000, "sec_per_row": 0.03561167867978414}
+{"episode": "p22_g1", "rows": 6100, "sec_per_row": 0.03560331215623949}
+{"episode": "p22_g3", "rows": 6200, "sec_per_row": 0.03559528050884124}
+{"episode": "p22_g5", "rows": 6300, "sec_per_row": 0.03558962821960449}
+{"episode": "p23_g1", "rows": 6400, "sec_per_row": 0.0355831165984273}
+{"episode": "p23_g3", "rows": 6500, "sec_per_row": 0.03557816850222074}
+{"episode": "p23_g5", "rows": 6600, "sec_per_row": 0.03557328953887477}
+{"episode": "p24_g1", "rows": 6700, "sec_per_row": 0.03556750205025744}
+{"episode": "p24_g3", "rows": 6800, "sec_per_row": 0.03556211979950175}
+{"episode": "p24_g5", "rows": 6900, "sec_per_row": 0.03555733732555223}
+{"episode": "p25_g1", "rows": 7000, "sec_per_row": 0.035558013439178464}
+{"episode": "p25_g3", "rows": 7100, "sec_per_row": 0.035553359649550746}
+{"episode": "p25_g5", "rows": 7200, "sec_per_row": 0.03554835733440187}
+{"episode": "p26_g1", "rows": 7300, "sec_per_row": 0.03554330773549537}
+{"episode": "p26_g3", "rows": 7400, "sec_per_row": 0.03553955893258791}
+{"episode": "p26_g5", "rows": 7500, "sec_per_row": 0.0355354110399882}
+{"episode": "p27_g1", "rows": 7600, "sec_per_row": 0.03553183797158693}
+{"episode": "p27_g3", "rows": 7700, "sec_per_row": 0.035527834118186656}
+{"episode": "p27_g5", "rows": 7800, "sec_per_row": 0.03552251073030325}
+{"episode": "p29_g1", "rows": 7900, "sec_per_row": 0.03551825903639009}
+{"episode": "p29_g3", "rows": 8000, "sec_per_row": 0.03551468425989151}
+{"episode": "p29_g5", "rows": 8100, "sec_per_row": 0.035511603031629396}
+{"episode": "p30_g1", "rows": 8200, "sec_per_row": 0.035508206966446666}
+{"episode": "p30_g3", "rows": 8300, "sec_per_row": 0.035503410862152834}
+{"episode": "p30_g5", "rows": 8400, "sec_per_row": 0.035499072472254437}
+{"episode": "p31_g1", "rows": 8500, "sec_per_row": 0.03549726738649256}
+{"episode": "p31_g3", "rows": 8600, "sec_per_row": 0.03549542729244676}
+{"episode": "p31_g5", "rows": 8700, "sec_per_row": 0.03549264214504724}
+{"episode": "p32_g1", "rows": 8800, "sec_per_row": 0.0354897066950798}
+{"episode": "p32_g3", "rows": 8900, "sec_per_row": 0.035490070648407666}
+{"episode": "p32_g5", "rows": 9000, "sec_per_row": 0.035487079593870374}
+{"tag": "text_hidden_px224_n5", "shard": "0/1", "fingerprint": "299f16f74a209163", "full_design": true, "design_keys_all_shards": 9000, "expected": 9000, "written": 9000, "rows": 9000, "duplicates": 0, "missing": 0, "unexpected": 0, "foreign_fingerprint": 0, "complete": true}

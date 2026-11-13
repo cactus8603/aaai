@@ -1,114 +1,139 @@
 {
   "schema_version": 1,
-  "split": "development",
+  "split": "held_out",
   "slot": "all",
   "report_modality": "text",
-  "n_episode_pairs": 16,
-  "aggregation": "equal-weight mean over models",
-  "dataset": "episodes_v3#e00b8793",
-  "dataset_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
   "readout": "choice",
-  "metric": "accuracy for trials t >= 2 after averaging label-aligned logits across counterbalanced copies; equal-weight mean over cover-story slots and episode pairs",
+  "dataset": "episodes_v3#e00b8793",
+  "n_episode_pairs": 48,
+  "aggregation": "equal-weight mean over models",
   "models": [
     {
       "key": "qwen3vl8b",
       "label": "Qwen3-VL-8B",
-      "source": "research/volatile_trust/analysis/dev_v31/main_qwen3vl8b.json",
-      "source_sha256": "4427dc669b2d3e9a3238aef225064c7b9f6afd3e19cb8ad3396b31597490ee4f",
       "cells": {
         "A|full|text": {
-          "acc": 0.4865506329113924,
-          "n_episodes": 16
+          "acc": 0.4862869198312236,
+          "n_episodes": 48
         },
         "A+|full|text": {
-          "acc": 0.535996835443038,
-          "n_episodes": 16
+          "acc": 0.5172732067510548,
+          "n_episodes": 48
         },
         "B|full|text": {
-          "acc": 0.6416139240506329,
-          "n_episodes": 16
+          "acc": 0.6186708860759493,
+          "n_episodes": 48
         },
         "C|sum_all|text": {
-          "acc": 0.6155063291139241,
-          "n_episodes": 16
+          "acc": 0.6207805907172995,
+          "n_episodes": 48
         }
       },
-      "source_cell_prefix": "Qwen3-VL-8B-Instruct@0c351dd0/episodes_v3#e00b8793/development/choice"
+      "source": "research/volatile_trust/analysis/h200_ho/main_qwen3vl8b.json",
+      "source_sha256": "6643348163ec51d32e7a43dc6e57dd2f984fd8e248c00a4764587b3f61fd914b",
+      "source_cell_prefix": "Qwen3-VL-8B-Instruct@0c351dd0/episodes_v3#e00b8793/held_out/choice"
     },
     {
       "key": "internvl8b",
       "label": "InternVL3.5-8B",
-      "source": "research/volatile_trust/analysis/dev_v31/main_internvl8b.json",
-      "source_sha256": "37386b455d0367d3269a025475a3c7c7d1d7c53571af0d8891999d05fd10c46b",
       "cells": {
         "A|full|text": {
-          "acc": 0.471123417721519,
-          "n_episodes": 16
+          "acc": 0.47863924050632906,
+          "n_episodes": 48
         },
         "A+|full|text": {
-          "acc": 0.5332278481012658,
-          "n_episodes": 16
+          "acc": 0.5079113924050633,
+          "n_episodes": 48
         },
         "B|full|text": {
-          "acc": 0.639240506329114,
-          "n_episodes": 16
+          "acc": 0.6356803797468354,
+          "n_episodes": 48
         },
         "C|sum_all|text": {
-          "acc": 0.6281645569620253,
-          "n_episodes": 16
+          "acc": 0.6346255274261603,
+          "n_episodes": 48
         }
       },
-      "source_cell_prefix": "InternVL3_5-8B-HF@741a7d03/episodes_v3#e00b8793/development/choice"
+      "source": "research/volatile_trust/analysis/h200_ho/main_internvl8b.json",
+      "source_sha256": "0ac9dcb44b5d3e765ff0ec406081f78c5ae7f8044e96f5cf43ba364822af7032",
+      "source_cell_prefix": "InternVL3_5-8B-HF@741a7d03/episodes_v3#e00b8793/held_out/choice"
     },
     {
       "key": "gemma3_27b",
       "label": "Gemma-3-27B",
-      "source": "research/volatile_trust/analysis/dev_v31/main_gemma3_27b.json",
-      "source_sha256": "3ad7162399a3ff42ada89bf3caa64e6b436c763c4d35c409134afb4cac39721a",
       "cells": {
         "A|full|text": {
-          "acc": 0.435126582278481,
-          "n_episodes": 16
+          "acc": 0.4702004219409283,
+          "n_episodes": 48
         },
         "A+|full|text": {
-          "acc": 0.47033227848101267,
-          "n_episodes": 16
+          "acc": 0.4981540084388185,
+          "n_episodes": 48
         },
         "B|full|text": {
-          "acc": 0.6075949367088607,
-          "n_episodes": 16
+          "acc": 0.6017932489451476,
+          "n_episodes": 48
         },
         "C|sum_all|text": {
-          "acc": 0.6253955696202531,
-          "n_episodes": 16
+          "acc": 0.6174841772151899,
+          "n_episodes": 48
         }
       },
-      "source_cell_prefix": "gemma-3-27b-it@005ad340/episodes_v3#e00b8793/development/choice"
+      "source": "research/volatile_trust/analysis/h200_ho/main_gemma3_27b.json",
+      "source_sha256": "b472832b0e073e2a06d75573ec009a93005e15e62ef6de66ebc2f95a39cc9d4d",
+      "source_cell_prefix": "gemma-3-27b-it@005ad340/episodes_v3#e00b8793/held_out/choice"
     },
     {
       "key": "qwen3vl32b",
       "label": "Qwen3-VL-32B",
-      "source": "research/volatile_trust/analysis/dev_v31/main_qwen3vl32b.json",
-      "source_sha256": "9a75ff2f58f52bb803cdbbc52dc824523a115767f60fc9f6ef31f2452592b6b8",
       "cells": {
         "A|full|text": {
-          "acc": 0.46321202531645567,
-          "n_episodes": 16
+          "acc": 0.4679588607594936,
+          "n_episodes": 48
         },
         "A+|full|text": {
-          "acc": 0.5284810126582279,
-          "n_episodes": 16
+          "acc": 0.5220200421940929,
+          "n_episodes": 48
         },
         "B|full|text": {
-          "acc": 0.627373417721519,
-          "n_episodes": 16
+          "acc": 0.6280327004219409,
+          "n_episodes": 48
         },
         "C|sum_all|text": {
-          "acc": 0.632120253164557,
-          "n_episodes": 16
+          "acc": 0.631460970464135,
+          "n_episodes": 48
         }
       },
-      "source_cell_prefix": "Qwen3-VL-32B-Instruct@0cfaf481/episodes_v3#e00b8793/development/choice"
+      "source": "research/volatile_trust/analysis/h200_ho/main_qwen3vl32b.json",
+      "source_sha256": "45f6001dc3806a50cecb11e1160f9f3babb7579df0848c479cf65d77b9cee4da",
+      "source_cell_prefix": "Qwen3-VL-32B-Instruct@0cfaf481/episodes_v3#e00b8793/held_out/choice"
+    },
+    {
+      "key": "internvl38b",
+      "label": "InternVL3.5-38B",
+      "cells": {
+        "A|full|text": {
+          "acc": 0.5490506329113923,
+          "n_episodes": 48
+        },
+        "A+|full|text": {
+          "acc": 0.5598628691983123,
+          "n_episodes": 48
+        },
+        "B|full|text": {
+          "acc": 0.6248681434599156,
+          "n_episodes": 48
+        },
+        "C|sum_all|text": {
+          "acc": 0.6329113924050632,
+          "n_episodes": 48
+        }
+      },
+      "source": "research/volatile_trust/analysis/h200_ho/main_internvl38b.json",
+      "source_sha256": "6a42d55d2c5a67d17283729a24c77ec37a8c1e09ba30e5ef59112e0952438fc4",
+      "source_cell_prefix": "InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793/held_out/choice"
     }
-  ]
+  ],
+  "dataset_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+  "metric": "accuracy for trials t >= 2 after averaging label-aligned logits across counterbalanced copies; equal-weight mean over cover-story slots and episode pairs"
 }

@@ -1,0 +1,302 @@
+# Raw vs. summarized history gap (analyze_main.py)
+
+mode: formal; runs: ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5
+
+## Episode-level metrics (twin-averaged in logit space, t >= 2)
+
+"all" = equal-weight mean of the pet and scenario slots. approx = share of trials whose logit was reconstructed from clipped y (legacy rows; saturates at +-13.8).
+
+| model | data | split | arm | slot | n ep | acc [95% CI] | FB stable | FB volatile | log score | AUC10 | approx |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.470 [0.454, 0.485] | 0.626 | 0.473 | -3.603 | 0.479 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.527 [0.509, 0.545] | 0.753 | 0.478 | -4.215 | 0.480 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.498 [0.484, 0.513] | 0.689 | 0.476 | -3.909 | 0.479 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.450 [0.438, 0.462] | 0.500 | 0.477 | -3.011 | 0.487 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.478 [0.460, 0.495] | 0.599 | 0.461 | -2.922 | 0.470 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.464 [0.452, 0.475] | 0.549 | 0.469 | -2.966 | 0.479 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.455 [0.442, 0.467] | 0.542 | 0.462 | -4.304 | 0.474 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.485 [0.467, 0.504] | 0.661 | 0.462 | -4.127 | 0.467 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.470 [0.456, 0.483] | 0.601 | 0.462 | -4.215 | 0.471 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.557 [0.534, 0.580] | 0.660 | 0.510 | -0.958 | 0.480 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.562 [0.545, 0.579] | 0.639 | 0.515 | -0.910 | 0.494 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.559 [0.542, 0.577] | 0.650 | 0.512 | -0.934 | 0.487 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.540 [0.522, 0.557] | 0.649 | 0.507 | -1.576 | 0.500 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.535 [0.517, 0.552] | 0.640 | 0.515 | -1.961 | 0.506 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.537 [0.522, 0.553] | 0.644 | 0.511 | -1.768 | 0.503 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.602 [0.590, 0.614] | 0.901 | 0.498 | -2.773 | 0.449 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.601 [0.587, 0.615] | 0.864 | 0.494 | -2.429 | 0.461 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.602 [0.590, 0.612] | 0.883 | 0.496 | -2.601 | 0.455 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.630 [0.623, 0.636] | 0.962 | 0.488 | -3.198 | 0.476 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.605 [0.594, 0.616] | 0.866 | 0.493 | -2.443 | 0.475 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.617 [0.610, 0.625] | 0.914 | 0.490 | -2.820 | 0.475 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.602 [0.585, 0.618] | 0.757 | 0.629 | -2.974 | 0.623 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.589 [0.572, 0.605] | 0.737 | 0.612 | -3.608 | 0.612 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.596 [0.584, 0.608] | 0.747 | 0.621 | -3.291 | 0.617 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.677 [0.666, 0.688] | 0.922 | 0.718 | -4.645 | 0.695 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.657 [0.642, 0.671] | 0.859 | 0.689 | -3.229 | 0.665 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.667 [0.656, 0.678] | 0.890 | 0.704 | -3.937 | 0.680 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.617 [0.611, 0.622] | 0.926 | 0.504 | -5.703 | 0.446 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.602 [0.590, 0.612] | 0.874 | 0.496 | -3.693 | 0.444 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.609 [0.602, 0.616] | 0.900 | 0.500 | -4.698 | 0.445 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.583 [0.573, 0.594] | 0.930 | 0.455 | -3.543 | 0.414 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.578 [0.564, 0.592] | 0.855 | 0.469 | -2.608 | 0.428 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.581 [0.570, 0.591] | 0.892 | 0.462 | -3.076 | 0.421 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.692 [0.686, 0.698] | 0.943 | 0.716 | -4.273 | 0.685 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.662 [0.646, 0.676] | 0.872 | 0.682 | -3.101 | 0.652 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.677 [0.668, 0.685] | 0.907 | 0.699 | -3.687 | 0.668 | 0.00 |
+
+## Gap: acc(C) - acc(A), paired by episode
+
+| model | split | slot | C arm | A arm | n | gap [95% CI] | Wilcoxon p | Holm p | role |
+|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.175 [0.162, 0.189] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.152 [0.131, 0.172] | 2.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.223 [0.207, 0.239] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.162 [0.149, 0.176] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.128 [0.113, 0.145] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.237 [0.224, 0.250] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.119 [0.095, 0.143] | 1.8e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.112 [0.090, 0.134] | 1.3e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.172 [0.144, 0.200] | 4.3e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.116 [0.091, 0.141] | 4.5e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.093 [0.068, 0.117] | 1.6e-07 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.176 [0.147, 0.205] | 4.1e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.147 [0.132, 0.163] | 1.6e-09 | 1.6e-09 | primary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.132 [0.115, 0.148] | 1.7e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.197 [0.178, 0.217] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.139 [0.123, 0.156] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.111 [0.094, 0.128] | 1.7e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.206 [0.188, 0.226] | 1.6e-09 | nan | exploratory |
+
+Primary family (Wilcoxon signed-rank (two-sided), Holm, alpha=0.05): gemma-3-27b-it@005ad340: C|sum_all|text - A|full|text (all)
+
+## B / B' vs A and C vs B (absolute accuracy differences)
+
+| model | split | slot | B arm | A arm | n | B-A [95% CI] | Wilcoxon p |
+|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | A|full|text | 48 | 0.015 [-0.001, 0.030] | 0.067 |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.102 [0.077, 0.127] | 7.7e-08 |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|image | A|full|image | 48 | 0.090 [0.070, 0.109] | 2.4e-08 |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | A|full|text | 48 | 0.147 [0.129, 0.166] | 2.4e-09 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.041 [0.026, 0.056] | 5.1e-06 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.076 [0.052, 0.102] | 1.4e-06 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|image | A|full|image | 48 | 0.057 [0.036, 0.079] | 2.0e-05 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | A|full|text | 48 | 0.116 [0.093, 0.138] | 1.2e-08 |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | A|full|text | 48 | 0.028 [0.017, 0.039] | 2.1e-05 |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | A|full|text | 48 | 0.089 [0.069, 0.110] | 6.2e-08 |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|image | A|full|image | 48 | 0.073 [0.057, 0.089] | 3.0e-08 |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | A|full|text | 48 | 0.132 [0.116, 0.148] | 1.6e-09 |
+
+Normalised position (B-A)/(C-A) is shown only when C-A > 0.05 and the bootstrap C-A stays > 0; it need not lie in [0, 1].
+
+| model | split | slot | B arm | C arm | n | B-A [95% CI] | C-B [95% CI] | C-A | position [95% CI] |
+|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.015 [-0.001, 0.030] | 0.160 [0.144, 0.177] | 0.175 | 0.08 [-0.00, 0.17] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.015 [-0.001, 0.030] | 0.208 [0.190, 0.226] | 0.223 | 0.07 [-0.00, 0.13] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.015 [-0.001, 0.030] | 0.147 [0.131, 0.164] | 0.162 | 0.09 [-0.00, 0.18] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.015 [-0.001, 0.030] | 0.114 [0.097, 0.131] | 0.128 | 0.11 [-0.00, 0.22] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.015 [-0.001, 0.030] | 0.222 [0.204, 0.240] | 0.237 | 0.06 [-0.00, 0.12] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.102 [0.077, 0.127] | 0.073 [0.053, 0.094] | 0.175 | 0.58 [0.46, 0.70] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.102 [0.077, 0.127] | 0.121 [0.101, 0.140] | 0.223 | 0.46 [0.36, 0.55] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.102 [0.077, 0.127] | 0.060 [0.036, 0.083] | 0.162 | 0.63 [0.49, 0.77] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.102 [0.077, 0.127] | 0.026 [0.002, 0.051] | 0.128 | 0.79 [0.61, 0.99] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.102 [0.077, 0.127] | 0.135 [0.112, 0.158] | 0.237 | 0.43 [0.33, 0.53] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.090 [0.070, 0.109] | 0.062 [0.042, 0.082] | 0.152 | 0.59 [0.48, 0.71] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.147 [0.129, 0.166] | 0.028 [0.016, 0.039] | 0.175 | 0.84 [0.77, 0.91] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.147 [0.129, 0.166] | 0.075 [0.061, 0.090] | 0.223 | 0.66 [0.60, 0.72] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.147 [0.129, 0.166] | 0.015 [0.001, 0.028] | 0.162 | 0.91 [0.83, 0.99] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.147 [0.129, 0.166] | -0.019 [-0.033, -0.004] | 0.128 | 1.15 [1.03, 1.28] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.147 [0.129, 0.166] | 0.089 [0.076, 0.103] | 0.237 | 0.62 [0.56, 0.68] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.041 [0.026, 0.056] | 0.078 [0.057, 0.099] | 0.119 | 0.34 [0.24, 0.46] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.041 [0.026, 0.056] | 0.131 [0.104, 0.156] | 0.172 | 0.24 [0.16, 0.32] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.041 [0.026, 0.056] | 0.075 [0.051, 0.098] | 0.116 | 0.35 [0.23, 0.49] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.041 [0.026, 0.056] | 0.052 [0.030, 0.072] | 0.093 | 0.44 [0.31, 0.60] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.041 [0.026, 0.056] | 0.135 [0.105, 0.163] | 0.176 | 0.23 [0.15, 0.32] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.076 [0.052, 0.102] | 0.043 [0.027, 0.059] | 0.119 | 0.64 [0.50, 0.77] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.076 [0.052, 0.102] | 0.095 [0.074, 0.114] | 0.172 | 0.45 [0.33, 0.55] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.076 [0.052, 0.102] | 0.040 [0.021, 0.057] | 0.116 | 0.66 [0.51, 0.81] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.076 [0.052, 0.102] | 0.016 [-0.001, 0.035] | 0.093 | 0.82 [0.64, 1.02] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.076 [0.052, 0.102] | 0.100 [0.077, 0.122] | 0.176 | 0.43 [0.32, 0.54] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.057 [0.036, 0.079] | 0.055 [0.036, 0.073] | 0.112 | 0.51 [0.36, 0.65] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.116 [0.093, 0.138] | 0.004 [-0.011, 0.019] | 0.119 | 0.97 [0.85, 1.10] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.116 [0.093, 0.138] | 0.056 [0.037, 0.074] | 0.172 | 0.67 [0.59, 0.76] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.116 [0.093, 0.138] | 0.001 [-0.015, 0.016] | 0.116 | 1.00 [0.87, 1.14] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.116 [0.093, 0.138] | -0.023 [-0.039, -0.007] | 0.093 | 1.25 [1.06, 1.51] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.116 [0.093, 0.138] | 0.060 [0.040, 0.080] | 0.176 | 0.66 [0.57, 0.75] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.028 [0.017, 0.039] | 0.119 [0.104, 0.135] | 0.147 | 0.19 [0.12, 0.26] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.028 [0.017, 0.039] | 0.169 [0.150, 0.188] | 0.197 | 0.14 [0.09, 0.19] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.028 [0.017, 0.039] | 0.111 [0.094, 0.128] | 0.139 | 0.20 [0.12, 0.28] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.028 [0.017, 0.039] | 0.083 [0.067, 0.098] | 0.111 | 0.25 [0.16, 0.34] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.028 [0.017, 0.039] | 0.179 [0.158, 0.198] | 0.206 | 0.14 [0.08, 0.19] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.089 [0.069, 0.110] | 0.058 [0.043, 0.073] | 0.147 | 0.61 [0.49, 0.71] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.089 [0.069, 0.110] | 0.108 [0.091, 0.125] | 0.197 | 0.45 [0.37, 0.53] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.089 [0.069, 0.110] | 0.050 [0.032, 0.068] | 0.139 | 0.64 [0.51, 0.77] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.089 [0.069, 0.110] | 0.021 [0.003, 0.041] | 0.111 | 0.81 [0.64, 0.97] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.089 [0.069, 0.110] | 0.117 [0.098, 0.137] | 0.206 | 0.43 [0.34, 0.52] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.073 [0.057, 0.089] | 0.058 [0.045, 0.073] | 0.132 | 0.56 [0.46, 0.65] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.132 [0.116, 0.148] | 0.016 [0.006, 0.025] | 0.147 | 0.89 [0.83, 0.96] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.132 [0.116, 0.148] | 0.066 [0.052, 0.080] | 0.197 | 0.67 [0.61, 0.73] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.132 [0.116, 0.148] | 0.008 [-0.005, 0.020] | 0.139 | 0.95 [0.86, 1.04] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.132 [0.116, 0.148] | -0.021 [-0.033, -0.009] | 0.111 | 1.19 [1.07, 1.33] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.132 [0.116, 0.148] | 0.075 [0.061, 0.089] | 0.206 | 0.64 [0.58, 0.70] |
+
+## TOST: VLM + summary vs rule alone (margin +-0.02, alpha 0.05)
+
+Equivalence here means only that the accuracy difference lies within the margin; it does not imply trial-by-trial rule following or identical internal computation (see agreement below).
+
+- Secondary family gemma-3-27b-it@005ad340/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+
+| model | split | slot | C arm | rule | n | acc VLM | acc rule | diff [90% CI] | p TOST | equiv. (uncorr.) | Holm p | equiv. (Holm) | role |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.630 | 0.632 | -0.002 [-0.006, 0.002] | 1.6e-10 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.630 | 0.677 | -0.047 [-0.055, -0.039] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.602 | 0.678 | -0.076 [-0.091, -0.061] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.602 | 0.677 | -0.075 [-0.089, -0.060] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.677 | 0.678 | -0.001 [-0.002, 0.001] | 4.1e-31 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.001 [-0.006, 0.007] | 5.6e-06 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.617 | 0.612 | 0.005 [0.001, 0.009] | 8.9e-09 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.060 [-0.067, -0.053] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.583 | 0.579 | 0.004 [-0.001, 0.009] | 3.2e-06 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.583 | 0.677 | -0.093 [-0.103, -0.083] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.692 | 0.692 | 0.000 [-0.001, 0.001] | 7.6e-40 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.692 | 0.677 | 0.015 [0.009, 0.021] | 0.1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.605 | 0.632 | -0.027 [-0.035, -0.019] | 0.9 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.605 | 0.677 | -0.072 [-0.083, -0.061] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.589 | 0.678 | -0.089 [-0.105, -0.072] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.589 | 0.677 | -0.087 [-0.103, -0.072] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.657 | 0.678 | -0.021 [-0.030, -0.012] | 0.56 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.657 | 0.677 | -0.020 [-0.031, -0.008] | 0.47 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.602 | 0.612 | -0.010 [-0.019, -0.003] | 0.026 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.602 | 0.677 | -0.075 [-0.086, -0.064] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.578 | 0.579 | -0.001 [-0.011, 0.009] | 0.0017 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.578 | 0.677 | -0.098 [-0.112, -0.084] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.662 | 0.692 | -0.030 [-0.042, -0.019] | 0.91 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.662 | 0.677 | -0.015 [-0.029, -0.002] | 0.28 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | window_counts | 48 | 0.617 | 0.632 | -0.014 [-0.019, -0.010] | 0.027 | yes | 0.053 | no | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.059 [-0.068, -0.050] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.596 | 0.678 | -0.082 [-0.095, -0.069] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.596 | 0.677 | -0.081 [-0.093, -0.069] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.667 | 0.678 | -0.011 [-0.015, -0.006] | 0.0008 | yes | 0.0024 | yes | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.667 | 0.677 | -0.009 [-0.017, -0.002] | 0.015 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.609 | 0.612 | -0.003 [-0.008, 0.002] | 2.6e-07 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.609 | 0.677 | -0.067 [-0.076, -0.059] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.581 | 0.579 | 0.002 [-0.004, 0.007] | 3.6e-06 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.581 | 0.677 | -0.096 [-0.107, -0.085] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.677 | 0.692 | -0.015 [-0.021, -0.009] | 0.088 | no | 0.088 | no | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.000 [-0.009, 0.009] | 0.00033 | yes | nan | - | exploratory |
+
+## Trial-level choice agreement: VLM + summary vs window-count rule (non-tied trials)
+
+| model | split | slot | C arm | n ep | non-tied | agree (pooled) | agree ep-mean [95% CI] | disagree | VLM right | rule right | stable | volatile | VLM->A | VLM->B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | 48 | 3687 | 0.986 | 0.985 [0.975, 0.994] | 53 | 21 | 32 | 15 | 38 | 1 | 52 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.769 | 0.769 [0.750, 0.788] | 869 | 291 | 578 | 420 | 449 | 259 | 610 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | 48 | 3770 | 0.999 | 0.999 [0.998, 1.000] | 3 | 1 | 2 | 0 | 3 | 0 | 3 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 0.997 | 0.997 [0.994, 0.999] | 8 | 6 | 2 | 0 | 8 | 0 | 8 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.884 | 0.883 [0.853, 0.911] | 428 | 162 | 266 | 212 | 216 | 13 | 415 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.739 | 0.739 [0.718, 0.760] | 984 | 324 | 660 | 479 | 505 | 279 | 705 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 0.932 | 0.931 [0.905, 0.955] | 258 | 90 | 168 | 137 | 121 | 68 | 190 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 0.938 | 0.938 [0.911, 0.962] | 216 | 86 | 130 | 111 | 105 | 52 | 164 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.908 | 0.906 [0.878, 0.933] | 272 | 128 | 144 | 137 | 135 | 49 | 223 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 0.916 | 0.916 [0.889, 0.941] | 316 | 102 | 214 | 160 | 156 | 82 | 234 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | 48 | 7374 | 0.935 | 0.934 [0.918, 0.949] | 481 | 183 | 298 | 227 | 254 | 14 | 467 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.754 | 0.754 [0.741, 0.767] | 1853 | 615 | 1238 | 899 | 954 | 538 | 1315 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | 48 | 7540 | 0.965 | 0.965 [0.952, 0.977] | 261 | 91 | 170 | 137 | 124 | 68 | 193 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | 48 | 6974 | 0.969 | 0.969 [0.956, 0.981] | 216 | 86 | 130 | 111 | 105 | 52 | 164 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | 48 | 5890 | 0.952 | 0.952 [0.937, 0.965] | 280 | 134 | 146 | 137 | 143 | 49 | 231 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | 48 | 7552 | 0.958 | 0.958 [0.944, 0.971] | 316 | 102 | 214 | 160 | 156 | 82 | 234 |
+
+## Per-scenario gap (domain_slot = scenario only; pet reported separately above)
+
+Each held-out text scenario has 8 episode pairs; the cross-scenario sign test has 6 units (one per text scenario; minimum two-sided p = 0.03125). Pet is reported separately and is not part of the cross-scenario test.
+
+| model | split | C arm | scenario | n pairs | gap [95% CI] |
+|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | color | 8 | 0.160 [0.134, 0.187] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | medical | 8 | 0.036 [-0.003, 0.076] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | news | 8 | 0.047 [-0.000, 0.097] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | sports | 8 | 0.157 [0.098, 0.212] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | stock | 8 | 0.171 [0.142, 0.204] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | weather | 8 | 0.146 [0.098, 0.196] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | color | 8 | 0.155 [0.093, 0.222] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | medical | 8 | 0.073 [0.052, 0.095] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | news | 8 | 0.040 [-0.014, 0.084] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | sports | 8 | 0.101 [0.071, 0.139] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | stock | 8 | 0.116 [0.066, 0.163] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | weather | 8 | 0.185 [0.160, 0.210] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | color | 8 | 0.210 [0.177, 0.241] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | medical | 8 | 0.084 [0.036, 0.130] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | news | 8 | 0.065 [0.024, 0.116] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | sports | 8 | 0.217 [0.165, 0.266] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | stock | 8 | 0.228 [0.198, 0.274] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | weather | 8 | 0.226 [0.163, 0.294] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | color | 8 | 0.150 [0.128, 0.169] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | medical | 8 | 0.024 [-0.032, 0.074] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | news | 8 | 0.040 [-0.006, 0.082] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | sports | 8 | 0.147 [0.097, 0.193] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | stock | 8 | 0.176 [0.142, 0.214] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | weather | 8 | 0.161 [0.122, 0.209] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | color | 8 | 0.127 [0.092, 0.158] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | medical | 8 | 0.016 [-0.021, 0.063] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | news | 8 | 0.028 [-0.022, 0.085] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | sports | 8 | 0.114 [0.063, 0.174] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | stock | 8 | 0.146 [0.119, 0.168] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | weather | 8 | 0.127 [0.066, 0.190] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | color | 8 | 0.226 [0.193, 0.253] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | medical | 8 | 0.090 [0.033, 0.149] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | news | 8 | 0.055 [0.011, 0.103] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | sports | 8 | 0.214 [0.150, 0.275] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | stock | 8 | 0.247 [0.212, 0.293] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | weather | 8 | 0.225 [0.182, 0.282] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+
+## History baselines (same trial mask as the reference A arm)
+
+Baselines marked "yes" use generator information the VLM does not have and are not fair competitors.
+
+| model | split | baseline | acc [95% CI] | n ep | uses generator info | description |
+|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| gemma-3-27b-it@005ad340 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| gemma-3-27b-it@005ad340 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| gemma-3-27b-it@005ad340 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| gemma-3-27b-it@005ad340 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| gemma-3-27b-it@005ad340 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+
+## Readout quality (candidate mass, greedy output follows candidate format)
+
+| model | split | arm | slot | format | n | mass mean | mass min | frac mass<0.5 | greedy follows |
+|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | A+|full|text | pet | text | 7680 | 0.999 | 0.620 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A+|full|text | scenario | text | 7680 | 1.000 | 0.948 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|image | pet | image | 7680 | 0.997 | 0.174 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|image | scenario | image | 7680 | 0.999 | 0.114 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|text | pet | text | 7680 | 0.999 | 0.620 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|text | scenario | text | 7680 | 0.999 | 0.249 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | B'|full|chart | pet | chart | 7680 | 0.428 | 0.005 | 0.591 | 0.418 |
+| gemma-3-27b-it@005ad340 | held_out | B'|full|chart | scenario | chart | 7680 | 0.603 | 0.000 | 0.380 | 0.614 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|image | pet | image | 7680 | 0.932 | 0.038 | 0.032 | 0.966 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|image | scenario | image | 7680 | 0.987 | 0.026 | 0.004 | 0.995 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|text | pet | text | 7680 | 0.992 | 0.065 | 0.002 | 0.998 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|text | scenario | text | 7680 | 0.969 | 0.000 | 0.028 | 0.973 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | pet | text | 7680 | 0.416 | 0.000 | 0.589 | 0.414 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | scenario | text | 7680 | 0.801 | 0.000 | 0.192 | 0.807 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | pet | image | 7680 | 0.970 | 0.009 | 0.019 | 0.979 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | scenario | image | 7680 | 0.999 | 0.761 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | pet | text | 7680 | 0.764 | 0.000 | 0.225 | 0.773 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | scenario | text | 7680 | 0.880 | 0.000 | 0.114 | 0.884 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | pet | text | 7680 | 0.896 | 0.001 | 0.080 | 0.920 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | scenario | text | 7680 | 0.910 | 0.000 | 0.086 | 0.913 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | pet | text | 7680 | 0.648 | 0.000 | 0.335 | 0.680 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | scenario | text | 7680 | 0.823 | 0.000 | 0.178 | 0.824 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | pet | text | 7680 | 0.914 | 0.002 | 0.063 | 0.935 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | scenario | text | 7680 | 0.905 | 0.000 | 0.092 | 0.907 |
+
+Rule-window mismatches (recomputed vs logged window_start): 0; identical duplicate rows merged: 0; legacy y-only rows (approx logits): 0.

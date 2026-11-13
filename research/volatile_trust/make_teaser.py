@@ -94,7 +94,7 @@ def draw_teaser(data, out):
     means = [sum(row) / len(row) for row in values]
     # A fixed, shared accuracy axis, with an explicit failure if future data exceed it.
     if any(not .4 <= v <= .7 for row in values for v in row):
-        raise ValueError('Accuracy lies outside the 40–70% axis; revise the axis before plotting')
+        raise ValueError('Accuracy lies outside the .40–.70 axis; revise the axis before plotting')
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     settings = {'font.family': 'serif', 'font.serif': ['Times New Roman', 'DejaVu Serif'],
@@ -133,7 +133,7 @@ def draw_teaser(data, out):
         text(12, 55, 'Sam reports: dry', 10)
         arrow(134, 47, 149, 47)
         box(153, 25, 138, 44, fill='#F0F3F7', edge='#AAB5C2')
-        text(222, 38, 'Frozen VLM predicts', 10, bold=True, ha='center')
+        text(222, 38, 'VLM predicts', 10, bold=True, ha='center')
         text(222, 55, 'rain or dry?', 11, ha='center')
         arrow(295, 47, 310, 47)
         box(314, 25, 96, 44)
@@ -177,21 +177,21 @@ def draw_teaser(data, out):
         text(407, 227, 'Individual model', 9, MUTED)
         y = lambda v: 314 - (v - .4) * 210
         for tick in (.4, .5, .6, .7):
-            text(27, y(tick), f'{tick:.0%}', 9, MUTED, ha='right')
+            text(27, y(tick), f'{tick:.1f}'.lstrip('0'), 9, MUTED, ha='right')
             if tick in (.4, .6):
                 line(36, y(tick), 502, y(tick), '#E5E8EB', .55)
         line(36, y(.5), 502, y(.5), MUTED, .65, ls=(0, (1, 2.5)))
         text(498, y(.5) - 6, 'Chance', 9, MUTED, ha='right',
              bbox=dict(fc='white', ec='none', pad=1))
         line(36, y(means[3]), 502, y(means[3]), BLUE, .9, ls=(0, (4, 3)))
-        text(42, y(means[3]) - 9, f'Count-summary mean: {means[3]:.1%}', 9, BLUE,
+        text(42, y(means[3]) - 9, f'Summary mean {means[3]:.3f}'.replace('0.', '.'), 9, BLUE,
              bbox=dict(fc='white', ec='none', pad=1))
         for x, col, vals, mean in zip(centers, COLORS, values, means):
             offsets = [0] if len(vals) == 1 else [-18 + 36 * i / (len(vals) - 1) for i in range(len(vals))]
             ax.plot([x + off for off in offsets], [y(v) for v in vals], 'o', ms=2.8,
                     color=col, ls='none', zorder=3)
             ax.plot(x, y(mean), 'o', ms=7, color=col, mec='white', mew=.9, zorder=4)
-            text(x, y(mean) - 13, f'{mean:.1%}', 12, col, bold=True, ha='center',
+            text(x, y(mean) - 13, f'{mean:.3f}'.lstrip('0'), 12, col, bold=True, ha='center',
                  bbox=dict(fc='white', ec='none', pad=.6), zorder=5)
         for x, col, label in zip(centers, COLORS, LABELS):
             text(x, 326, label, 10, col, ha='center')

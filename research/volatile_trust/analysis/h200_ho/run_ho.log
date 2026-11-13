@@ -1,0 +1,13 @@
+controls 0
+robust 0
+main qwen3vl32b 0
+main internvl8b 0
+main qwen3vl8b 0
+main gemma3_27b 0
+main internvl38b 0
+mech internvl8b 0
+mech qwen3vl8b 0
+mech gemma3_27b 0
+mech qwen3vl32b 0
+mech internvl38b 0
+ALLDONE

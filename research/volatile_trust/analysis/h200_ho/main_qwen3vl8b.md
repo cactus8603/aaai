@@ -1,0 +1,302 @@
+# Raw vs. summarized history gap (analyze_main.py)
+
+mode: formal; runs: ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5
+
+## Episode-level metrics (twin-averaged in logit space, t >= 2)
+
+"all" = equal-weight mean of the pet and scenario slots. approx = share of trials whose logit was reconstructed from clipped y (legacy rows; saturates at +-13.8).
+
+| model | data | split | arm | slot | n ep | acc [95% CI] | FB stable | FB volatile | log score | AUC10 | approx |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.514 [0.496, 0.531] | 0.626 | 0.505 | -1.557 | 0.494 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.521 [0.504, 0.537] | 0.642 | 0.507 | -1.239 | 0.501 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.517 [0.503, 0.532] | 0.634 | 0.506 | -1.398 | 0.497 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.491 [0.477, 0.503] | 0.498 | 0.494 | -1.148 | 0.488 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.493 [0.478, 0.508] | 0.523 | 0.499 | -1.199 | 0.497 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.492 [0.482, 0.503] | 0.511 | 0.497 | -1.174 | 0.493 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.485 [0.470, 0.499] | 0.562 | 0.484 | -1.537 | 0.482 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.488 [0.472, 0.504] | 0.564 | 0.484 | -1.320 | 0.487 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.486 [0.473, 0.500] | 0.563 | 0.484 | -1.428 | 0.484 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.503 [0.485, 0.520] | 0.541 | 0.505 | -0.882 | 0.505 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.530 [0.513, 0.546] | 0.551 | 0.507 | -0.746 | 0.501 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.516 [0.503, 0.529] | 0.546 | 0.506 | -0.814 | 0.503 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.547 [0.530, 0.563] | 0.628 | 0.501 | -0.999 | 0.499 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.556 [0.534, 0.577] | 0.683 | 0.505 | -1.040 | 0.494 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.552 [0.538, 0.565] | 0.655 | 0.503 | -1.020 | 0.497 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.631 [0.619, 0.641] | 0.883 | 0.514 | -1.228 | 0.512 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.606 [0.588, 0.622] | 0.780 | 0.516 | -1.000 | 0.506 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.619 [0.606, 0.629] | 0.831 | 0.515 | -1.114 | 0.509 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.633 [0.628, 0.638] | 0.928 | 0.497 | -1.414 | 0.483 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.608 [0.594, 0.622] | 0.832 | 0.494 | -1.293 | 0.475 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.621 [0.612, 0.629] | 0.880 | 0.496 | -1.353 | 0.479 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.635 [0.622, 0.648] | 0.810 | 0.610 | -1.124 | 0.588 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.621 [0.597, 0.643] | 0.771 | 0.612 | -1.234 | 0.597 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.628 [0.613, 0.643] | 0.790 | 0.611 | -1.179 | 0.593 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.677 [0.666, 0.688] | 0.913 | 0.701 | -1.528 | 0.677 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.655 [0.639, 0.669] | 0.842 | 0.660 | -1.397 | 0.639 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.666 [0.654, 0.678] | 0.878 | 0.680 | -1.463 | 0.658 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.616 [0.609, 0.622] | 0.912 | 0.501 | -1.576 | 0.444 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.594 [0.580, 0.605] | 0.828 | 0.498 | -1.482 | 0.452 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.605 [0.598, 0.611] | 0.870 | 0.499 | -1.529 | 0.448 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.586 [0.575, 0.597] | 0.912 | 0.463 | -1.314 | 0.420 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.577 [0.564, 0.590] | 0.840 | 0.466 | -1.224 | 0.429 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.582 [0.571, 0.592] | 0.876 | 0.465 | -1.269 | 0.424 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.689 [0.681, 0.696] | 0.894 | 0.694 | -1.106 | 0.665 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.646 [0.623, 0.667] | 0.804 | 0.645 | -1.154 | 0.620 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.667 [0.655, 0.679] | 0.849 | 0.669 | -1.130 | 0.642 | 0.00 |
+
+## Gap: acc(C) - acc(A), paired by episode
+
+| model | split | slot | C arm | A arm | n | gap [95% CI] | Wilcoxon p | Holm p | role |
+|---|---|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.148 [0.133, 0.164] | 1.7e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.145 [0.128, 0.162] | 1.7e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.193 [0.175, 0.210] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.131 [0.114, 0.148] | 3.5e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.102 [0.081, 0.121] | 2.0e-08 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.204 [0.188, 0.221] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.121 [0.104, 0.136] | 5.0e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.128 [0.105, 0.150] | 3.5e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.167 [0.150, 0.184] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.106 [0.089, 0.122] | 2.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.089 [0.071, 0.107] | 2.3e-08 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.158 [0.139, 0.176] | 2.4e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.134 [0.122, 0.146] | 2.4e-09 | 2.4e-09 | primary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.136 [0.122, 0.151] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.180 [0.165, 0.194] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.118 [0.105, 0.131] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.095 [0.079, 0.111] | 1.4e-08 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.181 [0.168, 0.194] | 1.6e-09 | nan | exploratory |
+
+Primary family (Wilcoxon signed-rank (two-sided), Holm, alpha=0.05): Qwen3-VL-8B-Instruct@0c351dd0: C|sum_all|text - A|full|text (all)
+
+## B / B' vs A and C vs B (absolute accuracy differences)
+
+| model | split | slot | B arm | A arm | n | B-A [95% CI] | Wilcoxon p |
+|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | A|full|text | 48 | 0.029 [0.017, 0.041] | 2.5e-05 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.018 [-0.011, 0.048] | 0.26 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|image | A|full|image | 48 | 0.056 [0.034, 0.078] | 4.6e-05 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | A|full|text | 48 | 0.147 [0.126, 0.165] | 4.8e-09 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.033 [0.018, 0.048] | 0.00017 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.042 [0.017, 0.065] | 0.0018 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|image | A|full|image | 48 | 0.063 [0.045, 0.081] | 1.3e-06 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | A|full|text | 48 | 0.118 [0.097, 0.137] | 1.5e-08 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | A|full|text | 48 | 0.031 [0.021, 0.041] | 2.3e-06 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | A|full|text | 48 | 0.030 [0.007, 0.053] | 0.018 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|image | A|full|image | 48 | 0.060 [0.047, 0.072] | 1.0e-08 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | A|full|text | 48 | 0.132 [0.116, 0.147] | 2.6e-09 |
+
+Normalised position (B-A)/(C-A) is shown only when C-A > 0.05 and the bootstrap C-A stays > 0; it need not lie in [0, 1].
+
+| model | split | slot | B arm | C arm | n | B-A [95% CI] | C-B [95% CI] | C-A | position [95% CI] |
+|---|---|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.029 [0.017, 0.041] | 0.119 [0.102, 0.137] | 0.148 | 0.20 [0.12, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.029 [0.017, 0.041] | 0.164 [0.144, 0.183] | 0.193 | 0.15 [0.09, 0.21] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.029 [0.017, 0.041] | 0.102 [0.083, 0.121] | 0.131 | 0.22 [0.13, 0.31] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.029 [0.017, 0.041] | 0.072 [0.051, 0.093] | 0.102 | 0.29 [0.17, 0.42] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.029 [0.017, 0.041] | 0.175 [0.155, 0.196] | 0.204 | 0.14 [0.08, 0.20] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.018 [-0.011, 0.048] | 0.131 [0.113, 0.149] | 0.148 | 0.12 [-0.08, 0.30] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.018 [-0.011, 0.048] | 0.175 [0.153, 0.197] | 0.193 | 0.09 [-0.06, 0.23] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.018 [-0.011, 0.048] | 0.113 [0.096, 0.131] | 0.131 | 0.14 [-0.10, 0.33] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.018 [-0.011, 0.048] | 0.084 [0.066, 0.101] | 0.102 | 0.18 [-0.14, 0.41] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.018 [-0.011, 0.048] | 0.186 [0.166, 0.206] | 0.204 | 0.09 [-0.06, 0.22] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.056 [0.034, 0.078] | 0.088 [0.068, 0.110] | 0.145 | 0.39 [0.24, 0.52] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.147 [0.126, 0.165] | 0.002 [-0.008, 0.014] | 0.148 | 0.99 [0.90, 1.05] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.147 [0.126, 0.165] | 0.046 [0.033, 0.060] | 0.193 | 0.76 [0.69, 0.83] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.147 [0.126, 0.165] | -0.016 [-0.026, -0.002] | 0.131 | 1.12 [1.02, 1.21] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.147 [0.126, 0.165] | -0.045 [-0.059, -0.030] | 0.102 | 1.44 [1.27, 1.68] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.147 [0.126, 0.165] | 0.058 [0.047, 0.070] | 0.204 | 0.72 [0.65, 0.77] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.033 [0.018, 0.048] | 0.088 [0.069, 0.107] | 0.121 | 0.27 [0.15, 0.39] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.033 [0.018, 0.048] | 0.134 [0.114, 0.154] | 0.167 | 0.20 [0.11, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.033 [0.018, 0.048] | 0.073 [0.053, 0.093] | 0.106 | 0.31 [0.18, 0.45] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.033 [0.018, 0.048] | 0.057 [0.037, 0.077] | 0.089 | 0.37 [0.21, 0.53] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.033 [0.018, 0.048] | 0.125 [0.100, 0.149] | 0.158 | 0.21 [0.11, 0.31] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.042 [0.017, 0.065] | 0.079 [0.060, 0.099] | 0.121 | 0.35 [0.15, 0.51] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.042 [0.017, 0.065] | 0.125 [0.104, 0.146] | 0.167 | 0.25 [0.11, 0.38] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.042 [0.017, 0.065] | 0.064 [0.046, 0.083] | 0.106 | 0.39 [0.18, 0.57] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.042 [0.017, 0.065] | 0.048 [0.029, 0.066] | 0.089 | 0.47 [0.22, 0.67] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.042 [0.017, 0.065] | 0.116 [0.090, 0.142] | 0.158 | 0.26 [0.11, 0.41] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.063 [0.045, 0.081] | 0.065 [0.043, 0.088] | 0.128 | 0.49 [0.36, 0.63] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.118 [0.097, 0.137] | 0.002 [-0.016, 0.021] | 0.121 | 0.98 [0.83, 1.14] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.118 [0.097, 0.137] | 0.049 [0.027, 0.071] | 0.167 | 0.71 [0.59, 0.83] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.118 [0.097, 0.137] | -0.012 [-0.033, 0.009] | 0.106 | 1.12 [0.92, 1.34] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.118 [0.097, 0.137] | -0.029 [-0.050, -0.007] | 0.089 | 1.32 [1.07, 1.66] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.118 [0.097, 0.137] | 0.040 [0.015, 0.064] | 0.158 | 0.75 [0.61, 0.90] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.031 [0.021, 0.041] | 0.104 [0.089, 0.118] | 0.134 | 0.23 [0.16, 0.30] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.031 [0.021, 0.041] | 0.149 [0.133, 0.165] | 0.180 | 0.17 [0.12, 0.23] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.031 [0.021, 0.041] | 0.087 [0.072, 0.103] | 0.118 | 0.26 [0.18, 0.35] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.031 [0.021, 0.041] | 0.064 [0.047, 0.081] | 0.095 | 0.32 [0.22, 0.43] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.031 [0.021, 0.041] | 0.150 [0.133, 0.167] | 0.181 | 0.17 [0.11, 0.23] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.030 [0.007, 0.053] | 0.105 [0.089, 0.121] | 0.134 | 0.22 [0.05, 0.37] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.030 [0.007, 0.053] | 0.150 [0.131, 0.168] | 0.180 | 0.17 [0.04, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.030 [0.007, 0.053] | 0.089 [0.074, 0.104] | 0.118 | 0.25 [0.06, 0.41] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.030 [0.007, 0.053] | 0.066 [0.051, 0.081] | 0.095 | 0.31 [0.08, 0.50] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.030 [0.007, 0.053] | 0.151 [0.131, 0.171] | 0.181 | 0.16 [0.04, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.060 [0.047, 0.072] | 0.077 [0.060, 0.094] | 0.136 | 0.44 [0.35, 0.53] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.132 [0.116, 0.147] | 0.002 [-0.009, 0.014] | 0.134 | 0.98 [0.90, 1.07] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.132 [0.116, 0.147] | 0.047 [0.032, 0.063] | 0.180 | 0.74 [0.66, 0.81] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.132 [0.116, 0.147] | -0.014 [-0.027, -0.000] | 0.118 | 1.12 [1.00, 1.24] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.132 [0.116, 0.147] | -0.037 [-0.053, -0.021] | 0.095 | 1.39 [1.20, 1.63] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.132 [0.116, 0.147] | 0.049 [0.034, 0.064] | 0.181 | 0.73 [0.65, 0.81] |
+
+## TOST: VLM + summary vs rule alone (margin +-0.02, alpha 0.05)
+
+Equivalence here means only that the accuracy difference lies within the margin; it does not imply trial-by-trial rule following or identical internal computation (see agreement below).
+
+- Secondary family Qwen3-VL-8B-Instruct@0c351dd0/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+
+| model | split | slot | C arm | rule | n | acc VLM | acc rule | diff [90% CI] | p TOST | equiv. (uncorr.) | Holm p | equiv. (Holm) | role |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.633 | 0.632 | 0.001 [-0.002, 0.005] | 1.5e-11 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.633 | 0.677 | -0.044 [-0.051, -0.036] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.635 | 0.678 | -0.043 [-0.051, -0.034] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.635 | 0.677 | -0.041 [-0.051, -0.031] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.677 | 0.678 | -0.001 [-0.002, 0.001] | 4.1e-31 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.001 [-0.006, 0.007] | 5.6e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.616 | 0.612 | 0.004 [-0.000, 0.008] | 4.7e-08 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.616 | 0.677 | -0.061 [-0.068, -0.054] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.586 | 0.579 | 0.007 [0.001, 0.013] | 0.00027 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.586 | 0.677 | -0.090 [-0.100, -0.080] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.689 | 0.692 | -0.003 [-0.006, 0.000] | 8.6e-12 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.689 | 0.677 | 0.012 [0.005, 0.020] | 0.044 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.608 | 0.632 | -0.023 [-0.035, -0.013] | 0.69 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.608 | 0.677 | -0.068 [-0.081, -0.055] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.621 | 0.678 | -0.057 [-0.076, -0.040] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.621 | 0.677 | -0.056 [-0.075, -0.038] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.655 | 0.678 | -0.023 [-0.034, -0.014] | 0.71 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.655 | 0.677 | -0.022 [-0.034, -0.011] | 0.62 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.594 | 0.612 | -0.018 [-0.030, -0.008] | 0.41 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.594 | 0.677 | -0.083 [-0.096, -0.071] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.577 | 0.579 | -0.002 [-0.011, 0.007] | 0.0015 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.577 | 0.677 | -0.099 [-0.112, -0.087] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.646 | 0.692 | -0.046 [-0.065, -0.028] | 0.99 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.646 | 0.677 | -0.031 [-0.050, -0.013] | 0.83 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | window_counts | 48 | 0.621 | 0.632 | -0.011 [-0.017, -0.005] | 0.009 | yes | 0.02 | yes | secondary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.621 | 0.677 | -0.056 [-0.065, -0.047] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.628 | 0.678 | -0.050 [-0.061, -0.040] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.628 | 0.677 | -0.049 [-0.060, -0.037] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.666 | 0.678 | -0.012 [-0.017, -0.007] | 0.0066 | yes | 0.02 | yes | secondary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.666 | 0.677 | -0.011 [-0.019, -0.003] | 0.031 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.605 | 0.612 | -0.007 [-0.013, -0.001] | 0.00056 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.605 | 0.677 | -0.072 [-0.080, -0.064] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.582 | 0.579 | 0.003 [-0.004, 0.009] | 9.9e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.582 | 0.677 | -0.095 [-0.105, -0.085] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.667 | 0.692 | -0.024 [-0.034, -0.015] | 0.77 | no | 0.77 | no | secondary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.667 | 0.677 | -0.009 [-0.020, 0.001] | 0.052 | no | nan | - | exploratory |
+
+## Trial-level choice agreement: VLM + summary vs window-count rule (non-tied trials)
+
+| model | split | slot | C arm | n ep | non-tied | agree (pooled) | agree ep-mean [95% CI] | disagree | VLM right | rule right | stable | volatile | VLM->A | VLM->B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | 48 | 3687 | 0.979 | 0.979 [0.966, 0.989] | 77 | 39 | 38 | 21 | 56 | 4 | 73 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.888 | 0.888 [0.877, 0.899] | 423 | 131 | 292 | 156 | 267 | 150 | 273 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | 48 | 3770 | 0.999 | 0.999 [0.998, 1.000] | 3 | 1 | 2 | 0 | 3 | 0 | 3 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 0.998 | 0.998 [0.994, 1.000] | 8 | 2 | 6 | 0 | 8 | 2 | 6 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 0.980 | 0.980 [0.970, 0.988] | 59 | 37 | 22 | 7 | 52 | 15 | 44 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 0.995 | 0.995 [0.989, 0.999] | 20 | 5 | 15 | 9 | 11 | 5 | 15 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.903 | 0.902 [0.857, 0.941] | 357 | 129 | 228 | 168 | 189 | 5 | 352 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.847 | 0.847 [0.797, 0.893] | 578 | 181 | 397 | 286 | 292 | 139 | 439 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 0.941 | 0.941 [0.909, 0.969] | 221 | 65 | 156 | 97 | 124 | 60 | 161 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 0.917 | 0.917 [0.871, 0.957] | 291 | 110 | 181 | 142 | 149 | 84 | 207 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.909 | 0.910 [0.872, 0.942] | 268 | 137 | 131 | 100 | 168 | 62 | 206 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 0.892 | 0.892 [0.843, 0.937] | 407 | 115 | 292 | 204 | 203 | 101 | 306 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | 48 | 7374 | 0.941 | 0.940 [0.917, 0.961] | 434 | 168 | 266 | 189 | 245 | 9 | 425 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.867 | 0.867 [0.842, 0.890] | 1001 | 312 | 689 | 442 | 559 | 289 | 712 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | 48 | 7540 | 0.970 | 0.970 [0.954, 0.984] | 224 | 66 | 158 | 97 | 127 | 60 | 164 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | 48 | 6974 | 0.957 | 0.957 [0.934, 0.977] | 299 | 112 | 187 | 142 | 157 | 86 | 213 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | 48 | 5890 | 0.944 | 0.945 [0.925, 0.962] | 327 | 174 | 153 | 107 | 220 | 77 | 250 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | 48 | 7552 | 0.943 | 0.943 [0.919, 0.966] | 427 | 120 | 307 | 213 | 214 | 106 | 321 |
+
+## Per-scenario gap (domain_slot = scenario only; pet reported separately above)
+
+Each held-out text scenario has 8 episode pairs; the cross-scenario sign test has 6 units (one per text scenario; minimum two-sided p = 0.03125). Pet is reported separately and is not part of the cross-scenario test.
+
+| model | split | C arm | scenario | n pairs | gap [95% CI] |
+|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | color | 8 | 0.109 [0.077, 0.138] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | medical | 8 | 0.097 [0.027, 0.152] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | news | 8 | 0.134 [0.108, 0.161] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | sports | 8 | 0.131 [0.103, 0.160] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | stock | 8 | 0.157 [0.125, 0.193] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | weather | 8 | 0.095 [0.070, 0.122] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | color | 8 | 0.168 [0.136, 0.198] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | medical | 8 | 0.141 [0.084, 0.196] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | news | 8 | 0.147 [0.097, 0.203] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | sports | 8 | 0.114 [0.076, 0.152] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | stock | 8 | 0.171 [0.127, 0.215] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | weather | 8 | 0.025 [0.011, 0.049] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | color | 8 | 0.155 [0.122, 0.193] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | medical | 8 | 0.171 [0.119, 0.215] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | news | 8 | 0.165 [0.127, 0.207] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | sports | 8 | 0.180 [0.141, 0.214] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | stock | 8 | 0.203 [0.158, 0.241] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | weather | 8 | 0.127 [0.100, 0.152] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | color | 8 | 0.085 [0.062, 0.109] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | medical | 8 | 0.104 [0.049, 0.158] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | news | 8 | 0.114 [0.087, 0.142] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | sports | 8 | 0.108 [0.078, 0.136] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | stock | 8 | 0.161 [0.125, 0.198] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | weather | 8 | 0.062 [0.033, 0.092] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | color | 8 | 0.057 [0.003, 0.103] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | medical | 8 | 0.076 [0.040, 0.114] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | news | 8 | 0.104 [0.070, 0.139] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | sports | 8 | 0.081 [0.041, 0.123] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | stock | 8 | 0.128 [0.081, 0.177] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | weather | 8 | 0.090 [0.059, 0.123] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | color | 8 | 0.158 [0.134, 0.187] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | medical | 8 | 0.180 [0.127, 0.229] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | news | 8 | 0.184 [0.153, 0.212] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | sports | 8 | 0.198 [0.169, 0.229] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | stock | 8 | 0.157 [0.116, 0.195] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | weather | 8 | 0.071 [0.036, 0.106] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+
+## History baselines (same trial mask as the reference A arm)
+
+Baselines marked "yes" use generator information the VLM does not have and are not fair competitors.
+
+| model | split | baseline | acc [95% CI] | n ep | uses generator info | description |
+|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+
+## Readout quality (candidate mass, greedy output follows candidate format)
+
+| model | split | arm | slot | format | n | mass mean | mass min | frac mass<0.5 | greedy follows |
+|---|---|---|---|---|---|---|---|---|---|
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A+|full|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A+|full|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|image | pet | image | 7680 | 1.000 | 0.986 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|image | scenario | image | 7680 | 1.000 | 0.984 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B'|full|chart | pet | chart | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B'|full|chart | scenario | chart | 7680 | 0.999 | 0.422 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|image | pet | image | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|image | scenario | image | 7680 | 1.000 | 0.984 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | pet | image | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | scenario | image | 7680 | 1.000 | 0.984 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+
+Rule-window mismatches (recomputed vs logged window_start): 0; identical duplicate rows merged: 0; legacy y-only rows (approx logits): 0.

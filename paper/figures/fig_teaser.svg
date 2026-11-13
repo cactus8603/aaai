@@ -262,8 +262,8 @@ L 502 293
 " clip-path="url(#p082abb917b)" style="fill: none; stroke-dasharray: 0.65,1.625; stroke-dashoffset: 0; stroke: #56616e; stroke-width: 0.65"/>
    </g>
    <g id="line2d_11">
-    <path d="M 36 266.687698
-L 502 266.687698
+    <path d="M 36 266.234968
+L 502 266.234968
 " clip-path="url(#p082abb917b)" style="fill: none; stroke-dasharray: 3.6,2.7; stroke-dashoffset: 0; stroke: #17619c; stroke-width: 0.9"/>
    </g>
    <g id="line2d_12">
@@ -286,7 +286,7 @@ L 414.12 170
     <text style="font-size: 10px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #202a36" x="12" y="57.392969" transform="rotate(-0 12 57.392969)">Sam reports: dry</text>
    </g>
    <g id="text_4">
-    <text style="font-weight: 700; font-size: 10px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #202a36" x="222" y="40.319531" transform="rotate(-0 222 40.319531)">Frozen VLM predicts</text>
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #202a36" x="222" y="40.319531" transform="rotate(-0 222 40.319531)">VLM predicts</text>
    </g>
    <g id="text_5">
     <text style="font-size: 11px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #202a36" x="222" y="57.632266" transform="rotate(-0 222 57.632266)">rain or dry?</text>
@@ -354,7 +354,7 @@ z
     <text style="font-size: 10px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="354" y="193.883594" transform="rotate(-0 354 193.883594)">Ken correct; Sam wrong.</text>
    </g>
    <g id="text_24">
-    <text style="font-weight: 700; font-size: 10.5px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #202a36" x="2" y="229.422383" transform="rotate(-0 2 229.422383)">(c) Accuracy across four VLMs</text>
+    <text style="font-weight: 700; font-size: 10.5px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #202a36" x="2" y="229.422383" transform="rotate(-0 2 229.422383)">(c) Accuracy across 5 VLMs</text>
    </g>
    <g id="text_25">
     <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #56616e" x="358" y="229.162109" transform="rotate(-0 358 229.162109)">Mean</text>
@@ -363,16 +363,16 @@ z
     <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #56616e" x="407" y="229.162109" transform="rotate(-0 407 229.162109)">Individual model</text>
    </g>
    <g id="text_27">
-    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="316.162109" transform="rotate(-0 27 316.162109)">40%</text>
+    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="316.162109" transform="rotate(-0 27 316.162109)">.4</text>
    </g>
    <g id="text_28">
-    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="295.162109" transform="rotate(-0 27 295.162109)">50%</text>
+    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="295.162109" transform="rotate(-0 27 295.162109)">.5</text>
    </g>
    <g id="text_29">
-    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="274.162109" transform="rotate(-0 27 274.162109)">60%</text>
+    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="274.162109" transform="rotate(-0 27 274.162109)">.6</text>
    </g>
    <g id="text_30">
-    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="253.162109" transform="rotate(-0 27 253.162109)">70%</text>
+    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="27" y="253.162109" transform="rotate(-0 27 253.162109)">.7</text>
    </g>
    <g id="text_31">
     <g id="patch_16">
@@ -387,14 +387,14 @@ z
    </g>
    <g id="text_32">
     <g id="patch_17">
-     <path d="M 41.01 262.764963
-L 151.223437 262.764963
-L 151.223437 252.610432
-L 41.01 252.610432
+     <path d="M 41.01 262.312234
+L 117.727969 262.312234
+L 117.727969 252.157703
+L 41.01 252.157703
 z
 " style="fill: #ffffff"/>
     </g>
-    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #17619c" x="42" y="259.832932" transform="rotate(-0 42 259.832932)">Count-summary mean: 62.5%</text>
+    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #17619c" x="42" y="259.380203" transform="rotate(-0 42 259.380203)">Summary mean .627</text>
    </g>
    <g id="line2d_14">
     <defs>
@@ -411,10 +411,11 @@ z
 " style="stroke: #9f4232"/>
     </defs>
     <g clip-path="url(#p082abb917b)">
-     <use xlink:href="#m8359372159" x="63" y="295.824367" style="fill: #9f4232; stroke: #9f4232"/>
-     <use xlink:href="#m8359372159" x="75" y="299.064082" style="fill: #9f4232; stroke: #9f4232"/>
-     <use xlink:href="#m8359372159" x="87" y="306.623418" style="fill: #9f4232; stroke: #9f4232"/>
-     <use xlink:href="#m8359372159" x="99" y="300.725475" style="fill: #9f4232; stroke: #9f4232"/>
+     <use xlink:href="#m8359372159" x="63" y="295.879747" style="fill: #9f4232; stroke: #9f4232"/>
+     <use xlink:href="#m8359372159" x="72" y="297.485759" style="fill: #9f4232; stroke: #9f4232"/>
+     <use xlink:href="#m8359372159" x="81" y="299.257911" style="fill: #9f4232; stroke: #9f4232"/>
+     <use xlink:href="#m8359372159" x="90" y="299.728639" style="fill: #9f4232; stroke: #9f4232"/>
+     <use xlink:href="#m8359372159" x="99" y="282.699367" style="fill: #9f4232; stroke: #9f4232"/>
     </g>
    </g>
    <g id="line2d_15">
@@ -432,10 +433,11 @@ z
 " style="stroke: #865b12"/>
     </defs>
     <g clip-path="url(#p082abb917b)">
-     <use xlink:href="#m344a889d69" x="234" y="285.440665" style="fill: #865b12; stroke: #865b12"/>
-     <use xlink:href="#m344a889d69" x="246" y="286.022152" style="fill: #865b12; stroke: #865b12"/>
-     <use xlink:href="#m344a889d69" x="258" y="299.230222" style="fill: #865b12; stroke: #865b12"/>
-     <use xlink:href="#m344a889d69" x="270" y="287.018987" style="fill: #865b12; stroke: #865b12"/>
+     <use xlink:href="#m344a889d69" x="234" y="289.372627" style="fill: #865b12; stroke: #865b12"/>
+     <use xlink:href="#m344a889d69" x="243" y="291.338608" style="fill: #865b12; stroke: #865b12"/>
+     <use xlink:href="#m344a889d69" x="252" y="293.387658" style="fill: #865b12; stroke: #865b12"/>
+     <use xlink:href="#m344a889d69" x="261" y="288.375791" style="fill: #865b12; stroke: #865b12"/>
+     <use xlink:href="#m344a889d69" x="270" y="280.428797" style="fill: #865b12; stroke: #865b12"/>
     </g>
    </g>
    <g id="line2d_16">
@@ -453,10 +455,11 @@ z
 " style="stroke: #006b54"/>
     </defs>
     <g clip-path="url(#p082abb917b)">
-     <use xlink:href="#m483dc5580f" x="405" y="263.261076" style="fill: #006b54; stroke: #006b54"/>
-     <use xlink:href="#m483dc5580f" x="417" y="263.759494" style="fill: #006b54; stroke: #006b54"/>
-     <use xlink:href="#m483dc5580f" x="429" y="270.405063" style="fill: #006b54; stroke: #006b54"/>
-     <use xlink:href="#m483dc5580f" x="441" y="266.251582" style="fill: #006b54; stroke: #006b54"/>
+     <use xlink:href="#m483dc5580f" x="405" y="268.079114" style="fill: #006b54; stroke: #006b54"/>
+     <use xlink:href="#m483dc5580f" x="414" y="264.50712" style="fill: #006b54; stroke: #006b54"/>
+     <use xlink:href="#m483dc5580f" x="423" y="271.623418" style="fill: #006b54; stroke: #006b54"/>
+     <use xlink:href="#m483dc5580f" x="432" y="266.113133" style="fill: #006b54; stroke: #006b54"/>
+     <use xlink:href="#m483dc5580f" x="441" y="266.77769" style="fill: #006b54; stroke: #006b54"/>
     </g>
    </g>
    <g id="text_33">
@@ -469,7 +472,7 @@ z
     <text style="font-size: 10px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #006b54" x="423" y="328.392969" transform="rotate(-0 423 328.392969)">Correctness only</text>
    </g>
    <g id="text_36">
-    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="502" y="340.162109" transform="rotate(-0 502 340.162109)">Text reports · 16 episode pairs · development</text>
+    <text style="font-size: 9px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: end; fill: #56616e" x="502" y="340.162109" transform="rotate(-0 502 340.162109)">Text reports · 48 episode pairs · held-out</text>
    </g>
    <g id="line2d_17">
     <defs>
@@ -486,7 +489,7 @@ z
 " style="stroke: #ffffff; stroke-width: 0.9"/>
     </defs>
     <g clip-path="url(#p082abb917b)">
-     <use xlink:href="#mffd584abca" x="81" y="300.559335" style="fill: #9f4232; stroke: #ffffff; stroke-width: 0.9"/>
+     <use xlink:href="#mffd584abca" x="81" y="295.010285" style="fill: #9f4232; stroke: #ffffff; stroke-width: 0.9"/>
     </g>
    </g>
    <g id="line2d_18">
@@ -504,7 +507,7 @@ z
 " style="stroke: #ffffff; stroke-width: 0.9"/>
     </defs>
     <g clip-path="url(#p082abb917b)">
-     <use xlink:href="#m60eb6dd9f2" x="252" y="289.428006" style="fill: #865b12; stroke: #ffffff; stroke-width: 0.9"/>
+     <use xlink:href="#m60eb6dd9f2" x="252" y="288.580696" style="fill: #865b12; stroke: #ffffff; stroke-width: 0.9"/>
     </g>
    </g>
    <g id="line2d_19">
@@ -522,41 +525,41 @@ z
 " style="stroke: #ffffff; stroke-width: 0.9"/>
     </defs>
     <g clip-path="url(#p082abb917b)">
-     <use xlink:href="#m383e187a7d" x="423" y="265.919304" style="fill: #006b54; stroke: #ffffff; stroke-width: 0.9"/>
+     <use xlink:href="#m383e187a7d" x="423" y="267.420095" style="fill: #006b54; stroke: #ffffff; stroke-width: 0.9"/>
     </g>
    </g>
    <g id="text_37">
     <g id="patch_18">
-     <path d="M 63.9 293.415898
-L 98.1 293.415898
-L 98.1 281.702773
-L 63.9 281.702773
+     <path d="M 69.9 287.866847
+L 92.1 287.866847
+L 92.1 276.153722
+L 69.9 276.153722
 z
 " style="fill: #ffffff"/>
     </g>
-    <text style="font-weight: 700; font-size: 12px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #9f4232" x="81" y="290.249023" transform="rotate(-0 81 290.249023)">46.4%</text>
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #9f4232" x="81" y="284.699972" transform="rotate(-0 81 284.699972)">.490</text>
    </g>
    <g id="text_38">
     <g id="patch_19">
-     <path d="M 234.9 282.284569
-L 269.1 282.284569
-L 269.1 270.571444
-L 234.9 270.571444
+     <path d="M 240.9 281.437259
+L 263.1 281.437259
+L 263.1 269.724134
+L 240.9 269.724134
 z
 " style="fill: #ffffff"/>
     </g>
-    <text style="font-weight: 700; font-size: 12px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #865b12" x="252" y="279.117694" transform="rotate(-0 252 279.117694)">51.7%</text>
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #865b12" x="252" y="278.270384" transform="rotate(-0 252 278.270384)">.521</text>
    </g>
    <g id="text_39">
     <g id="patch_20">
-     <path d="M 405.9 258.775866
-L 440.1 258.775866
-L 440.1 247.062741
-L 405.9 247.062741
+     <path d="M 411.9 260.276657
+L 434.1 260.276657
+L 434.1 248.563532
+L 411.9 248.563532
 z
 " style="fill: #ffffff"/>
     </g>
-    <text style="font-weight: 700; font-size: 12px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #006b54" x="423" y="255.608991" transform="rotate(-0 423 255.608991)">62.9%</text>
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: middle; fill: #006b54" x="423" y="257.109782" transform="rotate(-0 423 257.109782)">.622</text>
    </g>
   </g>
  </g>

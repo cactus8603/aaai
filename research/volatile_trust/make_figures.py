@@ -168,6 +168,7 @@ def main():
     mk = Path(a.masking)
     fig_mech(D, json.loads(mk.read_text()) if mk.exists() else {}, out, a.split_label, a.masking_label)
     fig_task(out)
+    fig_human(ad, out)
     print('wrote', sorted(p.name for p in out.glob('fig_*.pdf')))
 
 
@@ -403,15 +404,63 @@ def fig_curves(D, out, split_label):
             ax.plot(x, row, color=col, lw=0.4, alpha=0.3)
         m = np.nanmean(C, 0)
         ax.plot(x, m, color=col, lw=1.6, label=lab)
-    ax.legend(loc='lower right', fontsize=5.6, handlelength=1.3, labelspacing=0.25, ncol=2, columnspacing=0.8)
+    # summaries over recent trials: model means only (dashed), to keep the panel readable
+    for arm, lab, col, ls in [('C|sum_cp|text', 'Change-point summ.', '#6a4fc4', (0, (3, 1.5))),
+                              ('C|sum_window:5|text', 'Last-5 summ.', '#4b4a47', (0, (1, 1)))]:
+        cs = [np.array((cell(d['main'], arm) or {}).get('curve') or [np.nan] * 10, float) for d in D.values()]
+        cs = [c for c in cs if np.isfinite(c).any()]
+        if cs:
+            ax.plot(np.arange(len(cs[0])), np.nanmean(np.vstack(cs), 0), color=col, lw=1.4, ls=ls, label=lab)
+    ax.legend(loc='lower right', fontsize=5.6, handlelength=1.6, labelspacing=0.25, ncol=2, columnspacing=0.8)
     ax.axhline(0.5, color=INK2, lw=0.6, ls=':')
     ax.set_xlabel('Trials since reversal')
     ax.set_ylabel('P(follow better advisor)')
     ax.set_xlim(-0.3, 9.3)
     ax.set_xticks([0, 3, 6, 9])
-    ax.set_ylim(0.27, 0.66)
+    ax.set_ylim(0, 1.0)
     grid(ax)
     fig.savefig(out / 'fig_curves.pdf', bbox_inches='tight', pad_inches=0.02)
+    plt.close(fig)
+
+
+def fig_human(ad, out):
+    """Fig. 5 (single column): median forgetting rate phi by hazard rate, humans vs models (Psych-101)."""
+    pj = ad / 'psych101.json'
+    if not pj.exists():
+        return
+    S = json.loads(pj.read_text())['sources']
+    H = ['0.1', '0.2', '0.4']
+    hx = [float(h) for h in H]
+    fig, axs = plt.subplots(1, 2, figsize=(3.3, 1.75), sharey=True)
+    hum = S['human/short100']['per_participant']['xiong_mf']
+    names = {'Qwen/Qwen3-VL-8B-Instruct': 'qwen3vl8b', 'OpenGVLab/InternVL3_5-8B-HF': 'internvl8b',
+             'google/gemma-3-27b-it': 'gemma3_27b', 'Qwen/Qwen3-VL-32B-Instruct': 'qwen3vl32b',
+             'OpenGVLab/InternVL3_5-38B-HF': 'internvl38b'}
+    style = {k: (mk, large) for k, _, mk, large in MODELS}
+    for ax, cond, title in zip(axs, ['text/hidden', 'text/told'], ['(a) Hazard rate hidden', '(b) Hazard rate told']):
+        ax.plot(hx, hx, color=GRID, lw=1.0, ls='--', zorder=0)
+        ax.plot(hx, [hum[h]['phi'] for h in H], color=INK, lw=1.8, marker='o', ms=3.5, label='Humans')
+        for m, key in names.items():
+            k = [k for k in S if k.startswith(m + '/' + cond)]
+            if not k:
+                continue
+            pp = S[k[0]]['per_participant']['xiong_mf']
+            fam = next(f for f in FAMILY if key.startswith(f))
+            mk, large = style[key]
+            ax.plot(hx, [pp[h]['phi'] for h in H], color=FAMILY[fam], lw=0.9, marker=mk, ms=3,
+                    mfc=FAMILY[fam] if large else 'white', mec=FAMILY[fam], mew=0.8)
+        ax.set_title(title, loc='left', fontweight='bold')
+        ax.set_xticks(hx)
+        ax.set_xticklabels(['.1', '.2', '.4'])
+        ax.set_xlabel('Hazard rate $h$')
+        grid(ax)
+    axs[0].set_ylabel('Forgetting rate $\\phi$')
+    axs[0].set_ylim(-0.02, 0.42)
+    axs[0].text(0.4, 0.27, 'Humans', ha='right', va='bottom', fontsize=6.5)
+    axs[0].text(0.4, 0.06, 'VLMs', ha='right', va='bottom', fontsize=6.5, color=INK2)
+    axs[1].text(0.13, 0.37, 'normative ($\\phi=h$)', fontsize=6, color=INK2)
+    fig.tight_layout(w_pad=0.6)
+    fig.savefig(out / 'fig_human.pdf', bbox_inches='tight', pad_inches=0.02)
     plt.close(fig)
 
 

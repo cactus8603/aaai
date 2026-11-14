@@ -1,0 +1,2955 @@
+{
+  "schema": "paper-review-completed-checks-v1",
+  "created_utc": "2026-11-14T03:18:51.061304+00:00",
+  "repository_head": "370bde6cf643f1f9540ced784418838d41b7ac3e",
+  "purpose": "Bounded numerical audit of completed run files; no models rerun and no paper files edited.",
+  "implementation_reused": {
+    "module": "research/volatile_trust/analyze_main.py",
+    "functions": [
+      "load_rows(strict=True)",
+      "pair_trials(strict=True)",
+      "arm_metrics(dom=all,strict=True)",
+      "episode_metrics",
+      "boot_mean_ci",
+      "paired_test",
+      "holm"
+    ]
+  },
+  "estimator": {
+    "readout": "choice",
+    "report_format": "text",
+    "hint": true,
+    "trial_mask": "t>=2; each 80-trial episode contributes 79 trials per cover story",
+    "counterbalancing": "For each base episode, trial, arm and cover story, average A-relative aligned logits across original and counterbalanced copy before scoring the higher-logit answer. Correct=1, incorrect=0, exact tie=.5.",
+    "pooling": "Mean trial accuracy within each base episode and cover story; equal-weight mean of pet and assigned non-pet cover-story accuracy; mean across base episode pairs.",
+    "uncertainty": {
+      "unit": "base episode pair, jointly preserving both cover stories and both counterbalanced copies",
+      "bootstrap": "Percentile CI for equally weighted mean: np.random.default_rng(seed).integers(0,n,size=(10000,n)); quantiles .025 and .975.",
+      "n_resamples": 10000,
+      "seed": 0,
+      "paired_contrast": "summary minus raw per base pair, then bootstrap paired differences",
+      "wilcoxon": "two-sided scipy.stats.wilcoxon(d,zero_method=wilcox), method default auto; unadjusted unless explicitly labelled Holm",
+      "holm_family": "Only three completed larger-model compact p2 summary-minus-raw contrasts; exploratory, separate from original primary family."
+    }
+  },
+  "completed_larger_compact_p2_development": {
+    "qwen3vl32b": {
+      "group": [
+        "Qwen3-VL-32B-Instruct@0cfaf481",
+        "episodes_v3#e00b8793",
+        "development",
+        "choice"
+      ],
+      "n_source_rows": 20480,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A+|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5328322784810127,
+          "accuracy_ci95": [
+            0.5185917721518987,
+            0.5470727848101264
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.5189873417721519,
+            "dev001": 0.5063291139240507,
+            "dev002": 0.5696202531645569,
+            "dev003": 0.5,
+            "dev004": 0.5126582278481013,
+            "dev005": 0.5506329113924051,
+            "dev006": 0.5,
+            "dev007": 0.5379746835443038,
+            "dev008": 0.5063291139240507,
+            "dev009": 0.5696202531645569,
+            "dev010": 0.5316455696202531,
+            "dev011": 0.5379746835443038,
+            "dev012": 0.5696202531645569,
+            "dev013": 0.4810126582278481,
+            "dev014": 0.5696202531645569,
+            "dev015": 0.5632911392405062
+          }
+        },
+        "A|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5075158227848101,
+          "accuracy_ci95": [
+            0.48457278481012656,
+            0.5268987341772152
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.5443037974683544,
+            "dev001": 0.3860759493670886,
+            "dev002": 0.5379746835443038,
+            "dev003": 0.5,
+            "dev004": 0.4810126582278481,
+            "dev005": 0.5443037974683544,
+            "dev006": 0.5063291139240507,
+            "dev007": 0.5379746835443038,
+            "dev008": 0.4873417721518988,
+            "dev009": 0.5632911392405063,
+            "dev010": 0.5126582278481013,
+            "dev011": 0.4936708860759494,
+            "dev012": 0.5253164556962026,
+            "dev013": 0.43670886075949367,
+            "dev014": 0.5253164556962026,
+            "dev015": 0.5379746835443038
+          }
+        },
+        "B|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5988924050632911,
+          "accuracy_ci95": [
+            0.5739715189873418,
+            0.6174841772151898
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6139240506329113,
+            "dev001": 0.5759493670886076,
+            "dev002": 0.639240506329114,
+            "dev003": 0.44936708860759494,
+            "dev004": 0.620253164556962,
+            "dev005": 0.5632911392405063,
+            "dev006": 0.639240506329114,
+            "dev007": 0.620253164556962,
+            "dev008": 0.620253164556962,
+            "dev009": 0.6012658227848101,
+            "dev010": 0.620253164556962,
+            "dev011": 0.6012658227848101,
+            "dev012": 0.5822784810126582,
+            "dev013": 0.6139240506329113,
+            "dev014": 0.5822784810126582,
+            "dev015": 0.639240506329114
+          }
+        },
+        "C|sum_all|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.627373417721519,
+          "accuracy_ci95": [
+            0.6186708860759493,
+            0.6352848101265823
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6455696202531646,
+            "dev001": 0.6329113924050633,
+            "dev002": 0.6455696202531646,
+            "dev003": 0.6265822784810127,
+            "dev004": 0.639240506329114,
+            "dev005": 0.6139240506329113,
+            "dev006": 0.6455696202531646,
+            "dev007": 0.6075949367088608,
+            "dev008": 0.6455696202531646,
+            "dev009": 0.6075949367088608,
+            "dev010": 0.6455696202531646,
+            "dev011": 0.6329113924050633,
+            "dev012": 0.6329113924050633,
+            "dev013": 0.620253164556962,
+            "dev014": 0.5886075949367089,
+            "dev015": 0.6075949367088608
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T15:52:32",
+              "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+              "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-32B-Instruct/0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+                "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:05:50",
+              "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+              "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-32B-Instruct/0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+                "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw_coded",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:12:20",
+              "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+              "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-32B-Instruct/0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+                "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "coded",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:23:55",
+              "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+              "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-32B-Instruct/0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+                "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "sum_all",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ],
+      "summary_minus_raw": {
+        "n": 16,
+        "mean": 0.11985759493670886,
+        "sd": 0.052419368091870304,
+        "ci95": [
+          0.09651898734177214,
+          0.14556962025316456
+        ],
+        "p_wilcoxon": 0.0004358423668112835,
+        "episodes": [
+          "dev000",
+          "dev001",
+          "dev002",
+          "dev003",
+          "dev004",
+          "dev005",
+          "dev006",
+          "dev007",
+          "dev008",
+          "dev009",
+          "dev010",
+          "dev011",
+          "dev012",
+          "dev013",
+          "dev014",
+          "dev015"
+        ],
+        "diffs": [
+          0.10126582278481011,
+          0.24683544303797472,
+          0.10759493670886078,
+          0.12658227848101267,
+          0.1582278481012659,
+          0.06962025316455689,
+          0.1392405063291139,
+          0.069620253164557,
+          0.15822784810126578,
+          0.044303797468354444,
+          0.13291139240506322,
+          0.13924050632911394,
+          0.10759493670886078,
+          0.18354430379746833,
+          0.06329113924050633,
+          0.069620253164557
+        ],
+        "p_holm_three_completed_larger_compact_models": 0.0013075271004338504
+      }
+    },
+    "gemma3_27b": {
+      "group": [
+        "gemma-3-27b-it@005ad340",
+        "episodes_v3#e00b8793",
+        "development",
+        "choice"
+      ],
+      "n_source_rows": 20480,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A+|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5585443037974683,
+          "accuracy_ci95": [
+            0.5379746835443038,
+            0.5779272151898733
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.5759493670886076,
+            "dev001": 0.5063291139240507,
+            "dev002": 0.5886075949367089,
+            "dev003": 0.4810126582278481,
+            "dev004": 0.5189873417721519,
+            "dev005": 0.5949367088607596,
+            "dev006": 0.5,
+            "dev007": 0.5759493670886076,
+            "dev008": 0.5696202531645569,
+            "dev009": 0.620253164556962,
+            "dev010": 0.5949367088607596,
+            "dev011": 0.5063291139240507,
+            "dev012": 0.5506329113924051,
+            "dev013": 0.569620253164557,
+            "dev014": 0.5822784810126582,
+            "dev015": 0.6012658227848101
+          }
+        },
+        "A|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5439082278481013,
+          "accuracy_ci95": [
+            0.5284810126582279,
+            0.5609177215189873
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.5443037974683544,
+            "dev001": 0.5443037974683544,
+            "dev002": 0.5316455696202531,
+            "dev003": 0.49367088607594933,
+            "dev004": 0.5126582278481013,
+            "dev005": 0.6329113924050633,
+            "dev006": 0.5063291139240507,
+            "dev007": 0.5632911392405063,
+            "dev008": 0.5316455696202531,
+            "dev009": 0.5696202531645569,
+            "dev010": 0.5696202531645569,
+            "dev011": 0.5126582278481013,
+            "dev012": 0.5443037974683544,
+            "dev013": 0.5379746835443038,
+            "dev014": 0.5253164556962024,
+            "dev015": 0.5822784810126582
+          }
+        },
+        "B|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.6036392405063291,
+          "accuracy_ci95": [
+            0.5822784810126582,
+            0.6222310126582279
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6265822784810127,
+            "dev001": 0.6329113924050633,
+            "dev002": 0.6455696202531646,
+            "dev003": 0.6139240506329113,
+            "dev004": 0.6265822784810127,
+            "dev005": 0.5949367088607596,
+            "dev006": 0.6265822784810127,
+            "dev007": 0.620253164556962,
+            "dev008": 0.6455696202531646,
+            "dev009": 0.5379746835443038,
+            "dev010": 0.6455696202531646,
+            "dev011": 0.6265822784810127,
+            "dev012": 0.6075949367088607,
+            "dev013": 0.5316455696202531,
+            "dev014": 0.5569620253164557,
+            "dev015": 0.5189873417721519
+          }
+        },
+        "C|sum_all|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.607990506329114,
+          "accuracy_ci95": [
+            0.5921677215189873,
+            0.6226265822784811
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6455696202531646,
+            "dev001": 0.639240506329114,
+            "dev002": 0.6455696202531646,
+            "dev003": 0.5759493670886076,
+            "dev004": 0.6265822784810127,
+            "dev005": 0.620253164556962,
+            "dev006": 0.6075949367088608,
+            "dev007": 0.5949367088607596,
+            "dev008": 0.6329113924050633,
+            "dev009": 0.5632911392405063,
+            "dev010": 0.5949367088607596,
+            "dev011": 0.5759493670886076,
+            "dev012": 0.6265822784810127,
+            "dev013": 0.6012658227848101,
+            "dev014": 0.639240506329114,
+            "dev015": 0.5379746835443038
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:02:00",
+              "model_id": "google/gemma-3-27b-it",
+              "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/gemma-3-27b-it/005ad3404e59d6023443cb575daa05336842228a",
+                "model_id": "google/gemma-3-27b-it",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:11:37",
+              "model_id": "google/gemma-3-27b-it",
+              "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/gemma-3-27b-it/005ad3404e59d6023443cb575daa05336842228a",
+                "model_id": "google/gemma-3-27b-it",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw_coded",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:19:50",
+              "model_id": "google/gemma-3-27b-it",
+              "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/gemma-3-27b-it/005ad3404e59d6023443cb575daa05336842228a",
+                "model_id": "google/gemma-3-27b-it",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "coded",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:26:34",
+              "model_id": "google/gemma-3-27b-it",
+              "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/gemma-3-27b-it/005ad3404e59d6023443cb575daa05336842228a",
+                "model_id": "google/gemma-3-27b-it",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "sum_all",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ],
+      "summary_minus_raw": {
+        "n": 16,
+        "mean": 0.06408227848101268,
+        "sd": 0.050573541141703746,
+        "ci95": [
+          0.039161392405063326,
+          0.08702531645569622
+        ],
+        "p_wilcoxon": 0.0019120513329395133,
+        "episodes": [
+          "dev000",
+          "dev001",
+          "dev002",
+          "dev003",
+          "dev004",
+          "dev005",
+          "dev006",
+          "dev007",
+          "dev008",
+          "dev009",
+          "dev010",
+          "dev011",
+          "dev012",
+          "dev013",
+          "dev014",
+          "dev015"
+        ],
+        "diffs": [
+          0.10126582278481011,
+          0.09493670886075956,
+          0.11392405063291144,
+          0.08227848101265822,
+          0.11392405063291133,
+          -0.012658227848101333,
+          0.10126582278481011,
+          0.03164556962025322,
+          0.10126582278481022,
+          -0.006329113924050556,
+          0.025316455696202667,
+          0.06329113924050622,
+          0.08227848101265822,
+          0.06329113924050633,
+          0.11392405063291156,
+          -0.044303797468354444
+        ],
+        "p_holm_three_completed_larger_compact_models": 0.0019120513329395133
+      }
+    },
+    "internvl38b": {
+      "group": [
+        "InternVL3_5-38B-HF@7c830fc2",
+        "episodes_v3#e00b8793",
+        "development",
+        "choice"
+      ],
+      "n_source_rows": 20480,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A+|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5692246835443038,
+          "accuracy_ci95": [
+            0.5450949367088609,
+            0.5893987341772152
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.5822784810126582,
+            "dev001": 0.43670886075949367,
+            "dev002": 0.5886075949367089,
+            "dev003": 0.5506329113924051,
+            "dev004": 0.5886075949367089,
+            "dev005": 0.5949367088607596,
+            "dev006": 0.5822784810126582,
+            "dev007": 0.6265822784810127,
+            "dev008": 0.5126582278481013,
+            "dev009": 0.5569620253164558,
+            "dev010": 0.5822784810126582,
+            "dev011": 0.5886075949367089,
+            "dev012": 0.5632911392405062,
+            "dev013": 0.5316455696202532,
+            "dev014": 0.6392405063291139,
+            "dev015": 0.5822784810126582
+          }
+        },
+        "A|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.5613132911392404,
+          "accuracy_ci95": [
+            0.5371835443037974,
+            0.5818829113924051
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6265822784810127,
+            "dev001": 0.42405063291139244,
+            "dev002": 0.6075949367088608,
+            "dev003": 0.5632911392405063,
+            "dev004": 0.5696202531645569,
+            "dev005": 0.5569620253164558,
+            "dev006": 0.5443037974683544,
+            "dev007": 0.6075949367088608,
+            "dev008": 0.5063291139240507,
+            "dev009": 0.5632911392405062,
+            "dev010": 0.6075949367088607,
+            "dev011": 0.5632911392405062,
+            "dev012": 0.5822784810126582,
+            "dev013": 0.5443037974683544,
+            "dev014": 0.5316455696202531,
+            "dev015": 0.5822784810126582
+          }
+        },
+        "B|full|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.6028481012658228,
+          "accuracy_ci95": [
+            0.5921677215189873,
+            0.6131329113924051
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6265822784810127,
+            "dev001": 0.6075949367088608,
+            "dev002": 0.6012658227848101,
+            "dev003": 0.5949367088607596,
+            "dev004": 0.6012658227848101,
+            "dev005": 0.6012658227848101,
+            "dev006": 0.639240506329114,
+            "dev007": 0.620253164556962,
+            "dev008": 0.6265822784810127,
+            "dev009": 0.5822784810126582,
+            "dev010": 0.5506329113924051,
+            "dev011": 0.5822784810126582,
+            "dev012": 0.5886075949367089,
+            "dev013": 0.6265822784810127,
+            "dev014": 0.6075949367088608,
+            "dev015": 0.5886075949367089
+          }
+        },
+        "C|sum_all|text": {
+          "n_episode_pairs": 16,
+          "accuracy": 0.6325158227848102,
+          "accuracy_ci95": [
+            0.6241989715189873,
+            0.6404272151898734
+          ],
+          "accuracy_by_pair": {
+            "dev000": 0.6455696202531646,
+            "dev001": 0.6075949367088608,
+            "dev002": 0.6455696202531646,
+            "dev003": 0.6075949367088608,
+            "dev004": 0.6455696202531646,
+            "dev005": 0.6329113924050633,
+            "dev006": 0.6455696202531646,
+            "dev007": 0.6075949367088608,
+            "dev008": 0.639240506329114,
+            "dev009": 0.6329113924050633,
+            "dev010": 0.6455696202531646,
+            "dev011": 0.6455696202531646,
+            "dev012": 0.6455696202531646,
+            "dev013": 0.6075949367088608,
+            "dev014": 0.6518987341772151,
+            "dev015": 0.6139240506329113
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/internvl38b/para_p2_raw",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+          "hazard": 0.06666666666666667,
+          "pixels": 448,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:01:49",
+              "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+              "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。",
+                "categorical_suffix": "Answer the question using a single word or phrase.",
+                "profile_suffix": null,
+                "categorical_short_answer": true,
+                "profile_short_answer": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/InternVL3_5-38B-HF/7c830fc25e874f9a861087e3c70587f2b9b555f3",
+                "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/internvl38b/para_p2_raw",
+                "shard": "0/1",
+                "pixels": "448",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+          "hazard": 0.06666666666666667,
+          "pixels": 448,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:10:46",
+              "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+              "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。",
+                "categorical_suffix": "Answer the question using a single word or phrase.",
+                "profile_suffix": null,
+                "categorical_short_answer": true,
+                "profile_short_answer": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/InternVL3_5-38B-HF/7c830fc25e874f9a861087e3c70587f2b9b555f3",
+                "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded",
+                "shard": "0/1",
+                "pixels": "448",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw_coded",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/internvl38b/para_p2_coded",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+          "hazard": 0.06666666666666667,
+          "pixels": 448,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:18:32",
+              "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+              "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。",
+                "categorical_suffix": "Answer the question using a single word or phrase.",
+                "profile_suffix": null,
+                "categorical_short_answer": true,
+                "profile_short_answer": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/InternVL3_5-38B-HF/7c830fc25e874f9a861087e3c70587f2b9b555f3",
+                "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/internvl38b/para_p2_coded",
+                "shard": "0/1",
+                "pixels": "448",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "coded",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "full",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        },
+        {
+          "path": "research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+          "hazard": 0.06666666666666667,
+          "pixels": 448,
+          "restricted": [],
+          "n_rows": 5120,
+          "bad_lines": 0,
+          "wording": "p2",
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T16:25:19",
+              "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+              "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。",
+                "categorical_suffix": "Answer the question using a single word or phrase.",
+                "profile_suffix": null,
+                "categorical_short_answer": true,
+                "profile_short_answer": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/InternVL3_5-38B-HF/7c830fc25e874f9a861087e3c70587f2b9b555f3",
+                "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "development",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all",
+                "shard": "0/1",
+                "pixels": "448",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "sum_all",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ],
+      "summary_minus_raw": {
+        "n": 16,
+        "mean": 0.07120253164556964,
+        "sd": 0.04642309068580316,
+        "ci95": [
+          0.050632911392405076,
+          0.09414556962025317
+        ],
+        "p_wilcoxon": 0.0006533107814151376,
+        "episodes": [
+          "dev000",
+          "dev001",
+          "dev002",
+          "dev003",
+          "dev004",
+          "dev005",
+          "dev006",
+          "dev007",
+          "dev008",
+          "dev009",
+          "dev010",
+          "dev011",
+          "dev012",
+          "dev013",
+          "dev014",
+          "dev015"
+        ],
+        "diffs": [
+          0.01898734177215189,
+          0.18354430379746833,
+          0.03797468354430378,
+          0.044303797468354444,
+          0.07594936708860767,
+          0.07594936708860756,
+          0.10126582278481011,
+          0.0,
+          0.13291139240506333,
+          0.06962025316455711,
+          0.03797468354430389,
+          0.08227848101265833,
+          0.06329113924050633,
+          0.06329113924050633,
+          0.120253164556962,
+          0.03164556962025311
+        ],
+        "p_holm_three_completed_larger_compact_models": 0.0013075271004338504
+      }
+    }
+  },
+  "completed_cp_truncated_raw_heldout": {
+    "qwen3vl8b": {
+      "group": [
+        "Qwen3-VL-8B-Instruct@0c351dd0",
+        "episodes_v3#e00b8793",
+        "held_out",
+        "choice"
+      ],
+      "n_source_rows": 15360,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A|cp_hard|text": {
+          "n_episode_pairs": 48,
+          "accuracy": 0.4773206751054853,
+          "accuracy_ci95": [
+            0.46149789029535865,
+            0.4934071729957806
+          ],
+          "accuracy_by_pair": {
+            "hel000": 0.5063291139240507,
+            "hel001": 0.49367088607594933,
+            "hel002": 0.5886075949367089,
+            "hel003": 0.4050632911392405,
+            "hel004": 0.379746835443038,
+            "hel005": 0.47468354430379744,
+            "hel006": 0.46835443037974683,
+            "hel007": 0.5126582278481013,
+            "hel008": 0.5569620253164558,
+            "hel009": 0.3860759493670886,
+            "hel010": 0.5063291139240507,
+            "hel011": 0.43670886075949367,
+            "hel012": 0.45569620253164556,
+            "hel013": 0.43670886075949367,
+            "hel014": 0.5,
+            "hel015": 0.43037974683544306,
+            "hel016": 0.5189873417721519,
+            "hel017": 0.42405063291139244,
+            "hel018": 0.47468354430379744,
+            "hel019": 0.3924050632911392,
+            "hel020": 0.5379746835443038,
+            "hel021": 0.4050632911392405,
+            "hel022": 0.4810126582278481,
+            "hel023": 0.5379746835443038,
+            "hel024": 0.5822784810126582,
+            "hel025": 0.5949367088607594,
+            "hel026": 0.5189873417721519,
+            "hel027": 0.5379746835443038,
+            "hel028": 0.4810126582278481,
+            "hel029": 0.44303797468354433,
+            "hel030": 0.4493670886075949,
+            "hel031": 0.4620253164556962,
+            "hel032": 0.4113924050632911,
+            "hel033": 0.4620253164556962,
+            "hel034": 0.4873417721518987,
+            "hel035": 0.3860759493670886,
+            "hel036": 0.3607594936708861,
+            "hel037": 0.5189873417721519,
+            "hel038": 0.5569620253164558,
+            "hel039": 0.49367088607594933,
+            "hel040": 0.5506329113924051,
+            "hel041": 0.4810126582278481,
+            "hel042": 0.5253164556962026,
+            "hel043": 0.5,
+            "hel044": 0.430379746835443,
+            "hel045": 0.43670886075949367,
+            "hel046": 0.49367088607594933,
+            "hel047": 0.43670886075949367
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/qwen3vl8b/ho_cp_hard",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 15360,
+          "bad_lines": 0,
+          "wording": null,
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T15:35:38",
+              "model_id": "Qwen/Qwen3-VL-8B-Instruct",
+              "model_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-8B-Instruct/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+                "model_id": "Qwen/Qwen3-VL-8B-Instruct",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "held_out",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/qwen3vl8b/ho_cp_hard",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "cp_hard",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "internvl8b": {
+      "group": [
+        "InternVL3_5-8B-HF@741a7d03",
+        "episodes_v3#e00b8793",
+        "held_out",
+        "choice"
+      ],
+      "n_source_rows": 15360,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A|cp_hard|text": {
+          "n_episode_pairs": 48,
+          "accuracy": 0.4723101265822785,
+          "accuracy_ci95": [
+            0.4585970464135021,
+            0.4861550632911393
+          ],
+          "accuracy_by_pair": {
+            "hel000": 0.4050632911392405,
+            "hel001": 0.5253164556962026,
+            "hel002": 0.4936708860759494,
+            "hel003": 0.379746835443038,
+            "hel004": 0.43037974683544306,
+            "hel005": 0.4873417721518987,
+            "hel006": 0.5063291139240507,
+            "hel007": 0.3987341772151899,
+            "hel008": 0.46835443037974683,
+            "hel009": 0.44303797468354433,
+            "hel010": 0.40506329113924056,
+            "hel011": 0.3670886075949367,
+            "hel012": 0.5063291139240507,
+            "hel013": 0.5063291139240507,
+            "hel014": 0.4240506329113924,
+            "hel015": 0.44303797468354433,
+            "hel016": 0.5379746835443038,
+            "hel017": 0.45569620253164556,
+            "hel018": 0.5063291139240507,
+            "hel019": 0.3987341772151899,
+            "hel020": 0.5569620253164558,
+            "hel021": 0.44936708860759494,
+            "hel022": 0.5,
+            "hel023": 0.5506329113924051,
+            "hel024": 0.49367088607594933,
+            "hel025": 0.4873417721518988,
+            "hel026": 0.4873417721518988,
+            "hel027": 0.46835443037974683,
+            "hel028": 0.4810126582278481,
+            "hel029": 0.4050632911392405,
+            "hel030": 0.4873417721518988,
+            "hel031": 0.5253164556962026,
+            "hel032": 0.45569620253164556,
+            "hel033": 0.43670886075949367,
+            "hel034": 0.5063291139240507,
+            "hel035": 0.4177215189873418,
+            "hel036": 0.5443037974683544,
+            "hel037": 0.5632911392405063,
+            "hel038": 0.47468354430379744,
+            "hel039": 0.49367088607594933,
+            "hel040": 0.43670886075949367,
+            "hel041": 0.5379746835443038,
+            "hel042": 0.3924050632911392,
+            "hel043": 0.4810126582278481,
+            "hel044": 0.5063291139240507,
+            "hel045": 0.4620253164556962,
+            "hel046": 0.5,
+            "hel047": 0.4810126582278481
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/internvl8b/ho_cp_hard",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "741a7d03020411e666c6109218ab71e08151ef86",
+          "hazard": 0.06666666666666667,
+          "pixels": 448,
+          "restricted": [],
+          "n_rows": 15360,
+          "bad_lines": 0,
+          "wording": null,
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T15:42:29",
+              "model_id": "OpenGVLab/InternVL3_5-8B-HF",
+              "model_revision": "741a7d03020411e666c6109218ab71e08151ef86",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。",
+                "categorical_suffix": "Answer the question using a single word or phrase.",
+                "profile_suffix": null,
+                "categorical_short_answer": true,
+                "profile_short_answer": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/InternVL3_5-8B-HF/741a7d03020411e666c6109218ab71e08151ef86",
+                "model_id": "OpenGVLab/InternVL3_5-8B-HF",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "held_out",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/internvl8b/ho_cp_hard",
+                "shard": "0/1",
+                "pixels": "448",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "cp_hard",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "qwen3vl32b": {
+      "group": [
+        "Qwen3-VL-32B-Instruct@0cfaf481",
+        "episodes_v3#e00b8793",
+        "held_out",
+        "choice"
+      ],
+      "n_source_rows": 15360,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A|cp_hard|text": {
+          "n_episode_pairs": 48,
+          "accuracy": 0.4525316455696203,
+          "accuracy_ci95": [
+            0.43710443037974683,
+            0.46782700421940926
+          ],
+          "accuracy_by_pair": {
+            "hel000": 0.4620253164556962,
+            "hel001": 0.4620253164556962,
+            "hel002": 0.42405063291139244,
+            "hel003": 0.4113924050632911,
+            "hel004": 0.33544303797468356,
+            "hel005": 0.43670886075949367,
+            "hel006": 0.5063291139240507,
+            "hel007": 0.5063291139240507,
+            "hel008": 0.4936708860759494,
+            "hel009": 0.31645569620253167,
+            "hel010": 0.3987341772151899,
+            "hel011": 0.45569620253164556,
+            "hel012": 0.46835443037974683,
+            "hel013": 0.45569620253164556,
+            "hel014": 0.4936708860759494,
+            "hel015": 0.4050632911392405,
+            "hel016": 0.48734177215189867,
+            "hel017": 0.43670886075949367,
+            "hel018": 0.44936708860759494,
+            "hel019": 0.379746835443038,
+            "hel020": 0.5443037974683544,
+            "hel021": 0.3924050632911392,
+            "hel022": 0.4113924050632911,
+            "hel023": 0.4936708860759494,
+            "hel024": 0.5822784810126582,
+            "hel025": 0.4810126582278481,
+            "hel026": 0.5,
+            "hel027": 0.5189873417721519,
+            "hel028": 0.4050632911392405,
+            "hel029": 0.4430379746835443,
+            "hel030": 0.4177215189873418,
+            "hel031": 0.4873417721518988,
+            "hel032": 0.430379746835443,
+            "hel033": 0.4177215189873418,
+            "hel034": 0.4936708860759494,
+            "hel035": 0.36708860759493667,
+            "hel036": 0.35443037974683544,
+            "hel037": 0.4873417721518987,
+            "hel038": 0.5189873417721519,
+            "hel039": 0.5,
+            "hel040": 0.5063291139240507,
+            "hel041": 0.4620253164556962,
+            "hel042": 0.4113924050632911,
+            "hel043": 0.5063291139240507,
+            "hel044": 0.4050632911392405,
+            "hel045": 0.42405063291139244,
+            "hel046": 0.5253164556962026,
+            "hel047": 0.4493670886075949
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/qwen3vl32b/ho_cp_hard",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 15360,
+          "bad_lines": 0,
+          "wording": null,
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T15:46:23",
+              "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+              "model_revision": "0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/Qwen3-VL-32B-Instruct/0cfaf48183f594c314753d30a4c4974bc75f3ccb",
+                "model_id": "Qwen/Qwen3-VL-32B-Instruct",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "held_out",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/qwen3vl32b/ho_cp_hard",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "cp_hard",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "gemma3_27b": {
+      "group": [
+        "gemma-3-27b-it@005ad340",
+        "episodes_v3#e00b8793",
+        "held_out",
+        "choice"
+      ],
+      "n_source_rows": 15360,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A|cp_hard|text": {
+          "n_episode_pairs": 48,
+          "accuracy": 0.4345991561181434,
+          "accuracy_ci95": [
+            0.421542062236287,
+            0.4477848101265822
+          ],
+          "accuracy_by_pair": {
+            "hel000": 0.3987341772151899,
+            "hel001": 0.44936708860759494,
+            "hel002": 0.4050632911392405,
+            "hel003": 0.4113924050632911,
+            "hel004": 0.33544303797468356,
+            "hel005": 0.3987341772151899,
+            "hel006": 0.4493670886075949,
+            "hel007": 0.46835443037974683,
+            "hel008": 0.46835443037974683,
+            "hel009": 0.3481012658227848,
+            "hel010": 0.5063291139240507,
+            "hel011": 0.4113924050632911,
+            "hel012": 0.3924050632911392,
+            "hel013": 0.430379746835443,
+            "hel014": 0.5063291139240507,
+            "hel015": 0.3860759493670886,
+            "hel016": 0.4810126582278481,
+            "hel017": 0.4050632911392405,
+            "hel018": 0.4113924050632911,
+            "hel019": 0.43037974683544306,
+            "hel020": 0.5253164556962026,
+            "hel021": 0.4113924050632911,
+            "hel022": 0.43670886075949367,
+            "hel023": 0.47468354430379744,
+            "hel024": 0.5316455696202531,
+            "hel025": 0.430379746835443,
+            "hel026": 0.44936708860759494,
+            "hel027": 0.4936708860759494,
+            "hel028": 0.3987341772151899,
+            "hel029": 0.3987341772151899,
+            "hel030": 0.4177215189873418,
+            "hel031": 0.430379746835443,
+            "hel032": 0.4050632911392405,
+            "hel033": 0.36075949367088606,
+            "hel034": 0.5189873417721519,
+            "hel035": 0.4113924050632911,
+            "hel036": 0.36708860759493667,
+            "hel037": 0.3924050632911392,
+            "hel038": 0.4936708860759494,
+            "hel039": 0.430379746835443,
+            "hel040": 0.44303797468354433,
+            "hel041": 0.43670886075949367,
+            "hel042": 0.43670886075949367,
+            "hel043": 0.45569620253164556,
+            "hel044": 0.46835443037974683,
+            "hel045": 0.45569620253164556,
+            "hel046": 0.49367088607594933,
+            "hel047": 0.3987341772151899
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/gemma3_27b/ho_cp_hard",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+          "hazard": 0.06666666666666667,
+          "pixels": 224,
+          "restricted": [],
+          "n_rows": 15360,
+          "bad_lines": 0,
+          "wording": null,
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T15:49:35",
+              "model_id": "google/gemma-3-27b-it",
+              "model_revision": "005ad3404e59d6023443cb575daa05336842228a",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "native_template_default",
+                "categorical_suffix": null,
+                "profile_suffix": null,
+                "enable_thinking": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/gemma-3-27b-it/005ad3404e59d6023443cb575daa05336842228a",
+                "model_id": "google/gemma-3-27b-it",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "held_out",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/gemma3_27b/ho_cp_hard",
+                "shard": "0/1",
+                "pixels": "224",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "cp_hard",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "internvl38b": {
+      "group": [
+        "InternVL3_5-38B-HF@7c830fc2",
+        "episodes_v3#e00b8793",
+        "held_out",
+        "choice"
+      ],
+      "n_source_rows": 15360,
+      "trial_mask": "t=2..80 inclusive; pet and assigned non-pet cover stories",
+      "cells": {
+        "A|cp_hard|text": {
+          "n_episode_pairs": 48,
+          "accuracy": 0.5015822784810126,
+          "accuracy_ci95": [
+            0.48813291139240506,
+            0.5147679324894514
+          ],
+          "accuracy_by_pair": {
+            "hel000": 0.5443037974683544,
+            "hel001": 0.5379746835443038,
+            "hel002": 0.5126582278481013,
+            "hel003": 0.4810126582278481,
+            "hel004": 0.4683544303797468,
+            "hel005": 0.430379746835443,
+            "hel006": 0.5443037974683544,
+            "hel007": 0.4177215189873418,
+            "hel008": 0.5443037974683544,
+            "hel009": 0.3924050632911392,
+            "hel010": 0.5316455696202531,
+            "hel011": 0.4177215189873418,
+            "hel012": 0.5189873417721519,
+            "hel013": 0.49367088607594933,
+            "hel014": 0.5063291139240507,
+            "hel015": 0.43670886075949367,
+            "hel016": 0.5696202531645569,
+            "hel017": 0.4683544303797469,
+            "hel018": 0.5,
+            "hel019": 0.5,
+            "hel020": 0.5316455696202531,
+            "hel021": 0.4810126582278481,
+            "hel022": 0.5506329113924051,
+            "hel023": 0.5759493670886076,
+            "hel024": 0.5126582278481013,
+            "hel025": 0.5189873417721519,
+            "hel026": 0.5189873417721519,
+            "hel027": 0.5569620253164557,
+            "hel028": 0.4873417721518987,
+            "hel029": 0.47468354430379744,
+            "hel030": 0.5569620253164558,
+            "hel031": 0.5569620253164557,
+            "hel032": 0.5,
+            "hel033": 0.44936708860759494,
+            "hel034": 0.5253164556962024,
+            "hel035": 0.4177215189873418,
+            "hel036": 0.5379746835443038,
+            "hel037": 0.5443037974683544,
+            "hel038": 0.5506329113924051,
+            "hel039": 0.43670886075949367,
+            "hel040": 0.5316455696202531,
+            "hel041": 0.47468354430379744,
+            "hel042": 0.47468354430379744,
+            "hel043": 0.4810126582278481,
+            "hel044": 0.5253164556962026,
+            "hel045": 0.46835443037974683,
+            "hel046": 0.5822784810126582,
+            "hel047": 0.43670886075949367
+          }
+        }
+      },
+      "pairing_report": {
+        "duplicates": 0,
+        "conflicts": [],
+        "untwinned_dropped": {},
+        "missing": {}
+      },
+      "runs": [
+        {
+          "path": "research/volatile_trust/runs_h200/internvl38b/ho_cp_hard",
+          "ep_path": "research/volatile_trust/episodes_v3/episodes.jsonl",
+          "data_sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+          "data_name": "episodes_v3",
+          "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+          "hazard": 0.06666666666666667,
+          "pixels": 448,
+          "restricted": [],
+          "n_rows": 15360,
+          "bad_lines": 0,
+          "wording": null,
+          "metadata_summary": [
+            {
+              "started": "2026-11-13T15:48:50",
+              "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+              "model_revision": "7c830fc25e874f9a861087e3c70587f2b9b555f3",
+              "device": "NVIDIA H200",
+              "torch": "2.8.0+cu128",
+              "transformers": "4.57.1",
+              "cuda": "12.8",
+              "hip": null,
+              "backbone_dtype": "bfloat16",
+              "output_projection_dtype": "float32",
+              "candidate_scoring": "raw_generation_logits_before_processors",
+              "native_prompt_policy": {
+                "system": "你是书生·万象，英文名是InternVL，是由上海人工智能实验室、清华大学及多家合作单位联合开发的多模态大语言模型。",
+                "categorical_suffix": "Answer the question using a single word or phrase.",
+                "profile_suffix": null,
+                "categorical_short_answer": true,
+                "profile_short_answer": false
+              },
+              "args": {
+                "model_dir": "/raid/work/ChihChungHsu/cactus8603/aaai/.cache/models/InternVL3_5-38B-HF/7c830fc25e874f9a861087e3c70587f2b9b555f3",
+                "model_id": "OpenGVLab/InternVL3_5-38B-HF",
+                "data_dir": "research/volatile_trust/episodes_v3",
+                "split": "held_out",
+                "output": "/raid/work/ChihChungHsu/cactus8603/aaai/research/volatile_trust/runs_h200/internvl38b/ho_cp_hard",
+                "shard": "0/1",
+                "pixels": "448",
+                "readouts": "['choice']",
+                "domains": "['pet', 'scenario']",
+                "history_format": "raw",
+                "formats": "['text']",
+                "max_episodes": "None",
+                "trials": "None",
+                "sharded": "True",
+                "history_mode": "cp_hard",
+                "hazard": "0.06666666666666667",
+                "no_hint": "False"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "sampled_image_fit_correction": {
+    "definition": "Read existing native sampled-choice fits: each model/game uses median over 20 sampled binary-choice sequence fits. Human comparisons use paired participant slopes and participant-bootstrap median difference, separate from episode-pair mean bootstrap above. Soft-target fields retained only to identify superseded manuscript numbers.",
+    "conditions": {
+      "OpenGVLab/InternVL3_5-38B-HF/image_outcome/hidden/px448/n5": {
+        "analysis_source": "research/volatile_trust/analysis/h200_ho/psych101.json",
+        "source_fields": [
+          "sources[condition].sampled_fit",
+          "sources[condition].model_vs_human_phi_slope"
+        ],
+        "run_input_files": [
+          "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px448_n5_shard0of1",
+          "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px448_n5_shard0of1.json",
+          "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/results_image_outcome_hidden_px448_n5_shard0of1.jsonl",
+          "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px448_n5_shard0of1.jsonl"
+        ],
+        "n_samples": 20,
+        "phi_median_by_hazard": {
+          "0.1": 0.0943704653286519,
+          "0.2": 0.08201348911209132,
+          "0.4": 0.05193162642974201
+        },
+        "phi_trend": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -0.15647974602509152,
+          "frac_positive_slope": 0.36666666666666664,
+          "slope_wilcoxon_p": 0.054921628907322884,
+          "friedman_p": 0.18782043462399264,
+          "page_L": 351.5,
+          "page_p": 0.8637547582650241,
+          "median_diff_hmax_minus_hmin": -0.045691003489064325,
+          "fe_position_adjusted": {
+            "b_h": -0.1526519144208102,
+            "b_h_ci95": [
+              -0.3083964430348616,
+              -0.003098986922284327
+            ],
+            "b_h_boot_p_le0": 0.9775,
+            "b_position": -0.0031679047321208657,
+            "b_position_ci95": [
+              -0.026801433920425714,
+              0.018551814819326235
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.16228936519418385,
+            "h0.1_pos2": 0.07787990362933161,
+            "h0.1_pos3": 0.1173090632464183,
+            "h0.2_pos1": 0.05011478464097063,
+            "h0.2_pos2": 0.10818797234481861,
+            "h0.2_pos3": 0.08529264611938608,
+            "h0.4_pos1": 0.03622208191302016,
+            "h0.4_pos2": 0.09980913309386424,
+            "h0.4_pos3": 0.06654262665513846
+          }
+        },
+        "paired_sampled_model_vs_human_phi_slope": {
+          "definition": "Per-participant OLS slope of phi (xiong_mf) on h, model minus human, paired over the participants (same within-game choice and feedback histories). Model phi = median over S sampled binary choice sequences per episode; human phi = fit to the actual binary choices. Wilcoxon signed-rank on the paired differences + participant-bootstrap 95% CI of the median difference. Primary model condition: hazard_info = hidden. Humans were TOLD h and had prior task experience (1,600 / 3,200 trials before games 3 / 5), so the hidden-model vs told-human difference is a DESCRIPTIVE cross-condition difference, not by itself evidence of a human-model learning gap. Reported with it: model told vs human told (hazard information matched, experience still not) and the same-model told - hidden contrast.",
+          "comparison": "descriptive cross-condition difference: model hazard-HIDDEN vs human hazard-TOLD (hazard information and prior experience both differ)",
+          "n": 30,
+          "median_diff": -0.7678482185140608,
+          "mean_diff": -0.7883397432224245,
+          "median_diff_ci95": [
+            -1.2532127149501555,
+            -0.3982709928030147
+          ],
+          "frac_positive": 0.26666666666666666,
+          "wilcoxon_p": 0.0015832837671041489,
+          "mc_error_of_draws": {
+            "method": "within-episode bootstrap of the S draws (n_rep=200)",
+            "median_diff_mc_sd": 0.04626681294723491,
+            "mean_diff_mc_sd": 0.02014775952772876,
+            "wilcoxon_p_mc_range_5_95": [
+              0.0011314544826745987,
+              0.0037444327026605606
+            ],
+            "episode_phi_median_mc_sd_median": 0.013021009121841415,
+            "split_half_median_diff": {
+              "first_half": -0.8027885677258702,
+              "second_half": -0.8046681106321165
+            }
+          }
+        },
+        "superseded_soft_target_phi_trend_for_audit_only": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -0.1985283945744754,
+          "frac_positive_slope": 0.3333333333333333,
+          "slope_wilcoxon_p": 0.08793856762349606,
+          "friedman_p": 0.18994571671301788,
+          "page_L": 349.0,
+          "page_p": 0.9222098261039011,
+          "median_diff_hmax_minus_hmin": -0.0496265474601507,
+          "fe_position_adjusted": {
+            "b_h": -0.12557216602063326,
+            "b_h_ci95": [
+              -0.27067728768639465,
+              0.016515336391437426
+            ],
+            "b_h_boot_p_le0": 0.9505,
+            "b_position": -0.002196458668071019,
+            "b_position_ci95": [
+              -0.024722559146744094,
+              0.019540176719421053
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.14936421695470273,
+            "h0.1_pos2": 0.063719495497441,
+            "h0.1_pos3": 0.12237832286289317,
+            "h0.2_pos1": 0.057478016639589624,
+            "h0.2_pos2": 0.11751096865304472,
+            "h0.2_pos3": 0.08448475130175127,
+            "h0.4_pos1": 0.038450277651654236,
+            "h0.4_pos2": 0.08547733092754889,
+            "h0.4_pos3": 0.07535918910235774
+          }
+        }
+      },
+      "OpenGVLab/InternVL3_5-8B-HF/image_outcome/hidden/px448/n5": {
+        "analysis_source": "research/volatile_trust/analysis/h200_ho/psych101.json",
+        "source_fields": [
+          "sources[condition].sampled_fit",
+          "sources[condition].model_vs_human_phi_slope"
+        ],
+        "run_input_files": [
+          "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px448_n5_shard0of1",
+          "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px448_n5_shard0of1.json",
+          "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/results_image_outcome_hidden_px448_n5_shard0of1.jsonl",
+          "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px448_n5_shard0of1.jsonl"
+        ],
+        "n_samples": 20,
+        "phi_median_by_hazard": {
+          "0.1": 0.011882516450145087,
+          "0.2": 0.001134294893527002,
+          "0.4": 0.003347023657243004
+        },
+        "phi_trend": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -0.008439563570569113,
+          "frac_positive_slope": 0.4,
+          "slope_wilcoxon_p": 0.7765688337385654,
+          "friedman_p": 0.744354339142157,
+          "page_L": 358.0,
+          "page_p": 0.6018732926311804,
+          "median_diff_hmax_minus_hmin": 0.0,
+          "fe_position_adjusted": {
+            "b_h": -0.009287875002060452,
+            "b_h_ci95": [
+              -0.08069678554479444,
+              0.06800512940498184
+            ],
+            "b_h_boot_p_le0": 0.5945,
+            "b_position": 0.00917467415897963,
+            "b_position_ci95": [
+              -0.0052858769438376575,
+              0.02655721185052515
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.04977908984007609,
+            "h0.1_pos2": 0.007408762095684119,
+            "h0.1_pos3": 0.010016117581017829,
+            "h0.2_pos1": 0.0003353501304664781,
+            "h0.2_pos2": 0.0003353501304664781,
+            "h0.2_pos3": 0.030651245545904482,
+            "h0.4_pos1": 0.02720456316822354,
+            "h0.4_pos2": 0.027541405473082967,
+            "h0.4_pos3": 0.0003353501304664781
+          }
+        },
+        "paired_sampled_model_vs_human_phi_slope": {
+          "definition": "Per-participant OLS slope of phi (xiong_mf) on h, model minus human, paired over the participants (same within-game choice and feedback histories). Model phi = median over S sampled binary choice sequences per episode; human phi = fit to the actual binary choices. Wilcoxon signed-rank on the paired differences + participant-bootstrap 95% CI of the median difference. Primary model condition: hazard_info = hidden. Humans were TOLD h and had prior task experience (1,600 / 3,200 trials before games 3 / 5), so the hidden-model vs told-human difference is a DESCRIPTIVE cross-condition difference, not by itself evidence of a human-model learning gap. Reported with it: model told vs human told (hazard information matched, experience still not) and the same-model told - hidden contrast.",
+          "comparison": "descriptive cross-condition difference: model hazard-HIDDEN vs human hazard-TOLD (hazard information and prior experience both differ)",
+          "n": 30,
+          "median_diff": -0.4672919155415679,
+          "mean_diff": -0.6440940910257388,
+          "median_diff_ci95": [
+            -1.013564245684138,
+            -0.14683005863190954
+          ],
+          "frac_positive": 0.23333333333333334,
+          "wilcoxon_p": 0.0061949919909238815,
+          "mc_error_of_draws": {
+            "method": "within-episode bootstrap of the S draws (n_rep=200)",
+            "median_diff_mc_sd": 0.04712351410503068,
+            "mean_diff_mc_sd": 0.02877258684866119,
+            "wilcoxon_p_mc_range_5_95": [
+              0.004031794145703316,
+              0.019660815596580505
+            ],
+            "episode_phi_median_mc_sd_median": 0.013327079788212737,
+            "split_half_median_diff": {
+              "first_half": -0.4573289089789784,
+              "second_half": -0.5095615104054139
+            }
+          }
+        },
+        "superseded_soft_target_phi_trend_for_audit_only": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -0.019195424290994023,
+          "frac_positive_slope": 0.36666666666666664,
+          "slope_wilcoxon_p": 0.8871948085725307,
+          "friedman_p": 0.6242815277111311,
+          "page_L": 359.0,
+          "page_p": 0.5513605193699584,
+          "median_diff_hmax_minus_hmin": 0.0,
+          "fe_position_adjusted": {
+            "b_h": 0.04357765527505011,
+            "b_h_ci95": [
+              -0.05424024183970292,
+              0.14532495512371255
+            ],
+            "b_h_boot_p_le0": 0.189,
+            "b_position": 0.008966373118689478,
+            "b_position_ci95": [
+              -0.006667324594850085,
+              0.027131100866264194
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.04149143137120806,
+            "h0.1_pos2": 0.006438295627112692,
+            "h0.1_pos3": 0.012611590191762303,
+            "h0.2_pos1": 0.0003353501304664781,
+            "h0.2_pos2": 0.0003353501304664781,
+            "h0.2_pos3": 0.045666974567520384,
+            "h0.4_pos1": 0.005492390703048642,
+            "h0.4_pos2": 0.04287231522471738,
+            "h0.4_pos3": 0.0003353501304664781
+          }
+        }
+      },
+      "Qwen/Qwen3-VL-32B-Instruct/image_outcome/hidden/px224/n5": {
+        "analysis_source": "research/volatile_trust/analysis/h200_ho/psych101.json",
+        "source_fields": [
+          "sources[condition].sampled_fit",
+          "sources[condition].model_vs_human_phi_slope"
+        ],
+        "run_input_files": [
+          "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px224_n5_shard0of1",
+          "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px224_n5_shard0of1.json",
+          "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/results_image_outcome_hidden_px224_n5_shard0of1.jsonl",
+          "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px224_n5_shard0of1.jsonl"
+        ],
+        "n_samples": 20,
+        "phi_median_by_hazard": {
+          "0.1": 0.02004456797186994,
+          "0.2": 0.029679826155696077,
+          "0.4": 0.04521031365303532
+        },
+        "phi_trend": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": 0.007813183407640584,
+          "frac_positive_slope": 0.5,
+          "slope_wilcoxon_p": 0.4898460879921913,
+          "friedman_p": 0.5610295778684209,
+          "page_L": 366.0,
+          "page_p": 0.2192890130404999,
+          "median_diff_hmax_minus_hmin": 0.0016737130486795533,
+          "fe_position_adjusted": {
+            "b_h": 0.012099050108346724,
+            "b_h_ci95": [
+              -0.24286997732008675,
+              0.22241628249467185
+            ],
+            "b_h_boot_p_le0": 0.4405,
+            "b_position": 0.0087457779666991,
+            "b_position_ci95": [
+              -0.01602467322415024,
+              0.035890029331455305
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.01169847033402168,
+            "h0.1_pos2": 0.020103641278466335,
+            "h0.1_pos3": 0.023851171684201134,
+            "h0.2_pos1": 0.0022451209205942503,
+            "h0.2_pos2": 0.04602265451012981,
+            "h0.2_pos3": 0.04655322754683107,
+            "h0.4_pos1": 0.08321739600127047,
+            "h0.4_pos2": 0.024820096491908257,
+            "h0.4_pos3": 0.0003353501304664781
+          }
+        },
+        "paired_sampled_model_vs_human_phi_slope": {
+          "definition": "Per-participant OLS slope of phi (xiong_mf) on h, model minus human, paired over the participants (same within-game choice and feedback histories). Model phi = median over S sampled binary choice sequences per episode; human phi = fit to the actual binary choices. Wilcoxon signed-rank on the paired differences + participant-bootstrap 95% CI of the median difference. Primary model condition: hazard_info = hidden. Humans were TOLD h and had prior task experience (1,600 / 3,200 trials before games 3 / 5), so the hidden-model vs told-human difference is a DESCRIPTIVE cross-condition difference, not by itself evidence of a human-model learning gap. Reported with it: model told vs human told (hazard information matched, experience still not) and the same-model told - hidden contrast.",
+          "comparison": "descriptive cross-condition difference: model hazard-HIDDEN vs human hazard-TOLD (hazard information and prior experience both differ)",
+          "n": 30,
+          "median_diff": -0.5117155198763972,
+          "mean_diff": -0.6227378013576375,
+          "median_diff_ci95": [
+            -1.459969536309122,
+            0.15419252344423945
+          ],
+          "frac_positive": 0.4,
+          "wilcoxon_p": 0.047259049490094185,
+          "mc_error_of_draws": {
+            "method": "within-episode bootstrap of the S draws (n_rep=200)",
+            "median_diff_mc_sd": 0.08575758381954174,
+            "mean_diff_mc_sd": 0.01831801881833267,
+            "wilcoxon_p_mc_range_5_95": [
+              0.03272089920938015,
+              0.0635564886033535
+            ],
+            "episode_phi_median_mc_sd_median": 0.006599851234144589,
+            "split_half_median_diff": {
+              "first_half": -0.37316705623068624,
+              "second_half": -0.3650931536344699
+            }
+          }
+        },
+        "superseded_soft_target_phi_trend_for_audit_only": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -6.448426153082262e-35,
+          "frac_positive_slope": 0.4666666666666667,
+          "slope_wilcoxon_p": 0.6583220633652915,
+          "friedman_p": 0.39349287906506897,
+          "page_L": 367.0,
+          "page_p": 0.1830782800970302,
+          "median_diff_hmax_minus_hmin": 0.001300037698087572,
+          "fe_position_adjusted": {
+            "b_h": -0.0073462315713313225,
+            "b_h_ci95": [
+              -0.254420734719841,
+              0.20960666817040902
+            ],
+            "b_h_boot_p_le0": 0.517,
+            "b_position": 0.017360037355577257,
+            "b_position_ci95": [
+              -0.007397413250816841,
+              0.04456318244096623
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.008231816972699695,
+            "h0.1_pos2": 0.018204269812750223,
+            "h0.1_pos3": 0.014443116374444431,
+            "h0.2_pos1": 0.0018936043766602671,
+            "h0.2_pos2": 0.05143217908233797,
+            "h0.2_pos3": 0.040938732660123406,
+            "h0.4_pos1": 0.07560810270723192,
+            "h0.4_pos2": 0.023381245280873014,
+            "h0.4_pos3": 0.0003353501304664781
+          }
+        }
+      },
+      "Qwen/Qwen3-VL-8B-Instruct/image_outcome/hidden/px224/n5": {
+        "analysis_source": "research/volatile_trust/analysis/h200_ho/psych101.json",
+        "source_fields": [
+          "sources[condition].sampled_fit",
+          "sources[condition].model_vs_human_phi_slope"
+        ],
+        "run_input_files": [
+          "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px224_n5_shard0of1",
+          "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px224_n5_shard0of1.json",
+          "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/results_image_outcome_hidden_px224_n5_shard0of1.jsonl",
+          "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px224_n5_shard0of1.jsonl"
+        ],
+        "n_samples": 20,
+        "phi_median_by_hazard": {
+          "0.1": 0.06874358460490565,
+          "0.2": 0.026383699393486608,
+          "0.4": 0.06534041989067077
+        },
+        "phi_trend": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -0.1019161952119168,
+          "frac_positive_slope": 0.43333333333333335,
+          "slope_wilcoxon_p": 0.6120056137442589,
+          "friedman_p": 0.43264496142704645,
+          "page_L": 361.5,
+          "page_p": 0.4232252984382953,
+          "median_diff_hmax_minus_hmin": -0.013127628227194321,
+          "fe_position_adjusted": {
+            "b_h": -0.0809939375122677,
+            "b_h_ci95": [
+              -0.3739413893875322,
+              0.169769475551276
+            ],
+            "b_h_boot_p_le0": 0.7195,
+            "b_position": 0.016163927521799598,
+            "b_position_ci95": [
+              -0.014003866034558417,
+              0.04799344080322187
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.07257488671615632,
+            "h0.1_pos2": 0.05173299160520083,
+            "h0.1_pos3": 0.06643003563787225,
+            "h0.2_pos1": 0.024842955170752957,
+            "h0.2_pos2": 0.024770316981655403,
+            "h0.2_pos3": 0.0917832775599807,
+            "h0.4_pos1": 0.06117925328664999,
+            "h0.4_pos2": 0.07922685646983199,
+            "h0.4_pos3": 0.0421036802024454
+          }
+        },
+        "paired_sampled_model_vs_human_phi_slope": {
+          "definition": "Per-participant OLS slope of phi (xiong_mf) on h, model minus human, paired over the participants (same within-game choice and feedback histories). Model phi = median over S sampled binary choice sequences per episode; human phi = fit to the actual binary choices. Wilcoxon signed-rank on the paired differences + participant-bootstrap 95% CI of the median difference. Primary model condition: hazard_info = hidden. Humans were TOLD h and had prior task experience (1,600 / 3,200 trials before games 3 / 5), so the hidden-model vs told-human difference is a DESCRIPTIVE cross-condition difference, not by itself evidence of a human-model learning gap. Reported with it: model told vs human told (hazard information matched, experience still not) and the same-model told - hidden contrast.",
+          "comparison": "descriptive cross-condition difference: model hazard-HIDDEN vs human hazard-TOLD (hazard information and prior experience both differ)",
+          "n": 30,
+          "median_diff": -0.4881299521877692,
+          "mean_diff": -0.7153009211528879,
+          "median_diff_ci95": [
+            -1.2806723079103808,
+            0.06441345685727415
+          ],
+          "frac_positive": 0.4,
+          "wilcoxon_p": 0.036434996873140335,
+          "mc_error_of_draws": {
+            "method": "within-episode bootstrap of the S draws (n_rep=200)",
+            "median_diff_mc_sd": 0.06577781407973057,
+            "mean_diff_mc_sd": 0.025167168416563832,
+            "wilcoxon_p_mc_range_5_95": [
+              0.017453668639063835,
+              0.047259049490094185
+            ],
+            "episode_phi_median_mc_sd_median": 0.01416411585794837,
+            "split_half_median_diff": {
+              "first_half": -0.46534166565600404,
+              "second_half": -0.5243205039467248
+            }
+          }
+        },
+        "superseded_soft_target_phi_trend_for_audit_only": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": -0.08844655090554884,
+          "frac_positive_slope": 0.4,
+          "slope_wilcoxon_p": 0.5561132747679949,
+          "friedman_p": 0.31849638817498716,
+          "page_L": 360.5,
+          "page_p": 0.47426625842532216,
+          "median_diff_hmax_minus_hmin": -0.02637608885823469,
+          "fe_position_adjusted": {
+            "b_h": -0.08052937277886765,
+            "b_h_ci95": [
+              -0.36209423938356594,
+              0.1757779460713255
+            ],
+            "b_h_boot_p_le0": 0.7035,
+            "b_position": 0.008442204086369991,
+            "b_position_ci95": [
+              -0.023359725697076183,
+              0.04035878606694898
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.05371809110311908,
+            "h0.1_pos2": 0.056290580330143385,
+            "h0.1_pos3": 0.0375299374773549,
+            "h0.2_pos1": 0.019158042180126397,
+            "h0.2_pos2": 0.022126672758667684,
+            "h0.2_pos3": 0.01367279108223247,
+            "h0.4_pos1": 0.07328258769358417,
+            "h0.4_pos2": 0.08701169947209919,
+            "h0.4_pos3": 0.016458037012970106
+          }
+        }
+      },
+      "google/gemma-3-27b-it/image_outcome/hidden/px224/n5": {
+        "analysis_source": "research/volatile_trust/analysis/h200_ho/psych101.json",
+        "source_fields": [
+          "sources[condition].sampled_fit",
+          "sources[condition].model_vs_human_phi_slope"
+        ],
+        "run_input_files": [
+          "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px224_n5_shard0of1",
+          "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px224_n5_shard0of1.json",
+          "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/results_image_outcome_hidden_px224_n5_shard0of1.jsonl",
+          "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px224_n5_shard0of1.jsonl"
+        ],
+        "n_samples": 20,
+        "phi_median_by_hazard": {
+          "0.1": 0.0003353501304664781,
+          "0.2": 0.0009223697668519855,
+          "0.4": 0.06541750062536443
+        },
+        "phi_trend": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": 0.07288689375948643,
+          "frac_positive_slope": 0.5666666666666667,
+          "slope_wilcoxon_p": 0.05976804192888944,
+          "friedman_p": 0.03816038105215185,
+          "page_L": 377.5,
+          "page_p": 0.011934221082287175,
+          "median_diff_hmax_minus_hmin": 0.03841587332997321,
+          "fe_position_adjusted": {
+            "b_h": 0.1890398808880737,
+            "b_h_ci95": [
+              0.016311483112045066,
+              0.3739439928335863
+            ],
+            "b_h_boot_p_le0": 0.0165,
+            "b_position": 0.015876225383897,
+            "b_position_ci95": [
+              -0.012647444622521634,
+              0.04491695921187846
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.007032534626149797,
+            "h0.1_pos2": 0.0003353501304664781,
+            "h0.1_pos3": 0.0003353501304664781,
+            "h0.2_pos1": 0.007237608333467395,
+            "h0.2_pos2": 0.0003353501304664781,
+            "h0.2_pos3": 0.08820968798186793,
+            "h0.4_pos1": 0.06489852104934181,
+            "h0.4_pos2": 0.08747419617223189,
+            "h0.4_pos3": 0.0274437906755854
+          }
+        },
+        "paired_sampled_model_vs_human_phi_slope": {
+          "definition": "Per-participant OLS slope of phi (xiong_mf) on h, model minus human, paired over the participants (same within-game choice and feedback histories). Model phi = median over S sampled binary choice sequences per episode; human phi = fit to the actual binary choices. Wilcoxon signed-rank on the paired differences + participant-bootstrap 95% CI of the median difference. Primary model condition: hazard_info = hidden. Humans were TOLD h and had prior task experience (1,600 / 3,200 trials before games 3 / 5), so the hidden-model vs told-human difference is a DESCRIPTIVE cross-condition difference, not by itself evidence of a human-model learning gap. Reported with it: model told vs human told (hazard information matched, experience still not) and the same-model told - hidden contrast.",
+          "comparison": "descriptive cross-condition difference: model hazard-HIDDEN vs human hazard-TOLD (hazard information and prior experience both differ)",
+          "n": 30,
+          "median_diff": -0.23117533227766204,
+          "mean_diff": -0.44528765290525335,
+          "median_diff_ci95": [
+            -1.0227522632462112,
+            0.20502088272226315
+          ],
+          "frac_positive": 0.36666666666666664,
+          "wilcoxon_p": 0.10039735585451126,
+          "mc_error_of_draws": {
+            "method": "within-episode bootstrap of the S draws (n_rep=200)",
+            "median_diff_mc_sd": 0.0694927289622745,
+            "mean_diff_mc_sd": 0.029719723571112116,
+            "wilcoxon_p_mc_range_5_95": [
+              0.06056523136794567,
+              0.15250177765265086
+            ],
+            "episode_phi_median_mc_sd_median": 0.007265206735827426,
+            "split_half_median_diff": {
+              "first_half": -0.3704874320741761,
+              "second_half": -0.10257439479062308
+            }
+          }
+        },
+        "superseded_soft_target_phi_trend_for_audit_only": {
+          "n": 30,
+          "n_hazards": 3,
+          "median_slope_per_unit_h": 0.24838249238560606,
+          "frac_positive_slope": 0.6333333333333333,
+          "slope_wilcoxon_p": 0.009822691247240277,
+          "friedman_p": 0.000520237827798312,
+          "page_L": 387.0,
+          "page_p": 0.0002454393224201422,
+          "median_diff_hmax_minus_hmin": 0.055673788029918195,
+          "fe_position_adjusted": {
+            "b_h": 0.2692314482837824,
+            "b_h_ci95": [
+              0.08875004585017009,
+              0.4487577981344843
+            ],
+            "b_h_boot_p_le0": 0.0,
+            "b_position": 0.014354046014714654,
+            "b_position_ci95": [
+              -0.014028276198721492,
+              0.042150061505841004
+            ]
+          },
+          "median_by_h_position": {
+            "h0.1_pos1": 0.009507986341246503,
+            "h0.1_pos2": 0.0003353501304664781,
+            "h0.1_pos3": 0.0003353501304664781,
+            "h0.2_pos1": 0.0003353501304664781,
+            "h0.2_pos2": 0.0003353501304664781,
+            "h0.2_pos3": 0.029846738221929018,
+            "h0.4_pos1": 0.08706980405811451,
+            "h0.4_pos2": 0.09905171218584133,
+            "h0.4_pos3": 0.06887438358610717
+          }
+        }
+      }
+    }
+  },
+  "calibration_native_summary": {
+    "design": {
+      "truth": "per-participant xiong_mf fits of the real humans per h (phi clipped to (0.01, 0.9), beta to (0.05, 4.0), |kappa|,|b| <= 3.0); simulated humans play closed loop on the real value sequences; model = same strategy with phi_h + delta*(h - mean h), replayed teacher-forced on the simulated human history; complete pipeline (pooled warm starts, 20-draw medians, Wilcoxon + bootstrap CI of the median paired slope difference). single_draw = the same test using only the first draw.",
+      "n_seeds_requested": 200,
+      "n_seeds_completed": 200,
+      "deltas": [
+        0.0,
+        -0.5,
+        0.5
+      ],
+      "n_samples": 20,
+      "seconds": 852.4996855258942
+    },
+    "summary": {
+      "0.0": {
+        "n_seeds": 200,
+        "true_median_diff_mean": 0.0,
+        "human_slope_bias": 0.04205011368243225,
+        "model_slope_bias": 0.07514067264881984,
+        "frac_fits_failed": 0.0,
+        "frac_fits_phi_or_beta_boundary": 0.24957142857142858,
+        "median20": {
+          "reject_rate_p05": 0.06,
+          "reject_rate_mc_se": 0.016792855623746664,
+          "bias_median_diff": 0.09229568098391926,
+          "rmse_median_diff": 0.19839879241471137,
+          "ci95_coverage": 0.935,
+          "mean_est_median_diff": 0.09229568098391926
+        },
+        "single_draw": {
+          "reject_rate_p05": 0.035,
+          "reject_rate_mc_se": 0.012995191418367026,
+          "bias_median_diff": 0.0179571464920373,
+          "rmse_median_diff": 0.25567877639871495,
+          "ci95_coverage": 0.945,
+          "mean_est_median_diff": 0.0179571464920373
+        }
+      },
+      "-0.5": {
+        "n_seeds": 200,
+        "true_median_diff_mean": -0.5,
+        "human_slope_bias": 0.04205011368243225,
+        "model_slope_bias": 0.092650298854244,
+        "frac_fits_failed": 0.0,
+        "frac_fits_phi_or_beta_boundary": 0.21748412698412697,
+        "median20": {
+          "reject_rate_p05": 0.485,
+          "reject_rate_mc_se": 0.03533942557541082,
+          "bias_median_diff": 0.1575748567587241,
+          "rmse_median_diff": 0.24396173084776474,
+          "ci95_coverage": 0.87,
+          "mean_est_median_diff": -0.34242514324127593
+        },
+        "single_draw": {
+          "reject_rate_p05": 0.275,
+          "reject_rate_mc_se": 0.031573327350787724,
+          "bias_median_diff": 0.13421258387056173,
+          "rmse_median_diff": 0.2906044444438218,
+          "ci95_coverage": 0.92,
+          "mean_est_median_diff": -0.3657874161294382
+        }
+      },
+      "0.5": {
+        "n_seeds": 200,
+        "true_median_diff_mean": 0.3920222542615723,
+        "human_slope_bias": 0.04205011368243225,
+        "model_slope_bias": 0.048362652903625465,
+        "frac_fits_failed": 0.0,
+        "frac_fits_phi_or_beta_boundary": 0.28104232804232804,
+        "median20": {
+          "reject_rate_p05": 0.59,
+          "reject_rate_mc_se": 0.0347778665245584,
+          "bias_median_diff": 0.07518032397990013,
+          "rmse_median_diff": 0.20567694718146184,
+          "ci95_coverage": 0.96,
+          "mean_est_median_diff": 0.4672025782414724
+        },
+        "single_draw": {
+          "reject_rate_p05": 0.265,
+          "reject_rate_mc_se": 0.031206970375222264,
+          "bias_median_diff": -0.03920868031261865,
+          "rmse_median_diff": 0.2735387208512046,
+          "ci95_coverage": 0.935,
+          "mean_est_median_diff": 0.3528135739489536
+        }
+      }
+    }
+  },
+  "scope_and_limits": [
+    "Compact p2 uses 16 development episode pairs; exploratory completed runs, not held-out replication.",
+    "These compact and CP-raw runs used H200; original 8B wording checks used RTX3090, and some original-layout development baselines were MI300X. Cross-layout contrasts must not silently imply matched hardware.",
+    "CP-raw uses all 48 held-out episode pairs and both cover stories. No new model-selection or mechanism claim follows.",
+    "No Thinking checkpoint result is introduced.",
+    "Psych101 JSON retains older soft-target summaries as well as sampled fits; sampled-choice manuscript claims must use sampled_fit and matching sampled contrast fields."
+  ],
+  "source_files_sha256": {
+    "research/volatile_trust/analysis/h200_ho/psych101.json": {
+      "sha256": "c8d55186f5231037175bdace97528c97fa513eec4e5afacc5bf7d07ba1809e52",
+      "bytes": 1809235
+    },
+    "research/volatile_trust/analyze_main.py": {
+      "sha256": "088cdbc4f2d7af04552b1801b41a3e9b6120670f4d5619518a0d0fd3b7abfcd3",
+      "bytes": 69223
+    },
+    "research/volatile_trust/episodes_v3/episodes.jsonl": {
+      "sha256": "e00b8793d93182f09e39a4028d4da63bf9b1f531190142513569a2c55d6d2f1c",
+      "bytes": 2032470
+    },
+    "research/volatile_trust/figure_dynamics.py": {
+      "sha256": "7b739d317d27fec271225ce4a8c4754855ab055b6ce86cb035f00d3be61969ae",
+      "bytes": 11652
+    },
+    "research/volatile_trust/psych101/analyze_xiong.py": {
+      "sha256": "2a7e1661cdb9df3ee433e5f9d0decbf84aed8f4a81e775c6832e335f74ec5d08",
+      "bytes": 63836
+    },
+    "research/volatile_trust/psych101/calibration.json": {
+      "sha256": "959319b1f769edcc7465b7eae7e80f2d7324101ad46409a0ce804a7c8ed1ead2",
+      "bytes": 537988
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/ho_cp_hard/_COMPLETE_shard0of1": {
+      "sha256": "be5a8656909b41bf42deaec5e4348c471be83cdd2478ecd231895b1c2c202193",
+      "bytes": 44
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/ho_cp_hard/_FINGERPRINT_shard0of1.json": {
+      "sha256": "b53241f9cf700bf2a4b0a40cdedb9ef1cdde9d4949616ffbbf85729f0562ec3d",
+      "bytes": 576
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/ho_cp_hard/results_shard0of1.jsonl": {
+      "sha256": "44017062fc0c57d1c4f6c9be6b59a37e5111430f7e40ab941e1ddc1eb542803e",
+      "bytes": 10199988
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/ho_cp_hard/run_metadata_shard0of1.jsonl": {
+      "sha256": "d313ae05aa08de3f532d6a3b328553bb466292cf1ad18d2f7b0ec5710ec7640d",
+      "bytes": 2748
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded/_COMPLETE_shard0of1": {
+      "sha256": "649e6a229a1c5fd9f010b3f4a4abfca4d18b0ba5bd99191a2b543e2d2ee7bd81",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded/_FINGERPRINT_shard0of1.json": {
+      "sha256": "4827bbbf717f177d1c209a7a68cfa347bada9905258db8cafda3f9911e5962ce",
+      "bytes": 578
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded/results_shard0of1.jsonl": {
+      "sha256": "e680c306283165be63478f904937a9678bbb31a8d26fedc4784d3db71f1f5c4d",
+      "bytes": 3396262
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_coded/run_metadata_shard0of1.jsonl": {
+      "sha256": "8c7408f0456c299d79eb9cae84579c991002f7139b44e0f2efc0b3e124e11c6f",
+      "bytes": 2081
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw/_COMPLETE_shard0of1": {
+      "sha256": "babcd798d847d2953771f86942f85d33a474cf164af12ef4dcb73dcfd41665a8",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw/_FINGERPRINT_shard0of1.json": {
+      "sha256": "bdd1aef6f7a27fc4bfeed59275675fb9f3fb6accb13ff8c0f3de3192edcfa28c",
+      "bytes": 576
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw/results_shard0of1.jsonl": {
+      "sha256": "796d4f843b94515ce2d019ced51d573a7b65250a356f07f7b4c10428673014a4",
+      "bytes": 3381487
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw/run_metadata_shard0of1.jsonl": {
+      "sha256": "cf43de1397321451155488da83d4fa03ce3a079e4f77a98d2b123914b1a45461",
+      "bytes": 2077
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded/_COMPLETE_shard0of1": {
+      "sha256": "1aa5811bdce8ca66e9ad1859a118577b32c4341ecb54e04e0af030f448cc995d",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded/_FINGERPRINT_shard0of1.json": {
+      "sha256": "512ad8ea464a4040c123bab6c4b66132687fdc582fc0ca0a9eeeaa5cea51d556",
+      "bytes": 582
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded/results_shard0of1.jsonl": {
+      "sha256": "4de6f123129cdd6561555a54d8553f4fc9300bb535d81e946c522f39435a87e9",
+      "bytes": 3411826
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_raw_coded/run_metadata_shard0of1.jsonl": {
+      "sha256": "03c72376db50c6c33500055bfe5b588c958be9179ecd6be8389bc7cd059323e6",
+      "bytes": 2089
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all/_COMPLETE_shard0of1": {
+      "sha256": "539967dcfdd40bd8175cd655d8daba8f5776e6bf10c369547e209f0ff50e53d6",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all/_FINGERPRINT_shard0of1.json": {
+      "sha256": "b5a00c23b06a315bb297b6be99c864563b4d2fe9adb2ab33c5958ba4524d9709",
+      "bytes": 579
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all/results_shard0of1.jsonl": {
+      "sha256": "d2e88e9e3a476f19cf88e3937db9dc4cfa4ad4249bafba3388229d831241b166",
+      "bytes": 3382529
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/para_p2_sum_all/run_metadata_shard0of1.jsonl": {
+      "sha256": "074ed6b2279e0b49b28289f9c53eb471bf9c5af26526e7d29724dd3d786645a3",
+      "bytes": 2084
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px224_n5_shard0of1": {
+      "sha256": "a6a1c4b0cbc6b832eae857a409af2004bc4a479565526ebb56057eacc5f60fb1",
+      "bytes": 268
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px224_n5_shard0of1.json": {
+      "sha256": "e0bd0a2fabccfddedb22ade482f645f02997b0c9f66bbae869eb249786271bf6",
+      "bytes": 790
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/results_image_outcome_hidden_px224_n5_shard0of1.jsonl": {
+      "sha256": "594ff5aa3bdefcba92a69cfaebe89fc40db3a80af050c685367e7656db454d3e",
+      "bytes": 7680419
+    },
+    "research/volatile_trust/runs_h200/gemma3_27b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px224_n5_shard0of1.jsonl": {
+      "sha256": "5d8235b276ab93895430a7dcee8aaceeeb9fad5fee835877d0d457f4a7df4f03",
+      "bytes": 3859
+    },
+    "research/volatile_trust/runs_h200/internvl38b/ho_cp_hard/_COMPLETE_shard0of1": {
+      "sha256": "c9b6a804744cb216863e887a7781a10f364691f9c04e23fb7f90d38e771cac36",
+      "bytes": 44
+    },
+    "research/volatile_trust/runs_h200/internvl38b/ho_cp_hard/_FINGERPRINT_shard0of1.json": {
+      "sha256": "f4076d9d22bd24dce667b546eb015d112454f4d1ec8d470efbbb571b954bfb14",
+      "bytes": 583
+    },
+    "research/volatile_trust/runs_h200/internvl38b/ho_cp_hard/results_shard0of1.jsonl": {
+      "sha256": "d1352550846f7fd261ef76c54143e678ed4b18b9cf68b439b2abf8c4b2d05514",
+      "bytes": 10436594
+    },
+    "research/volatile_trust/runs_h200/internvl38b/ho_cp_hard/run_metadata_shard0of1.jsonl": {
+      "sha256": "d8437d4449e6c64e667e650621d4b0727282446b6b097153c2960a775bfcdaf4",
+      "bytes": 3556
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_coded/_COMPLETE_shard0of1": {
+      "sha256": "eb94dfea5243e40c8e143645c098463aff64b946ef671a86bb6e161fa0450ad2",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_coded/_FINGERPRINT_shard0of1.json": {
+      "sha256": "c575827238e2be06b7ea6f53c44ac150a548c9c7ca6082ed27df281cfd0667e9",
+      "bytes": 585
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_coded/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_coded/results_shard0of1.jsonl": {
+      "sha256": "2b25f6b64e7be82f7ca6ab7944ae755e3387aa08f7a2dbd298f705564884ce42",
+      "bytes": 3460626
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_coded/run_metadata_shard0of1.jsonl": {
+      "sha256": "5819c174d8b56efd40b39685bf70b0b46b2af44795559bdd42bd42b49599607b",
+      "bytes": 2889
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw/_COMPLETE_shard0of1": {
+      "sha256": "f3c5411c5bd234745d0c1ee662caf4a41902d1417cbd6220c28824cd48d19e0b",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw/_FINGERPRINT_shard0of1.json": {
+      "sha256": "95c3d4be75607ab9c4c033bb6dd5ba25f83de9bbed164d27a5d74caa002d7b5b",
+      "bytes": 583
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw/results_shard0of1.jsonl": {
+      "sha256": "0fa3110fd6134ea9ea6629e76fa7b3b2952d3160513f3e6291d8d6f828dc3866",
+      "bytes": 3453840
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw/run_metadata_shard0of1.jsonl": {
+      "sha256": "883814941389bc3c99af8aefa418f7bfb7751f3518b8953a64f36a87453196d5",
+      "bytes": 2885
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded/_COMPLETE_shard0of1": {
+      "sha256": "1fdf9254642db36a79ea6e80fe00947c9a653c7fbadd7006036f91adb643cb12",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded/_FINGERPRINT_shard0of1.json": {
+      "sha256": "64b13bd9709bdbfb0273d0ef07fab107f32334289a5693483a87d437f67cb1dc",
+      "bytes": 589
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded/results_shard0of1.jsonl": {
+      "sha256": "ae7e17c1b04d817d45191a07266b855ddf78da8c0bd789c998eca8fb99435a9b",
+      "bytes": 3483881
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_raw_coded/run_metadata_shard0of1.jsonl": {
+      "sha256": "a71638f37b530103def5082fd4efd47e4c82b6215c48de1e0b8fbb7042ccbf16",
+      "bytes": 2897
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all/_COMPLETE_shard0of1": {
+      "sha256": "b1ada4b97856927d295f1922342805f0164717c7f8ad253b65ccbed0c69652dc",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all/_FINGERPRINT_shard0of1.json": {
+      "sha256": "39d05473e76857c00358a233965984b5a712f027b1be079809754a492b9c4c61",
+      "bytes": 586
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all/results_shard0of1.jsonl": {
+      "sha256": "db3ddd5ae36f680d27a6f209239f44d4fae3860e1aa6e6058b75a8c1918260c7",
+      "bytes": 3456413
+    },
+    "research/volatile_trust/runs_h200/internvl38b/para_p2_sum_all/run_metadata_shard0of1.jsonl": {
+      "sha256": "7a90acffc068cefe218017bc3baf1c84fc05318f04b4256d2a48516ba0f3c268",
+      "bytes": 2892
+    },
+    "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px448_n5_shard0of1": {
+      "sha256": "c2e85e502cc46c82e78af4f9edf732d9ba0b288a1b34c4ccad84067004026bf0",
+      "bytes": 268
+    },
+    "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px448_n5_shard0of1.json": {
+      "sha256": "7e13739144dab201a247b15524d1dc1cc3166e66d6f3aab4248ab998b3596934",
+      "bytes": 799
+    },
+    "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/results_image_outcome_hidden_px448_n5_shard0of1.jsonl": {
+      "sha256": "80526080da476dade23d17a76d94864c34ab3afda5a56cdad8b5e79ad279291a",
+      "bytes": 7654605
+    },
+    "research/volatile_trust/runs_h200/internvl38b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px448_n5_shard0of1.jsonl": {
+      "sha256": "50106af7cc92cbc78dc334043b6a2f1bb3e3c4e0af54de26dadb35ea46f7f636",
+      "bytes": 4676
+    },
+    "research/volatile_trust/runs_h200/internvl8b/ho_cp_hard/_COMPLETE_shard0of1": {
+      "sha256": "904917e6d627ede6091f4bce5b5269383c60818b09f83424ad6b506dc77f6aba",
+      "bytes": 44
+    },
+    "research/volatile_trust/runs_h200/internvl8b/ho_cp_hard/_FINGERPRINT_shard0of1.json": {
+      "sha256": "60fed6a41ccd4988844d76ec984033b5436b1c8c0bcd509b36de569354a38216",
+      "bytes": 582
+    },
+    "research/volatile_trust/runs_h200/internvl8b/ho_cp_hard/results_shard0of1.jsonl": {
+      "sha256": "d3b24a8a969ce12049a584969eb0cc93afb47ddd5fa6a4b565f28e2f5301e9bd",
+      "bytes": 10422217
+    },
+    "research/volatile_trust/runs_h200/internvl8b/ho_cp_hard/run_metadata_shard0of1.jsonl": {
+      "sha256": "88c59cbb93057c387a07328a662bdb1f23d4090cd8662c9ce46b3c90ae7d3a9d",
+      "bytes": 3552
+    },
+    "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px448_n5_shard0of1": {
+      "sha256": "1e68056bbe2565318711a9ae3a3a5f2a366ebc4cedbca63008f4d49076551b58",
+      "bytes": 268
+    },
+    "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px448_n5_shard0of1.json": {
+      "sha256": "5be3b9196f317676af32ab2c57bf53ab546acea4c284707d4f6f3e8dd06c945f",
+      "bytes": 798
+    },
+    "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/results_image_outcome_hidden_px448_n5_shard0of1.jsonl": {
+      "sha256": "31c504cad3dfd723444572e78a083b9e2e48971976c966bc2b828a0494bf5f59",
+      "bytes": 7676011
+    },
+    "research/volatile_trust/runs_h200/internvl8b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px448_n5_shard0of1.jsonl": {
+      "sha256": "fb1671fa35000f2989ec0c0e518b628eaf600ec7d255f40eee3badc07c675886",
+      "bytes": 4671
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/ho_cp_hard/_COMPLETE_shard0of1": {
+      "sha256": "1a7dcdbf4909d1371f204fcaad3d87c0b8cbf2377b4f069aa8edef92bf8238e2",
+      "bytes": 44
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/ho_cp_hard/_FINGERPRINT_shard0of1.json": {
+      "sha256": "2822380bcfb739a41ab8f6dc834e2841b01f2870fc3189fce4ed2510381d48cb",
+      "bytes": 581
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/ho_cp_hard/results_shard0of1.jsonl": {
+      "sha256": "09ff6e8bc86d5384231a2e330841ff63267f882dfdad481b84553439828c7393",
+      "bytes": 10407540
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/ho_cp_hard/run_metadata_shard0of1.jsonl": {
+      "sha256": "c1ba05e8da196f14f8031f1fefce1677e9e1d8678f0f9322a823b1c5a820a4c0",
+      "bytes": 2749
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded/_COMPLETE_shard0of1": {
+      "sha256": "1d6cd99a37cf3a265a7e5a7307893a8c014813c61f78f68a385e7b1462e3f171",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded/_FINGERPRINT_shard0of1.json": {
+      "sha256": "854d0f771032487769a7cb54753e5499db4ff9689902bc466bf1303e4434c68f",
+      "bytes": 583
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded/results_shard0of1.jsonl": {
+      "sha256": "cf600a6e45a3d21aa9875989ac8a5707d3700c2d02d0496b505fd683cd5a6c12",
+      "bytes": 3449356
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_coded/run_metadata_shard0of1.jsonl": {
+      "sha256": "95f28dce5e9cb57a53a0b6b4d548a52df88b2cbf6dbf3cda72d8b96ddb7210f4",
+      "bytes": 2082
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw/_COMPLETE_shard0of1": {
+      "sha256": "0b877ea880da02183a717f1cd8c669e286c71b24ff4f89f4182674645dd3e979",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw/_FINGERPRINT_shard0of1.json": {
+      "sha256": "800b4e088be8275e819c322453fc0277ec14b9203ba433ff1495c6ae7e31f2d2",
+      "bytes": 581
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw/results_shard0of1.jsonl": {
+      "sha256": "bec8aa179c5cdba5c9ee448d8c6ca3a6c55aa054ace70c98ebcc0abeacd224db",
+      "bytes": 3441990
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw/run_metadata_shard0of1.jsonl": {
+      "sha256": "6d6cdfc57023db4f01a15e1c1cd02908bdfbaf6264c8ef931c20746725d761cd",
+      "bytes": 2078
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded/_COMPLETE_shard0of1": {
+      "sha256": "01d65cbc7167cdfaab8642d780231d1c3b5b794ba998ae33333b2eb658956ff3",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded/_FINGERPRINT_shard0of1.json": {
+      "sha256": "2b2184a870f8d15ff02694c733c65b1d6d828d3bac1216b3667295e886da7827",
+      "bytes": 587
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded/results_shard0of1.jsonl": {
+      "sha256": "66ec0e5255f1cb4b4964adae6c030975d2dd6ada1ef4014215f70c7d2c210012",
+      "bytes": 3474419
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_raw_coded/run_metadata_shard0of1.jsonl": {
+      "sha256": "7fe1d33c6260b2f2a2e2e6f6e8da2faba664c35de0517a2bd7234def7d7d874c",
+      "bytes": 2090
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all/_COMPLETE_shard0of1": {
+      "sha256": "9679fdb78cc2d384feabcf91cb35528c3996d635e9671c4f05d34c03e6a7b714",
+      "bytes": 43
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all/_FINGERPRINT_shard0of1.json": {
+      "sha256": "0679f46b7fc8b7c909ea5ec9fb93cf39003afd6c9f38ff363101a8189bb52685",
+      "bytes": 584
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all/_WORDING": {
+      "sha256": "e131a747fbac12c08cbcc950bad932a9534e1a2950dcf9366ce36cd4657de8cf",
+      "bytes": 3
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all/results_shard0of1.jsonl": {
+      "sha256": "5977312151fbc4dbfc2683dc7ea2c3c66863671450c7eb3d26f9c2419a8db4da",
+      "bytes": 3443644
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/para_p2_sum_all/run_metadata_shard0of1.jsonl": {
+      "sha256": "a863d8f44b2e4151bd5b6b31073ea52417b04d467f1a1d110a3b593c040d59e2",
+      "bytes": 2085
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px224_n5_shard0of1": {
+      "sha256": "5a96caefe4d47bb9bd560dbe26885f68cbf4ad3f47c59ff4a110a5f0ca313889",
+      "bytes": 268
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px224_n5_shard0of1.json": {
+      "sha256": "0c0dd80bd478df1e5b4b796cd49c39cd65fc225934c858fa1e2cf9f610178e77",
+      "bytes": 797
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/results_image_outcome_hidden_px224_n5_shard0of1.jsonl": {
+      "sha256": "e207ce77ddb0bd9d17fe777a708fa0bed08d49422274b1f959203552916d7a9a",
+      "bytes": 7678625
+    },
+    "research/volatile_trust/runs_h200/qwen3vl32b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px224_n5_shard0of1.jsonl": {
+      "sha256": "dbf19f2ee6aeb70a32afe9af77e47f28d60b232f96d1af014d5fc55736684f5a",
+      "bytes": 3867
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/ho_cp_hard/_COMPLETE_shard0of1": {
+      "sha256": "21858ae4cd8b75675f3ea094ec8aeeab8b6eb7b46705ef968cef529c391dd191",
+      "bytes": 44
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/ho_cp_hard/_FINGERPRINT_shard0of1.json": {
+      "sha256": "049936840e4848fd002c0c148d73394e1c05d99a8fce880ae15ad4a220e5574b",
+      "bytes": 580
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/ho_cp_hard/results_shard0of1.jsonl": {
+      "sha256": "9c8295b95f07c44d3eaa44f2ac77693df62172df12b13cbcdb6da9fadad91024",
+      "bytes": 10322946
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/ho_cp_hard/run_metadata_shard0of1.jsonl": {
+      "sha256": "8ed892fa69c3cfee711dab2c4b986b3c76a2b0c91eb55199b2708213109fb1ed",
+      "bytes": 2745
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/_COMPLETE_image_outcome_hidden_px224_n5_shard0of1": {
+      "sha256": "e7de4a16b2421121fb33483b27395774d55aea368d5685135ec1c4648b9eb52c",
+      "bytes": 268
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/fingerprint_image_outcome_hidden_px224_n5_shard0of1.json": {
+      "sha256": "71c3b70922b538de3d4d9b332aa357d527ca9463df4136588015d740ef882bd9",
+      "bytes": 796
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/results_image_outcome_hidden_px224_n5_shard0of1.jsonl": {
+      "sha256": "cbd1b7688eae37bb5f5f057e4b9255fc12d32714513373907368c3ed8280cf37",
+      "bytes": 7654998
+    },
+    "research/volatile_trust/runs_h200/qwen3vl8b/psy_image_outcome_hidden/run_metadata_image_outcome_hidden_px224_n5_shard0of1.jsonl": {
+      "sha256": "8dc88c9b7ff186014427aa379822069e9db390e6afe0b92a0efe1500ccad5ee9",
+      "bytes": 3862
+    }
+  }
+}

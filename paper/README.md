@@ -191,7 +191,44 @@ GPU-hour columns are omitted from the reader PDF; pending work is described
 explicitly and must not be treated as a failed or null experiment. In particular:
 
 - Cognitive fits must use the corrected episode grouping: both cover stories of the same `(data, split, episode_id)` are left out together. Old development fits used 32 folds instead of 16 independent pairs; old held-out fits used 96 instead of 48. Both splits require corrected CPU fitting runs. `analyze_cogmodels.py` now applies this grouping, but old results cannot fill the corrected tables or support model-selection claims. Existing outputs were not overwritten.
-- For the planned Thinking/Instruct comparison, `analyze_thinking.py --cross-checkpoint Qwen/Qwen3-VL-8B-Thinking Qwen/Qwen3-VL-8B-Instruct` works with `--direct`. Results are separate from same-checkpoint comparisons and cannot isolate reasoning from checkpoint/readout differences. The planned subset uses development episodes with text reports at trials 20, 40, 60 and 80, plus controls at 40 and 80, greedy generation up to 16,384 tokens. Report free-answer accuracy, valid-answer rate, truncation, forced answer-token readouts (used when no valid answer was generated) and token cost separately; these planned settings are not empirical support in the reader PDF.
+The exploratory Qwen3-VL-8B Thinking/Instruct test is completed and excluded from the paper's reported results by the authors' scope decision (2026-11-14). Its development-only queries at trials 20, 40, 60 and 80 suffer from truncation, answer-parsing sensitivity and sparse sampling; checkpoint and readout differences also prevent isolating an effect of reasoning. The original analysis and the parsing/matched-item follow-up remain separate in `research/volatile_trust/analysis/h200_thinking/`. No Thinking estimates appear in the reader PDF. Only a brief disclosure of the completed, excluded test remains in Appendix J. The corrected cognitive fits above are still pending.
+
+### Full manuscript review (2026-11-14)
+
+The review checked the argument, terminology, citations, numerical provenance and
+all rendered pages. The primary full-set means and CIs, masking estimates, API
+subset comparison and sampled human fits agree with their stored analyses. The
+30 pre-review primary analysis hashes are unchanged.
+
+Corrections made:
+
+- Use sampled-choice fits throughout the image-payoff appendix; the old text
+  mixed soft-target estimates with sampled-fit human contrasts. Gemma's slope is
+  now .073, p=.060, rather than .25, p=.010. Figure 5 was already correct.
+- Describe the Bayesian reference as inspired by Behrens, with its discrete
+  logit-accuracy transition and grid specified in Appendix D. Describe the
+  Xiong-based fit as adapted, including its free update and choice parameters.
+- Replace stale pending claims with the completed five-model CP-truncated raw
+  results and three larger-model compact-record checks. Preserve their negative
+  results, development scope and hardware caveat. The bounded provenance record
+  is `research/volatile_trust/analysis/paper_review_20261114/completed_checks.json`
+  (106 input hashes; existing strict scoring and bootstrap functions).
+- Clarify the nominal simulation offset and parameter clipping, image resolution,
+  reversal-axis origin and bootstrap captions. Soften claims about internal stages,
+  complete gap closure and exclusive shortcut use.
+- Update Ge et al. to its [ACL 2026 publication](https://aclanthology.org/2026.acl-long.479/)
+  and verify the nearest-work and core-method references against primary sources.
+
+Validation: 23 rendered pages, with the main paper within eight pages; no
+overfull boxes, unresolved references, missing font embedding or trailing isolated
+page. The contribution bullet, schedule placement and wider CP-raw table were
+checked visually. Appendix J repeats were shortened while retaining the readout
+failures, data licenses and complete analysis-plan/pilot disclosures.
+
+The paper does not establish an internal mechanism, a causal benefit of reasoning,
+or a corrected significant human--model hazard-slope difference. These limits remain
+explicit. Corrected grouped cognitive fits are still pending and support no
+model-selection claim; the completed Thinking test remains excluded.
 
 ### Appendix scope and layout (2026-11-13)
 

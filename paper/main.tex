@@ -256,7 +256,7 @@ Table~\ref{tab:cover} lists the cover stories. The examples below are rendered b
     pet & reporters & cat/dog & photograph \\
     \bottomrule
   \end{tabular}
-  \caption{Cover stories with the selected icon set (v3.1). Trials are called trials (color, pet), days, weeks, games, cases or stories. Icons are drawn by code and contain no answer words. Appendix~G shows the original and selected medical and sports icons and identifies results obtained with the original set.}
+  \caption{Cover stories with the selected icon set. Trials are called trials (color, pet), days, weeks, games, cases or stories. Icons are drawn by code and contain no answer words. Appendix~G shows the original and selected medical and sports icons and identifies results obtained with the original set.}
   \label{tab:cover}
 \end{table}
 
@@ -366,7 +366,7 @@ With text reports the images are replaced by the answer word.
 
 \paragraph{How much of the gap does correctness recover?} On held-out episodes, correctness-only histories recovered 89--101\% of the summary$-$raw accuracy gap (Table~\ref{tab:decomp}). The ratio's uncertainty matters because a near-complete recovery is not an equivalence claim. Table~\ref{tab:main} reports the accuracy means and paired summary$-$raw differences; Table~\ref{tab:decomp} supplies the individual accuracy CIs and the recovery ratio with its CI.
 
-\paragraph{Control conditions.} Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the fraction of the main-task gap recovered by correctness-only histories. Image reports lowered accuracy in almost every control condition, including described accuracy (.59--.84 instead of .92--1.00); the one exception was Qwen3-VL-8B with a long raw history (.533 vs.\ .531). The image-report results use the selected icons (v3.1, Appendix~G). All selected icons were named correctly, and photo naming was .986--1.00, so single-image recognition alone does not explain these drops. Control conditions were run on development episodes for all five models.
+\paragraph{Control conditions.} Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the fraction of the main-task gap recovered by correctness-only histories. Image reports lowered accuracy in almost every control condition, including described accuracy (.59--.84 instead of .92--1.00); the one exception was Qwen3-VL-8B with a long raw history (.533 vs.\ .531). The image-report results use the selected icons (Appendix~G). All selected icons were named correctly, and photo naming was .986--1.00, so single-image recognition alone does not explain these drops. Control conditions were run on development episodes for all five models.
 
 \begin{table*}[!t]\centering\small
   \setlength{\tabcolsep}{4pt}
@@ -395,7 +395,7 @@ With text reports the images are replaced by the answer word.
     Chart read & Chart & .620 & .688 & .672 & .609 & .708 \\
     \bottomrule
   \end{tabular}
-  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies and pooled over cover stories). Lower block: binding variants of the described-accuracy condition with image reports (advisor name printed on the image; both reports in one composite image; name given after the image), reading one panel of the composite image, and reading one cell of the correctness chart. Qwen3: Qwen3-VL; IVL: InternVL3.5. Image reports use the selected icons (v3.1). Results by cover story will be included in the released analysis output.}
+  \caption{Control conditions on development episodes (accuracy on control items, averaged over counterbalanced copies and pooled over cover stories). Lower block: binding variants of the described-accuracy condition with image reports (advisor name printed on the image; both reports in one composite image; name given after the image), reading one panel of the composite image, and reading one cell of the correctness chart. Qwen3: Qwen3-VL; IVL: InternVL3.5. Image reports use the selected icons. Results by cover story will be included in the released analysis output.}
   \label{tab:controls_full}
 \end{table*}
 
@@ -528,7 +528,7 @@ These rule baselines were computed on held-out episodes before any model results
 \end{figure*}
 
 \subsection{G. Icon Design, Multimodal Binding and Chart Legibility}      % icon selection, image_named/composite/after, composite_read, chart_read
-The legibility and binding controls use development episodes only and are exploratory; the comparison of text and image reports on the main task uses held-out episodes. All use the selected icons (v3.1) described below. Every model named the selected icons correctly. Pooled image naming was .988 for InternVL3.5-8B (.986 for pet photos) and 1.000 for the other models, so recognition alone does not explain the remaining contextual costs (Table~\ref{tab:mm}). With described accuracy, accuracy in four models was lowest when the advisor's name was given only after the image (.54--.70) and higher when the name was printed on the image (.72--.83) or both reports were shown in one composite image (.75--.85), although each panel of a composite image was read correctly on every item; InternVL3.5-38B did best with the composite image (.97) and worst with plain image reports (.59). With correctness-only histories, image reports lowered held-out accuracy from .602--.636 to .523--.552. Reading a single cell of the correctness chart was below the prespecified 80\% chart-reading criterion for every model (.61--.71).
+The legibility and binding controls use development episodes only and are exploratory; the comparison of text and image reports on the main task uses held-out episodes. All use the selected icons described below. Every model named the selected icons correctly. Pooled image naming was .988 for InternVL3.5-8B (.986 for pet photos) and 1.000 for the other models, so recognition alone does not explain the remaining contextual costs (Table~\ref{tab:mm}). With described accuracy, accuracy in four models was lowest when the advisor's name was given only after the image (.54--.70) and higher when the name was printed on the image (.72--.83) or both reports were shown in one composite image (.75--.85), although each panel of a composite image was read correctly on every item; InternVL3.5-38B did best with the composite image (.97) and worst with plain image reports (.59). With correctness-only histories, image reports lowered held-out accuracy from .602--.636 to .523--.552. Reading a single cell of the correctness chart was below the prespecified 80\% chart-reading criterion for every model (.61--.71).
 
 \begin{table}[tbp]\centering\small
   \setlength{\tabcolsep}{4pt}
@@ -554,7 +554,7 @@ The legibility and binding controls use development episodes only and are explor
 
 \paragraph{Results and limits.} The downstream mean increases from .521 to .668 for medical and from .588 to .678 for sports. Both selected pairs reach 4/4 in the naming probe for both models. However, accuracy in the described-accuracy condition, pooled over these two image-report cover stories is .773 for Qwen3-VL-8B and .727 for InternVL3.5-8B, below the 80\% described-accuracy criterion. Single-image recognition therefore does not establish successful use of image reports in the advice-taking task. Selection and evaluation use the same development controls, so these gains are descriptive and do not estimate held-out improvement.
 
-\paragraph{Versioning.} Icon selection was a development-driven deviation from the fixed plan. The selected pairs define v3.1; original v3 outputs remain separate. Text reports, pet photographs, the correctness chart and the primary text-report comparison are unchanged. The three models not used for selection also named the selected icons correctly. Tables~\ref{tab:controls_full} and~\ref{tab:mm} use the completed v3.1 reruns; the development gains above are not held-out evidence of improvement.
+\paragraph{Versioning.} Icon selection was a development-driven deviation from the fixed plan. Outputs with the original icons are kept separately and not reported. Text reports, pet photographs, the correctness chart and the primary text-report comparison are unchanged. The three models not used for selection also named the selected icons correctly. Tables~\ref{tab:controls_full} and~\ref{tab:mm} use complete reruns with the selected icons; the development gains above are not held-out evidence of improvement.
 
 \begin{figure}[t]\centering
   \includegraphics[width=\columnwidth]{figures/fig_icons.pdf}
@@ -675,9 +675,7 @@ The legibility and binding controls use development episodes only and are explor
 
 \paragraph{Prompt wording (exploratory, development episodes).} We re-ran the four text history formats for Qwen3-VL-8B and InternVL3.5-8B with two alternative wordings; episodes, names, answer words, list order and readout were unchanged. Reworded sentences keep the original layout with different phrasing (``In trial 3, Sam said cat and Ken said dog; it turned out cat.''; ``Tally over the 3 previous trials: Ken was right 2 times and Sam was right 1 times.''). A compact record uses one line per trial (``\#3 | Sam=cat | Ken=dog | truth=cat''; ``Correct counts so far (3 trials): Ken=2, Sam=1.''). Table~\ref{tab:wording} gives the results. With reworded sentences, every result was preserved: raw history at .47--.49, summary$-$raw $+.12$ and $+.15$, the correctness-only history at or above the summary, appending correctness recovering about 40\% of the gap, and a positive weight on the previous outcome. The compact record changed the picture in both directions. Raw-history accuracy rose to .55--.56 and the weight on the previous outcome fell, whereas the correctness-only and summarized formats fell to .56--.60, and InternVL3.5-8B followed the count summary on only 72\% of non-tied trials (98\% with the original wording). The summary$-$raw gap shrank to $+.03$ [.01, .06] (Qwen3-VL-8B) and $+.01$ [$-.02$, .05] (InternVL3.5-8B). Raw-history accuracy stayed below the count rule (.63) in every wording, but the size of the raw--summarized gap depends on how the history is laid out, and we interpret it only for the natural-language layout used in all main conditions.
 
-Completed compact-record extensions on H200 gave summary$-$raw gaps of $+.120$ [.097, .146] (Qwen3-VL-32B), $+.064$ [.039, .087] (Gemma-3-27B) and $+.071$ [.051, .094] (InternVL3.5-38B), with paired 95\% bootstrap CIs over the same 16 development episode pairs. Original-layout development runs are not all available on matched hardware, so these extensions do not isolate changes caused by layout.
-
-The compact record changes the task description, history notation and current-trial question together; this sensitivity check does not isolate which change is responsible.
+Compact-record extensions to the three larger models gave summary$-$raw gaps of $+.120$ [.097, .146] (Qwen3-VL-32B), $+.064$ [.039, .087] (Gemma-3-27B) and $+.071$ [.051, .094] (InternVL3.5-38B), with paired 95\% bootstrap CIs over the same 16 development episode pairs. Original-layout development runs are not all available on matched hardware, so these extensions do not isolate changes caused by layout. The compact record changes the task description, history notation and current-trial question together; this sensitivity check does not isolate which change is responsible.
 
 \begin{table*}[!t]\centering\small
   \setlength{\tabcolsep}{5pt}
@@ -748,11 +746,11 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
     \toprule
     Model & Raw & Correctness-only & Summary & Summary $-$ raw & Correctness-only $-$ raw \\
     \midrule
-    Qwen3-VL-8B & 49.27 & 58.65 & 59.41 & 10.15 [9.03, 11.21] & 9.38 [8.21, 10.50] \\
-    InternVL3.5-8B & 48.99 & 61.00 & 61.88 & 12.89 [11.91, 13.88] & 12.01 [10.71, 13.24] \\
-    Gemma-3-27B & 47.15 & 56.25 & 55.94 & 8.79 [7.29, 10.25] & 9.10 [7.67, 10.53] \\
-    Qwen3-VL-32B & 48.31 & 58.40 & 62.16 & 13.86 [13.13, 14.58] & 10.09 [9.06, 11.14] \\
-    InternVL3.5-38B & 53.90 & 61.68 & 63.14 & 9.24 [8.39, 10.05] & 7.78 [6.86, 8.68] \\
+    Qwen3-VL-8B & 49.3 & 58.6 & 59.4 & 10.2 [9.0, 11.2] & 9.4 [8.2, 10.5] \\
+    InternVL3.5-8B & 49.0 & 61.0 & 61.9 & 12.9 [11.9, 13.9] & 12.0 [10.7, 13.2] \\
+    Gemma-3-27B & 47.1 & 56.2 & 55.9 & 8.8 [7.3, 10.2] & 9.1 [7.7, 10.5] \\
+    Qwen3-VL-32B & 48.3 & 58.4 & 62.2 & 13.9 [13.1, 14.6] & 10.1 [9.1, 11.1] \\
+    InternVL3.5-38B & 53.9 & 61.7 & 63.1 & 9.2 [8.4, 10.1] & 7.8 [6.9, 8.7] \\
     \bottomrule
   \end{tabular}
   \caption{Per-copy scoring on the full held-out set. Accuracy is in percent and paired differences in percentage points, with 95\% CIs from 10{,}000 bootstrap resamples of 48 episode pairs. Each copy is scored before averaging; the original counterbalanced-logit estimates appear in Table~\ref{tab:main}.}

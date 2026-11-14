@@ -837,8 +837,6 @@ Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revision
 
 \paragraph{Analysis plan and deviations.} A timestamped commit fixed the plan before held-out evaluation; it was not formally preregistered. Prior observations comprised the 16-episode pilot, partial development controls from one model, rule-only held-out baselines, and unanalyzed software-check outputs from a few held-out items. Before held-out model runs, the evaluation hardware changed and a 72B model and a 32B reasoning model were dropped for compute reasons. Development checks prompted icon replacements (Appendix~G). Masking, prompt-wording checks and the Bayesian volatility learner were added after the commit. Masking predictions followed development results but preceded held-out masking: this later-specified replication is separate from the primary test. API behavioral comparisons, judgment--choice and image-position checks, stale-value regression and per-copy scoring sensitivity were specified after inspecting held-out outputs and are exploratory.
 
-An exploratory development-only test of an open reasoning checkpoint was completed but excluded because truncation, parsing sensitivity and sparse sampling limit interpretation.
-
 \paragraph{Pilot disclosure.} The earlier RTX 3090 pilot used fixed advisor-introduction order, removed in the current episodes. Outcome repetition, image-position effects and poor chart reading motivated the controls and readability criterion. These pre-plan outputs are excluded from main-task estimates and supply no held-out evidence.
 
 \end{document}

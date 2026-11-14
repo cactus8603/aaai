@@ -324,8 +324,11 @@ def fig_gap(D, controls, out, split_label):
     save_figure(fig, out, 'fig_gap')
 
 
-STRATS = [('copy_prev_truth', 'Repeat'), ('follow_prev_correct', 'WSLS'), ('last5', 'Last-5\nrule'),
-          ('count_all', 'Count\nrule'), ('bocpd', 'BOCPD'), ('label_prior', 'Label')]
+# The BOCPD strategy thresholds its posterior predictive probability; it is
+# distinct from the count rule over the inferred MAP run used by Summary (change-point).
+STRATS = [('copy_prev_truth', 'Repeat'), ('follow_prev_correct', 'WSLS'),
+          ('last5', 'Last-five\ncount rule'), ('count_all', 'All-trial\ncount rule'),
+          ('bocpd', 'BOCPD\nposterior-\npredictive rule'), ('label_prior', 'Label')]
 MASK = [('A+', 'Raw+\nCorrectness'), ('out_ok', 'Reports\nmasked'), ('rep_ok', 'Outcome\nmasked'),
         ('mask_ok', 'Both\nmasked'), ('B', 'Correctness-\nonly')]
 

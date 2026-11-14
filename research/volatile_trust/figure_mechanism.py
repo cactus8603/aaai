@@ -65,8 +65,8 @@ def _strategy_appendix(D, keys, out, split_label, common):
             for j, (strategy, _) in enumerate(common.STRATS):
                 matrix[i, j] = entry["all"]["strategies"][strategy]["kappa"]
 
-    fig = plt.figure(figsize=(common.FULL_WIDTH, 2.55))
-    ax = fig.add_axes([.215, .22, .62, .65])
+    fig = plt.figure(figsize=(common.FULL_WIDTH, 2.80))
+    ax = fig.add_axes([.215, .29, .62, .59])
     lim = max(.4, np.nanmax(np.abs(matrix)))
     im = ax.imshow(matrix, cmap="PuOr_r", vmin=-lim, vmax=lim, aspect="auto")
     for i in range(matrix.shape[0]):
@@ -88,11 +88,12 @@ def _strategy_appendix(D, keys, out, split_label, common):
         spine.set_visible(False)
     ax.set_title(f"Strategy agreement under Raw ({split_label})",
                  loc="left", fontweight="bold", pad=12)
-    cax = fig.add_axes([.86, .22, .018, .65])
+    cax = fig.add_axes([.86, .29, .018, .59])
     cb = fig.colorbar(im, cax=cax, ticks=[-.4, -.2, 0, .2, .4])
     cb.set_label("Cohen's $\\kappa$", labelpad=8)
     cb.outline.set_visible(False)
     cb.ax.tick_params(length=2, width=.6)
+    _check_text_bounds(fig)
     common.save_figure(fig, out, "fig_strategies")
 
 

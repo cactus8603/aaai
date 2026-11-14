@@ -30,10 +30,14 @@ Summary supplies counts to a VLM; the **count rule** chooses directly from
 those counts without a VLM. Both use all past trials unless a trial window or
 change-point range is specified. Label other input variants as, for example,
 "Summary (last 5 trials)" or "Summary (change-point)", and identify their
-corresponding count rules separately.
+corresponding count rules separately. The BOCPD posterior-predictive rule thresholds
+the predictive probability and is distinct from the change-point count rule,
+which takes the majority within the inferred trial range. Strategy-agreement
+plots and synthetic-agent diagnostics use the former.
 
 Report accuracy and choice-agreement rates in percent and accuracy differences
-in percentage points. Keep choice probabilities, candidate probability mass,
+in percentage points (write the unit in full, including in the appendix). Keep
+choice probabilities, candidate probability mass,
 Cohen's kappa, regression weights, fitted parameters and dimensionless recovery
 ratios on their defined scales; label their units in the text, axes or captions.
 
@@ -250,6 +254,31 @@ The paper does not establish an internal mechanism, a causal benefit of reasonin
 or a corrected significant human--model hazard-slope difference. These limits remain
 explicit. Corrected grouped cognitive fits are still pending and support no
 model-selection claim; the completed Thinking test remains excluded.
+
+### Terminology and reproducibility follow-up (2026-11-14)
+
+- Spell out percentage points for accuracy differences throughout the paper.
+- Regenerate strategy labels and correct the BOCPD strategy in Appendix C/F:
+  `analyze_mechanism.py` uses posterior-predictive probabilities, not the
+  change-point count rule used for Summary variants. Plotted values are unchanged.
+- Specify the actual bootstrap counts: 10,000 for primary accuracy/recovery
+  intervals, 1,000 for integration kernels, and 2,000 for rule/Bayesian baselines.
+  Original-only rule resampling is exactly episode-pair resampling because both
+  copies produce identical rule scores. Distinguish the displayed 90% bootstrap
+  intervals from the paired t-based, Holm-corrected equivalence decisions.
+- Identify the API subset as non-pet cover stories, name the Bayesian information
+  criterion used for synthetic-model identification, label median slopes and
+  median paired differences, and state simulation power as about 50%.
+- Replace the claim that the count rule lags after every reversal with the
+  supported statement that it can lag after reversals. Narrow the introduction's question to repeated
+  reversals and history format; Zhou et al.'s intervention is a test-time
+  reliability inversion, as specified in its Section 4.1.1.
+
+Validation: all 21 tables retain their numerical values, quoted prompts are
+unchanged, and all 30 strategy-plot values are preserved. The rebuilt PDF has
+24 pages with References beginning on page 8; no overfull boxes, unresolved
+references, unembedded fonts or Type 3 fonts. Rendered pages and enlarged views
+of the revised strategy plot and statistical tables were checked.
 
 ### Appendix scope and layout (2026-11-13)
 

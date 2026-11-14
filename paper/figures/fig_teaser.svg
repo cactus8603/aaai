@@ -297,7 +297,7 @@ z
     <text style="font-size: 9.5px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #202a36" x="22" y="170.082227" transform="rotate(-0 22 170.082227)">Actual weather: rain.</text>
    </g>
    <g id="text_16">
-    <text style="font-weight: 700; font-size: 10.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #865b12" x="22" y="200.786234" transform="rotate(-0 22 200.786234)">Raw + correctness</text>
+    <text style="font-weight: 700; font-size: 10.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #865b12" x="22" y="200.786234" transform="rotate(-0 22 200.786234)">Raw+Correctness</text>
    </g>
    <g id="text_17">
     <text style="font-size: 9.5px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #202a36" x="22" y="215.27332" transform="rotate(-0 22 215.27332)">Day 3: Ken forecasts rain; Sam forecasts dry.</text>
@@ -309,7 +309,7 @@ z
     <text style="font-size: 9.5px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="22" y="238.87332" transform="rotate(-0 22 238.87332)">(Ken was correct; Sam was wrong.)</text>
    </g>
    <g id="text_20">
-    <text style="font-weight: 700; font-size: 10.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="22" y="269.853172" transform="rotate(-0 22 269.853172)">Correctness only</text>
+    <text style="font-weight: 700; font-size: 10.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="22" y="269.853172" transform="rotate(-0 22 269.853172)">Correctness-only</text>
    </g>
    <g id="text_21">
     <text style="font-size: 9.5px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="22" y="284.264414" transform="rotate(-0 22 284.264414)">Day 3: Ken was correct; Sam was wrong.</text>
@@ -349,35 +349,35 @@ z
    <g id="text_30">
     <g id="patch_19">
      <path d="M 333.724 183.306031
-L 406.290437 183.306031
-L 406.290437 174.693969
+L 404.250625 183.306031
+L 404.250625 174.693969
 L 333.724 174.693969
 z
 " style="fill: #ffffff"/>
     </g>
-    <text style="font-weight: 700; font-size: 9.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #865b12" x="334" y="181.062094" transform="rotate(-0 334 181.062094)">Raw + correctness</text>
+    <text style="font-weight: 700; font-size: 9.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #865b12" x="334" y="181.062094" transform="rotate(-0 334 181.062094)">Raw+Correctness</text>
    </g>
    <g id="text_31">
     <g id="patch_20">
      <path d="M 333.724 221.383656
-L 400.29175 221.383656
-L 400.29175 212.616344
+L 401.055063 221.383656
+L 401.055063 212.616344
 L 333.724 212.616344
 z
 " style="fill: #ffffff"/>
     </g>
-    <text style="font-weight: 700; font-size: 9.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="334" y="219.122469" transform="rotate(-0 334 219.122469)">Correctness only</text>
+    <text style="font-weight: 700; font-size: 9.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #006b54" x="334" y="219.122469" transform="rotate(-0 334 219.122469)">Correctness-only</text>
    </g>
    <g id="text_32">
     <g id="patch_21">
-     <path d="M 333.724 259.462719
-L 412.687313 259.462719
-L 412.687313 250.537281
-L 333.724 250.537281
+     <path d="M 333.724 259.454094
+L 370.051063 259.454094
+L 370.051063 250.545906
+L 333.724 250.545906
 z
 " style="fill: #f3f7fc"/>
     </g>
-    <text style="font-size: 9.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #17619c" x="334" y="257.201531" transform="rotate(-0 334 257.201531)">Summary (reference)</text>
+    <text style="font-size: 9.2px; font-family: 'Times New Roman', 'DejaVu Serif', serif; text-anchor: start; fill: #17619c" x="334" y="257.192906" transform="rotate(-0 334 257.192906)">Summary</text>
    </g>
    <g id="line2d_11">
     <defs>

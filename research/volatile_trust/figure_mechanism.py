@@ -86,7 +86,7 @@ def _strategy_appendix(D, keys, out, split_label, common):
     ax.tick_params(which="minor", bottom=False, left=False)
     for spine in ax.spines.values():
         spine.set_visible(False)
-    ax.set_title(f"Strategy agreement under raw histories ({split_label})",
+    ax.set_title(f"Strategy agreement under Raw ({split_label})",
                  loc="left", fontweight="bold", pad=12)
     cax = fig.add_axes([.86, .22, .018, .65])
     cb = fig.colorbar(im, cax=cax, ticks=[-.4, -.2, 0, .2, .4])
@@ -100,7 +100,7 @@ def _correctness_kernel(ax, D, keys, common):
     """Retain the original fixed-model mean kernel and format encodings."""
     line_styles = ["-", "--", "-.", ":"]
     marker_styles = ["o", "s", "D", "^"]
-    format_labels = ["Raw", "Raw + correctness", "Correctness only", "Summary"]
+    format_labels = [label for _, label, _ in common.FORMATS]
     for (arm, _, color), style, marker, label in zip(
             common.FORMATS, line_styles, marker_styles, format_labels):
         kernels = [common.arm_entry(D[key]["mech"]["kernels"], arm) for key in keys]
@@ -129,7 +129,7 @@ def _masking_effects_appendix(D, masking, mask_keys, out, mask_label, common):
     """Preserve all 15 stored paired contrasts and confidence intervals."""
     fig = plt.figure(figsize=(common.FULL_WIDTH, 3.10))
     right = fig.add_axes([.245, .22, .72, .565])
-    fig.text(.065, .965, "Masking effects relative to raw + correctness",
+    fig.text(.065, .965, "Masking effects relative to Raw+Correctness",
              fontweight="bold", fontsize=9.5, va="top")
     fig.text(.065, .902, f"Paired 95% bootstrap confidence intervals · {'test' if mask_label == 'held-out' else mask_label} episodes",
              color=common.INK2, va="top", fontsize=9)
@@ -158,7 +158,7 @@ def _masking_effects_appendix(D, masking, mask_keys, out, mask_label, common):
     right.set_yticklabels([D[key]["name"] for key in reversed(mask_keys)])
     right.tick_params(axis="y", length=0, pad=6)
     right.spines["left"].set_visible(False)
-    right.set_xlabel("Accuracy change (percentage points)\nvs raw + correctness", labelpad=5)
+    right.set_xlabel("Accuracy change (percentage points)\nvs Raw+Correctness", labelpad=5)
     common.grid(right, axis="x")
 
     handles = [Line2D([], [], color=color, ls=style, lw=1.4)

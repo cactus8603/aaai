@@ -29,7 +29,7 @@ def fig_gap(D, controls, out, split_label, api=None):
     entries += [('GPT-6-Astra', dict(marker='^', large=True)),
                 ('Claude Fable 5.2', dict(marker='v', large=True))]
     arms = [('raw', 'Raw', FORMATS[0][2]),
-            ('correct_only', 'Correctness only', FORMATS[2][2]),
+            ('correct_only', 'Correctness-only', FORMATS[2][2]),
             ('summary', 'Summary', FORMATS[3][2])]
     fig.text(.095, .96, 'Same test trials across systems',
              fontsize=9.5, fontweight='bold')
@@ -90,8 +90,8 @@ def fig_controls(D, controls, out):
     """Retain the development controls as a self-contained appendix figure."""
     conds = [('explicit_rel', 'Described\naccuracy'), ('explicit_counts', 'Described\ncounts'),
              ('single_trial_who', 'Single-trial\njudgment'),
-             ('easy_short_coded', 'Short\ncorrect only'), ('easy_short', 'Short\nraw'),
-             ('easy_long_coded', 'Long\ncorrect only'), ('easy_long', 'Long\nraw')]
+             ('easy_short_coded', 'Short\nCorrectness-only'), ('easy_short', 'Short\nRaw'),
+             ('easy_long_coded', 'Long\nCorrectness-only'), ('easy_long', 'Long\nRaw')]
     colors = [INK2, INK2, INK2, FORMATS[2][2], FORMATS[0][2], FORMATS[2][2], FORMATS[0][2]]
     fig, ax = plt.subplots(figsize=(FULL_WIDTH, 2.55))
     fig.subplots_adjust(left=.09, right=.99, top=.88, bottom=.37)

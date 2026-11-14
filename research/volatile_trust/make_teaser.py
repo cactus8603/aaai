@@ -20,7 +20,7 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Polygon  # noqa:
 
 ROOT = Path(__file__).resolve().parents[2]
 ARMS = ('A|full|text', 'A+|full|text', 'B|full|text', 'C|sum_all|text')
-LABELS = ('Raw', 'Raw + correctness', 'Correctness only')
+LABELS = ('Raw', 'Raw+Correctness', 'Correctness-only')
 COLORS = ('#9F4232', '#865B12', '#006B54')
 INK, MUTED, RULE, BLUE = '#202A36', '#56616E', '#D8DDE2', '#17619C'
 WIDTH, HEIGHT = 504, 302.4  # points; exactly 7 × 4.2 inches at the final paper width
@@ -194,7 +194,7 @@ def draw_teaser(data, out):
             text(x(tick), 291, f'{tick:.0%}', 9, MUTED, ha='center')
         line(x(.5), top, x(.5), bottom, MUTED, .8, ls=(0, (2.5, 2.5)))
         text(x(.5), 131, 'Chance', 9, MUTED, ha='center')
-        labels = (*LABELS, 'Summary (reference)')
+        labels = (*LABELS, 'Summary')
         for j, (label, row, col, mean) in enumerate(zip(
                 labels, (156, 194, 232, 270), (*COLORS, BLUE), means)):
             fill = '#F3F7FC' if j == 3 else 'white'

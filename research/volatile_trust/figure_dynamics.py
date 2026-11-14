@@ -31,11 +31,11 @@ MODELS = [
 # distinguish formats when printed without colour.
 FORMATS = [
     ('A|full|text', 'Raw', '#b44435', '-', 'o'),
-    ('A+|full|text', 'Raw + correctness', '#95660e', (0, (5, 2)), 's'),
-    ('B|full|text', 'Correctness only', '#078567', '-', '^'),
-    ('C|sum_all|text', 'All-trial summary', '#2366ab', '-', 'D'),
-    ('C|sum_cp|text', 'Change-point', '#6a4fc4', (0, (4, 1.5)), 'v'),
-    ('C|sum_window:5|text', 'Last 5 trials', '#4b4a47', (0, (1, 1)), 'P'),
+    ('A+|full|text', 'Raw+Correctness', '#95660e', (0, (5, 2)), 's'),
+    ('B|full|text', 'Correctness-only', '#078567', '-', '^'),
+    ('C|sum_all|text', 'Summary', '#2366ab', '-', 'D'),
+    ('C|sum_cp|text', 'Summary (change-point)', '#6a4fc4', (0, (4, 1.5)), 'v'),
+    ('C|sum_window:5|text', 'Summary (last 5 trials)', '#4b4a47', (0, (1, 1)), 'P'),
 ]
 
 
@@ -63,6 +63,8 @@ def _save(fig, out, name):
         raise ValueError(f'{name}: text smaller than 9pt')
     save_outlined_pdf(fig, out / f'{name}.pdf', facecolor='white')
     fig.savefig(out / f'{name}.svg', facecolor='white')
+    svg = out / f'{name}.svg'
+    svg.write_text('\n'.join(row.rstrip() for row in svg.read_text().splitlines()) + '\n')
     fig.savefig(out / f'{name}.png', dpi=300, facecolor='white')
     print(f'{name}: {fig.get_figwidth():g} x {fig.get_figheight():g} in; '
           f'minimum text {min(sizes):g}pt; vector outlines')

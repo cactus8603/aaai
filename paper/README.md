@@ -16,6 +16,27 @@ This is a **long paper (8 pages plus references and supplementary material, arch
 | `tables/` | Reserved for table fragments; current tables are inline in `main.tex` |
 | `authorkit_original/` | The official AAAI-27 kit (`AuthorKit27.zip`, TemplateVersion 2027.1), downloaded from https://aaai.org/authorkit27/ and unzipped. Treat it as read-only reference material. |
 
+## Condition names and reporting
+
+Use **Raw**, **Raw+Correctness**, **Correctness-only**, and **Summary** for the four
+VLM input formats in the manuscript, tables and figure labels. The corresponding
+LaTeX macros are `\Raw{}`, `\RawCorrectness{}`, `\CorrectnessOnly{}` and
+`\Summary{}`; they keep the names in small caps. Define the names in Figure 1
+and Methods rather than introducing abbreviations such as "Corr. only" or
+"Summ." elsewhere. Correctness statements are content shared by
+Raw+Correctness and Correctness-only, not an additional condition name.
+
+Summary supplies counts to a VLM; the **count rule** chooses directly from
+those counts without a VLM. Both use all past trials unless a trial window or
+change-point range is specified. Label other input variants as, for example,
+"Summary (last 5 trials)" or "Summary (change-point)", and identify their
+corresponding count rules separately.
+
+Report accuracy and choice-agreement rates in percent and accuracy differences
+in percentage points. Keep choice probabilities, candidate probability mass,
+Cohen's kappa, regression weights, fitted parameters and dimensionless recovery
+ratios on their defined scales; label their units in the text, axes or captions.
+
 ## Compile
 **Quick way:** `bash paper/build.sh` (from anywhere) compiles `main.pdf` with pdfLaTeX + BibTeX and prints the checks: the page on which References start (main text must fit in 8 pages), overfull boxes, undefined references, fonts that are not embedded or Type 3, and the number of open TODO / DRAFT / ?? markers. `bash paper/build.sh --clean` also removes the aux files. `main.pdf` is tracked so the draft can be previewed on GitHub; rebuild it with `build.sh` before committing paper changes.
 

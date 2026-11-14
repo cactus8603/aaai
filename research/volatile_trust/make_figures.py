@@ -22,8 +22,8 @@ MODELS = [('qwen3vl8b', 'Qwen3-VL-8B', 'o', False), ('internvl8b', 'InternVL3.5-
 # family colours (Fig. 2 only; validated with the dataviz checks, all pairs, light surface)
 FAMILY = {'qwen': '#2f6fd1', 'internvl': '#943f8e', 'gemma': '#a56710'}
 # history formats: (arm key, label, colour) -- colour follows the format wherever formats are coloured
-FORMATS = [('A|full|text', 'Raw', '#b44435'), ('A+|full|text', 'Raw + correct', '#95660e'),
-           ('B|full|text', 'Correct only', '#078567'), ('C|sum_all|text', 'Summary', '#2366ab')]
+FORMATS = [('A|full|text', 'Raw', '#b44435'), ('A+|full|text', 'Raw+Correctness', '#95660e'),
+           ('B|full|text', 'Correctness-only', '#078567'), ('C|sum_all|text', 'Summary', '#2366ab')]
 INK, INK2, GRID = '#0b0b0b', '#52514e', '#e4e3df'
 FULL_WIDTH, COLUMN_WIDTH = 7.0, 3.3125  # AAAI-27: 7in text, .375in gutter.
 
@@ -50,6 +50,8 @@ def save_figure(fig, out, name):
         raise ValueError(f'{name}: text smaller than 9pt: {min(sizes)}')
     save_outlined_pdf(fig, out / f'{name}.pdf', facecolor='white')
     fig.savefig(out / f'{name}.svg', facecolor='white')
+    svg = out / f'{name}.svg'
+    svg.write_text('\n'.join(row.rstrip() for row in svg.read_text().splitlines()) + '\n')
     fig.savefig(out / f'{name}.png', dpi=300, facecolor='white')
     print(f'{name}: {fig.get_figwidth():.4g}in wide; minimum text {min(sizes):g}pt; vector outlines')
     plt.close(fig)
@@ -103,9 +105,9 @@ def model_legend(ax, D, **kw):
 def fig_kernel_models(D, out, split_label):
     """Appendix: integration kernels per model and the weight on the previous outcome."""
     keys = [k for k in D if D[k]['mech']]
-    fig, axs = plt.subplots(2, 3, figsize=(FULL_WIDTH, 4.4))
+    fig, axs = plt.subplots(2, 3, figsize=(FULL_WIDTH, 5.0))
     axes = axs.ravel()
-    fig.subplots_adjust(left=.09, right=.985, bottom=.27, top=.93, hspace=.65, wspace=.38)
+    fig.subplots_adjust(left=.09, right=.985, bottom=.34, top=.93, hspace=.65, wspace=.38)
     for ax, key in zip(axes, keys):
         kern = D[key]['mech']['kernels']
         for arm, lab, col in FORMATS:
@@ -140,7 +142,7 @@ def fig_kernel_models(D, out, split_label):
             ax.plot(x, c['w'], **{**mstyle(D[key], 4), 'mec': col, 'mfc': col if D[key]['large'] else 'white'})
     ax.axhline(0, color=INK2, lw=0.6)
     ax.set_xticks(range(len(FORMATS)))
-    ax.set_xticklabels(['Raw', 'Raw +\ncorr.', 'Corr.\nonly', 'Summ.'])
+    ax.set_xticklabels(['Raw', 'Raw+\nCorrectness', 'Correctness-\nonly', 'Summary'], rotation=55, ha='right')
     ax.set_title('Previous-outcome weight', loc='left')
     grid(ax)
     ax.set_ylim(-0.25, 1.15)
@@ -239,9 +241,10 @@ def fig_task(out):
     b.set_ylim(0, 1.16)
     b.set_xlim(.5, 80.5)
     b.set_yticks([0, .5, 1])
+    b.set_yticklabels(['0', '50', '100'])
     b.set_xticks([1, 20, 40, 60, 80])
     b.set_xlabel('Trial', labelpad=3)
-    b.set_ylabel('Advisor A accuracy', labelpad=4)
+    b.set_ylabel('Advisor A accuracy (%)', labelpad=4)
     b.set_title('Example schedule (stable first)', loc='left', fontweight='bold', pad=9)
     grid(b)
 
@@ -289,7 +292,7 @@ def fig_gap(D, controls, out, split_label):
         a.axhline(ra, color=INK2, lw=0.6, ls='--')
         a.text(-0.4, ra + 0.004, 'count rule', va='bottom', ha='left', color=INK2)
     a.set_xticks(range(len(FORMATS)))
-    a.set_xticklabels(['Raw', 'Raw +\ncorrect', 'Correct\nonly', 'Summary'])
+    a.set_xticklabels(['Raw', 'Raw+\nCorrectness', 'Correctness-\nonly', 'Summary'])
     a.set_xlim(-0.45, 3.45)
     a.set_ylim(0.41, 0.69)
     a.set_ylabel('Accuracy')
@@ -297,8 +300,8 @@ def fig_gap(D, controls, out, split_label):
     grid(a)
 
     conds = [('explicit_rel', 'Percent'), ('explicit_counts', 'Counts'),
-             ('single_trial_who', 'Single\ntrial'), ('easy_short_coded', 'Short\ncorrect'),
-             ('easy_short', 'Short\nraw'), ('easy_long_coded', 'Long\ncorrect'), ('easy_long', 'Long\nraw')]
+             ('single_trial_who', 'Single\ntrial'), ('easy_short_coded', 'Short\nCorrectness-only'),
+             ('easy_short', 'Short\nRaw'), ('easy_long_coded', 'Long\nCorrectness-only'), ('easy_long', 'Long\nRaw')]
     for i, (key, d) in enumerate(D.items()):
         vals = [controls.get(key, {}).get((c, 'text')) for c, _ in conds]
         xs = [j + offs[i] for j in range(len(conds))]
@@ -321,10 +324,10 @@ def fig_gap(D, controls, out, split_label):
     save_figure(fig, out, 'fig_gap')
 
 
-STRATS = [('copy_prev_truth', 'Repeat'), ('follow_prev_correct', 'WSLS'), ('last5', 'Last 5'),
-          ('count_all', 'Count'), ('bocpd', 'BOCPD'), ('label_prior', 'Label')]
-MASK = [('A+', 'Raw +\ncorr.'), ('out_ok', 'Reports\nmasked'), ('rep_ok', 'Outcome\nmasked'),
-        ('mask_ok', 'Both\nmasked'), ('B', 'Corr.\nonly')]
+STRATS = [('copy_prev_truth', 'Repeat'), ('follow_prev_correct', 'WSLS'), ('last5', 'Last-5\nrule'),
+          ('count_all', 'Count\nrule'), ('bocpd', 'BOCPD'), ('label_prior', 'Label')]
+MASK = [('A+', 'Raw+\nCorrectness'), ('out_ok', 'Reports\nmasked'), ('rep_ok', 'Outcome\nmasked'),
+        ('mask_ok', 'Both\nmasked'), ('B', 'Correctness-\nonly')]
 
 
 def arm_entry(block, arm):

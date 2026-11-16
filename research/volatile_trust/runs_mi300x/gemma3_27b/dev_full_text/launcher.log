@@ -1,0 +1,37 @@
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:02<00:31,  2.84s/it]Loading checkpoint shards:  17%|█▋        | 2/12 [00:05<00:28,  2.89s/it]Loading checkpoint shards:  25%|██▌       | 3/12 [00:08<00:25,  2.80s/it]Loading checkpoint shards:  33%|███▎      | 4/12 [00:11<00:22,  2.78s/it]Loading checkpoint shards:  42%|████▏     | 5/12 [00:14<00:19,  2.80s/it]Loading checkpoint shards:  50%|█████     | 6/12 [00:16<00:16,  2.78s/it]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:19<00:13,  2.77s/it]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:22<00:11,  2.77s/it]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:24<00:08,  2.72s/it]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:27<00:05,  2.71s/it]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:30<00:02,  2.64s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:30<00:00,  1.92s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:30<00:00,  2.53s/it]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'top_k': 64, 'top_p': 0.95}. If this is not desired, please set these values explicitly.
+{"episode": "dev000", "rows": 320, "sec_per_row": 0.31248013749718667}
+{"episode": "dev001", "rows": 640, "sec_per_row": 0.31598796620965003}
+{"episode": "dev002", "rows": 960, "sec_per_row": 0.3065057409306367}
+{"episode": "dev003", "rows": 1280, "sec_per_row": 0.3087713187560439}
+{"episode": "dev004", "rows": 1600, "sec_per_row": 0.28286714404821395}
+{"episode": "dev005", "rows": 1920, "sec_per_row": 0.2877096999436617}
+{"episode": "dev006", "rows": 2240, "sec_per_row": 0.2724227314548833}
+{"episode": "dev007", "rows": 2560, "sec_per_row": 0.26083668060600756}
+{"episode": "dev008", "rows": 2880, "sec_per_row": 0.2517940133810043}
+{"episode": "dev009", "rows": 3200, "sec_per_row": 0.2445855139940977}
+{"episode": "dev010", "rows": 3520, "sec_per_row": 0.23871362527663056}
+{"episode": "dev011", "rows": 3840, "sec_per_row": 0.23376484556744495}
+{"episode": "dev012", "rows": 4160, "sec_per_row": 0.22951706991745877}
+{"episode": "dev013", "rows": 4480, "sec_per_row": 0.22593320251575538}
+{"episode": "dev014", "rows": 4800, "sec_per_row": 0.22281388878822328}
+{"episode": "dev015", "rows": 5120, "sec_per_row": 0.2200659885071218}
+{"episode": "dev000t", "rows": 5440, "sec_per_row": 0.2176448089234969}
+{"episode": "dev001t", "rows": 5760, "sec_per_row": 0.2155347555047936}
+{"episode": "dev002t", "rows": 6080, "sec_per_row": 0.2135945363264335}
+{"episode": "dev003t", "rows": 6400, "sec_per_row": 0.2118483503162861}
+{"episode": "dev004t", "rows": 6720, "sec_per_row": 0.21033399176029932}
+{"episode": "dev005t", "rows": 7040, "sec_per_row": 0.20896140259097923}
+{"episode": "dev006t", "rows": 7360, "sec_per_row": 0.20766073241829872}
+{"episode": "dev007t", "rows": 7680, "sec_per_row": 0.20650865736727914}
+{"episode": "dev008t", "rows": 8000, "sec_per_row": 0.20547454378008842}
+{"episode": "dev009t", "rows": 8320, "sec_per_row": 0.20448402005892533}
+{"episode": "dev010t", "rows": 8640, "sec_per_row": 0.20357338005193956}
+{"episode": "dev011t", "rows": 8960, "sec_per_row": 0.20274026657321623}
+{"episode": "dev012t", "rows": 9280, "sec_per_row": 0.20195870486826734}
+{"episode": "dev013t", "rows": 9600, "sec_per_row": 0.20120331458747387}
+{"episode": "dev014t", "rows": 9920, "sec_per_row": 0.20050437159595952}
+{"episode": "dev015t", "rows": 10240, "sec_per_row": 0.19986338578164578}
+COMPLETE 10240 rows

@@ -1,0 +1,52 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/14 [00:00<?, ?it/s]Loading checkpoint shards:   7%|▋         | 1/14 [00:00<00:08,  1.45it/s]Loading checkpoint shards:  14%|█▍        | 2/14 [00:01<00:08,  1.48it/s]Loading checkpoint shards:  21%|██▏       | 3/14 [00:02<00:07,  1.48it/s]Loading checkpoint shards:  29%|██▊       | 4/14 [00:02<00:06,  1.48it/s]Loading checkpoint shards:  36%|███▌      | 5/14 [00:03<00:06,  1.46it/s]Loading checkpoint shards:  43%|████▎     | 6/14 [00:04<00:05,  1.48it/s]Loading checkpoint shards:  50%|█████     | 7/14 [00:04<00:04,  1.49it/s]Loading checkpoint shards:  57%|█████▋    | 8/14 [00:05<00:03,  1.51it/s]Loading checkpoint shards:  64%|██████▍   | 9/14 [00:06<00:03,  1.49it/s]Loading checkpoint shards:  71%|███████▏  | 10/14 [00:06<00:02,  1.43it/s]Loading checkpoint shards:  79%|███████▊  | 11/14 [00:07<00:02,  1.45it/s]Loading checkpoint shards:  86%|████████▌ | 12/14 [00:08<00:01,  1.45it/s]Loading checkpoint shards:  93%|█████████▎| 13/14 [00:08<00:00,  1.47it/s]Loading checkpoint shards: 100%|██████████| 14/14 [00:09<00:00,  1.56it/s]Loading checkpoint shards: 100%|██████████| 14/14 [00:09<00:00,  1.49it/s]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}. If this is not desired, please set these values explicitly.
+{"episode": "rob000", "rows": 160, "sec_per_row": 0.12273237407207489}
+{"episode": "rob001", "rows": 320, "sec_per_row": 0.11986179575324059}
+{"episode": "rob002", "rows": 480, "sec_per_row": 0.11897124896446863}
+{"episode": "rob003", "rows": 640, "sec_per_row": 0.1185835637152195}
+{"episode": "rob004", "rows": 800, "sec_per_row": 0.1187940502166748}
+{"episode": "rob005", "rows": 960, "sec_per_row": 0.11866275121768316}
+{"episode": "rob006", "rows": 1120, "sec_per_row": 0.11856261725936618}
+{"episode": "rob007", "rows": 1280, "sec_per_row": 0.11849976610392332}
+{"episode": "rob008", "rows": 1440, "sec_per_row": 0.11863314873642392}
+{"episode": "rob009", "rows": 1600, "sec_per_row": 0.11859993606805802}
+{"episode": "rob010", "rows": 1760, "sec_per_row": 0.11855420361865651}
+{"episode": "rob011", "rows": 1920, "sec_per_row": 0.1185110324372848}
+{"episode": "rob012", "rows": 2080, "sec_per_row": 0.11855047620259798}
+{"episode": "rob013", "rows": 2240, "sec_per_row": 0.11848844428147588}
+{"episode": "rob014", "rows": 2400, "sec_per_row": 0.1184335548679034}
+{"episode": "rob015", "rows": 2560, "sec_per_row": 0.11838225601240993}
+{"episode": "rob016", "rows": 2720, "sec_per_row": 0.11843599177458707}
+{"episode": "rob017", "rows": 2880, "sec_per_row": 0.11841091132826276}
+{"episode": "rob018", "rows": 3040, "sec_per_row": 0.11838762140587757}
+{"episode": "rob019", "rows": 3200, "sec_per_row": 0.11836276732385159}
+{"episode": "rob020", "rows": 3360, "sec_per_row": 0.11825313213325682}
+{"episode": "rob021", "rows": 3520, "sec_per_row": 0.11810612360184843}
+{"episode": "rob022", "rows": 3680, "sec_per_row": 0.11796960318865983}
+{"episode": "rob023", "rows": 3840, "sec_per_row": 0.11784109907845657}
+{"episode": "rob000t", "rows": 4000, "sec_per_row": 0.11781799101829529}
+{"episode": "rob001t", "rows": 4160, "sec_per_row": 0.11779683014521232}
+{"episode": "rob002t", "rows": 4320, "sec_per_row": 0.1177761244001212}
+{"episode": "rob003t", "rows": 4480, "sec_per_row": 0.11776039483291763}
+{"episode": "rob004t", "rows": 4640, "sec_per_row": 0.11776243864462294}
+{"episode": "rob005t", "rows": 4800, "sec_per_row": 0.11776649485031764}
+{"episode": "rob006t", "rows": 4960, "sec_per_row": 0.11777336741647412}
+{"episode": "rob007t", "rows": 5120, "sec_per_row": 0.1177769897505641}
+{"episode": "rob008t", "rows": 5280, "sec_per_row": 0.11779159411336436}
+{"episode": "rob009t", "rows": 5440, "sec_per_row": 0.11780424512484494}
+{"episode": "rob010t", "rows": 5600, "sec_per_row": 0.11781352766922543}
+{"episode": "rob011t", "rows": 5760, "sec_per_row": 0.11782166237632434}
+{"episode": "rob012t", "rows": 5920, "sec_per_row": 0.11781701377114734}
+{"episode": "rob013t", "rows": 6080, "sec_per_row": 0.11781249846282758}
+{"episode": "rob014t", "rows": 6240, "sec_per_row": 0.1178070286145577}
+{"episode": "rob015t", "rows": 6400, "sec_per_row": 0.11780258897691966}
+{"episode": "rob016t", "rows": 6560, "sec_per_row": 0.11780470689622367}
+{"episode": "rob017t", "rows": 6720, "sec_per_row": 0.11780616406883512}
+{"episode": "rob018t", "rows": 6880, "sec_per_row": 0.11780839642119963}
+{"episode": "rob019t", "rows": 7040, "sec_per_row": 0.11781191395765}
+{"episode": "rob020t", "rows": 7200, "sec_per_row": 0.11775136904584037}
+{"episode": "rob021t", "rows": 7360, "sec_per_row": 0.11769206886706145}
+{"episode": "rob022t", "rows": 7520, "sec_per_row": 0.11763796080300148}
+{"episode": "rob023t", "rows": 7680, "sec_per_row": 0.11758460129300753}
+COMPLETE 7680 rows

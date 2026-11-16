@@ -1,0 +1,37 @@
+wording: p2 (H, L, Q = ('p2', 'p2', 'p2'))
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/14 [00:00<?, ?it/s]Loading checkpoint shards:   7%|▋         | 1/14 [00:00<00:08,  1.45it/s]Loading checkpoint shards:  14%|█▍        | 2/14 [00:01<00:08,  1.48it/s]Loading checkpoint shards:  21%|██▏       | 3/14 [00:02<00:07,  1.48it/s]Loading checkpoint shards:  29%|██▊       | 4/14 [00:02<00:06,  1.48it/s]Loading checkpoint shards:  36%|███▌      | 5/14 [00:03<00:06,  1.46it/s]Loading checkpoint shards:  43%|████▎     | 6/14 [00:04<00:05,  1.47it/s]Loading checkpoint shards:  50%|█████     | 7/14 [00:04<00:04,  1.49it/s]Loading checkpoint shards:  57%|█████▋    | 8/14 [00:05<00:03,  1.50it/s]Loading checkpoint shards:  64%|██████▍   | 9/14 [00:06<00:03,  1.49it/s]Loading checkpoint shards:  71%|███████▏  | 10/14 [00:06<00:02,  1.49it/s]Loading checkpoint shards:  79%|███████▊  | 11/14 [00:07<00:02,  1.49it/s]Loading checkpoint shards:  86%|████████▌ | 12/14 [00:08<00:01,  1.48it/s]Loading checkpoint shards:  93%|█████████▎| 13/14 [00:08<00:00,  1.50it/s]Loading checkpoint shards: 100%|██████████| 14/14 [00:09<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 14/14 [00:09<00:00,  1.52it/s]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}. If this is not desired, please set these values explicitly.
+{"episode": "dev000", "rows": 160, "sec_per_row": 0.11058529019355774}
+{"episode": "dev001", "rows": 320, "sec_per_row": 0.10792792961001396}
+{"episode": "dev002", "rows": 480, "sec_per_row": 0.10702045460542044}
+{"episode": "dev003", "rows": 640, "sec_per_row": 0.10651141628623009}
+{"episode": "dev004", "rows": 800, "sec_per_row": 0.10667134135961533}
+{"episode": "dev005", "rows": 960, "sec_per_row": 0.10649736871321996}
+{"episode": "dev006", "rows": 1120, "sec_per_row": 0.10638545410973685}
+{"episode": "dev007", "rows": 1280, "sec_per_row": 0.10629612430930138}
+{"episode": "dev008", "rows": 1440, "sec_per_row": 0.10640237513515684}
+{"episode": "dev009", "rows": 1600, "sec_per_row": 0.10634159550070763}
+{"episode": "dev010", "rows": 1760, "sec_per_row": 0.10628949187018655}
+{"episode": "dev011", "rows": 1920, "sec_per_row": 0.10624065163234869}
+{"episode": "dev012", "rows": 2080, "sec_per_row": 0.10627806851497064}
+{"episode": "dev013", "rows": 2240, "sec_per_row": 0.10619340815714427}
+{"episode": "dev014", "rows": 2400, "sec_per_row": 0.10612428218126296}
+{"episode": "dev015", "rows": 2560, "sec_per_row": 0.10605859132483601}
+{"episode": "dev000t", "rows": 2720, "sec_per_row": 0.10599537973894793}
+{"episode": "dev001t", "rows": 2880, "sec_per_row": 0.10594834966792001}
+{"episode": "dev002t", "rows": 3040, "sec_per_row": 0.10590069944921293}
+{"episode": "dev003t", "rows": 3200, "sec_per_row": 0.10586749412119388}
+{"episode": "dev004t", "rows": 3360, "sec_per_row": 0.10585505898509706}
+{"episode": "dev005t", "rows": 3520, "sec_per_row": 0.10584158572283658}
+{"episode": "dev006t", "rows": 3680, "sec_per_row": 0.10582854372003804}
+{"episode": "dev007t", "rows": 3840, "sec_per_row": 0.1058206573749582}
+{"episode": "dev008t", "rows": 4000, "sec_per_row": 0.10581484001874923}
+{"episode": "dev009t", "rows": 4160, "sec_per_row": 0.10581165787119132}
+{"episode": "dev010t", "rows": 4320, "sec_per_row": 0.10580528350891891}
+{"episode": "dev011t", "rows": 4480, "sec_per_row": 0.10580338292888232}
+{"episode": "dev012t", "rows": 4640, "sec_per_row": 0.10577835743797237}
+{"episode": "dev013t", "rows": 4800, "sec_per_row": 0.10575723091761272}
+{"episode": "dev014t", "rows": 4960, "sec_per_row": 0.105735339128202}
+{"episode": "dev015t", "rows": 5120, "sec_per_row": 0.10571332876570523}
+COMPLETE 5120 rows

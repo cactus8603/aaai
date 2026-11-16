@@ -1,0 +1,121 @@
+# Raw vs. summarized history gap (analyze_main.py)
+
+mode: formal; runs: ho_full_text, ho_sum_all, ho_sum_oracle, ho_window10
+
+## Episode-level metrics (twin-averaged in logit space, t >= 2)
+
+"all" = equal-weight mean of the pet and scenario slots. approx = share of trials whose logit was reconstructed from clipped y (legacy rows; saturates at +-13.8).
+
+| model | data | split | arm | slot | n ep | acc [95% CI] | FB stable | FB volatile | log score | AUC10 | approx |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.455 [0.442, 0.467] | 0.542 | 0.462 | -4.304 | 0.474 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.485 [0.467, 0.504] | 0.661 | 0.462 | -4.127 | 0.467 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.470 [0.456, 0.483] | 0.601 | 0.462 | -4.215 | 0.471 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|window:10|text | pet | 48 | 0.379 [0.366, 0.392] | 0.460 | 0.423 | -8.438 | 0.423 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|window:10|text | scenario | 48 | 0.403 [0.388, 0.417] | 0.519 | 0.446 | -7.971 | 0.443 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|window:10|text | all | 48 | 0.391 [0.379, 0.403] | 0.489 | 0.435 | -8.204 | 0.433 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.630 [0.623, 0.636] | 0.962 | 0.488 | -3.198 | 0.476 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.605 [0.594, 0.616] | 0.866 | 0.493 | -2.443 | 0.475 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.617 [0.610, 0.625] | 0.914 | 0.490 | -2.820 | 0.475 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_oracle|text | pet | 48 | 0.744 [0.739, 0.748] | 0.973 | 0.842 | -3.712 | 0.830 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_oracle|text | scenario | 48 | 0.712 [0.697, 0.726] | 0.896 | 0.795 | -2.665 | 0.783 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_oracle|text | all | 48 | 0.728 [0.720, 0.736] | 0.935 | 0.819 | -3.188 | 0.806 | 0.00 |
+
+## Gap: acc(C) - acc(A), paired by episode
+
+| model | split | slot | C arm | A arm | n | gap [95% CI] | Wilcoxon p | Holm p | role |
+|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.175 [0.162, 0.189] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_oracle|text | A|full|text | 48 | 0.289 [0.277, 0.301] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.119 [0.095, 0.143] | 1.8e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_oracle|text | A|full|text | 48 | 0.227 [0.198, 0.255] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.147 [0.132, 0.163] | 1.6e-09 | 1.6e-09 | primary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_oracle|text | A|full|text | 48 | 0.258 [0.240, 0.275] | 1.6e-09 | nan | exploratory |
+
+Primary family (Wilcoxon signed-rank (two-sided), Holm, alpha=0.05): gemma-3-27b-it@005ad340: C|sum_all|text - A|full|text (all)
+
+## B / B' vs A and C vs B (absolute accuracy differences)
+
+| model | split | slot | B arm | A arm | n | B-A [95% CI] | Wilcoxon p |
+|---|---|---|---|---|---|---|---|
+
+## TOST: VLM + summary vs rule alone (margin +-0.02, alpha 0.05)
+
+Equivalence here means only that the accuracy difference lies within the margin; it does not imply trial-by-trial rule following or identical internal computation (see agreement below).
+
+- Secondary family gemma-3-27b-it@005ad340/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1); MISSING ['sum_cp', 'sum_window:5']
+
+| model | split | slot | C arm | rule | n | acc VLM | acc rule | diff [90% CI] | p TOST | equiv. (uncorr.) | Holm p | equiv. (Holm) | role |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.630 | 0.632 | -0.002 [-0.006, 0.002] | 1.6e-10 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.630 | 0.677 | -0.047 [-0.055, -0.039] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_oracle|text | window_counts | 48 | 0.744 | 0.744 | -0.000 [-0.003, 0.002] | 4.0e-18 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_oracle|text | bocpd_posterior | 48 | 0.744 | 0.677 | 0.067 [0.060, 0.074] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.605 | 0.632 | -0.027 [-0.035, -0.019] | 0.9 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.605 | 0.677 | -0.072 [-0.083, -0.061] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_oracle|text | window_counts | 48 | 0.712 | 0.744 | -0.032 [-0.044, -0.020] | 0.94 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_oracle|text | bocpd_posterior | 48 | 0.712 | 0.677 | 0.036 [0.021, 0.049] | 0.96 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | window_counts | 48 | 0.617 | 0.632 | -0.014 [-0.019, -0.010] | 0.027 | yes | 0.08 | no | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.059 [-0.068, -0.050] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_oracle|text | window_counts | 48 | 0.728 | 0.744 | -0.016 [-0.022, -0.010] | 0.14 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_oracle|text | bocpd_posterior | 48 | 0.728 | 0.677 | 0.051 [0.042, 0.061] | 1 | no | nan | - | exploratory |
+
+## Trial-level choice agreement: VLM + summary vs window-count rule (non-tied trials)
+
+| model | split | slot | C arm | n ep | non-tied | agree (pooled) | agree ep-mean [95% CI] | disagree | VLM right | rule right | stable | volatile | VLM->A | VLM->B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | 48 | 3687 | 0.986 | 0.985 [0.975, 0.994] | 53 | 21 | 32 | 15 | 38 | 1 | 52 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_oracle|text | 48 | 3676 | 0.996 | 0.996 [0.994, 0.999] | 13 | 5 | 8 | 2 | 11 | 3 | 10 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.884 | 0.883 [0.853, 0.911] | 428 | 162 | 266 | 212 | 216 | 13 | 415 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_oracle|text | 48 | 3676 | 0.931 | 0.931 [0.903, 0.956] | 253 | 59 | 194 | 135 | 118 | 57 | 196 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | 48 | 7374 | 0.935 | 0.934 [0.918, 0.949] | 481 | 183 | 298 | 227 | 254 | 14 | 467 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_oracle|text | 48 | 7352 | 0.964 | 0.964 [0.949, 0.977] | 266 | 64 | 202 | 137 | 129 | 60 | 206 |
+
+## Per-scenario gap (domain_slot = scenario only; pet reported separately above)
+
+Each held-out text scenario has 8 episode pairs; the cross-scenario sign test has 6 units (one per text scenario; minimum two-sided p = 0.03125). Pet is reported separately and is not part of the cross-scenario test.
+
+| model | split | C arm | scenario | n pairs | gap [95% CI] |
+|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | color | 8 | 0.160 [0.134, 0.187] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | medical | 8 | 0.036 [-0.003, 0.076] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | news | 8 | 0.047 [-0.000, 0.097] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | sports | 8 | 0.157 [0.098, 0.212] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | stock | 8 | 0.171 [0.142, 0.204] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | weather | 8 | 0.146 [0.098, 0.196] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | color | 8 | 0.280 [0.259, 0.301] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | medical | 8 | 0.117 [0.071, 0.163] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | news | 8 | 0.101 [0.059, 0.149] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | sports | 8 | 0.280 [0.233, 0.326] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | stock | 8 | 0.297 [0.266, 0.335] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | weather | 8 | 0.285 [0.244, 0.334] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | sign test | 6 scen. | 6 positive, p=0.031 |
+
+## History baselines (same trial mask as the reference A arm)
+
+Baselines marked "yes" use generator information the VLM does not have and are not fair competitors.
+
+| model | split | baseline | acc [95% CI] | n ep | uses generator info | description |
+|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| gemma-3-27b-it@005ad340 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| gemma-3-27b-it@005ad340 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| gemma-3-27b-it@005ad340 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| gemma-3-27b-it@005ad340 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| gemma-3-27b-it@005ad340 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+
+## Readout quality (candidate mass, greedy output follows candidate format)
+
+| model | split | arm | slot | format | n | mass mean | mass min | frac mass<0.5 | greedy follows |
+|---|---|---|---|---|---|---|---|---|---|
+| gemma-3-27b-it@005ad340 | held_out | A|full|text | pet | text | 7680 | 0.999 | 0.620 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|text | scenario | text | 7680 | 0.999 | 0.249 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|window:10|text | pet | text | 7680 | 0.999 | 0.620 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|window:10|text | scenario | text | 7680 | 0.983 | 0.000 | 0.014 | 0.985 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | pet | text | 7680 | 0.416 | 0.000 | 0.589 | 0.414 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | scenario | text | 7680 | 0.801 | 0.000 | 0.192 | 0.807 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | pet | text | 7680 | 0.752 | 0.000 | 0.237 | 0.761 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_oracle|text | scenario | text | 7680 | 0.873 | 0.000 | 0.123 | 0.877 |
+
+Rule-window mismatches (recomputed vs logged window_start): 0; identical duplicate rows merged: 0; legacy y-only rows (approx logits): 0.

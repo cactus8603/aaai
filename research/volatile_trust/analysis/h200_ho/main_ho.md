@@ -1,0 +1,1266 @@
+# Raw vs. summarized history gap (analyze_main.py)
+
+mode: formal; runs: ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5, ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5, ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5, ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5, ho_full_chart, ho_full_coded, ho_full_image, ho_full_rawcoded, ho_full_text, ho_sum_all, ho_sum_cp, ho_sum_window10, ho_sum_window20, ho_sum_window5
+
+## Episode-level metrics (twin-averaged in logit space, t >= 2)
+
+"all" = equal-weight mean of the pet and scenario slots. approx = share of trials whose logit was reconstructed from clipped y (legacy rows; saturates at +-13.8).
+
+| model | data | split | arm | slot | n ep | acc [95% CI] | FB stable | FB volatile | log score | AUC10 | approx |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.556 [0.545, 0.568] | 0.718 | 0.515 | -1.251 | 0.512 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.564 [0.551, 0.576] | 0.719 | 0.512 | -0.990 | 0.507 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.560 [0.549, 0.570] | 0.719 | 0.513 | -1.120 | 0.510 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.502 [0.484, 0.520] | 0.500 | 0.504 | -1.916 | 0.513 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.495 [0.479, 0.511] | 0.540 | 0.490 | -0.825 | 0.492 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.499 [0.483, 0.514] | 0.520 | 0.497 | -1.371 | 0.503 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.553 [0.540, 0.565] | 0.683 | 0.477 | -0.928 | 0.481 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.545 [0.531, 0.560] | 0.684 | 0.479 | -0.908 | 0.486 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.549 [0.538, 0.560] | 0.683 | 0.478 | -0.918 | 0.483 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.629 [0.619, 0.638] | 0.728 | 0.494 | -0.719 | 0.478 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.580 [0.562, 0.597] | 0.644 | 0.496 | -0.724 | 0.487 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.605 [0.593, 0.615] | 0.686 | 0.495 | -0.721 | 0.483 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.502 [0.484, 0.520] | 0.514 | 0.506 | -2.122 | 0.514 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.544 [0.525, 0.562] | 0.621 | 0.501 | -1.099 | 0.496 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.523 [0.507, 0.539] | 0.567 | 0.503 | -1.611 | 0.505 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.626 [0.618, 0.633] | 0.909 | 0.524 | -1.668 | 0.504 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.624 [0.614, 0.633] | 0.834 | 0.507 | -1.044 | 0.485 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.625 [0.617, 0.632] | 0.871 | 0.515 | -1.356 | 0.495 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.633 [0.628, 0.637] | 0.984 | 0.483 | -3.618 | 0.483 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.633 [0.629, 0.637] | 0.973 | 0.487 | -2.508 | 0.483 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.633 [0.629, 0.637] | 0.978 | 0.485 | -3.063 | 0.483 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.515 [0.497, 0.532] | 0.574 | 0.518 | -2.326 | 0.525 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.573 [0.550, 0.596] | 0.662 | 0.601 | -1.525 | 0.603 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.544 [0.527, 0.560] | 0.618 | 0.560 | -1.926 | 0.564 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.678 [0.666, 0.688] | 0.924 | 0.719 | -3.748 | 0.696 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.677 [0.666, 0.688] | 0.920 | 0.718 | -2.632 | 0.695 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.677 [0.666, 0.688] | 0.922 | 0.718 | -3.190 | 0.696 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.617 [0.611, 0.622] | 0.926 | 0.497 | -4.176 | 0.438 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.615 [0.609, 0.621] | 0.924 | 0.500 | -2.994 | 0.442 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.616 [0.610, 0.622] | 0.925 | 0.499 | -3.585 | 0.440 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.582 [0.571, 0.593] | 0.931 | 0.446 | -3.143 | 0.406 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.581 [0.569, 0.592] | 0.927 | 0.451 | -2.255 | 0.410 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.581 [0.570, 0.593] | 0.929 | 0.449 | -2.699 | 0.408 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.692 [0.686, 0.698] | 0.945 | 0.716 | -3.252 | 0.685 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.691 [0.685, 0.697] | 0.942 | 0.715 | -2.410 | 0.684 | 0.00 |
+| InternVL3_5-38B-HF@7c830fc2 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.691 [0.685, 0.697] | 0.943 | 0.715 | -2.831 | 0.685 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.491 [0.474, 0.507] | 0.598 | 0.506 | -1.024 | 0.499 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.525 [0.509, 0.541] | 0.591 | 0.509 | -0.916 | 0.503 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.508 [0.494, 0.521] | 0.594 | 0.508 | -0.970 | 0.501 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.453 [0.441, 0.464] | 0.491 | 0.486 | -0.903 | 0.486 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.487 [0.473, 0.500] | 0.509 | 0.497 | -0.818 | 0.496 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.470 [0.460, 0.480] | 0.500 | 0.492 | -0.861 | 0.491 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.460 [0.445, 0.475] | 0.540 | 0.493 | -0.933 | 0.490 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.497 [0.482, 0.512] | 0.535 | 0.504 | -0.845 | 0.502 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.479 [0.468, 0.489] | 0.537 | 0.499 | -0.889 | 0.496 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.529 [0.513, 0.546] | 0.601 | 0.503 | -0.750 | 0.495 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.540 [0.521, 0.558] | 0.579 | 0.502 | -0.724 | 0.494 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.534 [0.523, 0.546] | 0.590 | 0.502 | -0.737 | 0.495 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.546 [0.528, 0.565] | 0.673 | 0.509 | -1.207 | 0.503 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.542 [0.520, 0.562] | 0.624 | 0.510 | -1.041 | 0.511 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.544 [0.528, 0.561] | 0.648 | 0.509 | -1.124 | 0.507 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.639 [0.630, 0.646] | 0.910 | 0.512 | -1.444 | 0.519 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.633 [0.624, 0.640] | 0.843 | 0.502 | -1.031 | 0.508 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.636 [0.628, 0.642] | 0.877 | 0.507 | -1.238 | 0.513 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.639 [0.634, 0.643] | 0.912 | 0.499 | -1.129 | 0.484 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.631 [0.624, 0.636] | 0.838 | 0.495 | -0.944 | 0.480 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.635 [0.630, 0.638] | 0.875 | 0.497 | -1.036 | 0.482 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.648 [0.634, 0.661] | 0.820 | 0.636 | -1.027 | 0.620 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.628 [0.611, 0.643] | 0.727 | 0.596 | -1.032 | 0.590 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.638 [0.625, 0.650] | 0.773 | 0.616 | -1.029 | 0.605 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.678 [0.667, 0.688] | 0.896 | 0.685 | -1.093 | 0.662 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.669 [0.658, 0.680] | 0.834 | 0.642 | -0.902 | 0.624 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.673 [0.662, 0.684] | 0.865 | 0.663 | -0.998 | 0.643 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.617 [0.611, 0.622] | 0.890 | 0.498 | -1.141 | 0.445 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.609 [0.602, 0.616] | 0.813 | 0.495 | -0.942 | 0.453 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.613 [0.608, 0.617] | 0.852 | 0.496 | -1.042 | 0.449 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.590 [0.579, 0.601] | 0.883 | 0.465 | -0.941 | 0.424 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.581 [0.572, 0.590] | 0.817 | 0.472 | -0.842 | 0.440 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.586 [0.578, 0.594] | 0.850 | 0.468 | -0.891 | 0.432 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.692 [0.686, 0.698] | 0.868 | 0.679 | -0.899 | 0.654 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.670 [0.659, 0.681] | 0.782 | 0.639 | -0.793 | 0.620 | 0.00 |
+| InternVL3_5-8B-HF@741a7d03 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.681 [0.674, 0.688] | 0.825 | 0.659 | -0.846 | 0.637 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.520 [0.506, 0.534] | 0.655 | 0.503 | -1.428 | 0.498 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.524 [0.508, 0.540] | 0.689 | 0.497 | -1.295 | 0.491 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.522 [0.509, 0.536] | 0.672 | 0.500 | -1.362 | 0.495 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.501 [0.484, 0.518] | 0.500 | 0.507 | -3.565 | 0.515 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.485 [0.468, 0.502] | 0.521 | 0.496 | -1.525 | 0.504 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.493 [0.477, 0.509] | 0.511 | 0.502 | -2.545 | 0.510 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.469 [0.456, 0.481] | 0.545 | 0.481 | -1.320 | 0.488 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.467 [0.449, 0.486] | 0.582 | 0.476 | -1.279 | 0.483 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.468 [0.454, 0.482] | 0.564 | 0.479 | -1.300 | 0.485 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.616 [0.604, 0.628] | 0.821 | 0.492 | -0.936 | 0.481 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.549 [0.532, 0.567] | 0.684 | 0.495 | -1.041 | 0.489 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.583 [0.570, 0.595] | 0.753 | 0.493 | -0.989 | 0.485 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.502 [0.484, 0.520] | 0.521 | 0.506 | -2.260 | 0.514 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.552 [0.534, 0.569] | 0.649 | 0.512 | -1.458 | 0.510 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.527 [0.511, 0.543] | 0.585 | 0.509 | -1.859 | 0.512 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.628 [0.617, 0.638] | 0.894 | 0.519 | -1.737 | 0.494 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.628 [0.620, 0.636] | 0.847 | 0.505 | -1.225 | 0.487 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.628 [0.621, 0.635] | 0.871 | 0.512 | -1.481 | 0.491 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.633 [0.629, 0.637] | 0.985 | 0.482 | -5.167 | 0.483 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.630 [0.625, 0.635] | 0.966 | 0.481 | -3.463 | 0.482 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.631 [0.627, 0.636] | 0.975 | 0.482 | -4.315 | 0.482 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.504 [0.486, 0.521] | 0.522 | 0.513 | -3.936 | 0.520 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.599 [0.580, 0.617] | 0.746 | 0.610 | -3.058 | 0.603 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.551 [0.536, 0.566] | 0.634 | 0.561 | -3.497 | 0.562 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.678 [0.667, 0.688] | 0.924 | 0.719 | -5.077 | 0.696 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.672 [0.660, 0.683] | 0.907 | 0.702 | -3.393 | 0.680 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.675 [0.664, 0.686] | 0.915 | 0.710 | -4.235 | 0.688 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.617 [0.611, 0.622] | 0.926 | 0.502 | -5.803 | 0.443 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.614 [0.608, 0.620] | 0.920 | 0.497 | -3.903 | 0.442 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.615 [0.610, 0.621] | 0.923 | 0.499 | -4.853 | 0.443 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.582 [0.571, 0.593] | 0.932 | 0.449 | -4.549 | 0.409 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.583 [0.571, 0.593] | 0.918 | 0.450 | -2.995 | 0.414 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.582 [0.571, 0.593] | 0.925 | 0.449 | -3.772 | 0.411 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.692 [0.686, 0.698] | 0.945 | 0.716 | -4.647 | 0.685 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.689 [0.682, 0.696] | 0.927 | 0.706 | -2.988 | 0.678 | 0.00 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.691 [0.684, 0.697] | 0.936 | 0.711 | -3.818 | 0.682 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.514 [0.496, 0.531] | 0.626 | 0.505 | -1.557 | 0.494 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.521 [0.504, 0.537] | 0.642 | 0.507 | -1.239 | 0.501 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.517 [0.503, 0.532] | 0.634 | 0.506 | -1.398 | 0.497 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.491 [0.477, 0.503] | 0.498 | 0.494 | -1.148 | 0.488 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.493 [0.478, 0.508] | 0.523 | 0.499 | -1.199 | 0.497 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.492 [0.482, 0.503] | 0.511 | 0.497 | -1.174 | 0.493 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.485 [0.470, 0.499] | 0.562 | 0.484 | -1.537 | 0.482 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.488 [0.472, 0.504] | 0.564 | 0.484 | -1.320 | 0.487 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.486 [0.473, 0.500] | 0.563 | 0.484 | -1.428 | 0.484 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.503 [0.485, 0.520] | 0.541 | 0.505 | -0.882 | 0.505 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.530 [0.513, 0.546] | 0.551 | 0.507 | -0.746 | 0.501 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.516 [0.503, 0.529] | 0.546 | 0.506 | -0.814 | 0.503 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.547 [0.530, 0.563] | 0.628 | 0.501 | -0.999 | 0.499 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.556 [0.534, 0.577] | 0.683 | 0.505 | -1.040 | 0.494 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.552 [0.538, 0.565] | 0.655 | 0.503 | -1.020 | 0.497 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.631 [0.619, 0.641] | 0.883 | 0.514 | -1.228 | 0.512 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.606 [0.588, 0.622] | 0.780 | 0.516 | -1.000 | 0.506 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.619 [0.606, 0.629] | 0.831 | 0.515 | -1.114 | 0.509 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.633 [0.628, 0.638] | 0.928 | 0.497 | -1.414 | 0.483 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.608 [0.594, 0.622] | 0.832 | 0.494 | -1.293 | 0.475 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.621 [0.612, 0.629] | 0.880 | 0.496 | -1.353 | 0.479 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.635 [0.622, 0.648] | 0.810 | 0.610 | -1.124 | 0.588 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.621 [0.597, 0.643] | 0.771 | 0.612 | -1.234 | 0.597 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.628 [0.613, 0.643] | 0.790 | 0.611 | -1.179 | 0.593 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.677 [0.666, 0.688] | 0.913 | 0.701 | -1.528 | 0.677 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.655 [0.639, 0.669] | 0.842 | 0.660 | -1.397 | 0.639 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.666 [0.654, 0.678] | 0.878 | 0.680 | -1.463 | 0.658 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.616 [0.609, 0.622] | 0.912 | 0.501 | -1.576 | 0.444 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.594 [0.580, 0.605] | 0.828 | 0.498 | -1.482 | 0.452 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.605 [0.598, 0.611] | 0.870 | 0.499 | -1.529 | 0.448 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.586 [0.575, 0.597] | 0.912 | 0.463 | -1.314 | 0.420 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.577 [0.564, 0.590] | 0.840 | 0.466 | -1.224 | 0.429 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.582 [0.571, 0.592] | 0.876 | 0.465 | -1.269 | 0.424 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.689 [0.681, 0.696] | 0.894 | 0.694 | -1.106 | 0.665 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.646 [0.623, 0.667] | 0.804 | 0.645 | -1.154 | 0.620 | 0.00 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.667 [0.655, 0.679] | 0.849 | 0.669 | -1.130 | 0.642 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A+|full|text | pet | 48 | 0.470 [0.454, 0.485] | 0.626 | 0.473 | -3.603 | 0.479 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A+|full|text | scenario | 48 | 0.527 [0.509, 0.545] | 0.753 | 0.478 | -4.215 | 0.480 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A+|full|text | all | 48 | 0.498 [0.484, 0.513] | 0.689 | 0.476 | -3.909 | 0.479 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|image | pet | 48 | 0.450 [0.438, 0.462] | 0.500 | 0.477 | -3.011 | 0.487 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|image | scenario | 48 | 0.478 [0.460, 0.495] | 0.599 | 0.461 | -2.922 | 0.470 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|image | all | 48 | 0.464 [0.452, 0.475] | 0.549 | 0.469 | -2.966 | 0.479 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | pet | 48 | 0.455 [0.442, 0.467] | 0.542 | 0.462 | -4.304 | 0.474 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | scenario | 48 | 0.485 [0.467, 0.504] | 0.661 | 0.462 | -4.127 | 0.467 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | A|full|text | all | 48 | 0.470 [0.456, 0.483] | 0.601 | 0.462 | -4.215 | 0.471 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B'|full|chart | pet | 48 | 0.557 [0.534, 0.580] | 0.660 | 0.510 | -0.958 | 0.480 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B'|full|chart | scenario | 48 | 0.562 [0.545, 0.579] | 0.639 | 0.515 | -0.910 | 0.494 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B'|full|chart | all | 48 | 0.559 [0.542, 0.577] | 0.650 | 0.512 | -0.934 | 0.487 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|image | pet | 48 | 0.540 [0.522, 0.557] | 0.649 | 0.507 | -1.576 | 0.500 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|image | scenario | 48 | 0.535 [0.517, 0.552] | 0.640 | 0.515 | -1.961 | 0.506 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|image | all | 48 | 0.537 [0.522, 0.553] | 0.644 | 0.511 | -1.768 | 0.503 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|text | pet | 48 | 0.602 [0.590, 0.614] | 0.901 | 0.498 | -2.773 | 0.449 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|text | scenario | 48 | 0.601 [0.587, 0.615] | 0.864 | 0.494 | -2.429 | 0.461 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | B|full|text | all | 48 | 0.602 [0.590, 0.612] | 0.883 | 0.496 | -2.601 | 0.455 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | pet | 48 | 0.630 [0.623, 0.636] | 0.962 | 0.488 | -3.198 | 0.476 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | scenario | 48 | 0.605 [0.594, 0.616] | 0.866 | 0.493 | -2.443 | 0.475 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_all|text | all | 48 | 0.617 [0.610, 0.625] | 0.914 | 0.490 | -2.820 | 0.475 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | pet | 48 | 0.602 [0.585, 0.618] | 0.757 | 0.629 | -2.974 | 0.623 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | scenario | 48 | 0.589 [0.572, 0.605] | 0.737 | 0.612 | -3.608 | 0.612 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|image | all | 48 | 0.596 [0.584, 0.608] | 0.747 | 0.621 | -3.291 | 0.617 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | pet | 48 | 0.677 [0.666, 0.688] | 0.922 | 0.718 | -4.645 | 0.695 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | scenario | 48 | 0.657 [0.642, 0.671] | 0.859 | 0.689 | -3.229 | 0.665 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_cp|text | all | 48 | 0.667 [0.656, 0.678] | 0.890 | 0.704 | -3.937 | 0.680 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | pet | 48 | 0.617 [0.611, 0.622] | 0.926 | 0.504 | -5.703 | 0.446 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | scenario | 48 | 0.602 [0.590, 0.612] | 0.874 | 0.496 | -3.693 | 0.444 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:10|text | all | 48 | 0.609 [0.602, 0.616] | 0.900 | 0.500 | -4.698 | 0.445 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | pet | 48 | 0.583 [0.573, 0.594] | 0.930 | 0.455 | -3.543 | 0.414 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | scenario | 48 | 0.578 [0.564, 0.592] | 0.855 | 0.469 | -2.608 | 0.428 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:20|text | all | 48 | 0.581 [0.570, 0.591] | 0.892 | 0.462 | -3.076 | 0.421 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | pet | 48 | 0.692 [0.686, 0.698] | 0.943 | 0.716 | -4.273 | 0.685 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | scenario | 48 | 0.662 [0.646, 0.676] | 0.872 | 0.682 | -3.101 | 0.652 | 0.00 |
+| gemma-3-27b-it@005ad340 | episodes_v3#e00b8793 | held_out | C|sum_window:5|text | all | 48 | 0.677 [0.668, 0.685] | 0.907 | 0.699 | -3.687 | 0.668 | 0.00 |
+
+## Gap: acc(C) - acc(A), paired by episode
+
+| model | split | slot | C arm | A arm | n | gap [95% CI] | Wilcoxon p | Holm p | role |
+|---|---|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.080 [0.068, 0.093] | 2.1e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.013 [0.007, 0.018] | 0.00013 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.125 [0.109, 0.141] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.064 [0.050, 0.078] | 2.9e-08 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.030 [0.015, 0.045] | 0.0021 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.139 [0.124, 0.154] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.088 [0.075, 0.100] | 2.5e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.078 [0.054, 0.104] | 1.6e-06 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.132 [0.117, 0.147] | 2.4e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.070 [0.055, 0.085] | 6.2e-08 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.035 [0.018, 0.053] | 0.00093 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.146 [0.130, 0.161] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.084 [0.074, 0.094] | 1.6e-09 | 8.1e-09 | primary |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.045 [0.033, 0.059] | 2.7e-07 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.128 [0.115, 0.142] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.067 [0.055, 0.079] | 4.7e-09 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.032 [0.019, 0.047] | 0.00015 | nan | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.142 [0.129, 0.155] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.179 [0.164, 0.194] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.195 [0.177, 0.213] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.218 [0.199, 0.236] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.157 [0.141, 0.174] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.130 [0.112, 0.149] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.232 [0.214, 0.249] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.133 [0.118, 0.149] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.141 [0.122, 0.160] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.171 [0.153, 0.190] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.111 [0.095, 0.128] | 2.4e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.084 [0.069, 0.100] | 4.2e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.173 [0.154, 0.193] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.156 [0.145, 0.167] | 1.6e-09 | 8.1e-09 | primary |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.168 [0.153, 0.182] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.195 [0.179, 0.210] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.134 [0.123, 0.145] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.107 [0.095, 0.119] | 1.6e-09 | nan | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.202 [0.188, 0.216] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.164 [0.152, 0.177] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.003 [-0.001, 0.006] | 0.43 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.209 [0.193, 0.225] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.148 [0.134, 0.162] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.114 [0.099, 0.128] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.223 [0.208, 0.238] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.163 [0.145, 0.180] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.114 [0.093, 0.136] | 2.2e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.205 [0.182, 0.228] | 2.4e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.147 [0.126, 0.167] | 2.0e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.115 [0.096, 0.134] | 3.9e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.222 [0.201, 0.242] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.164 [0.150, 0.177] | 1.6e-09 | 8.1e-09 | primary |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.058 [0.048, 0.069] | 1.8e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.207 [0.188, 0.225] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.147 [0.132, 0.163] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.114 [0.099, 0.130] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.223 [0.206, 0.239] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.148 [0.133, 0.164] | 1.7e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.145 [0.128, 0.162] | 1.7e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.193 [0.175, 0.210] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.131 [0.114, 0.148] | 3.5e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.102 [0.081, 0.121] | 2.0e-08 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.204 [0.188, 0.221] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.121 [0.104, 0.136] | 5.0e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.128 [0.105, 0.150] | 3.5e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.167 [0.150, 0.184] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.106 [0.089, 0.122] | 2.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.089 [0.071, 0.107] | 2.3e-08 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.158 [0.139, 0.176] | 2.4e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.134 [0.122, 0.146] | 2.4e-09 | 8.1e-09 | primary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.136 [0.122, 0.151] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.180 [0.165, 0.194] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.118 [0.105, 0.131] | 1.6e-09 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.095 [0.079, 0.111] | 1.4e-08 | nan | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.181 [0.168, 0.194] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | A|full|text | 48 | 0.175 [0.162, 0.189] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | A|full|image | 48 | 0.152 [0.131, 0.172] | 2.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | A|full|text | 48 | 0.223 [0.207, 0.239] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | A|full|text | 48 | 0.162 [0.149, 0.176] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | A|full|text | 48 | 0.128 [0.113, 0.145] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | A|full|text | 48 | 0.237 [0.224, 0.250] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | A|full|text | 48 | 0.119 [0.095, 0.143] | 1.8e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | A|full|image | 48 | 0.112 [0.090, 0.134] | 1.3e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | A|full|text | 48 | 0.172 [0.144, 0.200] | 4.3e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | A|full|text | 48 | 0.116 [0.091, 0.141] | 4.5e-08 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | A|full|text | 48 | 0.093 [0.068, 0.117] | 1.6e-07 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | A|full|text | 48 | 0.176 [0.147, 0.205] | 4.1e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | A|full|text | 48 | 0.147 [0.132, 0.163] | 1.6e-09 | 8.1e-09 | primary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | A|full|image | 48 | 0.132 [0.115, 0.148] | 1.7e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | A|full|text | 48 | 0.197 [0.178, 0.217] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | A|full|text | 48 | 0.139 [0.123, 0.156] | 1.6e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | A|full|text | 48 | 0.111 [0.094, 0.128] | 1.7e-09 | nan | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | A|full|text | 48 | 0.206 [0.188, 0.226] | 1.6e-09 | nan | exploratory |
+
+Primary family (Wilcoxon signed-rank (two-sided), Holm, alpha=0.05): InternVL3_5-38B-HF@7c830fc2: C|sum_all|text - A|full|text (all); InternVL3_5-8B-HF@741a7d03: C|sum_all|text - A|full|text (all); Qwen3-VL-32B-Instruct@0cfaf481: C|sum_all|text - A|full|text (all); Qwen3-VL-8B-Instruct@0c351dd0: C|sum_all|text - A|full|text (all); gemma-3-27b-it@005ad340: C|sum_all|text - A|full|text (all)
+
+## B / B' vs A and C vs B (absolute accuracy differences)
+
+| model | split | slot | B arm | A arm | n | B-A [95% CI] | Wilcoxon p |
+|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | A+|full|text | A|full|text | 48 | 0.003 [-0.007, 0.014] | 0.73 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.076 [0.062, 0.091] | 1.2e-08 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|image | A|full|image | 48 | 0.000 [0.000, 0.000] | 1 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|text | A|full|text | 48 | 0.073 [0.058, 0.087] | 2.0e-08 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.018 [0.004, 0.032] | 0.022 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.035 [0.015, 0.055] | 0.0015 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|image | A|full|image | 48 | 0.049 [0.030, 0.070] | 0.00012 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|text | A|full|text | 48 | 0.079 [0.064, 0.094] | 3.4e-09 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | A+|full|text | A|full|text | 48 | 0.011 [0.002, 0.020] | 0.024 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B'|full|chart | A|full|text | 48 | 0.056 [0.043, 0.068] | 6.2e-08 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|image | A|full|image | 48 | 0.025 [0.015, 0.035] | 0.00012 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|text | A|full|text | 48 | 0.076 [0.065, 0.087] | 1.6e-09 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | A+|full|text | A|full|text | 48 | 0.031 [0.016, 0.046] | 0.00039 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.069 [0.050, 0.088] | 2.8e-07 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|image | A|full|image | 48 | 0.094 [0.075, 0.112] | 7.0e-09 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|text | A|full|text | 48 | 0.179 [0.162, 0.194] | 1.7e-09 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.028 [0.008, 0.047] | 0.0067 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.042 [0.018, 0.066] | 0.0019 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|image | A|full|image | 48 | 0.055 [0.037, 0.074] | 5.1e-06 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|text | A|full|text | 48 | 0.135 [0.117, 0.153] | 1.9e-09 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | A+|full|text | A|full|text | 48 | 0.029 [0.016, 0.043] | 0.00038 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B'|full|chart | A|full|text | 48 | 0.056 [0.042, 0.069] | 1.8e-07 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|image | A|full|image | 48 | 0.074 [0.061, 0.089] | 4.3e-09 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|text | A|full|text | 48 | 0.157 [0.143, 0.170] | 1.7e-09 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | A+|full|text | A|full|text | 48 | 0.051 [0.040, 0.062] | 2.3e-08 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.147 [0.131, 0.164] | 1.6e-09 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|image | A|full|image | 48 | 0.001 [-0.002, 0.004] | 0.7 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|text | A|full|text | 48 | 0.159 [0.142, 0.176] | 1.7e-09 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.057 [0.038, 0.075] | 4.1e-06 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.082 [0.058, 0.105] | 1.0e-06 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|image | A|full|image | 48 | 0.067 [0.051, 0.085] | 3.4e-08 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|text | A|full|text | 48 | 0.161 [0.142, 0.179] | 2.4e-09 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | A+|full|text | A|full|text | 48 | 0.054 [0.042, 0.066] | 1.2e-08 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B'|full|chart | A|full|text | 48 | 0.115 [0.098, 0.132] | 1.7e-09 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|image | A|full|image | 48 | 0.034 [0.026, 0.043] | 8.2e-08 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|text | A|full|text | 48 | 0.160 [0.146, 0.175] | 1.6e-09 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | A|full|text | 48 | 0.029 [0.017, 0.041] | 2.5e-05 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.018 [-0.011, 0.048] | 0.26 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|image | A|full|image | 48 | 0.056 [0.034, 0.078] | 4.6e-05 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | A|full|text | 48 | 0.147 [0.126, 0.165] | 4.8e-09 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.033 [0.018, 0.048] | 0.00017 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.042 [0.017, 0.065] | 0.0018 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|image | A|full|image | 48 | 0.063 [0.045, 0.081] | 1.3e-06 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | A|full|text | 48 | 0.118 [0.097, 0.137] | 1.5e-08 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | A|full|text | 48 | 0.031 [0.021, 0.041] | 2.3e-06 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | A|full|text | 48 | 0.030 [0.007, 0.053] | 0.018 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|image | A|full|image | 48 | 0.060 [0.047, 0.072] | 1.0e-08 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | A|full|text | 48 | 0.132 [0.116, 0.147] | 2.6e-09 |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | A|full|text | 48 | 0.015 [-0.001, 0.030] | 0.067 |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | A|full|text | 48 | 0.102 [0.077, 0.127] | 7.7e-08 |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|image | A|full|image | 48 | 0.090 [0.070, 0.109] | 2.4e-08 |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | A|full|text | 48 | 0.147 [0.129, 0.166] | 2.4e-09 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | A|full|text | 48 | 0.041 [0.026, 0.056] | 5.1e-06 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | A|full|text | 48 | 0.076 [0.052, 0.102] | 1.4e-06 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|image | A|full|image | 48 | 0.057 [0.036, 0.079] | 2.0e-05 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | A|full|text | 48 | 0.116 [0.093, 0.138] | 1.2e-08 |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | A|full|text | 48 | 0.028 [0.017, 0.039] | 2.1e-05 |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | A|full|text | 48 | 0.089 [0.069, 0.110] | 6.2e-08 |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|image | A|full|image | 48 | 0.073 [0.057, 0.089] | 3.0e-08 |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | A|full|text | 48 | 0.132 [0.116, 0.148] | 1.6e-09 |
+
+Normalised position (B-A)/(C-A) is shown only when C-A > 0.05 and the bootstrap C-A stays > 0; it need not lie in [0, 1].
+
+| model | split | slot | B arm | C arm | n | B-A [95% CI] | C-B [95% CI] | C-A | position [95% CI] |
+|---|---|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.003 [-0.007, 0.014] | 0.077 [0.066, 0.088] | 0.080 | 0.04 [-0.09, 0.16] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.003 [-0.007, 0.014] | 0.122 [0.107, 0.136] | 0.125 | 0.03 [-0.06, 0.10] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.003 [-0.007, 0.014] | 0.061 [0.049, 0.073] | 0.064 | 0.05 [-0.12, 0.19] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.003 [-0.007, 0.014] | 0.026 [0.013, 0.040] | 0.030 | not interpretable: C-A = 0.030 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.003 [-0.007, 0.014] | 0.136 [0.123, 0.148] | 0.139 | 0.02 [-0.05, 0.09] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.076 [0.062, 0.091] | 0.004 [-0.006, 0.013] | 0.080 | 0.95 [0.83, 1.08] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.076 [0.062, 0.091] | 0.049 [0.034, 0.063] | 0.125 | 0.61 [0.51, 0.71] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.076 [0.062, 0.091] | -0.012 [-0.023, -0.001] | 0.064 | 1.19 [1.02, 1.40] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.076 [0.062, 0.091] | -0.047 [-0.061, -0.032] | 0.030 | not interpretable: C-A = 0.030 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.076 [0.062, 0.091] | 0.063 [0.051, 0.075] | 0.139 | 0.55 [0.47, 0.62] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.000 [0.000, 0.000] | 0.013 [0.007, 0.018] | 0.013 | not interpretable: C-A = 0.013 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.073 [0.058, 0.087] | 0.007 [-0.002, 0.016] | 0.080 | 0.91 [0.80, 1.02] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.073 [0.058, 0.087] | 0.052 [0.041, 0.063] | 0.125 | 0.58 [0.50, 0.66] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.073 [0.058, 0.087] | -0.009 [-0.017, -0.001] | 0.064 | 1.14 [1.01, 1.28] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.073 [0.058, 0.087] | -0.043 [-0.056, -0.030] | 0.030 | not interpretable: C-A = 0.030 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.073 [0.058, 0.087] | 0.066 [0.058, 0.075] | 0.139 | 0.52 [0.45, 0.59] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.018 [0.004, 0.032] | 0.069 [0.058, 0.080] | 0.088 | 0.21 [0.06, 0.34] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.018 [0.004, 0.032] | 0.114 [0.099, 0.128] | 0.132 | 0.14 [0.04, 0.23] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.018 [0.004, 0.032] | 0.052 [0.039, 0.065] | 0.070 | 0.26 [0.07, 0.43] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.018 [0.004, 0.032] | 0.017 [0.006, 0.030] | 0.035 | not interpretable: C-A = 0.035 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.018 [0.004, 0.032] | 0.128 [0.112, 0.142] | 0.146 | 0.12 [0.03, 0.21] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.035 [0.015, 0.055] | 0.053 [0.036, 0.070] | 0.088 | 0.40 [0.18, 0.59] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.035 [0.015, 0.055] | 0.097 [0.077, 0.117] | 0.132 | 0.26 [0.11, 0.40] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.035 [0.015, 0.055] | 0.035 [0.019, 0.051] | 0.070 | 0.50 [0.23, 0.72] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.035 [0.015, 0.055] | 0.001 [-0.017, 0.019] | 0.035 | not interpretable: C-A = 0.035 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.035 [0.015, 0.055] | 0.111 [0.092, 0.131] | 0.146 | 0.24 [0.10, 0.36] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.049 [0.030, 0.070] | 0.029 [0.014, 0.046] | 0.078 | 0.63 [0.46, 0.80] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.079 [0.064, 0.094] | 0.009 [-0.002, 0.019] | 0.088 | 0.90 [0.78, 1.02] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.079 [0.064, 0.094] | 0.053 [0.040, 0.066] | 0.132 | 0.60 [0.51, 0.69] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.079 [0.064, 0.094] | -0.009 [-0.019, 0.001] | 0.070 | 1.13 [0.98, 1.30] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.079 [0.064, 0.094] | -0.044 [-0.059, -0.028] | 0.035 | not interpretable: C-A = 0.035 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.079 [0.064, 0.094] | 0.067 [0.057, 0.077] | 0.146 | 0.54 [0.47, 0.61] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.011 [0.002, 0.020] | 0.073 [0.064, 0.082] | 0.084 | 0.13 [0.03, 0.22] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.011 [0.002, 0.020] | 0.118 [0.105, 0.131] | 0.128 | 0.08 [0.02, 0.15] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.011 [0.002, 0.020] | 0.056 [0.045, 0.067] | 0.067 | 0.16 [0.03, 0.28] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.011 [0.002, 0.020] | 0.022 [0.011, 0.033] | 0.032 | not interpretable: C-A = 0.032 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.011 [0.002, 0.020] | 0.132 [0.119, 0.144] | 0.142 | 0.08 [0.02, 0.13] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.056 [0.043, 0.068] | 0.028 [0.018, 0.039] | 0.084 | 0.66 [0.54, 0.78] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.056 [0.043, 0.068] | 0.073 [0.058, 0.088] | 0.128 | 0.43 [0.34, 0.53] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.056 [0.043, 0.068] | 0.011 [0.001, 0.022] | 0.067 | 0.83 [0.68, 0.98] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.056 [0.043, 0.068] | -0.023 [-0.036, -0.010] | 0.032 | not interpretable: C-A = 0.032 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.056 [0.043, 0.068] | 0.087 [0.073, 0.100] | 0.142 | 0.39 [0.31, 0.47] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.025 [0.015, 0.035] | 0.021 [0.012, 0.030] | 0.045 | not interpretable: C-A = 0.045 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.076 [0.065, 0.087] | 0.008 [-0.001, 0.016] | 0.084 | 0.90 [0.81, 1.01] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.076 [0.065, 0.087] | 0.053 [0.041, 0.064] | 0.128 | 0.59 [0.52, 0.67] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.076 [0.065, 0.087] | -0.009 [-0.017, -0.001] | 0.067 | 1.13 [1.01, 1.27] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.076 [0.065, 0.087] | -0.043 [-0.057, -0.030] | 0.032 | not interpretable: C-A = 0.032 does not exceed the prespecified threshold 0.05 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.076 [0.065, 0.087] | 0.067 [0.058, 0.075] | 0.142 | 0.53 [0.48, 0.58] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.031 [0.016, 0.046] | 0.148 [0.132, 0.164] | 0.179 | 0.17 [0.09, 0.25] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.031 [0.016, 0.046] | 0.187 [0.169, 0.204] | 0.218 | 0.14 [0.08, 0.21] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.031 [0.016, 0.046] | 0.126 [0.109, 0.144] | 0.157 | 0.20 [0.10, 0.29] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.031 [0.016, 0.046] | 0.099 [0.079, 0.120] | 0.130 | 0.24 [0.13, 0.35] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.031 [0.016, 0.046] | 0.201 [0.182, 0.219] | 0.232 | 0.13 [0.07, 0.20] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.069 [0.050, 0.088] | 0.109 [0.094, 0.125] | 0.179 | 0.39 [0.29, 0.48] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.069 [0.050, 0.088] | 0.148 [0.128, 0.169] | 0.218 | 0.32 [0.24, 0.40] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.069 [0.050, 0.088] | 0.088 [0.072, 0.104] | 0.157 | 0.44 [0.34, 0.54] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.069 [0.050, 0.088] | 0.061 [0.047, 0.075] | 0.130 | 0.53 [0.42, 0.63] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.069 [0.050, 0.088] | 0.162 [0.144, 0.181] | 0.232 | 0.30 [0.22, 0.37] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.094 [0.075, 0.112] | 0.101 [0.082, 0.121] | 0.195 | 0.48 [0.40, 0.57] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.179 [0.162, 0.194] | 0.000 [-0.007, 0.008] | 0.179 | 1.00 [0.95, 1.04] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.179 [0.162, 0.194] | 0.039 [0.028, 0.050] | 0.218 | 0.82 [0.77, 0.87] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.179 [0.162, 0.194] | -0.022 [-0.030, -0.013] | 0.157 | 1.14 [1.08, 1.20] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.179 [0.162, 0.194] | -0.049 [-0.061, -0.036] | 0.130 | 1.37 [1.25, 1.52] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.179 [0.162, 0.194] | 0.053 [0.044, 0.062] | 0.232 | 0.77 [0.73, 0.81] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.028 [0.008, 0.047] | 0.105 [0.089, 0.122] | 0.133 | 0.21 [0.06, 0.33] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.028 [0.008, 0.047] | 0.144 [0.124, 0.163] | 0.171 | 0.16 [0.05, 0.26] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.028 [0.008, 0.047] | 0.084 [0.066, 0.101] | 0.111 | 0.25 [0.08, 0.40] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.028 [0.008, 0.047] | 0.056 [0.039, 0.074] | 0.084 | 0.33 [0.10, 0.53] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.028 [0.008, 0.047] | 0.145 [0.126, 0.165] | 0.173 | 0.16 [0.05, 0.26] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.042 [0.018, 0.066] | 0.091 [0.074, 0.108] | 0.133 | 0.32 [0.14, 0.47] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.042 [0.018, 0.066] | 0.129 [0.111, 0.148] | 0.171 | 0.25 [0.11, 0.37] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.042 [0.018, 0.066] | 0.069 [0.050, 0.088] | 0.111 | 0.38 [0.17, 0.56] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.042 [0.018, 0.066] | 0.042 [0.022, 0.061] | 0.084 | 0.50 [0.23, 0.74] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.042 [0.018, 0.066] | 0.131 [0.112, 0.150] | 0.173 | 0.24 [0.11, 0.36] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.055 [0.037, 0.074] | 0.086 [0.065, 0.107] | 0.141 | 0.39 [0.27, 0.51] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.135 [0.117, 0.153] | -0.002 [-0.011, 0.007] | 0.133 | 1.02 [0.95, 1.09] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.135 [0.117, 0.153] | 0.036 [0.023, 0.049] | 0.171 | 0.79 [0.72, 0.86] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.135 [0.117, 0.153] | -0.024 [-0.033, -0.015] | 0.111 | 1.22 [1.13, 1.31] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.135 [0.117, 0.153] | -0.051 [-0.065, -0.038] | 0.084 | 1.61 [1.42, 1.86] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.135 [0.117, 0.153] | 0.038 [0.025, 0.049] | 0.173 | 0.78 [0.72, 0.85] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.029 [0.016, 0.043] | 0.127 [0.114, 0.139] | 0.156 | 0.19 [0.10, 0.27] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.029 [0.016, 0.043] | 0.165 [0.149, 0.181] | 0.195 | 0.15 [0.08, 0.22] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.029 [0.016, 0.043] | 0.105 [0.091, 0.118] | 0.134 | 0.22 [0.12, 0.31] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.029 [0.016, 0.043] | 0.078 [0.062, 0.093] | 0.107 | 0.27 [0.15, 0.40] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.029 [0.016, 0.043] | 0.173 [0.157, 0.189] | 0.202 | 0.14 [0.08, 0.21] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.056 [0.042, 0.069] | 0.100 [0.090, 0.111] | 0.156 | 0.36 [0.28, 0.43] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.056 [0.042, 0.069] | 0.139 [0.124, 0.153] | 0.195 | 0.29 [0.22, 0.35] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.056 [0.042, 0.069] | 0.078 [0.066, 0.091] | 0.134 | 0.42 [0.32, 0.50] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.056 [0.042, 0.069] | 0.051 [0.040, 0.062] | 0.107 | 0.52 [0.41, 0.62] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.056 [0.042, 0.069] | 0.147 [0.132, 0.161] | 0.202 | 0.28 [0.21, 0.34] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.074 [0.061, 0.089] | 0.094 [0.077, 0.111] | 0.168 | 0.44 [0.37, 0.52] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.157 [0.143, 0.170] | -0.001 [-0.007, 0.006] | 0.156 | 1.01 [0.96, 1.05] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.157 [0.143, 0.170] | 0.038 [0.026, 0.049] | 0.195 | 0.81 [0.76, 0.86] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.157 [0.143, 0.170] | -0.023 [-0.029, -0.016] | 0.134 | 1.17 [1.12, 1.22] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.157 [0.143, 0.170] | -0.050 [-0.061, -0.039] | 0.107 | 1.47 [1.35, 1.61] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.157 [0.143, 0.170] | 0.045 [0.038, 0.053] | 0.202 | 0.78 [0.74, 0.81] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.051 [0.040, 0.062] | 0.113 [0.100, 0.126] | 0.164 | 0.31 [0.25, 0.38] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.051 [0.040, 0.062] | 0.158 [0.140, 0.175] | 0.209 | 0.25 [0.19, 0.30] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.051 [0.040, 0.062] | 0.097 [0.082, 0.112] | 0.148 | 0.35 [0.27, 0.42] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.051 [0.040, 0.062] | 0.062 [0.049, 0.077] | 0.114 | 0.45 [0.36, 0.54] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.051 [0.040, 0.062] | 0.172 [0.155, 0.188] | 0.223 | 0.23 [0.18, 0.28] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.147 [0.131, 0.164] | 0.017 [0.007, 0.027] | 0.164 | 0.90 [0.83, 0.96] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.147 [0.131, 0.164] | 0.062 [0.047, 0.076] | 0.209 | 0.70 [0.64, 0.77] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.147 [0.131, 0.164] | 0.001 [-0.010, 0.013] | 0.148 | 0.99 [0.92, 1.07] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.147 [0.131, 0.164] | -0.034 [-0.047, -0.021] | 0.114 | 1.30 [1.17, 1.44] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.147 [0.131, 0.164] | 0.076 [0.062, 0.089] | 0.223 | 0.66 [0.60, 0.72] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.001 [-0.002, 0.004] | 0.001 [-0.001, 0.004] | 0.003 | not interpretable: C-A = 0.003 does not exceed the prespecified threshold 0.05 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.159 [0.142, 0.176] | 0.005 [-0.006, 0.017] | 0.164 | 0.97 [0.90, 1.03] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.159 [0.142, 0.176] | 0.050 [0.036, 0.064] | 0.209 | 0.76 [0.70, 0.82] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.159 [0.142, 0.176] | -0.011 [-0.023, 0.002] | 0.148 | 1.07 [0.98, 1.16] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.159 [0.142, 0.176] | -0.046 [-0.060, -0.031] | 0.114 | 1.40 [1.26, 1.56] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.159 [0.142, 0.176] | 0.064 [0.052, 0.076] | 0.223 | 0.71 [0.66, 0.76] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.057 [0.038, 0.075] | 0.106 [0.092, 0.121] | 0.163 | 0.35 [0.25, 0.43] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.057 [0.038, 0.075] | 0.148 [0.129, 0.167] | 0.205 | 0.28 [0.20, 0.35] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.057 [0.038, 0.075] | 0.090 [0.074, 0.106] | 0.147 | 0.39 [0.28, 0.48] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.057 [0.038, 0.075] | 0.059 [0.041, 0.076] | 0.115 | 0.49 [0.36, 0.62] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.057 [0.038, 0.075] | 0.165 [0.147, 0.183] | 0.222 | 0.26 [0.18, 0.32] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.082 [0.058, 0.105] | 0.081 [0.063, 0.098] | 0.163 | 0.50 [0.38, 0.61] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.082 [0.058, 0.105] | 0.123 [0.101, 0.145] | 0.205 | 0.40 [0.30, 0.50] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.082 [0.058, 0.105] | 0.065 [0.048, 0.081] | 0.147 | 0.56 [0.43, 0.67] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.082 [0.058, 0.105] | 0.033 [0.014, 0.053] | 0.115 | 0.71 [0.54, 0.87] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.082 [0.058, 0.105] | 0.140 [0.119, 0.160] | 0.222 | 0.37 [0.27, 0.46] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.067 [0.051, 0.085] | 0.047 [0.032, 0.060] | 0.114 | 0.59 [0.49, 0.70] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.161 [0.142, 0.179] | 0.002 [-0.007, 0.011] | 0.163 | 0.99 [0.94, 1.04] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.161 [0.142, 0.179] | 0.044 [0.032, 0.056] | 0.205 | 0.79 [0.74, 0.84] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.161 [0.142, 0.179] | -0.014 [-0.025, -0.003] | 0.147 | 1.10 [1.02, 1.18] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.161 [0.142, 0.179] | -0.046 [-0.061, -0.031] | 0.115 | 1.40 [1.25, 1.59] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.161 [0.142, 0.179] | 0.061 [0.052, 0.070] | 0.222 | 0.72 [0.69, 0.76] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.054 [0.042, 0.066] | 0.109 [0.097, 0.121] | 0.164 | 0.33 [0.27, 0.39] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.054 [0.042, 0.066] | 0.153 [0.135, 0.170] | 0.207 | 0.26 [0.21, 0.31] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.054 [0.042, 0.066] | 0.093 [0.079, 0.107] | 0.147 | 0.37 [0.30, 0.44] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.054 [0.042, 0.066] | 0.060 [0.046, 0.075] | 0.114 | 0.47 [0.38, 0.57] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.054 [0.042, 0.066] | 0.169 [0.152, 0.184] | 0.223 | 0.24 [0.19, 0.29] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.115 [0.098, 0.132] | 0.049 [0.037, 0.061] | 0.164 | 0.70 [0.62, 0.77] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.115 [0.098, 0.132] | 0.092 [0.076, 0.109] | 0.207 | 0.55 [0.48, 0.62] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.115 [0.098, 0.132] | 0.033 [0.021, 0.045] | 0.147 | 0.78 [0.70, 0.86] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.115 [0.098, 0.132] | -0.000 [-0.014, 0.014] | 0.114 | 1.00 [0.88, 1.13] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.115 [0.098, 0.132] | 0.108 [0.092, 0.123] | 0.223 | 0.52 [0.45, 0.58] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.034 [0.026, 0.043] | 0.024 [0.017, 0.030] | 0.058 | 0.59 [0.49, 0.69] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.160 [0.146, 0.175] | 0.003 [-0.004, 0.011] | 0.164 | 0.98 [0.93, 1.03] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.160 [0.146, 0.175] | 0.047 [0.035, 0.058] | 0.207 | 0.77 [0.73, 0.82] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.160 [0.146, 0.175] | -0.013 [-0.023, -0.002] | 0.147 | 1.09 [1.01, 1.16] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.160 [0.146, 0.175] | -0.046 [-0.059, -0.033] | 0.114 | 1.40 [1.27, 1.56] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.160 [0.146, 0.175] | 0.062 [0.054, 0.071] | 0.223 | 0.72 [0.69, 0.75] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.029 [0.017, 0.041] | 0.119 [0.102, 0.137] | 0.148 | 0.20 [0.12, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.029 [0.017, 0.041] | 0.164 [0.144, 0.183] | 0.193 | 0.15 [0.09, 0.21] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.029 [0.017, 0.041] | 0.102 [0.083, 0.121] | 0.131 | 0.22 [0.13, 0.31] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.029 [0.017, 0.041] | 0.072 [0.051, 0.093] | 0.102 | 0.29 [0.17, 0.42] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.029 [0.017, 0.041] | 0.175 [0.155, 0.196] | 0.204 | 0.14 [0.08, 0.20] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.018 [-0.011, 0.048] | 0.131 [0.113, 0.149] | 0.148 | 0.12 [-0.08, 0.30] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.018 [-0.011, 0.048] | 0.175 [0.153, 0.197] | 0.193 | 0.09 [-0.06, 0.23] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.018 [-0.011, 0.048] | 0.113 [0.096, 0.131] | 0.131 | 0.14 [-0.10, 0.33] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.018 [-0.011, 0.048] | 0.084 [0.066, 0.101] | 0.102 | 0.18 [-0.14, 0.41] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.018 [-0.011, 0.048] | 0.186 [0.166, 0.206] | 0.204 | 0.09 [-0.06, 0.22] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.056 [0.034, 0.078] | 0.088 [0.068, 0.110] | 0.145 | 0.39 [0.24, 0.52] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.147 [0.126, 0.165] | 0.002 [-0.008, 0.014] | 0.148 | 0.99 [0.90, 1.05] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.147 [0.126, 0.165] | 0.046 [0.033, 0.060] | 0.193 | 0.76 [0.69, 0.83] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.147 [0.126, 0.165] | -0.016 [-0.026, -0.002] | 0.131 | 1.12 [1.02, 1.21] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.147 [0.126, 0.165] | -0.045 [-0.059, -0.030] | 0.102 | 1.44 [1.27, 1.68] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.147 [0.126, 0.165] | 0.058 [0.047, 0.070] | 0.204 | 0.72 [0.65, 0.77] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.033 [0.018, 0.048] | 0.088 [0.069, 0.107] | 0.121 | 0.27 [0.15, 0.39] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.033 [0.018, 0.048] | 0.134 [0.114, 0.154] | 0.167 | 0.20 [0.11, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.033 [0.018, 0.048] | 0.073 [0.053, 0.093] | 0.106 | 0.31 [0.18, 0.45] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.033 [0.018, 0.048] | 0.057 [0.037, 0.077] | 0.089 | 0.37 [0.21, 0.53] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.033 [0.018, 0.048] | 0.125 [0.100, 0.149] | 0.158 | 0.21 [0.11, 0.31] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.042 [0.017, 0.065] | 0.079 [0.060, 0.099] | 0.121 | 0.35 [0.15, 0.51] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.042 [0.017, 0.065] | 0.125 [0.104, 0.146] | 0.167 | 0.25 [0.11, 0.38] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.042 [0.017, 0.065] | 0.064 [0.046, 0.083] | 0.106 | 0.39 [0.18, 0.57] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.042 [0.017, 0.065] | 0.048 [0.029, 0.066] | 0.089 | 0.47 [0.22, 0.67] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.042 [0.017, 0.065] | 0.116 [0.090, 0.142] | 0.158 | 0.26 [0.11, 0.41] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.063 [0.045, 0.081] | 0.065 [0.043, 0.088] | 0.128 | 0.49 [0.36, 0.63] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.118 [0.097, 0.137] | 0.002 [-0.016, 0.021] | 0.121 | 0.98 [0.83, 1.14] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.118 [0.097, 0.137] | 0.049 [0.027, 0.071] | 0.167 | 0.71 [0.59, 0.83] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.118 [0.097, 0.137] | -0.012 [-0.033, 0.009] | 0.106 | 1.12 [0.92, 1.34] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.118 [0.097, 0.137] | -0.029 [-0.050, -0.007] | 0.089 | 1.32 [1.07, 1.66] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.118 [0.097, 0.137] | 0.040 [0.015, 0.064] | 0.158 | 0.75 [0.61, 0.90] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.031 [0.021, 0.041] | 0.104 [0.089, 0.118] | 0.134 | 0.23 [0.16, 0.30] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.031 [0.021, 0.041] | 0.149 [0.133, 0.165] | 0.180 | 0.17 [0.12, 0.23] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.031 [0.021, 0.041] | 0.087 [0.072, 0.103] | 0.118 | 0.26 [0.18, 0.35] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.031 [0.021, 0.041] | 0.064 [0.047, 0.081] | 0.095 | 0.32 [0.22, 0.43] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.031 [0.021, 0.041] | 0.150 [0.133, 0.167] | 0.181 | 0.17 [0.11, 0.23] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.030 [0.007, 0.053] | 0.105 [0.089, 0.121] | 0.134 | 0.22 [0.05, 0.37] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.030 [0.007, 0.053] | 0.150 [0.131, 0.168] | 0.180 | 0.17 [0.04, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.030 [0.007, 0.053] | 0.089 [0.074, 0.104] | 0.118 | 0.25 [0.06, 0.41] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.030 [0.007, 0.053] | 0.066 [0.051, 0.081] | 0.095 | 0.31 [0.08, 0.50] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.030 [0.007, 0.053] | 0.151 [0.131, 0.171] | 0.181 | 0.16 [0.04, 0.28] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.060 [0.047, 0.072] | 0.077 [0.060, 0.094] | 0.136 | 0.44 [0.35, 0.53] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.132 [0.116, 0.147] | 0.002 [-0.009, 0.014] | 0.134 | 0.98 [0.90, 1.07] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.132 [0.116, 0.147] | 0.047 [0.032, 0.063] | 0.180 | 0.74 [0.66, 0.81] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.132 [0.116, 0.147] | -0.014 [-0.027, -0.000] | 0.118 | 1.12 [1.00, 1.24] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.132 [0.116, 0.147] | -0.037 [-0.053, -0.021] | 0.095 | 1.39 [1.20, 1.63] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.132 [0.116, 0.147] | 0.049 [0.034, 0.064] | 0.181 | 0.73 [0.65, 0.81] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_all|text | 48 | 0.015 [-0.001, 0.030] | 0.160 [0.144, 0.177] | 0.175 | 0.08 [-0.00, 0.17] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_cp|text | 48 | 0.015 [-0.001, 0.030] | 0.208 [0.190, 0.226] | 0.223 | 0.07 [-0.00, 0.13] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_window:10|text | 48 | 0.015 [-0.001, 0.030] | 0.147 [0.131, 0.164] | 0.162 | 0.09 [-0.00, 0.18] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_window:20|text | 48 | 0.015 [-0.001, 0.030] | 0.114 [0.097, 0.131] | 0.128 | 0.11 [-0.00, 0.22] |
+| gemma-3-27b-it@005ad340 | held_out | pet | A+|full|text | C|sum_window:5|text | 48 | 0.015 [-0.001, 0.030] | 0.222 [0.204, 0.240] | 0.237 | 0.06 [-0.00, 0.12] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_all|text | 48 | 0.102 [0.077, 0.127] | 0.073 [0.053, 0.094] | 0.175 | 0.58 [0.46, 0.70] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_cp|text | 48 | 0.102 [0.077, 0.127] | 0.121 [0.101, 0.140] | 0.223 | 0.46 [0.36, 0.55] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_window:10|text | 48 | 0.102 [0.077, 0.127] | 0.060 [0.036, 0.083] | 0.162 | 0.63 [0.49, 0.77] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_window:20|text | 48 | 0.102 [0.077, 0.127] | 0.026 [0.002, 0.051] | 0.128 | 0.79 [0.61, 0.99] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B'|full|chart | C|sum_window:5|text | 48 | 0.102 [0.077, 0.127] | 0.135 [0.112, 0.158] | 0.237 | 0.43 [0.33, 0.53] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|image | C|sum_cp|image | 48 | 0.090 [0.070, 0.109] | 0.062 [0.042, 0.082] | 0.152 | 0.59 [0.48, 0.71] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_all|text | 48 | 0.147 [0.129, 0.166] | 0.028 [0.016, 0.039] | 0.175 | 0.84 [0.77, 0.91] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_cp|text | 48 | 0.147 [0.129, 0.166] | 0.075 [0.061, 0.090] | 0.223 | 0.66 [0.60, 0.72] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_window:10|text | 48 | 0.147 [0.129, 0.166] | 0.015 [0.001, 0.028] | 0.162 | 0.91 [0.83, 0.99] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_window:20|text | 48 | 0.147 [0.129, 0.166] | -0.019 [-0.033, -0.004] | 0.128 | 1.15 [1.03, 1.28] |
+| gemma-3-27b-it@005ad340 | held_out | pet | B|full|text | C|sum_window:5|text | 48 | 0.147 [0.129, 0.166] | 0.089 [0.076, 0.103] | 0.237 | 0.62 [0.56, 0.68] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_all|text | 48 | 0.041 [0.026, 0.056] | 0.078 [0.057, 0.099] | 0.119 | 0.34 [0.24, 0.46] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_cp|text | 48 | 0.041 [0.026, 0.056] | 0.131 [0.104, 0.156] | 0.172 | 0.24 [0.16, 0.32] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_window:10|text | 48 | 0.041 [0.026, 0.056] | 0.075 [0.051, 0.098] | 0.116 | 0.35 [0.23, 0.49] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_window:20|text | 48 | 0.041 [0.026, 0.056] | 0.052 [0.030, 0.072] | 0.093 | 0.44 [0.31, 0.60] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | A+|full|text | C|sum_window:5|text | 48 | 0.041 [0.026, 0.056] | 0.135 [0.105, 0.163] | 0.176 | 0.23 [0.15, 0.32] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_all|text | 48 | 0.076 [0.052, 0.102] | 0.043 [0.027, 0.059] | 0.119 | 0.64 [0.50, 0.77] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_cp|text | 48 | 0.076 [0.052, 0.102] | 0.095 [0.074, 0.114] | 0.172 | 0.45 [0.33, 0.55] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_window:10|text | 48 | 0.076 [0.052, 0.102] | 0.040 [0.021, 0.057] | 0.116 | 0.66 [0.51, 0.81] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_window:20|text | 48 | 0.076 [0.052, 0.102] | 0.016 [-0.001, 0.035] | 0.093 | 0.82 [0.64, 1.02] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B'|full|chart | C|sum_window:5|text | 48 | 0.076 [0.052, 0.102] | 0.100 [0.077, 0.122] | 0.176 | 0.43 [0.32, 0.54] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|image | C|sum_cp|image | 48 | 0.057 [0.036, 0.079] | 0.055 [0.036, 0.073] | 0.112 | 0.51 [0.36, 0.65] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_all|text | 48 | 0.116 [0.093, 0.138] | 0.004 [-0.011, 0.019] | 0.119 | 0.97 [0.85, 1.10] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_cp|text | 48 | 0.116 [0.093, 0.138] | 0.056 [0.037, 0.074] | 0.172 | 0.67 [0.59, 0.76] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_window:10|text | 48 | 0.116 [0.093, 0.138] | 0.001 [-0.015, 0.016] | 0.116 | 1.00 [0.87, 1.14] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_window:20|text | 48 | 0.116 [0.093, 0.138] | -0.023 [-0.039, -0.007] | 0.093 | 1.25 [1.06, 1.51] |
+| gemma-3-27b-it@005ad340 | held_out | scenario | B|full|text | C|sum_window:5|text | 48 | 0.116 [0.093, 0.138] | 0.060 [0.040, 0.080] | 0.176 | 0.66 [0.57, 0.75] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_all|text | 48 | 0.028 [0.017, 0.039] | 0.119 [0.104, 0.135] | 0.147 | 0.19 [0.12, 0.26] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_cp|text | 48 | 0.028 [0.017, 0.039] | 0.169 [0.150, 0.188] | 0.197 | 0.14 [0.09, 0.19] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_window:10|text | 48 | 0.028 [0.017, 0.039] | 0.111 [0.094, 0.128] | 0.139 | 0.20 [0.12, 0.28] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_window:20|text | 48 | 0.028 [0.017, 0.039] | 0.083 [0.067, 0.098] | 0.111 | 0.25 [0.16, 0.34] |
+| gemma-3-27b-it@005ad340 | held_out | all | A+|full|text | C|sum_window:5|text | 48 | 0.028 [0.017, 0.039] | 0.179 [0.158, 0.198] | 0.206 | 0.14 [0.08, 0.19] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_all|text | 48 | 0.089 [0.069, 0.110] | 0.058 [0.043, 0.073] | 0.147 | 0.61 [0.49, 0.71] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_cp|text | 48 | 0.089 [0.069, 0.110] | 0.108 [0.091, 0.125] | 0.197 | 0.45 [0.37, 0.53] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_window:10|text | 48 | 0.089 [0.069, 0.110] | 0.050 [0.032, 0.068] | 0.139 | 0.64 [0.51, 0.77] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_window:20|text | 48 | 0.089 [0.069, 0.110] | 0.021 [0.003, 0.041] | 0.111 | 0.81 [0.64, 0.97] |
+| gemma-3-27b-it@005ad340 | held_out | all | B'|full|chart | C|sum_window:5|text | 48 | 0.089 [0.069, 0.110] | 0.117 [0.098, 0.137] | 0.206 | 0.43 [0.34, 0.52] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|image | C|sum_cp|image | 48 | 0.073 [0.057, 0.089] | 0.058 [0.045, 0.073] | 0.132 | 0.56 [0.46, 0.65] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_all|text | 48 | 0.132 [0.116, 0.148] | 0.016 [0.006, 0.025] | 0.147 | 0.89 [0.83, 0.96] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_cp|text | 48 | 0.132 [0.116, 0.148] | 0.066 [0.052, 0.080] | 0.197 | 0.67 [0.61, 0.73] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_window:10|text | 48 | 0.132 [0.116, 0.148] | 0.008 [-0.005, 0.020] | 0.139 | 0.95 [0.86, 1.04] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_window:20|text | 48 | 0.132 [0.116, 0.148] | -0.021 [-0.033, -0.009] | 0.111 | 1.19 [1.07, 1.33] |
+| gemma-3-27b-it@005ad340 | held_out | all | B|full|text | C|sum_window:5|text | 48 | 0.132 [0.116, 0.148] | 0.075 [0.061, 0.089] | 0.206 | 0.64 [0.58, 0.70] |
+
+## TOST: VLM + summary vs rule alone (margin +-0.02, alpha 0.05)
+
+Equivalence here means only that the accuracy difference lies within the margin; it does not imply trial-by-trial rule following or identical internal computation (see agreement below).
+
+- Secondary family InternVL3_5-38B-HF@7c830fc2/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+- Secondary family InternVL3_5-8B-HF@741a7d03/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+- Secondary family Qwen3-VL-32B-Instruct@0cfaf481/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+- Secondary family Qwen3-VL-8B-Instruct@0c351dd0/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+- Secondary family gemma-3-27b-it@005ad340/episodes_v3#e00b8793: members ['C|sum_all|text vs window-count rule (domains pooled)', 'C|sum_cp|text vs window-count rule (domains pooled)', 'C|sum_window:5|text vs window-count rule (domains pooled)']; K* = 5 (source analysis/h200_ho/dev_selection.json); margin 0.02; alpha 0.05; Holm (missing members counted as p = 1)
+
+| model | split | slot | C arm | rule | n | acc VLM | acc rule | diff [90% CI] | p TOST | equiv. (uncorr.) | Holm p | equiv. (Holm) | role |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.633 | 0.632 | 0.001 [-0.001, 0.003] | 1.8e-21 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.633 | 0.677 | -0.044 [-0.051, -0.036] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.515 | 0.678 | -0.163 [-0.181, -0.145] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.515 | 0.677 | -0.162 [-0.178, -0.145] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.678 | 0.678 | -0.000 [-0.001, 0.001] | 8.9e-37 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.678 | 0.677 | 0.001 [-0.005, 0.007] | 9.6e-06 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.617 | 0.612 | 0.005 [0.001, 0.008] | 7.5e-09 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.060 [-0.067, -0.053] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.582 | 0.579 | 0.003 [-0.003, 0.008] | 2.1e-06 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.582 | 0.677 | -0.094 [-0.105, -0.084] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.692 | 0.692 | 0.000 [-0.001, 0.001] | 7.6e-40 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.692 | 0.677 | 0.015 [0.009, 0.021] | 0.1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.633 | 0.632 | 0.001 [-0.001, 0.004] | 3.0e-17 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.633 | 0.677 | -0.044 [-0.051, -0.037] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.573 | 0.678 | -0.105 [-0.127, -0.084] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.573 | 0.677 | -0.104 [-0.125, -0.083] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.677 | 0.678 | -0.001 [-0.002, 0.000] | 1.1e-36 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.001 [-0.006, 0.007] | 4.3e-06 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.615 | 0.612 | 0.003 [-0.000, 0.007] | 2.8e-10 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.615 | 0.677 | -0.061 [-0.069, -0.054] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.581 | 0.579 | 0.001 [-0.004, 0.007] | 4.2e-07 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.581 | 0.677 | -0.096 [-0.106, -0.085] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.691 | 0.692 | -0.001 [-0.001, 0.000] | 1.4e-39 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.691 | 0.677 | 0.015 [0.008, 0.021] | 0.082 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_all|text | window_counts | 48 | 0.633 | 0.632 | 0.001 [-0.001, 0.003] | 1.4e-20 | yes | 1.4e-20 | yes | secondary |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.633 | 0.677 | -0.044 [-0.051, -0.036] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.544 | 0.678 | -0.134 [-0.151, -0.117] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.544 | 0.677 | -0.133 [-0.148, -0.117] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.677 | 0.678 | -0.001 [-0.001, 0.000] | 8.6e-44 | yes | 2.6e-43 | yes | secondary |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.001 [-0.006, 0.007] | 6.0e-06 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.616 | 0.612 | 0.004 [0.001, 0.008] | 7.0e-10 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.616 | 0.677 | -0.061 [-0.068, -0.053] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.581 | 0.579 | 0.002 [-0.003, 0.007] | 6.0e-07 | yes | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.581 | 0.677 | -0.095 [-0.105, -0.085] | 1 | no | nan | - | exploratory |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.691 | 0.692 | -0.000 [-0.001, 0.000] | 9.7e-44 | yes | 2.6e-43 | yes | secondary |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.691 | 0.677 | 0.015 [0.009, 0.021] | 0.091 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.639 | 0.632 | 0.007 [0.004, 0.011] | 2.1e-07 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.639 | 0.677 | -0.038 [-0.045, -0.031] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.648 | 0.678 | -0.030 [-0.041, -0.020] | 0.94 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.648 | 0.677 | -0.029 [-0.040, -0.018] | 0.91 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.678 | 0.678 | -0.000 [-0.001, 0.001] | 8.9e-37 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.678 | 0.677 | 0.001 [-0.005, 0.007] | 8.3e-06 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.617 | 0.612 | 0.005 [0.001, 0.009] | 8.9e-09 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.060 [-0.067, -0.053] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.590 | 0.579 | 0.011 [0.005, 0.017] | 0.007 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.590 | 0.677 | -0.086 [-0.097, -0.076] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.692 | 0.692 | 0.000 [-0.001, 0.001] | 7.6e-40 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.692 | 0.677 | 0.015 [0.009, 0.021] | 0.1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.631 | 0.632 | -0.001 [-0.005, 0.003] | 2.7e-10 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.631 | 0.677 | -0.046 [-0.054, -0.038] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.628 | 0.678 | -0.050 [-0.064, -0.037] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.628 | 0.677 | -0.049 [-0.062, -0.036] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.669 | 0.678 | -0.009 [-0.014, -0.005] | 0.00015 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.669 | 0.677 | -0.008 [-0.015, -0.001] | 0.0056 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.609 | 0.612 | -0.003 [-0.009, 0.002] | 4.9e-06 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.609 | 0.677 | -0.068 [-0.077, -0.059] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.581 | 0.579 | 0.002 [-0.005, 0.009] | 7.4e-05 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.581 | 0.677 | -0.095 [-0.106, -0.085] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.670 | 0.692 | -0.021 [-0.031, -0.013] | 0.59 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.670 | 0.677 | -0.006 [-0.018, 0.005] | 0.027 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_all|text | window_counts | 48 | 0.635 | 0.632 | 0.003 [0.000, 0.006] | 2.2e-14 | yes | 4.4e-14 | yes | secondary |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.635 | 0.677 | -0.042 [-0.049, -0.035] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.638 | 0.678 | -0.040 [-0.050, -0.031] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.638 | 0.677 | -0.039 [-0.049, -0.029] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.673 | 0.678 | -0.005 [-0.007, -0.003] | 5.5e-15 | yes | 1.7e-14 | yes | secondary |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.673 | 0.677 | -0.003 [-0.010, 0.003] | 7.8e-05 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.613 | 0.612 | 0.001 [-0.002, 0.004] | 6.4e-15 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.613 | 0.677 | -0.064 [-0.071, -0.057] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.586 | 0.579 | 0.006 [0.002, 0.010] | 4.8e-07 | yes | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.586 | 0.677 | -0.091 [-0.100, -0.081] | 1 | no | nan | - | exploratory |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.681 | 0.692 | -0.011 [-0.016, -0.006] | 0.00098 | yes | 0.00098 | yes | secondary |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.681 | 0.677 | 0.004 [-0.003, 0.012] | 0.0011 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.633 | 0.632 | 0.001 [-0.001, 0.003] | 1.8e-21 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.633 | 0.677 | -0.044 [-0.051, -0.036] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.504 | 0.678 | -0.174 [-0.193, -0.155] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.504 | 0.677 | -0.173 [-0.190, -0.156] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.678 | 0.678 | -0.000 [-0.001, 0.001] | 8.9e-37 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.678 | 0.677 | 0.001 [-0.005, 0.007] | 8.3e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.617 | 0.612 | 0.005 [0.001, 0.009] | 8.9e-09 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.060 [-0.067, -0.053] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.582 | 0.579 | 0.003 [-0.002, 0.008] | 1.2e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.582 | 0.677 | -0.094 [-0.104, -0.084] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.692 | 0.692 | 0.000 [-0.001, 0.001] | 7.6e-40 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.692 | 0.677 | 0.015 [0.009, 0.021] | 0.1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.630 | 0.632 | -0.002 [-0.005, 0.001] | 5.2e-12 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.630 | 0.677 | -0.047 [-0.054, -0.039] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.599 | 0.678 | -0.079 [-0.095, -0.063] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.599 | 0.677 | -0.078 [-0.094, -0.061] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.672 | 0.678 | -0.006 [-0.009, -0.003] | 1.7e-09 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.672 | 0.677 | -0.004 [-0.012, 0.003] | 0.00098 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.614 | 0.612 | 0.002 [-0.003, 0.006] | 1.5e-08 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.614 | 0.677 | -0.063 [-0.070, -0.055] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.583 | 0.579 | 0.003 [-0.002, 0.009] | 6.0e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.583 | 0.677 | -0.094 [-0.104, -0.084] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.689 | 0.692 | -0.002 [-0.005, 0.000] | 1.2e-14 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.689 | 0.677 | 0.013 [0.006, 0.019] | 0.042 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_all|text | window_counts | 48 | 0.631 | 0.632 | -0.000 [-0.003, 0.002] | 1.1e-18 | yes | 1.1e-18 | yes | secondary |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.631 | 0.677 | -0.045 [-0.053, -0.038] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.551 | 0.678 | -0.127 [-0.142, -0.112] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.551 | 0.677 | -0.125 [-0.139, -0.112] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.675 | 0.678 | -0.003 [-0.005, -0.001] | 1.4e-20 | yes | 2.7e-20 | yes | secondary |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.675 | 0.677 | -0.002 [-0.009, 0.005] | 4.3e-05 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.615 | 0.612 | 0.003 [-0.001, 0.007] | 7.5e-09 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.615 | 0.677 | -0.061 [-0.069, -0.054] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.582 | 0.579 | 0.003 [-0.002, 0.008] | 1.8e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.582 | 0.677 | -0.094 [-0.104, -0.084] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.691 | 0.692 | -0.001 [-0.003, 0.000] | 8.4e-26 | yes | 2.5e-25 | yes | secondary |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.691 | 0.677 | 0.014 [0.008, 0.020] | 0.062 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.633 | 0.632 | 0.001 [-0.002, 0.005] | 1.5e-11 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.633 | 0.677 | -0.044 [-0.051, -0.036] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.635 | 0.678 | -0.043 [-0.051, -0.034] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.635 | 0.677 | -0.041 [-0.051, -0.031] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.677 | 0.678 | -0.001 [-0.002, 0.001] | 4.1e-31 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.001 [-0.006, 0.007] | 5.6e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.616 | 0.612 | 0.004 [-0.000, 0.008] | 4.7e-08 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.616 | 0.677 | -0.061 [-0.068, -0.054] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.586 | 0.579 | 0.007 [0.001, 0.013] | 0.00027 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.586 | 0.677 | -0.090 [-0.100, -0.080] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.689 | 0.692 | -0.003 [-0.006, 0.000] | 8.6e-12 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.689 | 0.677 | 0.012 [0.005, 0.020] | 0.044 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.608 | 0.632 | -0.023 [-0.035, -0.013] | 0.69 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.608 | 0.677 | -0.068 [-0.081, -0.055] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.621 | 0.678 | -0.057 [-0.076, -0.040] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.621 | 0.677 | -0.056 [-0.075, -0.038] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.655 | 0.678 | -0.023 [-0.034, -0.014] | 0.71 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.655 | 0.677 | -0.022 [-0.034, -0.011] | 0.62 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.594 | 0.612 | -0.018 [-0.030, -0.008] | 0.41 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.594 | 0.677 | -0.083 [-0.096, -0.071] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.577 | 0.579 | -0.002 [-0.011, 0.007] | 0.0015 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.577 | 0.677 | -0.099 [-0.112, -0.087] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.646 | 0.692 | -0.046 [-0.065, -0.028] | 0.99 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.646 | 0.677 | -0.031 [-0.050, -0.013] | 0.83 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | window_counts | 48 | 0.621 | 0.632 | -0.011 [-0.017, -0.005] | 0.009 | yes | 0.02 | yes | secondary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.621 | 0.677 | -0.056 [-0.065, -0.047] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.628 | 0.678 | -0.050 [-0.061, -0.040] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.628 | 0.677 | -0.049 [-0.060, -0.037] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.666 | 0.678 | -0.012 [-0.017, -0.007] | 0.0066 | yes | 0.02 | yes | secondary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.666 | 0.677 | -0.011 [-0.019, -0.003] | 0.031 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.605 | 0.612 | -0.007 [-0.013, -0.001] | 0.00056 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.605 | 0.677 | -0.072 [-0.080, -0.064] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.582 | 0.579 | 0.003 [-0.004, 0.009] | 9.9e-06 | yes | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.582 | 0.677 | -0.095 [-0.105, -0.085] | 1 | no | nan | - | exploratory |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.667 | 0.692 | -0.024 [-0.034, -0.015] | 0.77 | no | 0.77 | no | secondary |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.667 | 0.677 | -0.009 [-0.020, 0.001] | 0.052 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | window_counts | 48 | 0.630 | 0.632 | -0.002 [-0.006, 0.002] | 1.6e-10 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | bocpd_posterior | 48 | 0.630 | 0.677 | -0.047 [-0.055, -0.039] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | window_counts | 48 | 0.602 | 0.678 | -0.076 [-0.091, -0.061] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | bocpd_posterior | 48 | 0.602 | 0.677 | -0.075 [-0.089, -0.060] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | window_counts | 48 | 0.677 | 0.678 | -0.001 [-0.002, 0.001] | 4.1e-31 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.001 [-0.006, 0.007] | 5.6e-06 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | window_counts | 48 | 0.617 | 0.612 | 0.005 [0.001, 0.009] | 8.9e-09 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.060 [-0.067, -0.053] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | window_counts | 48 | 0.583 | 0.579 | 0.004 [-0.001, 0.009] | 3.2e-06 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | bocpd_posterior | 48 | 0.583 | 0.677 | -0.093 [-0.103, -0.083] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | window_counts | 48 | 0.692 | 0.692 | 0.000 [-0.001, 0.001] | 7.6e-40 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | bocpd_posterior | 48 | 0.692 | 0.677 | 0.015 [0.009, 0.021] | 0.1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | window_counts | 48 | 0.605 | 0.632 | -0.027 [-0.035, -0.019] | 0.9 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | bocpd_posterior | 48 | 0.605 | 0.677 | -0.072 [-0.083, -0.061] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | window_counts | 48 | 0.589 | 0.678 | -0.089 [-0.105, -0.072] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | bocpd_posterior | 48 | 0.589 | 0.677 | -0.087 [-0.103, -0.072] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | window_counts | 48 | 0.657 | 0.678 | -0.021 [-0.030, -0.012] | 0.56 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | bocpd_posterior | 48 | 0.657 | 0.677 | -0.020 [-0.031, -0.008] | 0.47 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | window_counts | 48 | 0.602 | 0.612 | -0.010 [-0.019, -0.003] | 0.026 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | bocpd_posterior | 48 | 0.602 | 0.677 | -0.075 [-0.086, -0.064] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | window_counts | 48 | 0.578 | 0.579 | -0.001 [-0.011, 0.009] | 0.0017 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | bocpd_posterior | 48 | 0.578 | 0.677 | -0.098 [-0.112, -0.084] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | window_counts | 48 | 0.662 | 0.692 | -0.030 [-0.042, -0.019] | 0.91 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | bocpd_posterior | 48 | 0.662 | 0.677 | -0.015 [-0.029, -0.002] | 0.28 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | window_counts | 48 | 0.617 | 0.632 | -0.014 [-0.019, -0.010] | 0.027 | yes | 0.053 | no | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | bocpd_posterior | 48 | 0.617 | 0.677 | -0.059 [-0.068, -0.050] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | window_counts | 48 | 0.596 | 0.678 | -0.082 [-0.095, -0.069] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | bocpd_posterior | 48 | 0.596 | 0.677 | -0.081 [-0.093, -0.069] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | window_counts | 48 | 0.667 | 0.678 | -0.011 [-0.015, -0.006] | 0.0008 | yes | 0.0024 | yes | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | bocpd_posterior | 48 | 0.667 | 0.677 | -0.009 [-0.017, -0.002] | 0.015 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | window_counts | 48 | 0.609 | 0.612 | -0.003 [-0.008, 0.002] | 2.6e-07 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | bocpd_posterior | 48 | 0.609 | 0.677 | -0.067 [-0.076, -0.059] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | window_counts | 48 | 0.581 | 0.579 | 0.002 [-0.004, 0.007] | 3.6e-06 | yes | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | bocpd_posterior | 48 | 0.581 | 0.677 | -0.096 [-0.107, -0.085] | 1 | no | nan | - | exploratory |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | window_counts | 48 | 0.677 | 0.692 | -0.015 [-0.021, -0.009] | 0.088 | no | 0.088 | no | secondary |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | bocpd_posterior | 48 | 0.677 | 0.677 | 0.000 [-0.009, 0.009] | 0.00033 | yes | nan | - | exploratory |
+
+## Trial-level choice agreement: VLM + summary vs window-count rule (non-tied trials)
+
+| model | split | slot | C arm | n ep | non-tied | agree (pooled) | agree ep-mean [95% CI] | disagree | VLM right | rule right | stable | volatile | VLM->A | VLM->B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_all|text | 48 | 3687 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.521 | 0.521 [0.504, 0.538] | 1805 | 594 | 1211 | 887 | 918 | 487 | 1318 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_cp|text | 48 | 3770 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.999 | 0.999 [0.997, 1.000] | 4 | 2 | 2 | 2 | 2 | 0 | 4 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.674 | 0.674 [0.616, 0.734] | 1230 | 417 | 813 | 622 | 608 | 319 | 911 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.999 | 0.999 [0.998, 1.000] | 2 | 2 | 0 | 0 | 2 | 0 | 2 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_all|text | 48 | 7374 | 0.999 | 0.999 [0.999, 1.000] | 4 | 2 | 2 | 2 | 2 | 0 | 4 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.597 | 0.598 [0.564, 0.631] | 3035 | 1011 | 2024 | 1509 | 1526 | 806 | 2229 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_cp|text | 48 | 7540 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:10|text | 48 | 6974 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:20|text | 48 | 5890 | 1.000 | 1.000 [0.999, 1.000] | 2 | 2 | 0 | 0 | 2 | 0 | 2 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | all | C|sum_window:5|text | 48 | 7552 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_all|text | 48 | 3687 | 0.989 | 0.989 [0.984, 0.993] | 40 | 31 | 9 | 8 | 32 | 5 | 35 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.914 | 0.914 [0.899, 0.927] | 324 | 105 | 219 | 137 | 187 | 103 | 221 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_cp|text | 48 | 3770 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 0.984 | 0.984 [0.977, 0.990] | 46 | 38 | 8 | 1 | 45 | 11 | 35 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.968 | 0.967 [0.948, 0.982] | 119 | 55 | 64 | 59 | 60 | 10 | 109 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.854 | 0.854 [0.818, 0.889] | 550 | 179 | 371 | 238 | 312 | 168 | 382 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 0.970 | 0.970 [0.959, 0.980] | 114 | 38 | 76 | 56 | 58 | 41 | 73 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 0.978 | 0.978 [0.966, 0.988] | 78 | 37 | 41 | 25 | 53 | 26 | 52 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.960 | 0.960 [0.945, 0.974] | 118 | 72 | 46 | 29 | 89 | 39 | 79 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 0.954 | 0.954 [0.933, 0.972] | 175 | 46 | 129 | 77 | 98 | 61 | 114 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_all|text | 48 | 7374 | 0.978 | 0.978 [0.968, 0.986] | 159 | 86 | 73 | 67 | 92 | 15 | 144 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.884 | 0.884 [0.864, 0.903] | 874 | 284 | 590 | 375 | 499 | 271 | 603 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_cp|text | 48 | 7540 | 0.985 | 0.985 [0.979, 0.990] | 114 | 38 | 76 | 56 | 58 | 41 | 73 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:10|text | 48 | 6974 | 0.989 | 0.989 [0.983, 0.994] | 78 | 37 | 41 | 25 | 53 | 26 | 52 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:20|text | 48 | 5890 | 0.972 | 0.972 [0.964, 0.980] | 164 | 110 | 54 | 30 | 134 | 50 | 114 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | all | C|sum_window:5|text | 48 | 7552 | 0.977 | 0.977 [0.967, 0.986] | 175 | 46 | 129 | 77 | 98 | 61 | 114 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_all|text | 48 | 3687 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.503 | 0.503 [0.486, 0.519] | 1874 | 607 | 1267 | 948 | 926 | 489 | 1385 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_cp|text | 48 | 3770 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.989 | 0.989 [0.979, 0.996] | 41 | 15 | 26 | 19 | 22 | 0 | 41 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.770 | 0.770 [0.733, 0.807] | 868 | 285 | 583 | 423 | 445 | 244 | 624 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 0.986 | 0.986 [0.978, 0.993] | 53 | 16 | 37 | 22 | 31 | 18 | 35 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 0.996 | 0.996 [0.993, 0.998] | 15 | 2 | 13 | 6 | 9 | 1 | 14 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.981 | 0.981 [0.970, 0.991] | 55 | 28 | 27 | 21 | 34 | 14 | 41 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 0.994 | 0.994 [0.989, 0.998] | 23 | 7 | 16 | 10 | 13 | 4 | 19 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_all|text | 48 | 7374 | 0.994 | 0.994 [0.989, 0.998] | 41 | 15 | 26 | 19 | 22 | 0 | 41 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.636 | 0.636 [0.613, 0.659] | 2742 | 892 | 1850 | 1371 | 1371 | 733 | 2009 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_cp|text | 48 | 7540 | 0.993 | 0.993 [0.989, 0.996] | 53 | 16 | 37 | 22 | 31 | 18 | 35 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:10|text | 48 | 6974 | 0.998 | 0.998 [0.996, 0.999] | 15 | 2 | 13 | 6 | 9 | 1 | 14 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:20|text | 48 | 5890 | 0.991 | 0.991 [0.985, 0.996] | 55 | 28 | 27 | 21 | 34 | 14 | 41 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | all | C|sum_window:5|text | 48 | 7552 | 0.997 | 0.997 [0.995, 0.999] | 23 | 7 | 16 | 10 | 13 | 4 | 19 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_all|text | 48 | 3687 | 0.979 | 0.979 [0.966, 0.989] | 77 | 39 | 38 | 21 | 56 | 4 | 73 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.888 | 0.888 [0.877, 0.899] | 423 | 131 | 292 | 156 | 267 | 150 | 273 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_cp|text | 48 | 3770 | 0.999 | 0.999 [0.998, 1.000] | 3 | 1 | 2 | 0 | 3 | 0 | 3 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 0.998 | 0.998 [0.994, 1.000] | 8 | 2 | 6 | 0 | 8 | 2 | 6 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 0.980 | 0.980 [0.970, 0.988] | 59 | 37 | 22 | 7 | 52 | 15 | 44 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 0.995 | 0.995 [0.989, 0.999] | 20 | 5 | 15 | 9 | 11 | 5 | 15 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.903 | 0.902 [0.857, 0.941] | 357 | 129 | 228 | 168 | 189 | 5 | 352 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.847 | 0.847 [0.797, 0.893] | 578 | 181 | 397 | 286 | 292 | 139 | 439 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 0.941 | 0.941 [0.909, 0.969] | 221 | 65 | 156 | 97 | 124 | 60 | 161 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 0.917 | 0.917 [0.871, 0.957] | 291 | 110 | 181 | 142 | 149 | 84 | 207 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.909 | 0.910 [0.872, 0.942] | 268 | 137 | 131 | 100 | 168 | 62 | 206 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 0.892 | 0.892 [0.843, 0.937] | 407 | 115 | 292 | 204 | 203 | 101 | 306 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_all|text | 48 | 7374 | 0.941 | 0.940 [0.917, 0.961] | 434 | 168 | 266 | 189 | 245 | 9 | 425 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.867 | 0.867 [0.842, 0.890] | 1001 | 312 | 689 | 442 | 559 | 289 | 712 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_cp|text | 48 | 7540 | 0.970 | 0.970 [0.954, 0.984] | 224 | 66 | 158 | 97 | 127 | 60 | 164 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:10|text | 48 | 6974 | 0.957 | 0.957 [0.934, 0.977] | 299 | 112 | 187 | 142 | 157 | 86 | 213 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:20|text | 48 | 5890 | 0.944 | 0.945 [0.925, 0.962] | 327 | 174 | 153 | 107 | 220 | 77 | 250 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | all | C|sum_window:5|text | 48 | 7552 | 0.943 | 0.943 [0.919, 0.966] | 427 | 120 | 307 | 213 | 214 | 106 | 321 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_all|text | 48 | 3687 | 0.986 | 0.985 [0.975, 0.994] | 53 | 21 | 32 | 15 | 38 | 1 | 52 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|image | 48 | 3770 | 0.769 | 0.769 [0.750, 0.788] | 869 | 291 | 578 | 420 | 449 | 259 | 610 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_cp|text | 48 | 3770 | 0.999 | 0.999 [0.998, 1.000] | 3 | 1 | 2 | 0 | 3 | 0 | 3 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:10|text | 48 | 3487 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:20|text | 48 | 2945 | 0.997 | 0.997 [0.994, 0.999] | 8 | 6 | 2 | 0 | 8 | 0 | 8 |
+| gemma-3-27b-it@005ad340 | held_out | pet | C|sum_window:5|text | 48 | 3776 | 1.000 | 1.000 [1.000, 1.000] | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_all|text | 48 | 3687 | 0.884 | 0.883 [0.853, 0.911] | 428 | 162 | 266 | 212 | 216 | 13 | 415 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|image | 48 | 3770 | 0.739 | 0.739 [0.718, 0.760] | 984 | 324 | 660 | 479 | 505 | 279 | 705 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_cp|text | 48 | 3770 | 0.932 | 0.931 [0.905, 0.955] | 258 | 90 | 168 | 137 | 121 | 68 | 190 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:10|text | 48 | 3487 | 0.938 | 0.938 [0.911, 0.962] | 216 | 86 | 130 | 111 | 105 | 52 | 164 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:20|text | 48 | 2945 | 0.908 | 0.906 [0.878, 0.933] | 272 | 128 | 144 | 137 | 135 | 49 | 223 |
+| gemma-3-27b-it@005ad340 | held_out | scenario | C|sum_window:5|text | 48 | 3776 | 0.916 | 0.916 [0.889, 0.941] | 316 | 102 | 214 | 160 | 156 | 82 | 234 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_all|text | 48 | 7374 | 0.935 | 0.934 [0.918, 0.949] | 481 | 183 | 298 | 227 | 254 | 14 | 467 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|image | 48 | 7540 | 0.754 | 0.754 [0.741, 0.767] | 1853 | 615 | 1238 | 899 | 954 | 538 | 1315 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_cp|text | 48 | 7540 | 0.965 | 0.965 [0.952, 0.977] | 261 | 91 | 170 | 137 | 124 | 68 | 193 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:10|text | 48 | 6974 | 0.969 | 0.969 [0.956, 0.981] | 216 | 86 | 130 | 111 | 105 | 52 | 164 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:20|text | 48 | 5890 | 0.952 | 0.952 [0.937, 0.965] | 280 | 134 | 146 | 137 | 143 | 49 | 231 |
+| gemma-3-27b-it@005ad340 | held_out | all | C|sum_window:5|text | 48 | 7552 | 0.958 | 0.958 [0.944, 0.971] | 316 | 102 | 214 | 160 | 156 | 82 | 234 |
+
+## Per-scenario gap (domain_slot = scenario only; pet reported separately above)
+
+Each held-out text scenario has 8 episode pairs; the cross-scenario sign test has 6 units (one per text scenario; minimum two-sided p = 0.03125). Pet is reported separately and is not part of the cross-scenario test.
+
+| model | split | C arm | scenario | n pairs | gap [95% CI] |
+|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | color | 8 | 0.055 [0.025, 0.089] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | medical | 8 | 0.087 [0.065, 0.117] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | news | 8 | 0.068 [0.040, 0.097] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | sports | 8 | 0.087 [0.060, 0.114] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | stock | 8 | 0.127 [0.106, 0.144] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | weather | 8 | 0.101 [0.070, 0.133] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | color | 8 | 0.176 [0.122, 0.220] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | medical | 8 | 0.179 [0.146, 0.210] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | news | 8 | -0.009 [-0.028, 0.009] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | sports | 8 | 0.040 [0.011, 0.070] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | stock | 8 | 0.059 [0.022, 0.085] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | weather | 8 | 0.027 [-0.013, 0.066] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | sign test | 6 scen. | 5 positive, p=0.22 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | color | 8 | 0.103 [0.070, 0.130] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | medical | 8 | 0.134 [0.112, 0.161] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | news | 8 | 0.095 [0.062, 0.130] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | sports | 8 | 0.134 [0.112, 0.158] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | stock | 8 | 0.177 [0.152, 0.201] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | weather | 8 | 0.147 [0.098, 0.195] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | color | 8 | 0.035 [0.011, 0.062] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | medical | 8 | 0.062 [0.032, 0.093] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | news | 8 | 0.044 [0.006, 0.082] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | sports | 8 | 0.063 [0.032, 0.095] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | stock | 8 | 0.125 [0.108, 0.142] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | weather | 8 | 0.090 [0.060, 0.117] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | color | 8 | 0.002 [-0.036, 0.054] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | medical | 8 | 0.014 [-0.025, 0.063] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | news | 8 | 0.027 [-0.009, 0.057] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | sports | 8 | 0.033 [0.003, 0.062] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | stock | 8 | 0.093 [0.055, 0.130] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | weather | 8 | 0.043 [0.003, 0.081] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | color | 8 | 0.106 [0.079, 0.134] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | medical | 8 | 0.142 [0.119, 0.169] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | news | 8 | 0.114 [0.073, 0.150] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | sports | 8 | 0.152 [0.114, 0.191] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | stock | 8 | 0.196 [0.179, 0.214] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | weather | 8 | 0.165 [0.125, 0.203] |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | color | 8 | 0.172 [0.149, 0.193] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | medical | 8 | 0.101 [0.071, 0.131] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | news | 8 | 0.116 [0.082, 0.150] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | sports | 8 | 0.117 [0.082, 0.147] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | stock | 8 | 0.136 [0.101, 0.185] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | weather | 8 | 0.157 [0.117, 0.195] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | color | 8 | 0.218 [0.190, 0.247] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | medical | 8 | 0.111 [0.098, 0.127] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | news | 8 | 0.142 [0.100, 0.184] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | sports | 8 | 0.160 [0.128, 0.188] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | stock | 8 | 0.120 [0.070, 0.169] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | weather | 8 | 0.095 [0.055, 0.138] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | color | 8 | 0.214 [0.163, 0.255] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | medical | 8 | 0.155 [0.125, 0.190] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | news | 8 | 0.141 [0.111, 0.174] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | sports | 8 | 0.171 [0.123, 0.212] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | stock | 8 | 0.171 [0.117, 0.229] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | weather | 8 | 0.177 [0.141, 0.214] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | color | 8 | 0.144 [0.109, 0.171] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | medical | 8 | 0.078 [0.051, 0.104] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | news | 8 | 0.095 [0.063, 0.130] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | sports | 8 | 0.109 [0.078, 0.136] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | stock | 8 | 0.112 [0.078, 0.158] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | weather | 8 | 0.130 [0.079, 0.177] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | color | 8 | 0.117 [0.093, 0.142] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | medical | 8 | 0.059 [0.035, 0.084] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | news | 8 | 0.070 [0.040, 0.101] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | sports | 8 | 0.097 [0.068, 0.134] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | stock | 8 | 0.060 [0.024, 0.104] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | weather | 8 | 0.101 [0.052, 0.147] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | color | 8 | 0.217 [0.172, 0.253] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | medical | 8 | 0.150 [0.120, 0.180] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | news | 8 | 0.160 [0.120, 0.199] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | sports | 8 | 0.119 [0.081, 0.166] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | stock | 8 | 0.199 [0.165, 0.245] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | weather | 8 | 0.193 [0.141, 0.242] |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | color | 8 | 0.169 [0.134, 0.199] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | medical | 8 | 0.168 [0.106, 0.229] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | news | 8 | 0.101 [0.070, 0.133] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | sports | 8 | 0.158 [0.125, 0.191] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | stock | 8 | 0.193 [0.163, 0.225] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | weather | 8 | 0.187 [0.158, 0.220] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | color | 8 | 0.209 [0.149, 0.261] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | medical | 8 | 0.149 [0.120, 0.184] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | news | 8 | 0.100 [0.065, 0.142] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | sports | 8 | 0.101 [0.071, 0.133] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | stock | 8 | 0.076 [0.052, 0.100] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | weather | 8 | 0.049 [0.019, 0.079] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | color | 8 | 0.217 [0.157, 0.264] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | medical | 8 | 0.217 [0.158, 0.275] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | news | 8 | 0.120 [0.066, 0.176] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | sports | 8 | 0.199 [0.158, 0.236] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | stock | 8 | 0.244 [0.206, 0.283] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | weather | 8 | 0.233 [0.191, 0.272] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | color | 8 | 0.147 [0.103, 0.187] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | medical | 8 | 0.152 [0.081, 0.222] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | news | 8 | 0.085 [0.051, 0.116] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | sports | 8 | 0.128 [0.093, 0.169] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | stock | 8 | 0.191 [0.153, 0.228] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | weather | 8 | 0.176 [0.149, 0.204] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | color | 8 | 0.116 [0.085, 0.146] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | medical | 8 | 0.106 [0.035, 0.174] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | news | 8 | 0.066 [0.032, 0.103] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | sports | 8 | 0.116 [0.073, 0.160] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | stock | 8 | 0.160 [0.136, 0.180] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | weather | 8 | 0.128 [0.090, 0.169] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | color | 8 | 0.220 [0.166, 0.264] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | medical | 8 | 0.225 [0.165, 0.288] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | news | 8 | 0.155 [0.108, 0.191] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | sports | 8 | 0.220 [0.180, 0.267] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | stock | 8 | 0.263 [0.228, 0.296] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | weather | 8 | 0.250 [0.218, 0.283] |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | color | 8 | 0.109 [0.077, 0.138] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | medical | 8 | 0.097 [0.027, 0.152] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | news | 8 | 0.134 [0.108, 0.161] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | sports | 8 | 0.131 [0.103, 0.160] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | stock | 8 | 0.157 [0.125, 0.193] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | weather | 8 | 0.095 [0.070, 0.122] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | color | 8 | 0.168 [0.136, 0.198] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | medical | 8 | 0.141 [0.084, 0.196] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | news | 8 | 0.147 [0.097, 0.203] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | sports | 8 | 0.114 [0.076, 0.152] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | stock | 8 | 0.171 [0.127, 0.215] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | weather | 8 | 0.025 [0.011, 0.049] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | color | 8 | 0.155 [0.122, 0.193] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | medical | 8 | 0.171 [0.119, 0.215] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | news | 8 | 0.165 [0.127, 0.207] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | sports | 8 | 0.180 [0.141, 0.214] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | stock | 8 | 0.203 [0.158, 0.241] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | weather | 8 | 0.127 [0.100, 0.152] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | color | 8 | 0.085 [0.062, 0.109] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | medical | 8 | 0.104 [0.049, 0.158] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | news | 8 | 0.114 [0.087, 0.142] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | sports | 8 | 0.108 [0.078, 0.136] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | stock | 8 | 0.161 [0.125, 0.198] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | weather | 8 | 0.062 [0.033, 0.092] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | color | 8 | 0.057 [0.003, 0.103] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | medical | 8 | 0.076 [0.040, 0.114] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | news | 8 | 0.104 [0.070, 0.139] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | sports | 8 | 0.081 [0.041, 0.123] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | stock | 8 | 0.128 [0.081, 0.177] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | weather | 8 | 0.090 [0.059, 0.123] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | color | 8 | 0.158 [0.134, 0.187] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | medical | 8 | 0.180 [0.127, 0.229] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | news | 8 | 0.184 [0.153, 0.212] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | sports | 8 | 0.198 [0.169, 0.229] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | stock | 8 | 0.157 [0.116, 0.195] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | weather | 8 | 0.071 [0.036, 0.106] |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | color | 8 | 0.160 [0.134, 0.187] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | medical | 8 | 0.036 [-0.003, 0.076] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | news | 8 | 0.047 [-0.000, 0.097] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | sports | 8 | 0.157 [0.098, 0.212] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | stock | 8 | 0.171 [0.142, 0.204] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | weather | 8 | 0.146 [0.098, 0.196] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | color | 8 | 0.155 [0.093, 0.222] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | medical | 8 | 0.073 [0.052, 0.095] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | news | 8 | 0.040 [-0.014, 0.084] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | sports | 8 | 0.101 [0.071, 0.139] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | stock | 8 | 0.116 [0.066, 0.163] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | weather | 8 | 0.185 [0.160, 0.210] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | color | 8 | 0.210 [0.177, 0.241] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | medical | 8 | 0.084 [0.036, 0.130] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | news | 8 | 0.065 [0.024, 0.116] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | sports | 8 | 0.217 [0.165, 0.266] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | stock | 8 | 0.228 [0.198, 0.274] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | weather | 8 | 0.226 [0.163, 0.294] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | color | 8 | 0.150 [0.128, 0.169] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | medical | 8 | 0.024 [-0.032, 0.074] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | news | 8 | 0.040 [-0.006, 0.082] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | sports | 8 | 0.147 [0.097, 0.193] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | stock | 8 | 0.176 [0.142, 0.214] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | weather | 8 | 0.161 [0.122, 0.209] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | color | 8 | 0.127 [0.092, 0.158] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | medical | 8 | 0.016 [-0.021, 0.063] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | news | 8 | 0.028 [-0.022, 0.085] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | sports | 8 | 0.114 [0.063, 0.174] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | stock | 8 | 0.146 [0.119, 0.168] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | weather | 8 | 0.127 [0.066, 0.190] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | sign test | 6 scen. | 6 positive, p=0.031 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | color | 8 | 0.226 [0.193, 0.253] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | medical | 8 | 0.090 [0.033, 0.149] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | news | 8 | 0.055 [0.011, 0.103] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | sports | 8 | 0.214 [0.150, 0.275] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | stock | 8 | 0.247 [0.212, 0.293] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | weather | 8 | 0.225 [0.182, 0.282] |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | sign test | 6 scen. | 6 positive, p=0.031 |
+
+## History baselines (same trial mask as the reference A arm)
+
+Baselines marked "yes" use generator information the VLM does not have and are not fair competitors.
+
+| model | split | baseline | acc [95% CI] | n ep | uses generator info | description |
+|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+| InternVL3_5-8B-HF@741a7d03 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| InternVL3_5-8B-HF@741a7d03 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| InternVL3_5-8B-HF@741a7d03 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| InternVL3_5-8B-HF@741a7d03 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| InternVL3_5-8B-HF@741a7d03 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| InternVL3_5-8B-HF@741a7d03 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+| gemma-3-27b-it@005ad340 | held_out | truth_quota | 0.655 [0.650, 0.661] | 48 | yes | knows the generator's 5/5 truth quota per 10-trial block; predicts the label with more remaining quota and follows the reporter who reports it (no reliability tracking) |
+| gemma-3-27b-it@005ad340 | held_out | always_A | 0.648 [0.647, 0.650] | 48 | yes | diagnostic only: always follows latent role A (role identity is hidden from the VLM) |
+| gemma-3-27b-it@005ad340 | held_out | known_pA | 0.800 [0.799, 0.801] | 48 | yes | knows the true current p_A and follows the more reliable reporter (reference ceiling) |
+| gemma-3-27b-it@005ad340 | held_out | bocpd_posterior | 0.677 [0.669, 0.684] | 48 | no | BOCPD posterior predictive p_A from the outcome history |
+| gemma-3-27b-it@005ad340 | held_out | bocpd_map_window | 0.678 [0.667, 0.688] | 48 | no | majority within the BOCPD MAP run-length window (= the sum_cp summary rule) |
+| gemma-3-27b-it@005ad340 | held_out | count_all | 0.632 [0.628, 0.636] | 48 | no | majority of all past outcomes (= the sum_all summary rule) |
+
+## Readout quality (candidate mass, greedy output follows candidate format)
+
+| model | split | arm | slot | format | n | mass mean | mass min | frac mass<0.5 | greedy follows |
+|---|---|---|---|---|---|---|---|---|---|
+| InternVL3_5-38B-HF@7c830fc2 | held_out | A+|full|text | pet | text | 7680 | 1.000 | 0.950 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | A+|full|text | scenario | text | 7680 | 1.000 | 0.958 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | A|full|image | pet | image | 7680 | 1.000 | 0.995 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | A|full|image | scenario | image | 7680 | 1.000 | 0.998 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | A|full|text | pet | text | 7680 | 1.000 | 0.995 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | A|full|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | B'|full|chart | pet | chart | 7680 | 1.000 | 0.980 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | B'|full|chart | scenario | chart | 7680 | 1.000 | 0.950 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | B|full|image | pet | image | 7680 | 1.000 | 0.855 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | B|full|image | scenario | image | 7680 | 1.000 | 0.998 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | B|full|text | pet | text | 7680 | 1.000 | 0.994 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | B|full|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | pet | text | 7680 | 1.000 | 0.990 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_all|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | pet | image | 7680 | 1.000 | 0.684 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|image | scenario | image | 7680 | 1.000 | 0.999 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | pet | text | 7680 | 1.000 | 0.990 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_cp|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | pet | text | 7680 | 1.000 | 0.990 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:10|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | pet | text | 7680 | 1.000 | 0.990 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:20|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | pet | text | 7680 | 1.000 | 0.988 | 0.000 | 1.000 |
+| InternVL3_5-38B-HF@7c830fc2 | held_out | C|sum_window:5|text | scenario | text | 7680 | 1.000 | 0.985 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | A+|full|text | pet | text | 7680 | 0.999 | 0.993 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | A+|full|text | scenario | text | 7680 | 0.999 | 0.982 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | A|full|image | pet | image | 7680 | 0.999 | 0.957 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | A|full|image | scenario | image | 7680 | 0.999 | 0.967 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | A|full|text | pet | text | 7680 | 0.999 | 0.997 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | A|full|text | scenario | text | 7680 | 0.999 | 0.988 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | B'|full|chart | pet | chart | 7680 | 0.999 | 0.928 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | B'|full|chart | scenario | chart | 7680 | 0.999 | 0.686 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | B|full|image | pet | image | 7680 | 0.987 | 0.177 | 0.001 | 0.998 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | B|full|image | scenario | image | 7680 | 0.996 | 0.658 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | B|full|text | pet | text | 7680 | 0.994 | 0.650 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | B|full|text | scenario | text | 7680 | 0.997 | 0.806 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | pet | text | 7680 | 0.996 | 0.875 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_all|text | scenario | text | 7680 | 0.998 | 0.952 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | pet | image | 7680 | 0.997 | 0.579 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|image | scenario | image | 7680 | 0.999 | 0.942 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | pet | text | 7680 | 0.995 | 0.875 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_cp|text | scenario | text | 7680 | 0.997 | 0.943 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | pet | text | 7680 | 0.995 | 0.883 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:10|text | scenario | text | 7680 | 0.997 | 0.938 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | pet | text | 7680 | 0.995 | 0.895 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:20|text | scenario | text | 7680 | 0.997 | 0.945 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | pet | text | 7680 | 0.996 | 0.909 | 0.000 | 1.000 |
+| InternVL3_5-8B-HF@741a7d03 | held_out | C|sum_window:5|text | scenario | text | 7680 | 0.998 | 0.974 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | A+|full|text | pet | text | 7680 | 0.997 | 0.959 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | A+|full|text | scenario | text | 7680 | 0.998 | 0.980 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | A|full|image | pet | image | 7680 | 0.999 | 0.994 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | A|full|image | scenario | image | 7680 | 0.994 | 0.927 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | A|full|text | pet | text | 7680 | 0.994 | 0.881 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | A|full|text | scenario | text | 7680 | 0.996 | 0.939 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | B'|full|chart | pet | chart | 7680 | 0.964 | 0.807 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | B'|full|chart | scenario | chart | 7680 | 0.980 | 0.854 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | B|full|image | pet | image | 7680 | 0.999 | 0.990 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | B|full|image | scenario | image | 7680 | 0.995 | 0.935 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | B|full|text | pet | text | 7680 | 0.991 | 0.926 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | B|full|text | scenario | text | 7680 | 0.994 | 0.913 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | pet | text | 7680 | 1.000 | 0.997 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_all|text | scenario | text | 7680 | 1.000 | 0.991 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | pet | image | 7680 | 0.999 | 0.985 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|image | scenario | image | 7680 | 0.999 | 0.985 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | pet | text | 7680 | 1.000 | 0.997 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_cp|text | scenario | text | 7680 | 1.000 | 0.987 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | pet | text | 7680 | 1.000 | 0.997 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:10|text | scenario | text | 7680 | 1.000 | 0.993 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | pet | text | 7680 | 1.000 | 0.997 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:20|text | scenario | text | 7680 | 1.000 | 0.988 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | pet | text | 7680 | 1.000 | 0.997 | 0.000 | 1.000 |
+| Qwen3-VL-32B-Instruct@0cfaf481 | held_out | C|sum_window:5|text | scenario | text | 7680 | 1.000 | 0.993 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A+|full|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A+|full|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|image | pet | image | 7680 | 1.000 | 0.986 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|image | scenario | image | 7680 | 1.000 | 0.984 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | A|full|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B'|full|chart | pet | chart | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B'|full|chart | scenario | chart | 7680 | 0.999 | 0.422 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|image | pet | image | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|image | scenario | image | 7680 | 1.000 | 0.984 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | B|full|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_all|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | pet | image | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|image | scenario | image | 7680 | 1.000 | 0.984 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_cp|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:10|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:20|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | pet | text | 7680 | 1.000 | 1.000 | 0.000 | 1.000 |
+| Qwen3-VL-8B-Instruct@0c351dd0 | held_out | C|sum_window:5|text | scenario | text | 7680 | 0.999 | 0.587 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A+|full|text | pet | text | 7680 | 0.999 | 0.620 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A+|full|text | scenario | text | 7680 | 1.000 | 0.948 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|image | pet | image | 7680 | 0.997 | 0.174 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|image | scenario | image | 7680 | 0.999 | 0.114 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|text | pet | text | 7680 | 0.999 | 0.620 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | A|full|text | scenario | text | 7680 | 0.999 | 0.249 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | B'|full|chart | pet | chart | 7680 | 0.428 | 0.005 | 0.591 | 0.418 |
+| gemma-3-27b-it@005ad340 | held_out | B'|full|chart | scenario | chart | 7680 | 0.603 | 0.000 | 0.380 | 0.614 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|image | pet | image | 7680 | 0.932 | 0.038 | 0.032 | 0.966 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|image | scenario | image | 7680 | 0.987 | 0.026 | 0.004 | 0.995 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|text | pet | text | 7680 | 0.992 | 0.065 | 0.002 | 0.998 |
+| gemma-3-27b-it@005ad340 | held_out | B|full|text | scenario | text | 7680 | 0.969 | 0.000 | 0.028 | 0.973 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | pet | text | 7680 | 0.416 | 0.000 | 0.589 | 0.414 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_all|text | scenario | text | 7680 | 0.801 | 0.000 | 0.192 | 0.807 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | pet | image | 7680 | 0.970 | 0.009 | 0.019 | 0.979 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|image | scenario | image | 7680 | 0.999 | 0.761 | 0.000 | 1.000 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | pet | text | 7680 | 0.764 | 0.000 | 0.225 | 0.773 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_cp|text | scenario | text | 7680 | 0.880 | 0.000 | 0.114 | 0.884 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | pet | text | 7680 | 0.896 | 0.001 | 0.080 | 0.920 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:10|text | scenario | text | 7680 | 0.910 | 0.000 | 0.086 | 0.913 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | pet | text | 7680 | 0.648 | 0.000 | 0.335 | 0.680 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:20|text | scenario | text | 7680 | 0.823 | 0.000 | 0.178 | 0.824 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | pet | text | 7680 | 0.914 | 0.002 | 0.063 | 0.935 |
+| gemma-3-27b-it@005ad340 | held_out | C|sum_window:5|text | scenario | text | 7680 | 0.905 | 0.000 | 0.092 | 0.907 |
+
+Rule-window mismatches (recomputed vs logged window_start): 0; identical duplicate rows merged: 0; legacy y-only rows (approx logits): 0.

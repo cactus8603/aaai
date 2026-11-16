@@ -1,0 +1,95 @@
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:07,  1.44it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:01<00:06,  1.50it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:02<00:06,  1.47it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:05,  1.51it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:03<00:04,  1.46it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:04<00:04,  1.43it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:04<00:03,  1.42it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:05<00:02,  1.39it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:06<00:02,  1.43it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:06<00:01,  1.43it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:07<00:00,  1.44it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:07<00:00,  1.56it/s]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'top_k': 64, 'top_p': 0.95}. If this is not desired, please set these values explicitly.
+{"episode": "p00_g1", "rows": 100, "sec_per_row": 0.1447305202484131}
+{"episode": "p00_g3", "rows": 200, "sec_per_row": 0.14106371879577637}
+{"episode": "p00_g5", "rows": 300, "sec_per_row": 0.13979306538899738}
+{"episode": "p01_g1", "rows": 400, "sec_per_row": 0.13902334570884706}
+{"episode": "p01_g3", "rows": 500, "sec_per_row": 0.1386276330947876}
+{"episode": "p01_g5", "rows": 600, "sec_per_row": 0.13814141909281413}
+{"episode": "p02_g1", "rows": 700, "sec_per_row": 0.13801373311451504}
+{"episode": "p02_g3", "rows": 800, "sec_per_row": 0.13792673230171204}
+{"episode": "p02_g5", "rows": 900, "sec_per_row": 0.13773528893788656}
+{"episode": "p04_g1", "rows": 1000, "sec_per_row": 0.13752133917808532}
+{"episode": "p04_g3", "rows": 1100, "sec_per_row": 0.13738567959178577}
+{"episode": "p04_g5", "rows": 1200, "sec_per_row": 0.13731687327226003}
+{"episode": "p06_g1", "rows": 1300, "sec_per_row": 0.13718887897638174}
+{"episode": "p06_g3", "rows": 1400, "sec_per_row": 0.13707541823387145}
+{"episode": "p06_g5", "rows": 1500, "sec_per_row": 0.13697895733515422}
+{"episode": "p07_g1", "rows": 1600, "sec_per_row": 0.13690001085400583}
+{"episode": "p07_g3", "rows": 1700, "sec_per_row": 0.13693076848983765}
+{"episode": "p07_g5", "rows": 1800, "sec_per_row": 0.13685714019669426}
+{"episode": "p08_g1", "rows": 1900, "sec_per_row": 0.13678028332559686}
+{"episode": "p08_g3", "rows": 2000, "sec_per_row": 0.13672593533992766}
+{"episode": "p08_g5", "rows": 2100, "sec_per_row": 0.13673952761150543}
+{"episode": "p09_g1", "rows": 2200, "sec_per_row": 0.13672700101679022}
+{"episode": "p09_g3", "rows": 2300, "sec_per_row": 0.1366665448313174}
+{"episode": "p09_g5", "rows": 2400, "sec_per_row": 0.13661116282145183}
+{"episode": "p10_g1", "rows": 2500, "sec_per_row": 0.13656154975891113}
+{"episode": "p10_g3", "rows": 2600, "sec_per_row": 0.13656780903155988}
+{"episode": "p10_g5", "rows": 2700, "sec_per_row": 0.13650429805119832}
+{"episode": "p11_g1", "rows": 2800, "sec_per_row": 0.13646947341305868}
+{"episode": "p11_g3", "rows": 2900, "sec_per_row": 0.136431714173021}
+{"episode": "p11_g5", "rows": 3000, "sec_per_row": 0.1364449508190155}
+{"episode": "p12_g1", "rows": 3100, "sec_per_row": 0.13643720634521977}
+{"episode": "p12_g3", "rows": 3200, "sec_per_row": 0.13641509801149368}
+{"episode": "p12_g5", "rows": 3300, "sec_per_row": 0.13639026454000763}
+{"episode": "p13_g1", "rows": 3400, "sec_per_row": 0.1363777267932892}
+{"episode": "p13_g3", "rows": 3500, "sec_per_row": 0.13639941767283847}
+{"episode": "p13_g5", "rows": 3600, "sec_per_row": 0.13639375342263116}
+{"episode": "p14_g1", "rows": 3700, "sec_per_row": 0.13638383678487828}
+{"episode": "p14_g3", "rows": 3800, "sec_per_row": 0.13637235572463588}
+{"episode": "p14_g5", "rows": 3900, "sec_per_row": 0.13639336023575221}
+{"episode": "p15_g1", "rows": 4000, "sec_per_row": 0.13638106608390807}
+{"episode": "p15_g3", "rows": 4100, "sec_per_row": 0.1363641505706601}
+{"episode": "p15_g5", "rows": 4200, "sec_per_row": 0.1363505490620931}
+{"episode": "p16_g1", "rows": 4300, "sec_per_row": 0.13634299777274908}
+{"episode": "p16_g3", "rows": 4400, "sec_per_row": 0.1363552473891865}
+{"episode": "p16_g5", "rows": 4500, "sec_per_row": 0.13634135919147067}
+{"episode": "p17_g1", "rows": 4600, "sec_per_row": 0.13632113990576372}
+{"episode": "p17_g3", "rows": 4700, "sec_per_row": 0.13630301318270094}
+{"episode": "p17_g5", "rows": 4800, "sec_per_row": 0.1363087610900402}
+{"episode": "p18_g1", "rows": 4900, "sec_per_row": 0.1362948966026306}
+{"episode": "p18_g3", "rows": 5000, "sec_per_row": 0.13627873320579528}
+{"episode": "p18_g5", "rows": 5100, "sec_per_row": 0.13626237074534098}
+{"episode": "p19_g1", "rows": 5200, "sec_per_row": 0.13627586176762213}
+{"episode": "p19_g3", "rows": 5300, "sec_per_row": 0.1362537093882291}
+{"episode": "p19_g5", "rows": 5400, "sec_per_row": 0.13624256058975504}
+{"episode": "p20_g1", "rows": 5500, "sec_per_row": 0.13622646422819656}
+{"episode": "p20_g3", "rows": 5600, "sec_per_row": 0.13621618236814226}
+{"episode": "p20_g5", "rows": 5700, "sec_per_row": 0.13622375923290586}
+{"episode": "p21_g1", "rows": 5800, "sec_per_row": 0.13621329957041248}
+{"episode": "p21_g3", "rows": 5900, "sec_per_row": 0.13620403980804702}
+{"episode": "p21_g5", "rows": 6000, "sec_per_row": 0.13618988970915477}
+{"episode": "p22_g1", "rows": 6100, "sec_per_row": 0.13617784926148713}
+{"episode": "p22_g3", "rows": 6200, "sec_per_row": 0.1361793593437441}
+{"episode": "p22_g5", "rows": 6300, "sec_per_row": 0.13617454437982468}
+{"episode": "p23_g1", "rows": 6400, "sec_per_row": 0.1361651946976781}
+{"episode": "p23_g3", "rows": 6500, "sec_per_row": 0.13615792556909415}
+{"episode": "p23_g5", "rows": 6600, "sec_per_row": 0.1361625352411559}
+{"episode": "p24_g1", "rows": 6700, "sec_per_row": 0.1361513371254081}
+{"episode": "p24_g3", "rows": 6800, "sec_per_row": 0.13614349898170022}
+{"episode": "p24_g5", "rows": 6900, "sec_per_row": 0.13613439290419868}
+{"episode": "p25_g1", "rows": 7000, "sec_per_row": 0.13612371628625053}
+{"episode": "p25_g3", "rows": 7100, "sec_per_row": 0.13612920190247013}
+{"episode": "p25_g5", "rows": 7200, "sec_per_row": 0.13612296419011222}
+{"episode": "p26_g1", "rows": 7300, "sec_per_row": 0.13611263386190753}
+{"episode": "p26_g3", "rows": 7400, "sec_per_row": 0.13610609334868354}
+{"episode": "p26_g5", "rows": 7500, "sec_per_row": 0.1361130222638448}
+{"episode": "p27_g1", "rows": 7600, "sec_per_row": 0.1361045589572505}
+{"episode": "p27_g3", "rows": 7700, "sec_per_row": 0.13609323783354327}
+{"episode": "p27_g5", "rows": 7800, "sec_per_row": 0.13607882878719232}
+{"episode": "p29_g1", "rows": 7900, "sec_per_row": 0.13606963489629045}
+{"episode": "p29_g3", "rows": 8000, "sec_per_row": 0.1360740514099598}
+{"episode": "p29_g5", "rows": 8100, "sec_per_row": 0.13606838726703033}
+{"episode": "p30_g1", "rows": 8200, "sec_per_row": 0.13606282129520322}
+{"episode": "p30_g3", "rows": 8300, "sec_per_row": 0.13604876176420463}
+{"episode": "p30_g5", "rows": 8400, "sec_per_row": 0.13605303954510461}
+{"episode": "p31_g1", "rows": 8500, "sec_per_row": 0.13605231663760017}
+{"episode": "p31_g3", "rows": 8600, "sec_per_row": 0.13605053582856821}
+{"episode": "p31_g5", "rows": 8700, "sec_per_row": 0.13605092961212684}
+{"episode": "p32_g1", "rows": 8800, "sec_per_row": 0.13605156809091568}
+{"episode": "p32_g3", "rows": 8900, "sec_per_row": 0.13605555006627287}
+{"episode": "p32_g5", "rows": 9000, "sec_per_row": 0.13605152887768215}
+{"tag": "text_told_px224_n5", "shard": "0/1", "fingerprint": "a2f2fe78d61893bf", "full_design": true, "design_keys_all_shards": 9000, "expected": 9000, "written": 9000, "rows": 9000, "duplicates": 0, "missing": 0, "unexpected": 0, "foreign_fingerprint": 0, "complete": true}

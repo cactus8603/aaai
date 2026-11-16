@@ -1,0 +1,25 @@
+{
+ "n_participants": 30,
+ "n_short_episodes": 90,
+ "n_long_episodes": 90,
+ "short_episodes_per_hazard": {
+  "0.1": 30,
+  "0.2": 30,
+  "0.4": 30
+ },
+ "checks": {
+  "games_matched": 180
+ },
+ "label_remap": {},
+ "sources": {
+  "README_xiong2023neural.md": "02a23aa051beef748126d2bbf7da319a90f4c2b01a38d008701e7efb22ecbda4",
+  "psych101_xiong2023neural_exp1.jsonl": "6018689512dce4bb3955df54909617b955ac314563b0ec54188df06168feb0ff",
+  "xiong2023neural_exp1_train.parquet": "a0d79f7630dcb59a87deeecbb5a1165ad6e647473433bb2ae0dac737d1aa0eca"
+ },
+ "instructions_told": "You are participating in multiple games involving two slot machines, labeled {A} and {B}.\nThe two slot machines are different in different games.\nEach time you choose a slot machine, you get points (choosing the same slot machine will not always give you the same points).\nYou select a slot machine by pressing the corresponding key.\nThe expected points change randomly, abruptly, and independently with a hazard rate (which you will be told).\nWhen the points change, the new expected point value assigned to that slot machine is sampled from a uniform distribution (from 1 to 99 points).\nFor example, if the hazard rate is 0.1, the expected points of the machines change with 10%.\nYour goal is to choose the slot machine that will give you the most points.",
+ "n_change_points_per_hazard": {
+  "0.1": 579,
+  "0.2": 1010,
+  "0.4": 1862
+ }
+}

@@ -1,0 +1,843 @@
+% =====================================================================
+% NeuroAI 2.0 Workshop @ AAAI-27 -- LONG PAPER (8 pages + refs + supplementary; archival, PMLR)
+% Template: AAAI-27 Author Kit (AuthorKit27, TemplateVersion 2027.1),
+%           AnonymousSubmission2027.tex. Double-blind.
+% Main content (Abstract..Discussion) must fit in 8 pages.
+% References and Supplementary (after references) do not count.
+% See README.md for compile command and the formatting checklist.
+% =====================================================================
+\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
+\usepackage[submission]{aaai2027}  % DO NOT CHANGE THIS
+% Fonts are loaded by aaai2027.sty. DO NOT add times/helvet/courier/lmodern/any font package.
+\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
+\usepackage{graphicx} % DO NOT CHANGE THIS
+\urlstyle{rm} % DO NOT CHANGE THIS
+\def\UrlFont{\rm}  % DO NOT CHANGE THIS
+\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\frenchspacing  % DO NOT CHANGE THIS
+
+% Allowed extras
+\usepackage{booktabs}   % tables (recommended by the kit)
+\usepackage{amsmath}    % math
+\usepackage{amssymb}
+\usepackage{xcolor}
+\newif\ifshowedits \showeditsfalse  % annotations hidden; set to \showeditstrue to show tracked edits
+\ifshowedits
+  \newcommand{\lcy}[1]{\textcolor{blue}{#1}}                     % added or rewritten text
+  \newcommand{\lcydel}[1]{\textcolor{red}{[del: #1]}}           % proposed deletion
+  \newcommand{\lcynote}[1]{\textcolor{orange}{\small[lcy: #1]}} % note or question
+\else
+  \newcommand{\lcy}[1]{#1}
+  \newcommand{\lcydel}[1]{}
+  \newcommand{\lcynote}[1]{}
+\fi
+
+
+% Keep the \pdfinfo exactly as in the kit (no /Title or /Author for anonymity).
+\pdfinfo{
+/TemplateVersion (2027.1)
+}
+
+% DISALLOWED PACKAGES (from the kit): authblk, babel, balance, CJK, epsf, epsfig,
+% euler, float, flushend, fullpage, geometry, graphics, hyperref, indentfirst,
+% layout, lmodern, multicol, nameref, navigator, pdfcomment, pgfplots, psfig,
+% pstricks, savetrees, setspace, stfloats, t1enc, tabu, times, titlesec,
+% tocbibind, ulem, wrapfig (or anything that embeds links).
+% DISALLOWED COMMANDS: \nocopyright, \addtolength, \balance, \baselinestretch,
+% \linespread, \clearpage, \newpage, \pagebreak, \break, \columnsep, \pagestyle,
+% \setlength (except \setlength{\tabcolsep}), \textheight, \topmargin, \tiny,
+% \abovecaption/\belowcaption, \abovedisplay/\belowdisplay, \float, \clip, \trim,
+% \resizebox on tables, negative \vspace/\vskip near captions/floats/headings/refs.
+
+% Fixed names for model-input conditions; count rules are separate baselines.
+\newcommand{\Raw}{\textsc{Raw}}
+\newcommand{\RawCorrectness}{\textsc{Raw+Correctness}}
+\newcommand{\CorrectnessOnly}{\textsc{Correctness-only}}
+\newcommand{\Summary}{\textsc{Summary}}
+
+\setcounter{secnumdepth}{0} % unnumbered sections (kit default)
+
+% Title in mixed (title) case, per AAAI. Neutral working title; final wording only after held-out results.
+\title{Learning Whom to Trust from Feedback: How History Format Shapes\\In-Context Learning in Vision-Language Models}
+% Anonymous author block (double-blind). Do not change.
+\author{
+    Anonymous Submission
+}
+\affiliations{
+}
+
+\begin{document}
+
+\maketitle
+
+% =====================================================================
+% TERMINOLOGY (from research/volatile_trust/discussion/paper_conventions.md; use consistently)
+%  advisor / advice-taking (judge--advisor system, Yaniv)    NOT "reporter trust learning"
+%  advisor accuracy / reliability                           NOT "source fidelity score"
+%  Conditions: Raw / Raw+Correctness / Correctness-only / Summary (use macros)
+%  Internal keys: D = described accuracy; A = Raw; A+ = Raw+Correctness; B = Correctness-only; C = Summary.
+%  Summary gives correctness counts, discards trial order and is not a description.
+%  description--history (DH) gap (Ge et al. 2026) ; description--experience gap (Hertwig et al. 2004)
+%  Correctness statements are content shared by Raw+Correctness and Correctness-only.
+%  Summary is VLM input; the count rule chooses directly without a VLM.
+%  positive recency (copying the last outcome)              NOT "outcome perseveration", NOT "hot hand"
+%  CPT regressor: follow the advisor correct on the previous trial (Behrens et al. 2008, Fig. 1e)
+%  integration kernel (Lau & Glimcher 2005; Keung et al. 2020) ; x: "Trials in the past", y: "Regression weight (log-odds)"
+%  volatility, change-point, hazard rate (Behrens 2007; Nassar 2010; Adams & MacKay 2007)
+%  cover story (our scenarios) ; counterbalanced copy (our "twins") ; control conditions (our positive controls)
+%  frozen model, in-context ; Psych-101 replay: "conditioned on previously executed behavior" (Centaur)
+%  equivalence test (TOST) with smallest effect size of interest = 2 pp
+%  95% bootstrap CI over episode pairs (state in every caption)
+% =====================================================================
+
+\begin{abstract}
+% ~170 words: theme -> question -> approach -> 3 findings -> meaning. Final numbers from held-out only.
+Learning whom to trust when an advisor's accuracy changes is a classic test of context-dependent learning in people. We adapt a human advice-taking task to ask whether vision-language models (VLMs) learn changing advisor accuracy in context from trial-by-trial feedback, and how this depends on the format of the history. The same history is given as \Raw{} (reports and outcome labels), \RawCorrectness{} (\Raw{} plus who was correct), \CorrectnessOnly{} (who was correct) or \Summary{} (counts of correct trials). On 48 held-out episode pairs, four of five open-weight VLMs answering directly, without reasoning, were no better than chance with \Raw{} and tended to repeat the previous outcome; masking showed that the visible outcome label drives this repetition, and the repetition persisted without outcome quotas. Replacing \Raw{} with \CorrectnessOnly{} raised accuracy by 8--16 percentage points, close to \Summary{}, whereas \RawCorrectness{} helped little; even then, after the advisor that was better for most of the episode became worse, the models rarely switched away from it, while a Bayesian volatility learner did so within a few trials. The \Summary{}$-$\Raw{} gap has limits: two proprietary reasoning models, tested on a subset, learned from \Raw{} about as well as a Bayesian volatility learner, and a compact one-line record narrowed it in two 8B models. In a Psych-101 changing bandit, participants' estimated forgetting rose with the hazard rate (probability of change), but the models' forgetting changed little. Code will be released upon acceptance.
+\end{abstract}
+
+% \begin{links}  % camera-ready only: public GitHub code link (not in the review version)
+%     \link{Code}{https://github.com/XXXX}
+% \end{links}
+
+\section{Introduction}
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_teaser.pdf}
+  \caption{Replacing \Raw{} with \CorrectnessOnly{} improves prediction accuracy. (a) Predictions use past history and current reports; the current outcome is revealed afterward and enters the next trial's history. (b) \Raw{} lists reports and outcome labels; \RawCorrectness{} appends who was correct; \CorrectnessOnly{} retains only those correctness statements. Excerpts show the same past trial in separate queries. (c) \Summary{} supplies each advisor's count of correct trials (open diamond). Markers show equal-weight mean accuracies over five open models on 48 held-out episode pairs with text reports. An episode pair comprises an episode and its counterbalanced copy, with advisor names swapped and the answer-word mapping reversed. The dashed line marks 50\% chance. Table~\ref{tab:main} gives model-level accuracies and paired 95\% bootstrap confidence intervals (CIs) for \Summary{}$-$\Raw{} differences; Table~\ref{tab:decomp} gives individual accuracy CIs.}
+  \label{fig:teaser}
+\end{figure*}
+
+People learn whom to trust from feedback. When advice can be checked against the outcome, people track how trustworthy the advisor is, and their choices are consistent with a Bayesian learner that updates faster when the advisor's accuracy is volatile \citep{behrens2008associative}; advisor reputations form quickly from a track record \citep{yaniv2000advice,bonaccio2006advice}. We adapt this human-neuroscience paradigm and its computational modeling approach to evaluate vision-language models (VLMs).
+
+Agents built on large language models (LLMs) and VLMs face the same problem when they combine tool outputs, retrieved documents or messages from other agents whose reliability (for our advisors, accuracy) can change; for VLM-based agents, some of these messages arrive as images. Prior work has tested source weighting under fixed reliability \citep{ashkinaze2026information} and test-time reliability inversion \citep{zhou2026epistemic}, studied trust formation and recovery after scripted peer failures \citep{chen2026trust}, and proposed memories that track reliability outside the model \citep{feng2026sigmamem}. We ask whether models learn changing advisor accuracy from trial-by-trial feedback across repeated reversals (context-dependent learning without parameter updates), and how the format of the history affects their choices.
+
+The format of past evidence is known to affect LLM choices \citep{ge2026dhgap,krishnamurthy2024explore}, but learning whom to trust adds a step that those tasks do not require. It involves three computations: (i) judging which advisor was correct by comparing conflicting reports with the observed outcome; (ii) integrating these judgments across trials; and (iii) using the estimate. In the human study, (i) yields the observation from which a prediction error about the advisor is computed \citep{behrens2008associative}. We present the same history in formats that state these results to different degrees (Fig.~\ref{fig:teaser}): \Raw{} lists reports and outcome labels, \RawCorrectness{} appends the result of (i), \CorrectnessOnly{} keeps only that result, and \Summary{} gives each advisor's count of correct trials. Formats also change length and salience, so we do not assume separable internal stages. Our contributions are:
+\begin{itemize}
+  \item[$\bullet$] An advice-taking evaluation adapted from human neuroscience, with current reports as text or as images; image reports lowered accuracy even with \CorrectnessOnly{}.
+  \item[$\bullet$] In five open-weight VLMs answering directly, the \Summary{}$-$\Raw{} gap was largely recovered by \CorrectnessOnly{} but not by \RawCorrectness{}, and a masking test, with predictions written from development results before the held-out runs, showed that the visible outcome label drives repeating the previous outcome.
+  \item[$\bullet$] A boundary condition: two proprietary reasoning models, tested on a subset, had \Raw{} accuracy similar to that of a Bayesian volatility learner, so the history-format effect depends on the system.
+  \item[$\bullet$] A human--model comparison in a Psych-101 changing bandit: participants' estimated forgetting rose with the hazard rate, while the open models' estimates changed little.
+\end{itemize}
+
+\section{Related Work}
+\paragraph{Cognitive evaluation of LLMs.} Treating a language model as a participant in a psychological experiment is now a common way to characterize its behavior \citep{binz2023using}. CogBench turns such experiments into behavioral metrics \citep{codaforno2024cogbench}, and Centaur is a model fine-tuned to predict trial-by-trial human choices in Psych-101 \citep{binz2025foundation}. Fits of reinforcement-learning models to in-context behavior in bandits have found asymmetric or biased updating and rigid choice \citep{schubert2024incontext,hayes2024biased,wang2026rigidity}. Behavioral analyses have also found premature greedy action selection in bandit tasks \citep{schmied2025greedy}, and reversal-learning schedules have been compared across LLMs \citep{wang2026comparative,li2025reflectionbench}. The bandit and reversal-learning evaluations focus on learning option values rather than extracting advisor correctness from report--outcome pairs.
+
+\paragraph{Description, experience and history summaries.} The description--experience gap \citep{hertwig2004decisions,wulff2018metaanalytic} has an LLM counterpart in the description--history gap of \citet{ge2026dhgap}. \citet{krishnamurthy2024explore} contrasted raw and summarized histories in bandits, and \citet{xue2026counting} traced integration kernels (weights on evidence at different lags) in a counting task. In sequence-prediction tasks, LLM updates can approximate Bayesian posterior updates for biased coin flips \citep{gupta2025coinflips} or discounted Bayesian filtering when the generating distribution changes \citep{zhang2025discounted}. Our \Summary{} is computed from the same history the model would otherwise see; it discards trial order and is not a description. Source-history interventions also distinguish recognizing reliability from allowing it to influence a decision \citep{zhang2026evidence}. We extend this distinction to repeated reversals and test which components of trial-by-trial feedback make models repeat the previous outcome.
+
+\paragraph{Volatility and multimodal reports.} Our task follows the social-learning paradigm of \citet{behrens2008associative}. Normative accounts of learning under volatility include hierarchical Bayesian and change-point models \citep{behrens2007learning,nassar2010approximately,nassar2012rational,mathys2011bayesian,piray2021model,piray2024computational,soltani2019adaptive}, and arbitration between social and individual learning has been modeled using the relative precision of their predictions \citep{diaconescu2020neural}. For image reports, performance depends on modality even when content is isomorphic \citep{fu2024isobench}, multi-image inputs show position biases \citep{tian2025position}, and VLMs have difficulty binding features to objects \citep{campbell2024binding}. PhotoGuider fine-tunes a VLM to generate photographic explanations conditioned on measured composition features, showing that explicit intermediate features can shape VLM outputs \citep{lee2026photoguider}.
+
+\section{Task and Methods}
+\paragraph{Advice-taking task.} On each trial, two advisors give conflicting binary reports (for example, rain and dry), the model predicts the outcome, which amounts to choosing whom to follow, and the outcome is then revealed. An episode has 80 trials. Advisor A, the advisor with the higher scheduled accuracy on trial~1, is correct with probability 0.8 in a stable phase of 40 trials; in a volatile phase of 40 trials its accuracy alternates between 0.8 and 0.2 every 10 trials (each switch is a reversal), following \citet{behrens2008associative} (comparison in Appendix~B). Half of the episodes start with each phase. Outcome sequences are pre-generated, so the model's choices do not change the history. Within each 10-trial block, A's realized advisor accuracy equals its scheduled value, and each outcome label appears five times. The instructions say that an advisor's accuracy may change but give no rate.
+
+Each episode is shown with a pet cover story, in which advisors say whether a hidden animal is a cat or a dog, and with one of six non-pet cover stories (colors, weather, stocks, sports, medical tests, news; Appendix~A). Current reports are given as text or as an image: a drawn icon for the non-pet cover stories and a photograph \citep{parkhi2012cats} for the pet cover story; with text reports, both cover stories are text only. Every episode has a counterbalanced copy in which advisor names are swapped and the answer-word mapping is reversed while the outcome sequence is unchanged; averaging over the two copies cancels advisor-name and answer-word biases. The 16 development episodes were used to choose settings; 48 separate episodes form the held-out set. A robustness set has 24 episodes with independently sampled correctness and outcome labels (no outcome quotas) and irregular reversals.
+
+\paragraph{History formats.} Before trial $t$, the model sees trials $1,\dots,t-1$ in one of four history formats (Fig.~\ref{fig:teaser}; full prompts in Appendix~A); prompts name trials after the cover story (e.g. days). \Raw{} lists both reports and the outcome label (``Day 3: Ken forecasts rain; Sam forecasts dry. Actual weather: rain.''). \RawCorrectness{} appends ``(Ken was correct; Sam was wrong.)'' to each trial. \CorrectnessOnly{} keeps only that correctness statement, stating the result of computation (i). \Summary{} gives each advisor's number of correct trials, stating the result of computations (i) and (ii); it discards trial order. \Summary{} variants count over the last $K$ trials or since a change point inferred by Bayesian online change-point detection (BOCPD; \citealt{adams2007bocpd}; Appendix~E). These format names refer to inputs given to the VLM. The \emph{count rule} instead chooses the advisor with more correct trials over the corresponding range, without a VLM. Unless specified otherwise, \Summary{} and the count rule use all past trials.
+
+\paragraph{Control conditions.} On development episodes, control items give the answer more directly: \emph{described accuracy} (``Ken was correct on 80\% of past days''), described counts (counts of correct trials stated without the trial history), short and long easy histories in \Raw{} and \CorrectnessOnly{} formats, and a single \Raw{} trial on which the model names who was correct (computation (i) alone).
+
+\paragraph{Models and readout.} We test five open-weight VLMs without fine-tuning, four of them built on Qwen3 language models: Qwen3-VL-8B and Qwen3-VL-32B \citep{bai2025qwen3vl}, InternVL3.5-8B and InternVL3.5-38B, which use a Qwen3 language model \citep{wang2025internvl35}, and Gemma-3-27B \citep{gemmateam2025gemma3}; B denotes billions of parameters. The open models are prompted to answer directly with one word. Two proprietary reasoning models are tested through application programming interfaces (APIs) on a subset; their choice is read from the generated answer (Appendix~J). For the open models, the readout is the choice probability $y_t$ for advisor A's report, from the logits (unnormalized output scores) of the two answer words at the first generated token, normalized over these two words; we do not treat it as a belief. For four models nearly all probability mass fell on the two answer words; Gemma-3-27B often began a sentence instead when given \Summary{} (Appendix~J).
+
+\paragraph{Measures and analysis.} For the open models, prediction accuracy (hereafter accuracy) is the percentage of trials ($t\ge2$) on which the higher-logit answer is correct, after averaging answer-aligned logits over the two copies of each episode pair (the episode and its counterbalanced copy); exact ties receive half credit and chance is 50\%. The \emph{currently better advisor} has the higher scheduled advisor accuracy on that trial; the \emph{following probability} is the choice probability for that advisor. To describe behavior we fit a logistic regression of $y_t$ on which advisor was correct $k$ trials back, whose weights over $k$ form an integration kernel \citep[cf.][]{xue2026counting}, plus a regressor for repeating the previous outcome, whose coefficient we call the \emph{repeat weight}, and compute chance-corrected agreement (Cohen's $\kappa$) with simple strategies; \emph{choice agreement} is the percentage of non-tied trials on which the model and a count rule choose the same advisor. As a computational reference we run a hierarchical Bayesian volatility learner inspired by \citet{behrens2007learning,behrens2008associative} (implementation in Appendix~D). It receives which advisor was correct on each trial and assumes conditionally independent Bernoulli observations, without modeling the fixed per-block counts described above. The unit of analysis is the episode pair, and, unless specified otherwise, 95\% confidence intervals (CIs) use 10{,}000 bootstrap resamples of episode pairs. Differences between accuracies are in percentage points. The confirmatory primary test, fixed by a timestamped commit before held-out evaluation (deviations in Appendix~J), is the \Summary{}$-$\Raw{} accuracy difference per model (Wilcoxon signed-rank test, Holm-corrected across models; required in both language-model families). The equivalence tests and the recovery ratio are prespecified secondary analyses; the held-out masking replication was specified after development results; all other analyses, including the Bayesian volatility learner, are exploratory (Appendix~J). Secondary tests and all other details are in Appendix~C.
+
+\paragraph{Human comparison.} We replay the changing-bandit task of \citet{xiong2023neural} from Psych-101: 30 participants, three hazard rates ($h$) and 100 trials per game. The hazard rate is the probability that a machine's payoff changes on each trial. The five open models see each participant's preceding choices and payoffs, with $h$ hidden or stated. We fit an adapted myopic model-free learner to human choices and sampled model choices. Its forgetting rate $\phi$ moves the unchosen machine's estimated value toward the midpoint of the payoff range; we compare slopes of $\phi$ on $h$, paired by participant (Appendix~H).
+
+\section{Results}
+\begin{figure*}[t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_gap.pdf}
+  \caption{History-format effects differ across systems on the same held-out trials. Seven systems are compared on the non-pet cover stories of 24 held-out episode pairs, every fourth trial, with each counterbalanced copy scored separately. Open-model choices use the logits of the two answer words (candidate logits); API choices use generated answers (valid answers only). Each panel shows one history format. Bars show 95\% bootstrap CIs from resampling episode pairs; dashed lines mark 50\% chance. Full-set results appear in Table~\ref{tab:main}.}
+  \label{fig:gap}
+\end{figure*}
+
+\begin{table*}[t]\centering\small
+  \setlength{\tabcolsep}{6pt}
+  \begin{tabular}{l rrrr r c}
+    \toprule
+    Model & \Raw{} & \RawCorrectness{} & \CorrectnessOnly{} & \Summary{} & \Summary{}$-$\Raw{} [95\% CI] & $p_\text{Holm}$ \\
+    \midrule
+    \multicolumn{7}{l}{\textit{Full held-out set: 48 episode pairs; copies combined before scoring}} \\
+    Qwen3-VL-8B & 48.6 & 51.7 & 61.9 & 62.1 & +13.4 [12.2, 14.6] & $<$.001 \\
+    InternVL3.5-8B & 47.9 & 50.8 & 63.6 & 63.5 & +15.6 [14.5, 16.7] & $<$.001 \\
+    Gemma-3-27B & 47.0 & 49.8 & 60.2 & 61.7 & +14.7 [13.2, 16.3] & $<$.001 \\
+    Qwen3-VL-32B & 46.8 & 52.2 & 62.8 & 63.1 & +16.4 [15.0, 17.7] & $<$.001 \\
+    InternVL3.5-38B & 54.9 & 56.0 & 62.5 & 63.3 & +8.4 [7.4, 9.4] & $<$.001 \\
+    \midrule
+    \multicolumn{7}{l}{\textit{API subset: 24 episode pairs, every fourth trial; copies scored separately}} \\
+    GPT-6-Astra & 62.8 & -- & 62.3 & 58.5 & $-$4.3 [$-$8.8, 0.3] & -- \\
+    Claude Fable 5.2 & 62.9 & -- & 62.4 & 58.5 & $-$4.4 [$-$8.6, 0.1] & -- \\
+    \midrule
+    \multicolumn{7}{l}{\textit{Computational references: full set / API subset}} \\
+    Bayesian volatility learner & \multicolumn{4}{c}{66.8 / 62.9} & -- & -- \\
+    Count rule (all trials) & \multicolumn{4}{c}{63.2 / 58.5} & -- & -- \\
+    Count rule (last 5) & \multicolumn{4}{c}{69.2 / 67.9} & -- & -- \\
+    \bottomrule
+  \end{tabular}
+  \caption{\CorrectnessOnly{} raises accuracy in the five open models. Accuracy is in percent; differences and their paired 95\% bootstrap CIs are in percentage points and are computed from unrounded values. Full-set scores average the two cover stories after aligning and averaging the counterbalanced logits. API scores use generated answers on a smaller set of trials and are reported separately; Fig.~\ref{fig:gap} compares all systems on the same trials with per-copy scoring. Primary $p$-values are Holm-corrected across the five open models; secondary tests and controls appear in Appendix~C; multimodal checks appear in Appendix~G.}
+  \label{tab:main}
+\end{table*}
+
+\begin{figure}[t]\centering
+  \includegraphics[width=\columnwidth]{figures/fig_kernel.pdf}
+  \caption{Past advisor correctness is weighted under \CorrectnessOnly{} and \Summary{} but barely under \Raw{}. Curves show integration kernels by history format, averaged over the five open models on held-out episode pairs with text reports. The first 10 of 15 fitted lags are shown; line styles, markers and colors identify formats. The thick gray line is the Bayesian volatility learner's kernel, fit to its estimate that advisor A is correct rather than to a choice probability, so shapes rather than magnitudes are comparable. Per-model integration kernels and CIs appear in Fig.~\ref{fig:kernel_models}, and \Raw{} strategy agreement in Fig.~\ref{fig:strategies}.}
+  \label{fig:kernel}
+\end{figure}
+
+\begin{table}[t]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l rrrr}
+    \toprule
+     & \multicolumn{2}{c}{\shortstack{Outcome label\\shown}} & \multicolumn{2}{c}{\shortstack{Outcome label\\masked}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    Model & Reports & Reports & Reports & Reports \\
+     & shown & masked & shown & masked \\
+    \midrule
+    Qwen3-VL-8B & 51.7 & 52.0 & 55.7 & 60.4 \\
+    InternVL3.5-8B & 50.8 & 50.4 & 56.1 & 59.6 \\
+    Gemma-3-27B & 49.8 & 49.9 & 55.0 & 60.5 \\
+    Qwen3-VL-32B & 52.2 & 51.8 & 58.6 & 60.7 \\
+    InternVL3.5-38B & 56.0 & 55.7 & 58.6 & 63.3 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Masking past outcome labels improves accuracy; masking reports as well yields further gains. Accuracy (\%) on 48 held-out episode pairs with text reports and counterbalanced logits combined before scoring. Columns specify whether past outcome labels and advisor reports are shown or replaced by a dash; correctness statements remain visible in all conditions. The first column is \RawCorrectness{}. Paired changes and their 95\% bootstrap CIs appear in Fig.~\ref{fig:masking_effects}.}
+  \label{tab:masking_accuracy}
+\end{table}
+
+\paragraph{Open models use described accuracy more reliably than \Raw{}.} With text reports, described accuracy or counts led the models to choose the advisor described as better on 92--100\% of items (a different measure from main-task accuracy), and every model identified which advisor was correct on a single shown trial (Table~\ref{tab:controls_full}; development episodes). The same information was used much less when it had to be learned. In an easy history presented as \Raw{}, in which one advisor had been correct on every recent trial, models followed that advisor on 60--79\% of items after 10 trials and on 53--70\% after 80. \CorrectnessOnly{} raised this to 99.6--100\% for 10 trials, but only to 67--90\% for 80 trials. The difficulty therefore arises when feedback must be integrated across trials, and long histories remain hard even when correctness is stated explicitly.
+
+\paragraph{\CorrectnessOnly{} recovers most of the \Summary{}$-$\Raw{} gap; \RawCorrectness{} helps less.} On the held-out set, \Raw{} accuracy was 46.8--48.6\% in four models and 54.9\% in InternVL3.5-38B, the only model above chance, whereas \Summary{} reached 61.7--63.5\% (Table~\ref{tab:main}). The \Summary{}$-$\Raw{} gap ($+8.4$ to $+16.4$ percentage points) was significant in every model (Holm-corrected $p<.001$), so the primary test held in both language-model families; with each counterbalanced copy scored separately, the gap remained $+8.8$ to $+13.9$ percentage points (Appendix~J). \CorrectnessOnly{} attained 60.2--63.6\%, close to \Summary{}, although the model must still integrate the statements, and it did so imperfectly: \CorrectnessOnly{} stayed below the last-five count rule (69.2\%) and lagged after reversals (below). \RawCorrectness{} improved on \Raw{} by only 1.1--5.4 percentage points, even though it contains all the information of \CorrectnessOnly{}: the reports and outcome labels interfere with using the correctness statement next to them, which the next analyses explain. The size of the gap depends on the record layout: a compact one-line record per trial, which changes wording and layout together, shrank it to 1--3 percentage points in the two 8B models while the gap remained $+6.4$ to $+12.0$ in the three larger models (no matched original-format baseline), and \Raw{} accuracy stayed below the count rule in every layout (development episodes; Appendix~I).
+
+\paragraph{The gap persists without outcome quotas.} On the robustness set, with independently sampled correctness and outcome labels and irregular reversals, the \Summary{}$-$\Raw{} gap was smaller but remained positive and significant in all five models ($+3.6$ to $+8.3$ percentage points; Table~\ref{tab:robust}).
+
+\paragraph{Under \Raw{}, open models tend to repeat the previous outcome.} The integration-kernel weights on past advisor correctness were near zero, while the repeat weight was positive in every model (Fig.~\ref{fig:kernel_models}; integration kernel in Fig.~\ref{fig:kernel}), and of the tested strategies, repeating the previous outcome agreed best with the models' choices ($\kappa = .22$--.32 in four models; Fig.~\ref{fig:strategies}). Because each 10-trial block contains each outcome label five times, repeating the previous outcome scores below chance (44.5\%), consistent with \Raw{} accuracy below 50\%. Without outcome quotas (robustness set), \Raw{} accuracy was near chance in four models, but the repeat weight stayed positive in all five (Appendix~F). Under \CorrectnessOnly{}, the integration kernel instead peaked at the most recent trial and decayed over the next few, and the repeat weight vanished.
+
+\begin{table}[t]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l rr c}
+    \toprule
+    Model & \Raw{} & \Summary{} & Gap [95\% CI] \\
+    \midrule
+    Qwen3-VL-8B & 50.7 & 58.2 & +7.5 [5.2, 10.0] \\
+    InternVL3.5-8B & 52.0 & 59.4 & +7.4 [4.2, 10.5] \\
+    Gemma-3-27B & 50.7 & 59.0 & +8.3 [5.5, 11.3] \\
+    Qwen3-VL-32B & 51.6 & 59.3 & +7.7 [5.1, 10.2] \\
+    InternVL3.5-38B & 55.9 & 59.5 & +3.6 [2.1, 5.1] \\
+    \bottomrule
+  \end{tabular}
+  \caption{The \Summary{}$-$\Raw{} gap remains positive with independent sampling and irregular reversals. Accuracy (\%) on 24 robustness-set episode pairs with text reports and independently sampled correctness and outcome labels. Gaps are in percentage points, with paired 95\% bootstrap CIs over episode pairs. All five Wilcoxon tests have Holm-corrected $p<.001$ within this robustness family. This comparison covers \Raw{} and \Summary{}.}
+  \label{tab:robust}
+\end{table}
+
+\paragraph{Masking identifies the outcome label as a trigger.} We masked parts of \RawCorrectness{} by replacing them with a dash while retaining its layout, and wrote predictions from development results, after the plan commit but before a five-model held-out replication (Appendix~I). All predictions held in all five models (Table~\ref{tab:masking_accuracy}). Masking the outcome label raised accuracy by 2.7--6.4 percentage points and cut the repeat weight from .42--.87 to .08--.23. Masking the reports alone had almost no effect, but once the outcome label was masked, also masking the reports helped further and brought accuracy close to \CorrectnessOnly{}. The visible outcome label drives the repetition; the reports matter once it is removed. The compact record shows that layout also shapes the repetition: in the two 8B models it lowered the repeat weight (Table~\ref{tab:wording}) and raised \Raw{} accuracy although the outcome label still ended each line.
+
+\paragraph{Only recent counts computed outside the model match a Bayesian volatility learner.} The Bayesian volatility learner made correct choices on 66.8\% of held-out trials, above the all-trial count rule (63.2\%) and above every open model given \Raw{}, \CorrectnessOnly{} or \Summary{} (Table~\ref{tab:main}; Appendix~B). It receives which advisor was correct on each trial, so it benchmarks integration separately from reading the history; it is a fixed-setting reference, not human performance or an ideal observer for this generator. Only models given \Summary{} variants computed outside the model, over the last five trials or since a change point, reached the learner's accuracy (Appendix~E); the last-five count rule itself, selected on development episodes, scored 69.2\%. Overall prediction accuracy separates strategies poorly on this schedule: always following A, which never updates, scores 64.8\% (Appendix~D). Reversals are therefore the more direct test of tracking change. Advisor A is the better advisor on most trials of an episode. When A became worse, models given \CorrectnessOnly{} or \Summary{} followed the new better advisor on only 28\% and 15\% of choices, respectively, by the tenth trial of the block, whereas the learner did so on 98\%; when A became better again, all three followed it on 94--98\% of choices (Fig.~\ref{fig:curves}). The models' choices thus followed the accumulated history, as the all-trial count rule does, rather than the advisor's current accuracy. The learner's integration kernel decays smoothly: at lag 10 its weight is 16\% of its lag-1 weight, versus 52\% for models given \Summary{}, consistent with counting all trials, and 23\% with \CorrectnessOnly{} (Fig.~\ref{fig:kernel}).
+
+\paragraph{Following the count rule from \Summary{} also reproduces its lag.} Given \Summary{}, models chose the advisor with more correct trials on 93.5--99.9\% of non-tied trials after the two counterbalanced copies were combined (single copies agree less; Appendix~J), and four of five matched the accuracy of the all-trial count rule within $\pm$2 percentage points (Gemma-3-27B narrowly missed equivalence, $p=.053$; Table~\ref{tab:tests}). A model that follows the count rule therefore inherits its lag after reversals (Appendix~B, Fig.~\ref{fig:task}): when A became worse, models given \Summary{} or \CorrectnessOnly{} kept following A for most of the block, and with \Raw{} they followed the new better advisor on about a third of choices (Fig.~\ref{fig:curves}). With the last-five and change-point \Summary{} variants, models again followed the corresponding rule (choice agreement 94--100\%), switched to the new better advisor within three trials of a reversal in either direction, and gained 4--6 percentage points over \Summary{} (Appendix~E). How fast an agent built this way adapts to an advisor whose accuracy changes is therefore set by the count rule outside the model.
+
+\paragraph{Truncating \Raw{} does not recover the benefit of recent counts.} Restricting \Raw{} to the trial ranges selected for the change-point \Summary{} variant gave 43.5--50.2\% accuracy, versus 66.6--67.7\% for that variant on the same held-out episode pairs (Appendix~E; inputs not matched in length): selecting recent evidence did not help while it remained in \Raw{} form.
+
+\begin{figure}[t]\centering
+  \includegraphics[width=\columnwidth]{figures/fig_curves.pdf}
+  \caption{When advisor A becomes worse, models given \CorrectnessOnly{} or \Summary{} keep following it, unlike the Bayesian volatility learner; the last-five and change-point \Summary{} variants switch in both directions. Share of choices following the new better advisor (ties count half) by trials since a reversal (zero: first trial after it), mean over five open models on held-out episode pairs; A is the better advisor on most trials. Gray: Bayesian volatility learner (no VLM). Per-model curves: Fig.~\ref{fig:curves_models}.}
+  \label{fig:curves}
+\end{figure}
+\begin{figure*}[t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_human.pdf}
+  \caption{Participants' forgetting rises with hazard rate; the open models' forgetting changes little. (a,b) Median fitted forgetting rate $\phi$ by hazard rate, with $h$ hidden or stated for the model; humans were told $h$ in both panels. Model estimates are medians over 20 fits to sampled binary-choice sequences. (c) Paired model-minus-human slope differences for the same 30 participant histories, with unadjusted 95\% CIs from resampling participants. Solid and dashed intervals mark hidden and stated $h$; marker shape and fill identify the five models. None of the five hidden-$h$ comparisons is significant after Holm correction. Power and bias are analyzed in Appendix~H.}
+  \label{fig:human}
+\end{figure*}
+
+\paragraph{Proprietary reasoning models learn from \Raw{}.} On a held-out subset (24 episode pairs, every fourth trial; Appendix~J), Claude Fable 5.2 and GPT-6-Astra both made correct choices on about 63\% of trials with \Raw{} (62.9\% and 62.8\%), matching the Bayesian volatility learner on these trials (62.9\%), while the five open models reached 46.7--50.3\% (Fig.~\ref{fig:gap}). For the two proprietary models, \CorrectnessOnly{} did not increase accuracy, and with \Summary{}, accuracy was numerically lower, at the level of the all-trial count rule (58.5\%), whose choices they then matched exactly. Claude Fable 5.2 showed visible reasoning in 77\% of its \Raw{} answers, but GPT-6-Astra answered with one word (median 5 output tokens, including reasoning) and reached the same accuracy. Because these models also differ from the open models in scale, training and readout, the comparison sets a boundary on the history-format effect rather than isolating an effect of reasoning. Their \Raw{} choices agreed with advisor tracking (Bayesian learner, $\kappa=.78$--.87), not with repeating the previous outcome ($\kappa\approx 0$) or with a rule that exploits the outcome quotas, and after a reversal they switched to the new better advisor by the end of the block (Appendix~J).
+
+\paragraph{Image reports reduce accuracy despite explicit correctness histories.} With \CorrectnessOnly{}, changing the current reports from text to images lowered held-out accuracy by 6.4--10.2 percentage points across all five models (Table~\ref{tab:mm}); histories remained textual. Four models chose the first-listed image on 79.2--91.8\% of trials, compared with 43.8--53.7\% for text reports. Qwen3-VL-8B was an exception: accuracy fell from 61.9\% to 55.2\%, but its first-image choice rate was 52.3\%. Image reports therefore add a difficulty beyond reading trial-level correctness, and a first-position preference does not explain the loss in every model.
+
+In development controls, image naming was 98.8--100\%, yet choosing the advisor explicitly described as more accurate with image reports reached only 59--84\%, below the 80\% criterion that a format must pass to be interpreted (Appendix~G): recognizing a report does not guarantee its use in a reliability-based decision.
+
+\begin{table}[t]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l rrrr}
+    \toprule
+    & \multicolumn{2}{c}{Accuracy (\%)} & \multicolumn{2}{c}{Chose first (\%)} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    Model & Text & Image & Text & Image \\
+    \midrule
+    Qwen3-VL-8B & 61.9 & 55.2 & 45.5 & 52.3 \\
+    InternVL3.5-8B & 63.6 & 54.4 & 52.6 & 80.3 \\
+    Gemma-3-27B & 60.2 & 53.7 & 43.8 & 79.2 \\
+    Qwen3-VL-32B & 62.8 & 52.7 & 53.7 & 91.8 \\
+    InternVL3.5-38B & 62.5 & 52.3 & 52.4 & 90.3 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Image reports lower accuracy, and four models favor the first-listed image. Percentages on 48 held-out episode pairs with textual \CorrectnessOnly{} histories ($t\ge2$); only current reports vary between text and images. Counterbalanced logits are combined before scoring, with the pet and non-pet cover-story versions weighted equally. Chose first is the share choosing the first-listed report, excluding exact ties; report order is randomized per trial. Values are rounded.}
+  \label{tab:mm}
+\end{table}
+
+\paragraph{Humans and open models in the changing bandit.} In the changing bandit of Psych-101, a normative bandit learner forgets the unchosen machine faster when the hazard rate is higher, and participants did (median forgetting rate .079 at $h=0.1$ and .255 at $h=0.4$; Appendix~H). Unlike the advice-taking task, this task varies the hazard rate across games. The five open models replayed participants' histories; because participants had also played earlier games and power is about 50\% for a difference as large as the human effect, the comparison is descriptive (Appendix~H). Model forgetting varied less with hazard rate (median per-participant slope $-0.01$ to $0.04$, compared with 0.47 for participants; Fig.~\ref{fig:human}); all five paired differences were negative, but none was significant after Holm correction. Stating the hazard rate, as participants had been told, did not produce a clear change. A regression on stale and fresh values points the same way: models weighted stale value differences as much as fresh ones or more, but participants discounted them at $h=0.1$ (Appendix~H).
+
+
+
+\section{Discussion}
+Four of five open models answering directly were no better than chance with \Raw{}, yet the same history stated as \CorrectnessOnly{} recovered most of the \Summary{}$-$\Raw{} gap. Three results point to interference rather than missing information: \RawCorrectness{} contains the same correctness statements but was less accurate than \CorrectnessOnly{}; masking the outcome label sharply reduced the repeat weight; and with both outcome labels and reports masked, accuracy came within 4 percentage points of \CorrectnessOnly{}. This extends the description--history gap \citep{ge2026dhgap}: a visible outcome label competes with the correctness evidence next to it, much as reading an incongruent color word interferes with naming its ink color in the Stroop task \citep{macleod1991half}. The models' own integration was limited: given \Summary{}, they followed the count rule computed outside the model and inherited its lag, and given \CorrectnessOnly{}, they rarely switched away from an advisor that had been better for most of the episode. Stating which advisor was correct thus removed the interference but not this reliance on the accumulated history. Image reports added a further cost even with \CorrectnessOnly{} (Table~\ref{tab:mm}).
+
+\paragraph{Implications for NeuroAI.} For building agents, an explicit statement of which source was correct and an integration rule outside the model help models that struggle with \Raw{}: with the last-five \Summary{} variant, models switched to the new better advisor within three trials of a reversal in either direction, but with the all-trial \Summary{} they followed it on only 15\% of choices by the end of a block in which advisor A had become worse (Fig.~\ref{fig:curves}). For models that already use \Raw{}, \Summary{} can instead remove information. For neuroscience, advisor correctness is the observation from which the advisor prediction error is computed in the human study; this model-derived prediction error correlated with the blood-oxygen-level-dependent (BOLD) signal in regions including the dorsomedial prefrontal cortex and the temporoparietal junction, and the estimated volatility of the advice with the BOLD signal in the anterior cingulate gyrus \citep{behrens2008associative}. The open models failed when they had to derive this observation from reports and outcome labels (\Raw{}) and largely succeeded when it was stated (\CorrectnessOnly{}). This raises a question that probing could answer: is advisor correctness represented internally when it is not stated? The task also yields behavioral signatures that can be compared with normative accounts of human learning: after a reversal, the Bayesian volatility learner switched to the new better advisor within four trials in either direction, whereas the open models given \Raw{} or \CorrectnessOnly{} did not switch away from an advisor that had been better for most of the episode. In the changing bandit, our reanalysis recovered the normative signature in people: participants' estimated forgetting of the unchosen machine rose with hazard rate (median .079 at $h=0.1$ to .255 at $h=0.4$). Model forgetting varied little with hazard rate, even when the rate was stated, so the models did not show this signature under replay.
+
+\paragraph{Limitations.} The task simplifies \citet{behrens2008associative}: two perfectly opposed advisors, no separate reward stream and no human data on this variant. The main schedule has outcome quotas; the \Summary{}$-$\Raw{} gap and the repetition persisted without them, but \RawCorrectness{}, \CorrectnessOnly{} and masking were tested only with quotas. With 80 trials, the task could not reliably detect volatility-dependent updating even in the Bayesian volatility learner (Appendix~F); the changing bandit, which varies the hazard rate, addresses this question. The gap size depends on the record layout (Appendix~I). The open models (up to 38B, four of five built on Qwen3) answered directly; the proprietary models were tested on a subset and differ in several respects at once; images appeared only as current reports.
+
+\paragraph{Conclusion.} Whether a VLM learns whom to trust from feedback depended on how the feedback was written down. First, the open models' failure with \Raw{} reflects interference rather than missing information: a visible outcome label overrode the correctness evidence next to it, and stating which advisor was correct recovered most of the \Summary{}$-$\Raw{} gap. Second, even when told which advisor was correct, they kept following an advisor that had become worse, whereas a Bayesian volatility learner switched within four trials. Third, the effect depends on the system: two proprietary reasoning models learned from \Raw{}. For agents tracking changing source reliability, the history format, the report modality and the integration rule are thus part of the system to be evaluated, and this human-derived task tests them against normative signatures such as fast switching after a reversal.
+
+
+\bibliography{refs}
+
+\appendix
+\section{Supplementary Material}
+The appendices provide exact task inputs, analysis definitions and checks of alternative explanations. Development-only checks are marked separately from held-out evidence.
+
+\subsection{A. Prompts and Cover Stories}            % exact templates for all 7 cover stories, A/B/B'/C/D, icons
+Every prompt has four parts: instructions naming the two advisors and the cover story, the history in one of the formats of the main text, the current reports, and the question. Prompts are passed through each model's chat template as a single user message. For InternVL3.5 the template adds the model's default system message (in Chinese) and the suffix ``Answer the question using a single word or phrase.'' All answer words are single tokens in every tokenizer used.
+
+\paragraph{Task details.} Each episode is shown with two cover stories that share the same outcome sequence: a pet cover story, in which advisors say whether a hidden animal is a cat or a dog, and one of six other cover stories (colors, weather forecasts, stock predictions, sports predictions, medical readings, news claims), assigned in groups of episodes so that cover story is crossed with phase order. Cover stories change only the wording, the answer words and the report images; all outcome sequences are synthetic. Current reports are text or an image: a programmatically drawn icon without text for the non-pet cover stories, and a photograph from the Oxford-IIIT Pet dataset \citep{parkhi2012cats} for the pet cover story (with text reports the pet cover story is text only, like the others). Both advisors' correctness is revealed on every trial (full feedback). In the counterbalanced copy, advisor names are swapped, the answer-word mapping and the advisor-introduction order are reversed, and the outcome sequence and images are unchanged; within each trial the two reports are listed in random order. The instructions say that an advisor's accuracy may change over time but give no rate. The held-out set has eight episodes per non-pet cover story.
+
+Table~\ref{tab:cover} lists the cover stories. The examples below are rendered by the experiment code from the fixed episode files; line breaks are as in the prompt and \emph{[image]} marks where an image is inserted.
+
+\begin{table}[!ht]
+  \centering
+  \small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{llll}
+    \toprule
+    Cover story & Advisors & Answers & Report image \\
+    \midrule
+    color & reporters & red/blue & color patch \\
+    weather & forecasters & rain/dry & cloud, sun \\
+    stock & analysts & up/down & trend arrow \\
+    sports & commentators & win/lose & happy/sad face \\
+    medical & doctors & positive/negative & plus/minus \\
+    news & news sources & true/false & tick, cross \\
+    pet & reporters & cat/dog & photograph \\
+    \bottomrule
+  \end{tabular}
+  \caption{Cover stories with the selected icon set. Trials are called trials (color, pet), days, weeks, games, cases or stories. Icons are drawn by code and contain no answer words. Appendix~G shows the original and selected medical and sports icons and identifies results obtained with the original set.}
+  \label{tab:cover}
+\end{table}
+
+\paragraph{Example 1: \Raw{}, weather, held-out episode, trial 6.}
+\begin{quote}\small
+You are observing a sequence of days. On every day, two weather forecasters, Tim and Joe, give conflicting forecasts for the day's weather (rain or dry). After each day, the actual weather is observed. A forecaster's accuracy may change over time.\\
+Past days:\\
+Day 1: Joe forecasts rain; Tim forecasts dry. Actual weather: dry.\\
+Day 2: Tim forecasts rain; Joe forecasts dry. Actual weather: rain.\\
+Day 3: Tim forecasts rain; Joe forecasts dry. Actual weather: rain.\\
+Day 4: Joe forecasts rain; Tim forecasts dry. Actual weather: dry.\\
+Day 5: Tim forecasts rain; Joe forecasts dry. Actual weather: rain.\\
+Current day 6 (actual weather not yet observed):\\
+Joe forecasts: dry\\
+Tim forecasts: rain\\
+Predict the actual weather on the current day. Answer with exactly one lowercase word: rain or dry.
+\end{quote}
+The other formats change only the history lines. In \RawCorrectness{}, trial 1 reads ``Day 1: Joe forecasts rain; Tim forecasts dry. Actual weather: dry. (Joe was wrong; Tim was correct.)''. In \CorrectnessOnly{} it reads ``Day 1: Joe was wrong; Tim was correct.''. In \Summary{} the five history lines and the ``Past days:'' line are replaced by ``Summary of all 5 past days: Joe was correct 0 times; Tim was correct 5 times.''. In the correctness chart they are replaced by ``Past days 1-5 are summarized in this chart (days run left to right in four lines of 20; for each day, a green square means that forecaster was correct, a gray square means that forecaster was wrong, an empty square means not yet played):'' followed by the chart (448 px; one row per advisor in each line). For the judgment question, the current reports and prediction question are replaced by ``Before day 6: which forecaster is currently more likely to be correct? Answer with exactly one name: Joe or Tim.''.
+
+\paragraph{Example 2: described accuracy, weather, development episode.}
+The described-accuracy control replaces the history with the following passage (advisor names vary by item); the remaining instruction and query structure is unchanged:
+\begin{quote}\small
+Summary of past performance: Jim was correct on 80\% of past days; Ken was correct on 20\% of past days.
+\end{quote}
+The described-counts control replaces the preceding passage with ``Summary of the last 10 days: Jim was correct 8 times; Ken was correct 2 times.''.
+
+\paragraph{Example 3: pet cover story with image reports, held-out episode, trial 4.}
+\begin{quote}\small
+You are observing a sequence of trials. On every trial, two reporters, Jon and Jim, give conflicting reports about a hidden animal. After each trial, the true animal is revealed. A reporter's accuracy may change over time.\\
+Past trials:\\
+Trial 1: Jon reports cat; Jim reports dog. True animal: cat.\\
+Trial 2: Jon reports cat; Jim reports dog. True animal: cat.\\
+Trial 3: Jim reports dog; Jon reports cat. True animal: cat.\\
+Current trial 4 (true animal not yet revealed):\\
+Jim reports: \emph{[image]}\\
+Jon reports: \emph{[image]}\\
+Predict the true animal on the current trial. Answer with exactly one lowercase word: cat or dog.
+\end{quote}
+With text reports the images are replaced by the answer word.
+
+\paragraph{Binding variants.} The binding controls change only how the current reports of Example~3 are attached to the advisors (described accuracy, image reports). \emph{Name on image}: the lines are as in Example~3, but each image carries its advisor's name printed in a banner above the picture. \emph{Composite image}: the two report lines are replaced by ``Reports (one panel per reporter, name above each panel): \emph{[image]}'', one image with two panels, each headed by an advisor's name. \emph{Name after image}: each report is given as ``\emph{[image]} (the image above was reported by Jim)'', so the attribution follows the image. The composite-read check shows only the composite image and asks ``The image has two panels, each with a name above it. What animal is in Jim's panel?''.
+\subsection{B. Episode Generation and Counterbalancing} % schedules, stratification, seeds, splits, counterbalanced copies
+\paragraph{Schedules.} Each episode has 80 trials in eight blocks of 10. Advisor A is the advisor with the higher scheduled accuracy on trial~1. Stable-first episodes have a stable phase (A correct with probability 0.8) followed by a volatile phase with blocks at 0.2, 0.8, 0.2, 0.8; volatile-first episodes have a volatile phase with blocks at 0.8, 0.2, 0.8, 0.2 followed by a stable phase at 0.8. Every episode therefore has four reversals (trials 41, 51, 61, 71 in stable-first and 11, 21, 31, 41 in volatile-first episodes). Advisor B is always correct when A is wrong. For comparison, the advice schedule of \citet{behrens2008associative} (Supplementary Information) has 120 trials: 75\% correct on trials 1--30, alternation between 80\% correct and 80\% incorrect every 10 trials on trials 31--70, and 85\% incorrect on trials 71--120. Our volatile phase matches their alternation; our stable phase does not.
+
+\begin{figure}[!ht]\centering
+  \includegraphics[width=\columnwidth]{figures/fig_task.pdf}
+  \caption{Why the all-trial count rule can lag after reversals. Scheduled accuracy of advisor A and its cumulative observed accuracy before each trial in one stable-first development episode. Shading marks the volatile phase; the cumulative count retains evidence from earlier blocks.}
+  \label{fig:task}
+\end{figure}
+
+\paragraph{Relation to the original human study.} Table~\ref{tab:behrens} identifies the simplifications of \citet{behrens2008associative}. Their participants learned both reward-based option values and the accuracy of a confederate's advice. We retain changing advisor accuracy but omit the separate reward stream, reward magnitudes and in-person confederate; the schedules also differ. This is an adaptation of the social-learning component, not a replication of the human experiment. No human data exist for our variant, so the Bayesian volatility learner is a computational reference, not human performance; Psych-101 provides the separate human comparison (Appendix~H).
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{p{0.2\textwidth}p{0.36\textwidth}p{0.36\textwidth}}
+    \toprule
+    & \citet{behrens2008associative} & This study \\
+    \midrule
+    Agents & 24 human participants (fMRI) & Five VLMs without fine-tuning \\
+    Choice & Blue or green option, each with a random reward magnitude & Which of two binary reports is correct (whose advice to follow) \\
+    Sources of information & Reward history of the options and one confederate's advice & Two advisors whose reports always conflict \\
+    Feedback & Correct option revealed after each trial & Outcome revealed after each trial \\
+    Advice schedule & 120 trials; 75\% correct, then 80\%/20\% alternating every 10 trials, then 15\% & 80 trials; 80\% (stable, 40 trials) and 80\%/20\% alternating every 10 trials (volatile, 40 trials), both orders \\
+    \midrule
+    \multicolumn{3}{l}{\textit{Behrens-inspired Bayesian volatility learner on our episodes (trial-by-trial advisor correctness, no VLM)}} \\
+    Accuracy & \multicolumn{2}{p{0.72\textwidth}}{67.2\% (development), 66.8\% [66.1, 67.4] (held-out), 66.0\% (robustness); all-trial count rule: 63.0 / 63.2 / 59.4\%} \\
+    \bottomrule
+  \end{tabular}
+  \caption{The original human study and ours. The original advice schedule shows one counterbalanced orientation from the Supplementary Information of \citet{behrens2008associative}; its reward schedule is omitted. fMRI: functional magnetic resonance imaging. Accuracy of the Bayesian volatility learner: percentage of trials ($t\ge 2$) on which it favors the advisor who is correct, with a 95\% bootstrap CI from 2{,}000 episode-pair resamples. Both copies have identical correctness sequences and learner predictions, so each pair is represented by its original episode.}
+  \label{tab:behrens}
+\end{table*}
+
+\paragraph{Stratification.} Within each block with scheduled accuracy $p$, A is correct on exactly $10p$ trials ($8$ or $2$) in random order, and each outcome label is the truth on exactly five trials. This keeps realized accuracy equal to the schedule in every episode. It also fixes outcome quotas, which allow a shortcut that ignores the advisors: predicting the label with more occurrences remaining in the current block's quota (which presupposes knowing the quota) reaches 66.1\% accuracy on the development episodes. We therefore also use a robustness set (below).
+
+\paragraph{Names, order and counterbalancing.} Advisor names are drawn from 16 common English first names that are single tokens in all tokenizers. The order in which the two reports are listed is random on each trial. Phase order alternates across episodes, the order in which the instructions introduce the two names alternates every two episodes, and non-pet cover stories rotate in groups of four episodes, so cover story, phase order and introduction order are fully crossed. Each episode has a counterbalanced copy with the advisor names swapped (A keeps its role), the answer-word mapping reversed and the introduction order reversed; the outcome sequence and images are unchanged. Analyses average the answer-aligned logits within each episode pair.
+
+\paragraph{Splits and seeds.} The main set has 16 development episodes (color, weather, stock and sports cover stories) and 48 held-out episodes (eight per non-pet cover story), 128 with counterbalanced copies, generated with seed 20261111. Pet photos come from the Oxford-IIIT Pet dataset (CC BY-SA 4.0): 128 photos from the official trainval split for development episodes and 256 from the test split for held-out episodes, with no overlap. The robustness set has 24 episodes (48 with copies; seed 20261112) in which correctness is drawn independently on each trial, outcome labels are drawn independently, and volatile-phase dwell times (trials between reversals) are drawn uniformly from 6--16 trials. All data are regenerated from seeds and checked against stored SHA-256 hashes.
+\subsection{C. Statistical Analysis, Control Conditions and Decomposition}      % heatmap model x condition x cover story
+\paragraph{Statistical analysis.} The unit of analysis is the episode pair; all measures are averaged within an episode and its counterbalanced copy first, after averaging the answer-aligned logits, which cancels additive name and label biases. Besides accuracy we report the following probability by phase, and following-probability curves aligned to reversals. The primary test, fixed before held-out evaluation (timestamped commit; not a formal preregistration), is the \Summary{}$-$\Raw{} accuracy difference for text reports, per model, with a two-sided Wilcoxon signed-rank test and Holm correction across models; the decision criterion is a gap significantly above zero in both language-model families. \Raw{} accuracy is called near chance only within 3 percentage points of 50\%. Secondary tests are two one-sided tests \citep[TOST;][]{lakens2017equivalence} of whether a model given \Summary{} matches the count rule alone, with equivalence bounds of $\pm 2$ percentage points; the position of \CorrectnessOnly{} between \Raw{} and \Summary{} (acc: accuracy), $\frac{\mathrm{acc}_{\text{\CorrectnessOnly{}}}-\mathrm{acc}_{\text{\Raw{}}}}{\mathrm{acc}_{\text{\Summary{}}}-\mathrm{acc}_{\text{\Raw{}}}}$, interpreted only when the \Summary{}$-$\Raw{} gap exceeds 5 percentage points and its CI excludes zero; and the primary test on the robustness set, as a separate family. Unless specified otherwise, accuracy and recovery-ratio CIs use 10{,}000 bootstrap resamples of episode pairs. Integration-kernel CIs use 1{,}000 such resamples. Intervals are pointwise 95\% unless specified otherwise. We report per-story estimates and a sign test across the six non-pet cover stories (smallest attainable two-sided $p = .031$). Development episodes are used for exploratory checks and setting choices such as the window length $K$; held-out episodes are run once. The integration-kernel regression uses lags $k=1,\dots,15$ plus regressors for repeating the previous outcome, a label bias and listing order; strategies for $\kappa$ are repeating the previous outcome, win-stay/lose-shift (WSLS) on advisors (following the advisor correct on the previous trial, as in \citealt{behrens2008associative}), the all-trial and last-five count rules, the BOCPD posterior-predictive rule and an outcome-label bias. These analyses describe behavior consistent with a strategy and do not identify a mechanism.
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{6pt}
+  \begin{tabular}{ll ccc}
+    \toprule
+    Model & Count range & Model $-$ count rule [90\% CI] & $p_{\mathrm{TOST,Holm}}$ & Choice agreement (\%) \\
+    \midrule
+    Qwen3-VL-8B & All trials & $-$1.1 [$-$1.7, $-$0.5] & .020 & 94.1 \\
+     & Change-point & $-$1.2 [$-$1.7, $-$0.7] & .020 & 97.0 \\
+     & Last 5 & $-$2.4 [$-$3.4, $-$1.5] & .769$^{\times}$ & 94.3 \\
+    InternVL3.5-8B & All trials & +0.3 [0.0, 0.6] & $<$.001 & 97.8 \\
+     & Change-point & $-$0.5 [$-$0.7, $-$0.3] & $<$.001 & 98.5 \\
+     & Last 5 & $-$1.1 [$-$1.6, $-$0.6] & $<$.001 & 97.7 \\
+    Gemma-3-27B & All trials & $-$1.4 [$-$1.9, $-$1.0] & .053$^{\times}$ & 93.5 \\
+     & Change-point & $-$1.1 [$-$1.5, $-$0.6] & .002 & 96.5 \\
+     & Last 5 & $-$1.5 [$-$2.1, $-$0.9] & .088$^{\times}$ & 95.8 \\
+    Qwen3-VL-32B & All trials & 0.0 [$-$0.3, 0.2] & $<$.001 & 99.4 \\
+     & Change-point & $-$0.3 [$-$0.5, $-$0.1] & $<$.001 & 99.3 \\
+     & Last 5 & $-$0.1 [$-$0.3, 0.0] & $<$.001 & 99.7 \\
+    InternVL3.5-38B & All trials & +0.1 [$-$0.1, 0.3] & $<$.001 & 99.9 \\
+     & Change-point & $-$0.1 [$-$0.1, 0.0] & $<$.001 & 100 \\
+     & Last 5 & 0.0 [$-$0.1, 0.0] & $<$.001 & 100 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Secondary equivalence tests and agreement with the corresponding count rule on held-out trials. Differences and CIs are in percentage points and agreement in percent. The displayed 90\% CIs are unadjusted bootstrap intervals (10{,}000 episode-pair resamples). Equivalence decisions use paired $t$-based TOST with the fixed $\pm$2-percentage-point tolerance and Holm correction over \Summary{} (all trials) and its two variants per model; $^{\times}$marks failure to establish equivalence. Last 5 was selected on development episodes for every model. Choice agreement is the percentage of non-tied trials with the same choice as the corresponding count rule; similar accuracy alone would not establish this. Primary \Summary{}$-$\Raw{} tests appear in Table~\ref{tab:main}; all primary Holm-corrected $p<10^{-8}$.}
+  \label{tab:tests}
+\end{table*}
+
+\paragraph{How much of the gap does \CorrectnessOnly{} recover?} On held-out episodes, \CorrectnessOnly{} recovered 89--101\% of the \Summary{}$-$\Raw{} accuracy gap (Table~\ref{tab:decomp}). The ratio's uncertainty matters because a near-complete recovery is not an equivalence claim. Table~\ref{tab:main} reports the accuracy means and paired \Summary{}$-$\Raw{} differences; Table~\ref{tab:decomp} supplies the individual accuracy CIs and the recovery ratio with its CI.
+
+\paragraph{Control conditions.} Table~\ref{tab:controls_full} gives each control condition with text and image reports, and Table~\ref{tab:decomp} the fraction of the \Summary{}$-$\Raw{} gap recovered by \CorrectnessOnly{}. Image reports lowered control-item accuracy in almost every control condition, including described accuracy (59--84\% instead of 92--100\%); the one exception was Qwen3-VL-8B with a long easy history in \Raw{} (53.3\% vs.\ 53.1\%). The image-report results use the selected icons (Appendix~G). All selected icons were named correctly, and photo naming was 98.6--100\%, so single-image recognition alone does not explain these drops. Control conditions were run on development episodes for all five models.
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{ll ccccc}
+    \toprule
+    Condition & Reports & Qwen3-8B & IVL-8B & Gemma-3-27B & Qwen3-32B & IVL-38B \\
+    \midrule
+    Described accuracy & Text & 92.0 & 100 & 98.2 & 100 & 100 \\
+     & Image & 84.4 & 79.9 & 65.0 & 68.3 & 59.4 \\
+    Described counts & Text & 99.8 & 100 & 97.8 & 100 & 100 \\
+     & Image & 86.6 & 78.6 & 65.2 & 64.5 & 52.7 \\
+    Short \Raw{} & Text & 70.3 & 63.2 & 60.0 & 60.7 & 78.6 \\
+     & Image & 64.1 & 54.2 & 59.2 & 51.8 & 54.0 \\
+    Short \CorrectnessOnly{} & Text & 100 & 99.6 & 100 & 100 & 100 \\
+     & Image & 94.9 & 74.3 & 67.4 & 70.1 & 60.3 \\
+    Long \Raw{} & Text & 53.1 & 56.7 & 54.5 & 55.6 & 69.6 \\
+     & Image & 53.3 & 52.0 & 51.6 & 42.4 & 46.2 \\
+    Long \CorrectnessOnly{} & Text & 67.6 & 67.4 & 85.9 & 75.9 & 90.0 \\
+     & Image & 58.5 & 44.9 & 59.8 & 49.3 & 53.6 \\
+    Single-trial check & Text & 100 & 100 & 100 & 100 & 100 \\
+    \midrule
+    Described accuracy, name on image & Image & 83.3 & 83.3 & 71.9 & 76.1 & 62.9 \\
+    Described accuracy, composite image & Image & 75.0 & 85.3 & 81.0 & 76.6 & 96.9 \\
+    Described accuracy, name after image & Image & 61.6 & 69.9 & 53.6 & 55.1 & 66.5 \\
+    Composite-panel reading & Image & 100 & 100 & 100 & 100 & 100 \\
+    Correctness-chart reading & Chart & 62.0 & 68.8 & 60.9 & 67.2 & 70.8 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Control conditions on development episodes (accuracy on control items in percent, averaged over counterbalanced copies and pooled over cover stories). Lower part: binding variants of the described-accuracy condition with image reports (advisor name printed on the image; both reports in one composite image; name given after the image), reading one panel of the composite image, and reading one cell of the correctness chart. Qwen3: Qwen3-VL; IVL: InternVL3.5. Image reports use the selected icons. Results by cover story will be included in the released analysis output.}
+  \label{tab:controls_full}
+\end{table*}
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccc c}
+    \toprule
+     & \multicolumn{4}{c}{Accuracy 95\% CI (\%)} & Fraction recovered \\
+    \cmidrule(lr){2-5}
+    Model & \Raw{} & \RawCorrectness{} & \CorrectnessOnly{} & \Summary{} & [95\% CI] \\
+    \midrule
+    Qwen3-VL-8B & [47.3, 50.0] & [50.3, 53.2] & [60.6, 62.9] & [61.2, 62.9] & 0.98 [0.90, 1.07] \\
+    InternVL3.5-8B & [46.8, 48.9] & [49.4, 52.1] & [62.8, 64.2] & [63.0, 63.8] & 1.01 [0.96, 1.05] \\
+    Gemma-3-27B & [45.6, 48.3] & [48.4, 51.3] & [59.0, 61.2] & [61.0, 62.5] & 0.89 [0.83, 0.96] \\
+    Qwen3-VL-32B & [45.4, 48.2] & [50.9, 53.6] & [62.1, 63.5] & [62.7, 63.6] & 0.98 [0.93, 1.03] \\
+    InternVL3.5-38B & [53.8, 56.0] & [54.9, 57.0] & [61.7, 63.2] & [62.9, 63.7] & 0.90 [0.81, 1.01] \\
+    \bottomrule
+  \end{tabular}
+  \caption{Uncertainty in the full-set accuracies and \CorrectnessOnly{} recovery. The first four columns give pointwise 95\% episode-pair bootstrap CIs in percent for the accuracies in Table~\ref{tab:main}, with counterbalanced logits combined before scoring. The last column is the dimensionless fraction of the \Summary{}$-$\Raw{} gap recovered by \CorrectnessOnly{}: $\frac{\mathrm{acc}_{\text{\CorrectnessOnly{}}}-\mathrm{acc}_{\text{\Raw{}}}}{\mathrm{acc}_{\text{\Summary{}}}-\mathrm{acc}_{\text{\Raw{}}}}$. Recovery CIs are reported only when the gap exceeds 5 percentage points and its CI excludes zero, as fixed in the analysis plan.}
+  \label{tab:decomp}
+\end{table*}
+\subsection{D. Rule Simulations and Bayesian Volatility Learner}                  % rule comparison across contrasts/phase lengths (design_sim)
+We ran two simulations without any VLM to check the design. Both score a rule by the percentage of trials ($t \ge 2$) on which the advisor it chooses is correct; ties receive half credit.
+
+\paragraph{Design simulation.} The first simulation draws outcomes independently from the schedule (300 episodes per setting) and compares the BOCPD posterior-predictive rule (assumed hazard $h_{\mathrm{CP}} \in \{1/8, 1/15, 1/30\}$), the last-$K$ count rule ($K \in \{3,5,7,10,15,20,30\}$), the all-trial count rule, and the reversal-aligned count rule. Across 20 settings (advisor accuracy 65--85\%; phase lengths of 40/40, 60/60 and 80/40 trials; dwell times of 10 or 15 trials), the best BOCPD posterior-predictive rule minus the best last-$K$ count rule ranged from $-0.4$ to $+0.8$ percentage points. For our setting (advisor accuracy 80\%; phases of 40/40 trials; dwell time 10 trials), accuracy was 68.7\% for the best BOCPD posterior-predictive rule ($h_{\mathrm{CP}}=1/8$), 68.3\% for $h_{\mathrm{CP}}=1/15$, 69.0\% for the best last-$K$ count rule ($K=3$), 63.2\% for the all-trial count rule and 73.9\% for the reversal-aligned count rule. Conclusions were the same for advisor accuracies from 65\% to 85\%, and accuracy varied by about one percentage point for assumed hazards $h_{\mathrm{CP}}$ between 1/8 and 1/30.
+
+\paragraph{Count rules and model inputs.} Table~\ref{tab:normsim} applies the count rules corresponding to \Summary{} and its variants, together with hidden-information diagnostics, to our episodes. The last-five count rule outperforms the change-point count rule on both sets; the all-trial count rule lags after reversals and scores above the 10- and 20-trial count rules on the held-out set but below them on the robustness set. We therefore do not claim that the change-point count rule is optimal or that these online rules are generally equivalent. The reversal-aligned count rule uses reversals only up to $t-1$, learning of each switch one trial late; it is not an upper bound. Knowing the current advisor accuracy is likewise not a strict ceiling because the main schedule has quotas (Appendix~B).
+
+\begin{table}[t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lcc}
+    \toprule
+    Rule (no VLM) & Held-out set & Robustness set \\
+    \midrule
+    Count rule (all trials) & 63.2 & 59.4 \\
+    Count rule (last 5) & 69.2 & 67.5 \\
+    Count rule (last 10) & 61.2 & 63.5 \\
+    Count rule (last 20) & 57.9 & 60.4 \\
+    Count rule (change-point) & 67.8 & 66.3 \\
+    BOCPD posterior-predictive rule & 67.7 & 67.5 \\
+    \midrule
+    \multicolumn{3}{l}{\textit{Hidden-information diagnostics}} \\
+    Count rule (reversal-aligned) & 74.4 & 73.5 \\
+    Always follow A & 64.8 & 54.7 \\
+    Known current advisor accuracy & 80.0 & 78.8 \\
+    Outcome-quota rule & 65.5 & -- \\
+    \bottomrule
+  \end{tabular}
+  \caption{Rules on the 48 held-out episode pairs and the 24 robustness-set episode pairs. The change-point count rule uses the inferred run's majority; the BOCPD posterior-predictive rule uses BOCPD's predictive probability. Rows below the divider use generator information hidden from the models (true reversal times, scheduled accuracies or the per-block outcome quotas) and are not available model strategies. The robustness set has no outcome quotas, so the outcome-quota rule does not apply (--). Held-out 95\% bootstrap CIs (2{,}000 episode-pair resamples): last 5 [68.5, 69.8], change-point count [66.6, 68.8], all-trial count [62.8, 63.6]. Accuracies are in percent. Both copies yield identical rule choices, so each pair is represented by its original episode.}
+  \label{tab:normsim}
+\end{table}
+
+These rule accuracies were computed on held-out episodes before any model results on the main data were seen. They are properties of the episode generator and involve no model behavior.
+
+\paragraph{Bayesian volatility learner implementation.} Our Bayesian volatility learner follows the volatility-learning idea of \citet{behrens2007learning,behrens2008associative}, using discrete Gaussian transition weights in logit advisor accuracy; the original formulation uses a beta transition in advisor accuracy. The grid has 60 equally spaced advisor-accuracy values $p\in[.01,.99]$, 20 equally spaced log-volatility values $v\in[\log(.02),\log(3)]$ (the log step size of changes in advisor accuracy), and a static, unknown meta-volatility $\eta\in\{.05,.2,.5,1\}$, with a uniform joint prior. Before each trial, probability mass first moves across $v$ with weights proportional to $\exp[-(v'-v)^2/(2\eta^2)]$, then across $p$ with weights proportional to $\exp[-(\operatorname{logit}p'-\operatorname{logit}p)^2/(2e^{2v'})]$; each transition is normalized over destination grid points. Let $o_t=1$ if advisor A was correct on trial $t$ and $o_t=0$ otherwise. The predictive mean $q_t=E[p_t\mid o_{1:t-1}]$ determines the choice before $o_t$ is observed; a Bernoulli likelihood then updates the joint posterior, integrating over $v$ and $\eta$. The learner chooses A when $q_t>.5$ and B when $q_t<.5$; ties receive half credit. The implied learning rate is $(q_{t+1}-q_t)/(o_t-q_t)$, excluding the last trial and prediction errors below $10^{-9}$ in magnitude. This finite-grid reference is not fitted to VLM choices.
+
+\subsection{E. Change-Point Controller and \Summary{} Variants} % BOCPD details, hazard, K selection on dev
+\paragraph{Change-point detection.} Let $o_t = 1$ if advisor A was correct on trial $t$. Before trial $t$, the change-point controller (which selects the trial range for the change-point \Summary{} variant and count rule) runs Bayesian online change-point detection \citep{adams2007bocpd} on $o_1,\dots,o_{t-1}$ with a Bernoulli likelihood, a Beta(1,1) prior for each run and a constant assumed hazard $h_{\mathrm{CP}} = 1/15$. This rate lies between the reversal rates of the volatile (1/10) and stable phases and was not tuned (Appendix~D). The controller takes the maximum a posteriori run length $r$ (the inferred number of trials since the last change), sets it to at least 3, and summarizes trials $\max(1, t-r)$ to $t-1$.
+
+\paragraph{\Summary{} variants.} All variants use the same sentence as \Summary{}, restricted to a range of trials (``Summary of the last $n$ days (days $s$--$(t-1)$): Ken was correct $x$ times; Sam was correct $y$ times.''). The ranges are: all past trials (\Summary{} itself); and, as variants, the last $K \in \{5, 10, 20\}$ trials; the run since the last change point inferred by BOCPD (change-point variant); and the trials since the last true reversal up to $t-1$ (reversal-aligned \Summary{} variant). Two further conditions truncate \Raw{} instead of summarizing it: to the change-point run, or to the last 10 trials. The window length used in the secondary tests is, for each model, the one with the highest accuracy on development episodes, fixed before held-out evaluation; Table~\ref{tab:variants} reports the additional variants, and Table~\ref{tab:tests} gives rule agreement and equivalence tests. The last five trials were selected for every model. On held-out episodes, model accuracy was close to that of the corresponding count rule for every \Summary{} variant: last five trials 66.7--69.1\% (count rule alone 69.2\%), change point 66.6--67.7\% (67.8\%), last 10 trials 60.5--61.6\% (61.2\%), last 20 trials 58.1--58.6\% (57.9\%). The model thus adds little to, and takes little from, the count rule corresponding to its input; the choice of trial range determines that rule's accuracy. The same holds for the reversal-aligned \Summary{} variant (72.7--74.4\%; count rule alone 74.4\%). Truncating \Raw{} did not help: with only the last 10 \Raw{} trials, accuracy was 39.1--46.7\%, at or below the full \Raw{} history (46.8--54.9\%) in every model, and truncating to the change-point run gave 43.5--50.2\% across all five models. Shortening \Raw{} did not recover the benefit of \CorrectnessOnly{}.
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l ccccc cc}
+    \toprule
+    & \multicolumn{5}{c}{\Summary{} variants} & \multicolumn{2}{c}{Truncated \Raw{}} \\
+    \cmidrule(lr){2-6}\cmidrule(lr){7-8}
+    Model & Last 5 & Last 10 & Last 20 & Change-point & Reversal-aligned & Last 10 & Change-point \\
+    \midrule
+    Qwen3-VL-8B & 66.7 & 60.5 & 58.2 & 66.6 & 72.7 & 45.8 & 47.7 \\
+    InternVL3.5-8B & 68.1 & 61.3 & 58.6 & 67.3 & 73.7 & 46.7 & 47.2 \\
+    Gemma-3-27B & 67.7 & 60.9 & 58.1 & 66.7 & 72.8 & 39.1 & 43.5 \\
+    Qwen3-VL-32B & 69.1 & 61.5 & 58.2 & 67.5 & 74.0 & 42.9 & 45.3 \\
+    InternVL3.5-38B & 69.1 & 61.6 & 58.1 & 67.7 & 74.4 & 45.0 & 50.2 \\
+    \midrule
+    Count rule & 69.2 & 61.2 & 57.9 & 67.8 & 74.4 & -- & -- \\
+    \bottomrule
+  \end{tabular}
+  \caption{\Summary{} variants and truncated \Raw{} on held-out episodes (accuracy in percent); \Summary{} appears in Table~\ref{tab:main}. The last-five-trial window was selected on development episodes for every model. The reversal-aligned \Summary{} variant is a hidden-information diagnostic that uses true reversal times hidden from the models. Truncated \Raw{} inputs have no separate count rule; change-point truncation uses the same inferred run as the corresponding \Summary{} variant.}
+  \label{tab:variants}
+\end{table*}
+
+\paragraph{What the controller is.} The change-point controller is a training-free trial-range selector outside the model; it sees only the sequence indicating whether advisor A was correct and does not read model states. It is motivated by change-point models of human learning \citep{nassar2010approximately,nassar2012rational}, but we use it to select the trial range for correctness counts, not as a model of the VLM or of the brain.
+\begin{figure*}[!t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_curves_models.pdf}
+  \caption{Following the currently better advisor after a reversal, separately for each open model and history format. Zero marks the first trial after a reversal. Each curve is a mean following probability on held-out episode pairs; the panels are descriptive and do not show confidence intervals. Fig.~\ref{fig:curves} instead shows shares of discrete choices averaged over the five open models and split by reversal direction.}
+  \label{fig:curves_models}
+\end{figure*}
+
+\subsection{F. Behavioral Diagnostics and Identifiability}  % delta-rule variants, calibrated learning rates, LOEO-CV
+\paragraph{What strategy agreement can establish.} Cohen's $\kappa$ adjusts agreement for chance. A rule that nearly always chooses one advisor can have high uncorrected agreement and low $\kappa$; matching a strategy does not identify an internal algorithm. Figure~\ref{fig:strategies} shows selected \Raw{} strategy comparisons, and Fig.~\ref{fig:kernel_models} retains each model's kernels and CIs rather than only the mean in Fig.~\ref{fig:kernel}. Table~\ref{tab:recovery} checks these diagnostics on synthetic agents: even a constant-rate delta learner can agree most with the BOCPD posterior-predictive rule, while its kernel has the expected geometric decay.
+
+\paragraph{Repetition without outcome quotas.} On the robustness set (24 episode pairs, \Raw{} only), where outcome labels are sampled independently and repeating the previous outcome confers no advantage, the repeat weight remained positive in every model, with 95\% bootstrap CIs excluding zero: Gemma-3-27B 0.67, Qwen3-VL-8B 0.57, Qwen3-VL-32B 0.49, InternVL3.5-8B 0.41 and InternVL3.5-38B 0.35 (held-out: 0.71, 0.45, 0.42, 0.30, 0.22). Repeating the previous outcome again agreed best with the choices of four models ($\kappa = .25$--.32); for InternVL3.5-38B it was close to the best strategy ($\kappa = .19$ versus .22 for the all-trial count rule).
+
+\paragraph{Constant-rate delta learner.} Let $o_t=1$ when advisor A is correct. The delta learner updates $q_{t+1}=q_t+\alpha(o_t-q_t)$ from $q_1=0.5$, with learning rate $\alpha$. Its choice probability is $P_t=\sigma[\beta(q_t-0.5)+b]$, where $\sigma$ is the logistic function, $\beta$ the inverse temperature and $b$ a bias. This defines the synthetic delta learner and the constant-rate null below.
+
+\paragraph{Effective learning rate.} The update of the model's choice probability in logit space after each trial, regressed on the signed correctness of advisor A on that trial separately for the stable and volatile phases, measures how strongly the model responds to new correctness observations. This statistic is not zero for a learner with a single constant learning rate: preferences are more extreme in the stable phase, where the logit stretches updates. We therefore calibrate it against a null in which a constant-rate delta learner fitted to the same episode generates simulated choice probabilities with the same residual noise (200 simulations); the calibrated volatile-minus-stable difference and its $z$ score against the null indicate whether a model updates more in the volatile phase than a constant-rate learner would.
+
+% Prior development CV held out cover stories separately. Do not restore its loss/model-selection results before rerunning with episode-grouped folds.
+
+\paragraph{Can these episodes reveal volatility-dependent learning?} We checked this with our Bayesian volatility learner, which allows volatility-dependent updating. On our 80-trial episodes its implied learning rate rose only from .100 in the stable to .115 in the volatile phase (held-out episodes). Neither the calibrated volatile-minus-stable effective learning rate ($+0.002$ [$-0.010$, $0.014$] over 16 development episodes) nor phase-specific integration kernels (volatile/stable ratio of the summed integration-kernel weights on the last three correctness observations: 0.84--0.90, versus 0.96 for a constant-rate learner) detected this change, so we do not use the advice-taking task to test whether models adapt their learning rate to volatility. The changing bandit (Appendix~H), in which the hazard rate differs across whole games, tests that question instead.
+
+\begin{figure*}[!t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_kernel_models.pdf}
+  \caption{Integration kernels per model (shaded: 95\% bootstrap CIs from 1{,}000 episode-pair resamples) and, bottom-right, the repeat weight by history format (bars: 95\% CIs; held-out).}\label{fig:kernel_models}
+\end{figure*}
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l lc cc}
+    \toprule
+    Synthetic agent & Best strategy & $\kappa$ & Repeat $\hat{w}$ & Lag-1 $\hat{w}$ \\
+    \midrule
+    Repeat previous outcome ($w_{\mathrm{gen}}=3$) & Repeat previous outcome & 1.00 & 3.00 & 0.00 \\
+    Delta learner ($\alpha=0.3$, $\beta=8$) & BOCPD posterior-predictive rule & 0.94 & 0.00 & 1.20 \\
+    50\% repeat previous outcome, 50\% delta learner & Repeat previous outcome & 0.49 & 1.21 & 0.56 \\
+    Last-five count rule & Last-five count rule & 1.00 & 0.02 & 1.08 \\
+    All-trial count rule & All-trial count rule & 1.00 & 0.05 & 0.27 \\
+    Label bias ($w_{\mathrm{gen}}=3$) & Label bias & 1.00 & 0.00 & 0.00 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Strategy and integration-kernel analyses applied to synthetic agents on the main episodes (development and held-out; no VLM). Best strategy: highest Cohen's $\kappa$. In agent labels $w_{\mathrm{gen}}$ is the generating weight; in column headings $\hat{w}$ is the fitted coefficient. Repeat $\hat{w}$ and Lag-1 $\hat{w}$: integration-kernel regression weights on repeating the previous outcome and on the advisor correct one trial back. For the delta learner the fitted integration kernel decays geometrically with ratio 0.700 (true $1-\alpha=0.7$); the last-five count-rule agent has a flat integration kernel up to lag 5. Strategies are correlated on this schedule, so the delta learner agrees best with the BOCPD posterior-predictive rule; its fitted kernel nevertheless recovers the expected geometric decay. The same qualitative patterns held on the robustness set.}
+  \label{tab:recovery}
+\end{table*}
+\begin{figure*}[!t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_strategies.pdf}
+  \caption{Under \Raw{}, repeating the previous outcome agrees most with the open models. Cohen's $\kappa$ on held-out episode pairs, with a color scale centered at zero. Repeat: repeat the previous outcome; WSLS (win-stay/lose-shift): follow the advisor correct on the previous trial; Last-five and All-trial count rules: choose by correctness counts over the specified range; BOCPD posterior-predictive rule: choose by its predictive probability; Label: outcome-label bias. Values are rounded to two decimal places; rounding zeros has no effect on their color.}
+  \label{fig:strategies}
+\end{figure*}
+
+\subsection{G. Icon Design, Multimodal Binding and Chart Legibility}      % icon selection, image_named/composite/after, composite_read, chart_read
+The legibility and binding controls use development episodes only and are exploratory; the comparison of text and image reports on the main task uses held-out episodes. All use the selected icons described below. Every model named the selected icons correctly. Pooled image naming was 98.8\% for InternVL3.5-8B (98.6\% for pet photos) and 100\% for the other models, so recognition alone does not establish successful use of a report in context; held-out task accuracy is shown separately in Table~\ref{tab:mm}. In the described-accuracy control, control-item accuracy in four models was lowest when the advisor's name was given only after the image (54--70\%) and higher when the name was printed on the image (72--83\%) or both reports were shown in one composite image (75--85\%), although each panel of a composite image was read correctly on every item; InternVL3.5-38B did best with the composite image (97\%) and worst with plain image reports (59\%). Reading a single cell of the correctness chart was below the prespecified 80\% chart-reading criterion for every model (61--71\%).
+
+
+\paragraph{Icon design and examples.} Icons replace the answer word with a picture in the image-report conditions. Figure~\ref{fig:icons} shows the original and selected icon pairs at 224 pixels; InternVL3.5 receives 448-pixel renderings from the same drawing functions. In the original medical pair, two red test-strip lines indicate positive and one indicates negative. The selected pair uses a dark plus or minus inside the same circular outline. In sports, the original gold trophy and red cross on a gray ball encode win and lose; the selected pair uses a yellow happy face and a gray-blue sad face. Labels and selection markers in the figure are reader annotations and are absent from the report images. These are synthetic symbols for the answer words, not clinical scans or photographs of game outcomes. All other cover-story icons are unchanged.
+
+\paragraph{Development-only selection.} We tested five medical pairs and four sports pairs with Qwen3-VL-8B and InternVL3.5-8B before held-out evaluation. The single-image probe asks for each of the two labels under both answer orders (four prompts per pair and model). We required all four responses to be correct for both models, then selected the eligible pair with the highest mean accuracy over four image-report controls and both models. The controls use described accuracy, a short easy history in \Raw{}, and short and long easy histories in \CorrectnessOnly{}. Each downstream cell contains 64 items after averaging answer-aligned logits across the counterbalanced episode copies. This selected plus/minus and happy/sad faces. Enlarging the test strip left naming accuracy at 50\% for both models, so size alone did not resolve that failure. Colored plus/minus signs scored higher downstream but failed the InternVL3.5 naming criterion.
+
+\paragraph{Results and limits.} The downstream mean increases from 52.1\% to 66.8\% for medical and from 58.8\% to 67.8\% for sports. Both selected pairs reach 4/4 in the naming probe for both models. However, accuracy in the described-accuracy condition, pooled over these two image-report cover stories is 77.3\% for Qwen3-VL-8B and 72.7\% for InternVL3.5-8B, below the 80\% control-item accuracy criterion for the described-accuracy control. Single-image recognition therefore does not establish successful use of image reports in the advice-taking task. Selection and evaluation use the same development controls, so these gains are descriptive and do not estimate held-out improvement.
+
+\paragraph{Versioning.} Icon selection was a development-driven deviation from the fixed plan. Outputs with the original icons are kept separately and not reported. Text reports, pet photographs, the correctness chart and the primary text-report comparison are unchanged. The three models not used for selection also named the selected icons correctly. Tables~\ref{tab:controls_full} and~\ref{tab:mm} use complete reruns with the selected icons; the development gains above are not held-out evidence of improvement.
+
+\begin{figure}[t]\centering
+  \includegraphics[width=\columnwidth]{figures/fig_icons.pdf}
+  \caption{Original and selected report icons for medical (positive/negative) and sports (win/lose). Labels and headings are reader annotations and are absent from model inputs. Selection used development items only; the original recognition failures motivated the replacements.}
+  \label{fig:icons}
+\end{figure}
+
+% runs/iconprobe/ctl.json from analyze_controls.py for downstream controls averaged over counterbalanced copies.
+
+\subsection{H. Human Comparison: Protocol and Validity Checks}       % hidden/told, sampled-choice fits, long blocks, position
+\paragraph{Task and data.} In the changing bandit of \citet{xiong2023neural}, participants repeatedly choose between two slot machines whose payoffs stay constant until a change point, which occurs with a hazard rate $h$; payoffs are noise-free, so a normative learner forgets the value of the unchosen machine at rate $\phi = h$. We use the 30 participants in Psych-101 \citep{binz2025foundation} and their three 100-trial games ($h = 0.1, 0.2, 0.4$; 90 games, 9{,}000 trials). Participants were told $h$. Each 100-trial game preceded a longer game with the same $h$: 1{,}500 trials for 29 participants and 500 for one. Before the second and third short games, prior experience therefore totaled 1{,}600 and 3{,}200 trials for 29 participants, and 600 and 1{,}200 for one; models see each game on its own.
+
+\paragraph{Replay.} Only the five open models are evaluated in this task; the proprietary models are not included. Models are conditioned on each participant's previously executed behavior \citep{binz2025foundation}: before trial $t$ the model sees the original instructions and the participant's choices and payoffs on trials $1,\dots,t-1$, and is asked which machine to press (one letter). The readout is the choice probability for each machine's answer letter, from the first-token logits normalized over the two letters, as in the main task. In the primary condition the hazard rate is removed from the instructions (hidden); in a secondary condition the original instructions state it (stated). Model and participant thus share the within-game history but not the hazard information (hidden) or the prior experience (both conditions).
+
+\paragraph{Fits.} We fit an adapted myopic model-free learner based on \citet{xiong2023neural}, separately for each hazard rate. It has free rates for updating the chosen machine's value and forgetting the unchosen one toward the midpoint ($\phi$), plus choice sensitivity, perseveration and a bias. Humans give binary choices, so for comparability we draw 20 binary choice sequences from the model's choice probabilities in each game, fit each, and take the median. The primary statistic is each participant's slope of $\phi$ on $h$; the comparison is the paired difference between the model's and the human's slope (Wilcoxon test, participant-bootstrap 95\% CI), with hidden- and stated-hazard conditions shown in Fig.~\ref{fig:human}. The human fits are our reanalysis; \citet{xiong2023neural} report no fitted learning or forgetting rates by hazard rate. In our reanalysis, the median human $\phi$ rose from .079 ($h=0.1$) to .110 and .255 ($h=0.4$; per-participant slope 0.47 per unit $h$, positive in 73\% of participants, Wilcoxon $p=.008$), adjusting for game position did not remove the increase (0.64 [0.23, 1.05]), and in the following 1{,}500-trial games for the 29 participants who completed them, the increase was weaker (median $\phi$ .076, .114, .131; slope test $p=.029$).
+
+\paragraph{Calibration of the human--model comparison.} We simulated the complete pipeline 200 times per condition. Simulated participants follow each real participant's fitted strategy at each hazard rate and play on the real value sequences; the simulated model follows the same strategy with a nominal forgetting-rate slope offset $\delta$ (rates clipped to $[.005,.95]$), and is replayed on the simulated participant's history; both are then fitted exactly as the real data (20 sampled choice sequences per model game, median fit, paired Wilcoxon test and bootstrap CI). With $\delta = 0$, the test rejected at $p < .05$ in 6.0\% of replications (Monte Carlo standard error 1.7 percentage points) and the 95\% CI covered the true difference in 93.5\%, but the estimated difference was biased upward by about $+0.09$. Power was 0.49 for $\delta = -0.5$ and 0.59 for $\delta = +0.5$ (realized median slope differences $-0.50$ and $+0.39$ after clipping), with CI coverage 0.87 and 0.96. We therefore treat the comparison as supplementary and descriptive (main text).
+
+\paragraph{Regression check of forgetting (exploratory).} For every trial on which both machines had been observed, we regressed the choice of the first machine (participants: binary; models: choice probability) on the difference between the two machines' last observed values (per 10 payoff points), separately when the older of the two values had been observed at most two trials earlier (fresh) or at least four trials earlier (stale), with the previous choice as a covariate (Table~\ref{tab:stale}). All models were sensitive to value. We resampled the 30 participants as whole clusters (2{,}000 replicates), refitting the regression and using the same sampled participants for each human--model comparison. The stale-minus-fresh coefficient was negative for participants at $h=0.1$ ($-.263$ [$-.501$, $-.114$]); its CIs included zero at the other hazard rates. Model-minus-human contrasts were positive at $h=0.1$ and $h=0.4$ in all five models (pointwise CIs above zero; Table~\ref{tab:stale}). This supports a difference in stale-value use under replay, without establishing a hazard-dependent adaptation deficit.
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{l ccc}
+    \toprule
+    & \multicolumn{3}{c}{Stale $-$ fresh value weight [95\% CI]} \\
+    Agent (hazard hidden) & $h=0.1$ & $h=0.2$ & $h=0.4$ \\
+    \midrule
+    Participants (hazard stated) & $-$.263 [$-$.501, $-$.114] & $-$.049 [$-$.170, .046] & $-$.040 [$-$.122, .034] \\
+    Qwen3-VL-8B & +.047 [$-$.037, .146] & $-$.009 [$-$.081, .080] & +.089 [.048, .133] \\
+    InternVL3.5-8B & +.100 [.052, .147] & +.057 [.016, .101] & +.087 [.054, .119] \\
+    Gemma-3-27B & +.049 [$-$.011, .110] & +.035 [$-$.016, .094] & +.053 [.007, .097] \\
+    Qwen3-VL-32B & +.040 [$-$.017, .102] & +.026 [$-$.047, .097] & +.099 [.052, .138] \\
+    InternVL3.5-38B & +.146 [.066, .229] & +.039 [$-$.020, .106] & +.105 [.070, .141] \\
+    \midrule
+    & \multicolumn{3}{c}{Model $-$ human contrast in stale $-$ fresh weight [95\% CI]} \\
+    \midrule
+    Qwen3-VL-8B & +.310 [.159, .552] & +.039 [$-$.063, .169] & +.129 [.049, .212] \\
+    InternVL3.5-8B & +.363 [.216, .598] & +.105 [.021, .217] & +.127 [.055, .208] \\
+    Gemma-3-27B & +.313 [.156, .541] & +.084 [$-$.007, .198] & +.093 [.014, .180] \\
+    Qwen3-VL-32B & +.303 [.139, .557] & +.075 [$-$.024, .189] & +.140 [.071, .214] \\
+    InternVL3.5-38B & +.410 [.236, .663] & +.087 [$-$.033, .225] & +.145 [.075, .226] \\
+    \bottomrule
+  \end{tabular}
+  \caption{Exploratory stale-value regression. Coefficients are log-odds per 10 payoff points of last-observed value difference. Negative stale-minus-fresh values indicate discounting of stale values. Pointwise 95\% CIs use 2{,}000 participant-cluster bootstrap refits; the same participants are resampled for paired model--human contrasts. These are descriptive, unadjusted intervals, separate from the primary hazard-slope tests.}
+  \label{tab:stale}
+\end{table*}
+
+\subsection{I. Robustness, Prompt Wording and Masking}                                   % IID/irregular episodes; per-cover-story results
+\paragraph{Robustness set and cover stories.} On the robustness set, where correctness and outcome labels are drawn independently on each trial and reversals are irregular, \Raw{} accuracy was 50.7--52.0\% in four models (near chance) and 55.9\% in InternVL3.5-38B, and \Summary{} reached 58.2--59.5\%, close to the count rule on these episodes (59.4\%). The \Summary{}$-$\Raw{} gap was smaller than on the held-out set but positive and significant in every model ($+3.6$ to $+8.3$ percentage points, Holm-corrected $p<.001$; Table~\ref{tab:robust}), so it does not depend on the outcome quotas. On the 48 held-out episode pairs the gap was positive in every non-pet cover story for every model (sign test $p=.031$, the smallest attainable) and in the pet cover story ($+8.0$ to $+17.9$ percentage points; Table~\ref{tab:scenario}); it was smallest for Gemma-3-27B with the medical and news cover stories ($+3.6$, $+4.7$).
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l cccccc c c}
+    \toprule
+    & \multicolumn{6}{c}{Non-pet cover stories} & & \\
+    \cmidrule(lr){2-7}
+    Model & Color & Weather & Stock & Sports & Medical & News & Sign test $p$ & Pet \\
+    \midrule
+    Qwen3-VL-8B & +10.9 & +9.5 & +15.7 & +13.1 & +9.7 & +13.4 & .031 & +14.8 \\
+    InternVL3.5-8B & +17.2 & +15.7 & +13.6 & +11.7 & +10.1 & +11.6 & .031 & +17.9 \\
+    Gemma-3-27B & +16.0 & +14.6 & +17.1 & +15.7 & +3.6 & +4.7 & .031 & +17.5 \\
+    Qwen3-VL-32B & +16.9 & +18.7 & +19.3 & +15.8 & +16.8 & +10.1 & .031 & +16.4 \\
+    InternVL3.5-38B & +5.5 & +10.1 & +12.7 & +8.7 & +8.7 & +6.8 & .031 & +8.0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{\Summary{}$-$\Raw{} gap by cover story in percentage points (held-out; eight episodes per non-pet cover story). Pet: the pet cover story, shown in every episode alongside its other cover story (text reports here; photographs only in image-report conditions); it is not part of the sign test.}
+  \label{tab:scenario}
+\end{table*}
+
+\begin{figure*}[!t]\centering
+  \includegraphics[width=\textwidth]{figures/fig_masking_effects.pdf}
+  \caption{Paired masking effects corresponding to Table~\ref{tab:masking_accuracy}. Each contrast compares masking the reports, the outcome label, or both against \RawCorrectness{}; correctness statements remain visible. Markers show accuracy changes in percentage points, with pointwise 95\% bootstrap CIs over the same 48 held-out episode pairs (10{,}000 resamples; text reports). The vertical line marks zero change. These are intervals for paired differences, not for the absolute accuracies in Table~\ref{tab:masking_accuracy}.}
+  \label{fig:masking_effects}
+\end{figure*}
+
+\paragraph{Which part of \RawCorrectness{} prevents use of its correctness statements.} \RawCorrectness{} recovered only part of the \Summary{}$-$\Raw{} gap, and the repeat weight stayed large. To find out why, we kept the layout and length of that history and replaced parts of each past trial with a dash (``Day 3: Ken forecasts ---; Sam forecasts ---. Actual weather: rain. (Ken was correct; Sam was wrong.)''): the outcome label, the two reports, or both. With both replaced the history carries the same information as \CorrectnessOnly{} at nearly the length of \RawCorrectness{}. On development episodes, replacing the outcome label raised accuracy by 7.4 and 9.6 percentage points (main effects; 95\% CIs [5.2, 9.5] and [7.6, 11.5]) and lowered the repeat weight from .48--.50 to .12 (Table~\ref{tab:mask}), whereas replacing the reports had no effect on its own ($+1.1$ and $-0.2$ percentage points). With both replaced, accuracy was 1.5--2.1 percentage points below \CorrectnessOnly{}, leaving 14--20\% of the original accuracy difference despite retaining much of the surrounding text; this comparison does not isolate additive contributions of length, layout and outcome labels. The outcome label thus elicits repeating the previous outcome even when advisor correctness is stated. Predictions for the held-out replication in five models were written before it was run. On held-out episodes, paired accuracy changes (Fig.~\ref{fig:masking_effects}) and weights on repeating the previous outcome (Table~\ref{tab:mask}) supported all four predictions in all five models. Replacing the outcome label raised accuracy over \RawCorrectness{} ($+2.7$ to $+6.4$ percentage points; all $p<.001$) and cut the repeat weight from .42--.87 to .08--.23, whereas replacing the reports showed no clear accuracy change (between $-0.4$ and $+0.3$ percentage points; all 95\% CIs include zero) and left that weight at .26--.65. Averaged over the other factor, replacing the outcome label had a larger effect than replacing the reports in every model (difference of main effects $+2.9$ to $+6.8$ percentage points, all CIs above zero). With both replaced, accuracy was $+7.3$ to $+10.7$ percentage points above \RawCorrectness{} and within $-4.0$ to $+0.8$ percentage points of \CorrectnessOnly{}, despite retaining the longer layout. The held-out effect of replacing the outcome label alone is smaller than on development episodes and recovers 40--60\% of the difference between \RawCorrectness{} and \CorrectnessOnly{}.
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{l ccccc}
+    \toprule
+    Model & \RawCorrectness{} & Reports masked & Outcome label masked & Both masked & \CorrectnessOnly{} \\
+    \midrule
+    \multicolumn{6}{l}{\textit{Development episodes (exploratory)}} \\
+    Qwen3-VL-8B & .50 & .48 & .12 & .04 & .03 \\
+    InternVL3.5-8B & .48 & .27 & .12 & .02 & .01 \\
+    \midrule
+    \multicolumn{6}{l}{\textit{Held-out episodes}} \\
+    Qwen3-VL-8B & .44 & .40 & .08 & .01 & .02 \\
+    InternVL3.5-8B & .44 & .26 & .10 & .03 & .02 \\
+    Gemma-3-27B & .87 & .65 & .18 & .04 & .00 \\
+    Qwen3-VL-32B & .60 & .60 & .13 & .02 & .00 \\
+    InternVL3.5-38B & .42 & .37 & .23 & .02 & .01 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Weight on repeating the previous outcome (log-odds) under history masking. Column names specify the information removed; correctness statements remain visible. Development rows are exploratory; held-out masking predictions were fixed before those runs. Absolute held-out accuracies appear in Table~\ref{tab:masking_accuracy} and paired accuracy differences with CIs in Fig.~\ref{fig:masking_effects}; they are not repeated here.}
+  \label{tab:mask}
+\end{table*}
+
+\paragraph{Prompt wording (exploratory, development episodes).} We reran the four text history formats for Qwen3-VL-8B and InternVL3.5-8B with two alternative wordings; episodes, names, answer words, list order and readout were unchanged. Reworded sentences keep the original layout with different phrasing (``In trial 3, Sam said cat and Ken said dog; it turned out cat.''; ``Tally over the 3 previous trials: Ken was right 2 times and Sam was right 1 times.''). A compact record uses one line per trial (``\#3 | Sam=cat | Ken=dog | truth=cat''; ``Correct counts so far (3 trials): Ken=2, Sam=1.''). Table~\ref{tab:wording} gives the results. With reworded sentences, every result was preserved: \Raw{} at 47--49\%, \Summary{}$-$\Raw{} $+12$ and $+15$ percentage points, \CorrectnessOnly{} at or above \Summary{}, \RawCorrectness{} recovering about 40\% of the gap, and a positive repeat weight. The compact record changed the picture in both directions. \Raw{} accuracy rose to 55--56\% and the repeat weight fell, whereas \CorrectnessOnly{} and \Summary{} fell to 56--60\%, and InternVL3.5-8B showed only 72\% choice agreement with the all-trial count rule when given \Summary{} (98\% with the original wording). The \Summary{}$-$\Raw{} gap shrank to $+3.4$ percentage points [0.8, 5.9] (Qwen3-VL-8B) and $+1.4$ [$-1.9$, 4.5] (InternVL3.5-8B). \Raw{} accuracy stayed below the count rule (63\%) in every wording, but the size of the \Summary{}$-$\Raw{} gap depends on how the history is laid out, and we interpret it only for the natural-language layout used in all four history formats.
+
+Compact-record extensions to the three larger models gave \Summary{}$-$\Raw{} gaps of $+12.0$ percentage points [9.7, 14.6] (Qwen3-VL-32B), $+6.4$ [3.9, 8.7] (Gemma-3-27B) and $+7.1$ [5.1, 9.4] (InternVL3.5-38B), with paired 95\% bootstrap CIs over the same 16 development episode pairs. Original-layout development runs are not all available on matched hardware, so these extensions do not isolate changes caused by layout. The compact record changes the task description, history notation and current-trial question together; this sensitivity check does not isolate which change is responsible.
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{ll cccc c c}
+    \toprule
+    Model & Wording & \Raw{} & \RawCorrectness{} & \CorrectnessOnly{} & \Summary{} & \Summary{}$-$\Raw{} [95\% CI] & Repeat \\
+    \midrule
+    Qwen3-VL-8B & Original & 48.5 & 53.4 & 64.0 & 61.7 & $+13.2$ [10.8, 15.3] & .46 \\
+    & Reworded & 48.8 & 53.3 & 62.4 & 60.7 & $+11.9$ [9.3, 14.4] & .50 \\
+    & Compact & 56.3 & 56.1 & 58.0 & 59.7 & $+3.4$ [0.8, 5.9] & .32 \\
+    \midrule
+    InternVL3.5-8B & Original & 47.1 & 53.0 & 64.0 & 62.8 & $+15.7$ [14.0, 17.4] & .28 \\
+    & Reworded & 47.3 & 53.8 & 64.4 & 62.7 & $+15.3$ [13.3, 17.5] & .26 \\
+    & Compact & 55.0 & 55.9 & 59.3 & 56.4 & $+1.4$ [$-1.9$, 4.5] & .13 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Prompt-wording check (development episodes, text reports; accuracy in percent, gaps in percentage points, averaged over counterbalanced copies, $t\ge 2$). Repeat: regression weight on repeating the previous outcome under \Raw{}.}
+  \label{tab:wording}
+\end{table*}
+\paragraph{Judgment question and report position (exploratory).} On \Raw{} trials the models were also asked which advisor was currently more likely to be correct (Appendix~J). Table~\ref{tab:judgpos} compares the judgment averaged over counterbalanced copies with the choice on the same trials, and gives image-report accuracy with \CorrectnessOnly{} conditional on the position of the correct report; first-listed choice shares for text and image reports are in Table~\ref{tab:mm}. Within each trial the two reports are listed in random order, identical in both counterbalanced copies. The models named the currently better advisor on 60--67\% of \Raw{} trials, below always naming the advisor that was better over most of the episode (75\%), with little agreement with any rule ($\kappa\le .17$), and their choices followed their own judgment on only 53--69\% of trials ($\kappa\le .12$): judgments and choices were weakly aligned. With \Raw{} and image reports, the larger models chose the first-listed image on 88--93\% of trials (text 57--58\%).
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{3.5pt}
+  \begin{tabular}{l ccc c cc}
+    \toprule
+    & \multicolumn{4}{c}{\Raw{}, text reports} & \multicolumn{2}{c}{\CorrectnessOnly{}, image reports} \\
+    \cmidrule(lr){2-5}\cmidrule(lr){6-7}
+    & Judgment & Choice & Choice follows & & \multicolumn{2}{c}{Correct report listed} \\
+    Model & names better & follows better & own judgment & $\kappa$ & First & Second \\
+    \midrule
+    Qwen3-VL-8B & 63.3 & 52.3 & 57.9 & .09 & 57.1 & 52.5 \\
+    InternVL3.5-8B & 67.4 & 52.4 & 52.7 & $-$.02 & 84.7 & 24.3 \\
+    Gemma-3-27B & 60.2 & 53.1 & 57.6 & .07 & 82.8 & 24.3 \\
+    Qwen3-VL-32B & 60.7 & 53.2 & 53.7 & .00 & 94.1 & 10.5 \\
+    InternVL3.5-38B & 67.2 & 63.3 & 69.1 & .12 & 92.0 & 11.4 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Judgment--choice agreement and image-report accuracy conditional on the correct report's position (held-out; counterbalanced logits combined before scoring). Names/follows better refers to the currently better advisor (higher scheduled accuracy on that trial); always naming the advisor that is better over most of the episode scores 75\%. First and Second give accuracy when the correct report is listed in that position. Values other than $\kappa$ are in percent; $\kappa$ is judgment--choice agreement. Overall task accuracy and first-listed choice shares with \CorrectnessOnly{} appear in Table~\ref{tab:mm}.}
+  \label{tab:judgpos}
+\end{table*}
+
+\subsection{J. Models, Readouts and Analysis Transparency}                % pinned revisions, hardware
+
+Table~\ref{tab:revisions} lists the Hugging Face checkpoints and pinned revisions.
+
+\begin{table*}[!t]
+  \centering
+  \small
+  \begin{tabular}{lll}
+    \toprule
+    Model & Checkpoint & Revision \\
+    \midrule
+    Qwen3-VL-8B & Qwen/Qwen3-VL-8B-Instruct & 0c351dd01ed87e9c1b53cbc748cba10e6187ff3b \\
+    InternVL3.5-8B & OpenGVLab/InternVL3\_5-8B-HF & 741a7d03020411e666c6109218ab71e08151ef86 \\
+    Gemma-3-27B & google/gemma-3-27b-it & 005ad3404e59d6023443cb575daa05336842228a \\
+    Qwen3-VL-32B & Qwen/Qwen3-VL-32B-Instruct & 0cfaf48183f594c314753d30a4c4974bc75f3ccb \\
+    InternVL3.5-38B & OpenGVLab/InternVL3\_5-38B-HF & 7c830fc25e874f9a861087e3c70587f2b9b555f3 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Checkpoints and pinned revisions (resolved 2026-11-11). B in model names denotes billions of parameters.}
+  \label{tab:revisions}
+\end{table*}
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{l ccc cc}
+    \toprule
+    Model & \Raw{} & \CorrectnessOnly{} & \Summary{} & \Summary{}$-$\Raw{} & \CorrectnessOnly{} $-$ \Raw{} \\
+    \midrule
+    Qwen3-VL-8B & 49.3 & 58.6 & 59.4 & 10.2 [9.0, 11.2] & 9.4 [8.2, 10.5] \\
+    InternVL3.5-8B & 49.0 & 61.0 & 61.9 & 12.9 [11.9, 13.9] & 12.0 [10.7, 13.2] \\
+    Gemma-3-27B & 47.1 & 56.2 & 55.9 & 8.8 [7.3, 10.2] & 9.1 [7.7, 10.5] \\
+    Qwen3-VL-32B & 48.3 & 58.4 & 62.2 & 13.9 [13.1, 14.6] & 10.1 [9.1, 11.1] \\
+    InternVL3.5-38B & 53.9 & 61.7 & 63.1 & 9.2 [8.4, 10.1] & 7.8 [6.9, 8.7] \\
+    \bottomrule
+  \end{tabular}
+  \caption{Per-copy scoring on the full held-out set. Accuracy is in percent and paired differences in percentage points, with 95\% CIs from 10{,}000 bootstrap resamples of 48 episode pairs. Each copy is scored before averaging; the original counterbalanced-logit estimates appear in Table~\ref{tab:main}.}
+  \label{tab:readout_sensitivity}
+\end{table*}
+
+\begin{table*}[!t]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l l c ccccc c cc}
+    \toprule
+    & & & \multicolumn{5}{c}{Agreement with strategy ($\kappa$)} & Quota vs.\ learner & \multicolumn{2}{c}{Since reversal} \\
+    \cmidrule(lr){4-8}\cmidrule(lr){10-11}
+    Model & \shortstack{History\\format} & Acc. & Repeat & WSLS & \shortstack{All-trial\\count rule} & \shortstack{Last-five\\count rule} & Learner & follows learner & 1--3 & 8--10 \\
+    \midrule
+    Claude Fable 5.2 & \Raw{} & 62.9 & .02 & .43 & .12 & .79 & .87 & 96 & 6 & 94 \\
+    & \Summary{} & 58.5 & .02 & .05 & 1.00 & .11 & .13 & 82 & 50 & 49 \\
+    GPT-6-Astra & \Raw{} & 62.8 & $-$.03 & .41 & .09 & .77 & .78 & 91 & 9 & 99 \\
+    & \Summary{} & 58.5 & .02 & .05 & 1.00 & .11 & .13 & 82 & 50 & 49 \\
+    \midrule
+    Open models (5) & \Raw{} & 46.7--50.3 & .08--.31 & .00--.04 & .01--.05 & $-$.01--.06 & .01--.08 & 59--80 & 47--56 & 43--51 \\
+    & \Summary{} & 53.3--59.0 & .01--.02 & .01--.07 & .04--.68 & .09--.16 & .08--.17 & 67--81 & 47--51 & 51--58 \\
+    \midrule
+    Rule alone & & \multicolumn{9}{p{0.74\textwidth}}{accuracy: repeat previous outcome 45.8; WSLS 62.3; all-trial count rule 58.5; last-five count rule 67.9; Bayesian volatility learner 62.9; outcome-quota rule (hidden) 70.2} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Behavior on the API subset (24 episode pairs, non-pet cover stories, $t=4,8,\dots,80$; per-copy choices for all models). Accuracy and proportions are in percent; agreement is Cohen's $\kappa$. Strategy definitions follow Fig.~\ref{fig:strategies}; Learner denotes the Bayesian volatility learner. Quota vs.\ learner: share following the learner when it disagrees with the hidden outcome-quota rule. Since reversal: proportion of discrete choices following the currently better advisor in trials 1--3 or 8--10 of a reversed block (offsets 0--2 or 7--9). Only true reversals are included; initial blocks are excluded. These windows match Fig.~\ref{fig:curves}, which also plots shares of discrete choices but splits reversals by direction.}
+  \label{tab:apibeh}
+\end{table*}
+
+\paragraph{Open-model readout.} The open models use bfloat16 with a float32 output projection. We extract first-token answer-word logits before processing and compute $y_t$ as defined in Methods. Decoding is greedy; reasoning is disabled where the chat template permits. The judgment question with \Raw{} and text reports asks ``which forecaster is currently more likely to be correct?''.
+
+\paragraph{Readout quality.} Table~\ref{tab:readout} reports full-vocabulary probability mass on the two answer tokens and greedy one-word answer compliance. For four models nearly all mass fell on the answer words in every history format. Gemma-3-27B's share of trials with candidate mass below 0.5 was at most .03 for \Raw{} and \CorrectnessOnly{}, but .40 for \Summary{} (.59 with photo reports), where it often began a sentence (``Based on the summary\dots''). On these trials its single-copy accuracy was 51\%, versus 59\% otherwise. Its \Summary{} accuracy and failure of equivalence with the count rule may therefore understate how closely it would follow the all-trial count rule when given \Summary{} and asked for a one-word answer; this readout limitation also constrains its primary \Summary{}$-$\Raw{} comparison.
+
+\begin{table}[tbp]\centering\small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l cccc}
+    \toprule
+    & \multicolumn{3}{c}{Candidate mass} & One-word \\
+    \cmidrule(lr){2-4}
+    Model & Mean & Min & Share $<0.5$ & answers \\
+    \midrule
+    Qwen3-VL-8B & 1.000 & .422 & .000 & 1.000 \\
+    InternVL3.5-8B & .997 & .177 & .000 & 1.000 \\
+    Gemma-3-27B & .868 & .000 & .125 & .875 \\
+    Qwen3-VL-32B & .996 & .807 & .000 & 1.000 \\
+    InternVL3.5-38B & 1.000 & .684 & .000 & 1.000 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Readout quality pooled over history formats and report types on held-out episodes. Candidate mass sums the two answer-token probabilities; one-word answers is the proportion of greedy outputs equal to an answer word. Values are rounded. Gemma-3-27B's failures concentrate in \Summary{}, its variants and correctness-chart histories, as detailed in the text.}
+  \label{tab:readout}
+\end{table}
+
+\paragraph{Sensitivity to per-copy scoring (exploratory).} We additionally scored each counterbalanced copy separately, then averaged over copies and cover stories within each episode pair. All 48 held-out episode pairs and trials $t\ge2$ were retained without candidate-mass filtering; ties received half credit. Every \Summary{}$-$\Raw{} gap remained positive (Holm-corrected $p<.001$; Table~\ref{tab:readout_sensitivity}), although its size changed. This supports the history-format effect under per-copy scoring, still using candidate logits rather than unconstrained generation.
+
+\paragraph{Proprietary models.} GPT-6-Astra and Claude Fable 5.2 are queried through their APIs with the same prompts as the open models (text reports, non-pet cover stories only), on a subset of held-out episodes and query trials: episodes 0--23 of the held-out set with their counterbalanced copies (four per non-pet cover story, half starting with each phase), every fourth trial ($t=4,8,\dots,80$), and \Raw{}, \CorrectnessOnly{} and \Summary{}, 2{,}880 calls per model. Both were queried on 2026-11-13 with the default sampling settings (Claude Fable 5.2 does not accept a temperature), reasoning effort `low' (the lowest that GPT-6-Astra accepts; Claude Fable 5.2 always reasons) and at most 4{,}000 output tokens; Claude Fable 5.2 was queried through the Message Batches API. The served model identifiers were gpt-6-astra and claude-fable-5-2 on every call. The choice is the answer word: either the whole answer has at most three words and contains exactly one of the two answer words, or its last line is one of them; all other answers are invalid. GPT-6-Astra answered with one word on every call (median 5 output tokens, including reasoning); Claude Fable 5.2 gave visible reasoning before a final-line answer on 47\% of calls (77\% with \Raw{}; median 47 output tokens), and 6 of its 2{,}880 answers (0.2\%) were invalid.
+
+\paragraph{Behavior of the proprietary models (exploratory).} On the same trials with per-copy scoring, we tested advisor tracking against shortcuts using strategy agreement, trials on which the Bayesian volatility learner and the outcome-quota rule disagree, genuine reversal windows, and a logistic regression of choosing advisor A's report on A's correctness at lags 1--10 and on repeating the previous outcome (Table~\ref{tab:apibeh}). The outcome-quota rule uses the generator's hidden 5/5 outcome quota and is a diagnostic only. With \Raw{} both proprietary models gave large, decaying weights to past advisor correctness (lag 1: 2.1 and 3.3 log-odds; lag 5: 0.7 and 1.4) and no reliable repeat weight; the open models' weights on past advisor correctness were near zero and their repeat weight positive.
+
+\paragraph{Image preprocessing.} Icons and photos are rendered at 224 px for Qwen3-VL models and at 448 px (one tile, no tiling) for InternVL3.5. For Gemma-3-27B, 224-px renders are resized by the processor to the fixed 896-px input (256 image tokens; pan-and-scan off). The correctness chart is rendered at 448 px for all models.
+
+\paragraph{Software and hardware.} Open-model held-out, robustness, Psych-101, control and window-selection evaluations used NVIDIA H200 GPUs (141 GB), one GPU per run, with PyTorch 2.8.0 (CUDA 12.8) and Transformers 4.57.1. The exploratory icon selection, prompt-wording checks for the two 8B models, and development masking checks used NVIDIA RTX 3090 GPUs with the same model revisions, precision and readout. The larger-model compact-record extensions used H200s with the held-out software stack. Each run stores the rendered prompt hash, unnormalized candidate logits, the probability mass on the two answer tokens, and a fingerprint of the configuration.
+
+\paragraph{Code and data availability.} Upon acceptance we will release the generator, seeds, prompts, runners and analyses. Scripts download Oxford-IIIT Pet (CC BY-SA 4.0) and the Psych-101 slice (Apache-2.0); third-party data are not redistributed. The original \citet{xiong2023neural} data have no declared license and are used for analysis only. Generated episodes are verified by SHA-256.
+
+\paragraph{Analysis plan and deviations.} A timestamped commit fixed the plan before held-out evaluation; it was not formally preregistered. Prior observations comprised the 16-episode pilot, partial development controls from one model, rule-only held-out baselines, and unanalyzed software-check outputs from a few held-out items. Before held-out model runs, the evaluation hardware changed and a 72B model was dropped for compute reasons. Development checks prompted icon replacements (Appendix~G). Masking, prompt-wording checks and the Bayesian volatility learner were added after the commit. Masking predictions followed development results but preceded held-out masking: this later-specified replication is separate from the primary test. API behavioral comparisons, judgment--choice and image-position checks, stale-value regression, per-copy scoring sensitivity, the reversal-direction split of Fig.~\ref{fig:curves}, and the Bayesian volatility learner's reversal curves and integration kernel were specified after inspecting held-out outputs and are exploratory.
+
+\paragraph{Pilot disclosure.} The earlier RTX 3090 pilot used fixed advisor-introduction order, removed in the current episodes. Outcome repetition, image-position effects and poor chart reading motivated the controls and readability criterion. These pre-plan outputs are excluded from main-task estimates and supply no held-out evidence.
+
+\end{document}

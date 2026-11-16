@@ -1,0 +1,6 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:04<00:13,  4.52s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:09<00:09,  4.65s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:13<00:04,  4.66s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:16<00:00,  3.78s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:16<00:00,  4.09s/it]
+`generation_config` default values have been modified to match model-specific defaults: {'do_sample': True, 'temperature': 0.7, 'top_k': 20, 'top_p': 0.8}. If this is not desired, please set these values explicitly.
+{"episode": "dev000", "rows": 160, "sec_per_row": 0.10511765480041504}
+{"episode": "dev001", "rows": 320, "sec_per_row": 0.07979033961892128}
+COMPLETE 320 rows

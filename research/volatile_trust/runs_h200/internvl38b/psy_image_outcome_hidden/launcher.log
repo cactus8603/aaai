@@ -1,0 +1,93 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:00<00:10,  1.39it/s]Loading checkpoint shards:  12%|█▎        | 2/16 [00:01<00:09,  1.41it/s]Loading checkpoint shards:  19%|█▉        | 3/16 [00:02<00:09,  1.43it/s]Loading checkpoint shards:  25%|██▌       | 4/16 [00:02<00:08,  1.45it/s]Loading checkpoint shards:  31%|███▏      | 5/16 [00:03<00:07,  1.45it/s]Loading checkpoint shards:  38%|███▊      | 6/16 [00:04<00:06,  1.48it/s]Loading checkpoint shards:  44%|████▍     | 7/16 [00:04<00:06,  1.49it/s]Loading checkpoint shards:  50%|█████     | 8/16 [00:05<00:05,  1.47it/s]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:06<00:04,  1.47it/s]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:06<00:04,  1.44it/s]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:07<00:03,  1.48it/s]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:08<00:02,  1.48it/s]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:08<00:02,  1.47it/s]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:09<00:01,  1.45it/s]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:10<00:00,  1.46it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:10<00:00,  1.63it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:10<00:00,  1.49it/s]
+{"episode": "p00_g1", "rows": 100, "sec_per_row": 0.4675997567176819}
+{"episode": "p00_g3", "rows": 200, "sec_per_row": 0.4627714204788208}
+{"episode": "p00_g5", "rows": 300, "sec_per_row": 0.46187897125879923}
+{"episode": "p01_g1", "rows": 400, "sec_per_row": 0.46094307959079744}
+{"episode": "p01_g3", "rows": 500, "sec_per_row": 0.4604512233734131}
+{"episode": "p01_g5", "rows": 600, "sec_per_row": 0.460145244995753}
+{"episode": "p02_g1", "rows": 700, "sec_per_row": 0.4599575369698661}
+{"episode": "p02_g3", "rows": 800, "sec_per_row": 0.459853655397892}
+{"episode": "p02_g5", "rows": 900, "sec_per_row": 0.4595042822096083}
+{"episode": "p04_g1", "rows": 1000, "sec_per_row": 0.45938808751106264}
+{"episode": "p04_g3", "rows": 1100, "sec_per_row": 0.45927612131292167}
+{"episode": "p04_g5", "rows": 1200, "sec_per_row": 0.45925613343715666}
+{"episode": "p06_g1", "rows": 1300, "sec_per_row": 0.45909193240679225}
+{"episode": "p06_g3", "rows": 1400, "sec_per_row": 0.4589751533099583}
+{"episode": "p06_g5", "rows": 1500, "sec_per_row": 0.45886885484059653}
+{"episode": "p07_g1", "rows": 1600, "sec_per_row": 0.4588524982333183}
+{"episode": "p07_g3", "rows": 1700, "sec_per_row": 0.45884076469084795}
+{"episode": "p07_g5", "rows": 1800, "sec_per_row": 0.45874655697080824}
+{"episode": "p08_g1", "rows": 1900, "sec_per_row": 0.45882953129316634}
+{"episode": "p08_g3", "rows": 2000, "sec_per_row": 0.4586826568841934}
+{"episode": "p08_g5", "rows": 2100, "sec_per_row": 0.4585928283418928}
+{"episode": "p09_g1", "rows": 2200, "sec_per_row": 0.4585401488434185}
+{"episode": "p09_g3", "rows": 2300, "sec_per_row": 0.45848913140918895}
+{"episode": "p09_g5", "rows": 2400, "sec_per_row": 0.45853539258241655}
+{"episode": "p10_g1", "rows": 2500, "sec_per_row": 0.45850158939361574}
+{"episode": "p10_g3", "rows": 2600, "sec_per_row": 0.4585655971673819}
+{"episode": "p10_g5", "rows": 2700, "sec_per_row": 0.4584951768981086}
+{"episode": "p11_g1", "rows": 2800, "sec_per_row": 0.45840283538614}
+{"episode": "p11_g3", "rows": 2900, "sec_per_row": 0.458361319837899}
+{"episode": "p11_g5", "rows": 3000, "sec_per_row": 0.45835702792803446}
+{"episode": "p12_g1", "rows": 3100, "sec_per_row": 0.458325251840776}
+{"episode": "p12_g3", "rows": 3200, "sec_per_row": 0.4583051520586014}
+{"episode": "p12_g5", "rows": 3300, "sec_per_row": 0.45827084382375083}
+{"episode": "p13_g1", "rows": 3400, "sec_per_row": 0.4582592791669509}
+{"episode": "p13_g3", "rows": 3500, "sec_per_row": 0.45823348692485266}
+{"episode": "p13_g5", "rows": 3600, "sec_per_row": 0.45827918860647415}
+{"episode": "p14_g1", "rows": 3700, "sec_per_row": 0.45830507845491975}
+{"episode": "p14_g3", "rows": 3800, "sec_per_row": 0.4582893086734571}
+{"episode": "p14_g5", "rows": 3900, "sec_per_row": 0.45826204642271384}
+{"episode": "p15_g1", "rows": 4000, "sec_per_row": 0.4582299863696098}
+{"episode": "p15_g3", "rows": 4100, "sec_per_row": 0.45819954168505783}
+{"episode": "p15_g5", "rows": 4200, "sec_per_row": 0.45820482384590877}
+{"episode": "p16_g1", "rows": 4300, "sec_per_row": 0.4582154563970344}
+{"episode": "p16_g3", "rows": 4400, "sec_per_row": 0.4582157147472555}
+{"episode": "p16_g5", "rows": 4500, "sec_per_row": 0.45824280156029595}
+{"episode": "p17_g1", "rows": 4600, "sec_per_row": 0.4582607761673305}
+{"episode": "p17_g3", "rows": 4700, "sec_per_row": 0.4582855032352691}
+{"episode": "p17_g5", "rows": 4800, "sec_per_row": 0.45830769747495653}
+{"episode": "p18_g1", "rows": 4900, "sec_per_row": 0.4583454929079328}
+{"episode": "p18_g3", "rows": 5000, "sec_per_row": 0.4583561790943146}
+{"episode": "p18_g5", "rows": 5100, "sec_per_row": 0.45837356230791876}
+{"episode": "p19_g1", "rows": 5200, "sec_per_row": 0.4583702798990103}
+{"episode": "p19_g3", "rows": 5300, "sec_per_row": 0.4583022856262495}
+{"episode": "p19_g5", "rows": 5400, "sec_per_row": 0.45831224110391405}
+{"episode": "p20_g1", "rows": 5500, "sec_per_row": 0.4582649743340232}
+{"episode": "p20_g3", "rows": 5600, "sec_per_row": 0.4582333364231246}
+{"episode": "p20_g5", "rows": 5700, "sec_per_row": 0.4582088787932145}
+{"episode": "p21_g1", "rows": 5800, "sec_per_row": 0.4581866107726919}
+{"episode": "p21_g3", "rows": 5900, "sec_per_row": 0.4581579096438521}
+{"episode": "p21_g5", "rows": 6000, "sec_per_row": 0.4581315402587255}
+{"episode": "p22_g1", "rows": 6100, "sec_per_row": 0.45809284628414715}
+{"episode": "p22_g3", "rows": 6200, "sec_per_row": 0.45803531350628024}
+{"episode": "p22_g5", "rows": 6300, "sec_per_row": 0.45806471468910337}
+{"episode": "p23_g1", "rows": 6400, "sec_per_row": 0.45807592418044807}
+{"episode": "p23_g3", "rows": 6500, "sec_per_row": 0.45806118180201605}
+{"episode": "p23_g5", "rows": 6600, "sec_per_row": 0.45808767600493}
+{"episode": "p24_g1", "rows": 6700, "sec_per_row": 0.45810068578862434}
+{"episode": "p24_g3", "rows": 6800, "sec_per_row": 0.4580992912895539}
+{"episode": "p24_g5", "rows": 6900, "sec_per_row": 0.458081384188887}
+{"episode": "p25_g1", "rows": 7000, "sec_per_row": 0.4580625308581761}
+{"episode": "p25_g3", "rows": 7100, "sec_per_row": 0.4580606898119752}
+{"episode": "p25_g5", "rows": 7200, "sec_per_row": 0.45804843405882517}
+{"episode": "p26_g1", "rows": 7300, "sec_per_row": 0.4580199602858661}
+{"episode": "p26_g3", "rows": 7400, "sec_per_row": 0.4579964206991969}
+{"episode": "p26_g5", "rows": 7500, "sec_per_row": 0.45800569823582965}
+{"episode": "p27_g1", "rows": 7600, "sec_per_row": 0.4579939661214226}
+{"episode": "p27_g3", "rows": 7700, "sec_per_row": 0.45796614405396696}
+{"episode": "p27_g5", "rows": 7800, "sec_per_row": 0.4579225603433756}
+{"episode": "p29_g1", "rows": 7900, "sec_per_row": 0.4579099443290807}
+{"episode": "p29_g3", "rows": 8000, "sec_per_row": 0.4579189521968365}
+{"episode": "p29_g5", "rows": 8100, "sec_per_row": 0.45792919150105227}
+{"episode": "p30_g1", "rows": 8200, "sec_per_row": 0.45794211599884965}
+{"episode": "p30_g3", "rows": 8300, "sec_per_row": 0.4579301776368934}
+{"episode": "p30_g5", "rows": 8400, "sec_per_row": 0.4579097798040935}
+{"episode": "p31_g1", "rows": 8500, "sec_per_row": 0.4579125215025509}
+{"episode": "p31_g3", "rows": 8600, "sec_per_row": 0.45792299301125283}
+{"episode": "p31_g5", "rows": 8700, "sec_per_row": 0.4579235358621882}
+{"episode": "p32_g1", "rows": 8800, "sec_per_row": 0.4579331373355605}
+{"episode": "p32_g3", "rows": 8900, "sec_per_row": 0.45793268334999515}
+{"episode": "p32_g5", "rows": 9000, "sec_per_row": 0.4579173333644867}
+{"tag": "image_outcome_hidden_px448_n5", "shard": "0/1", "fingerprint": "5706d1f098694479", "full_design": true, "design_keys_all_shards": 9000, "expected": 9000, "written": 9000, "rows": 9000, "duplicates": 0, "missing": 0, "unexpected": 0, "foreign_fingerprint": 0, "complete": true}

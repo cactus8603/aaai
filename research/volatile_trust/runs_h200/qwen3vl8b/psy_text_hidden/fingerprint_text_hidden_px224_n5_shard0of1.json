@@ -1,0 +1,18 @@
+{
+ "data_sha256": "4fd19a9920e0b73f05d6eb9ed030e51f19410fe28a44c5da01a856bb0f4445fc",
+ "fonts": {
+  "DejaVuSans-Bold.ttf": "d1c3ff99f1e1ce1827a33efd4dad81f40babda06bff9e43bd7591c86662a287b",
+  "DejaVuSans.ttf": "690243adfefe0ce154b547db6205794bd30ac4277275179517a90994f4980648",
+  "DejaVuSansMono-Bold.ttf": "f8aa70b5d4210d77624f5b5b5cf094fadf9fd019caf5b528fa5af42fc4ac43a5"
+ },
+ "format": "text",
+ "hash": "299f16f74a209163",
+ "hazard_info": "hidden",
+ "image_px": 224,
+ "model_id": "Qwen/Qwen3-VL-8B-Instruct",
+ "model_revision": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+ "model_type": "qwen3_vl",
+ "n_img": 5,
+ "renderer_sha256": "e0e38662ee51a15363d021609381482c286a4485543d304acc8b35f93ce42d97",
+ "runner_version": "run_xiong/v3 (raw letter logits saved; fingerprinted resume)"
+}

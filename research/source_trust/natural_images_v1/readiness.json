@@ -1,0 +1,147 @@
+{
+  "cache_bytes": 1755193378,
+  "dataset": "Oxford-IIIT Pet",
+  "license": "CC-BY-SA-4.0",
+  "license_note": "Copyright remains with original image owners.",
+  "license_source": "https://www.robots.ox.ac.uk/~vgg/data/pets/",
+  "license_verified_date": "2026-11-11",
+  "official_annotation_sha256": {
+    "test": "a5454003774ffe01f4f322756d3ba5495bae21cb30bb217ab285dbfa2bef245c",
+    "trainval": "408f3f609481b939c94634169e6413414b733a3faeba440cbdcc5c02142eebdc"
+  },
+  "preprocessing": {
+    "method": "aspect preserving LANCZOS resize, centered gray RGB(127,127,127) letterbox via Pillow ImageOps.pad",
+    "orientation": "raw decoded orientation; no EXIF transpose",
+    "sizes": [
+      224,
+      448
+    ]
+  },
+  "ready": true,
+  "runtime": {
+    "pillow": "11.3.0",
+    "python": "3.11.18"
+  },
+  "script_sha256": "71c8bd5d3ee674170785d252a7d5868930b028770245e4bbfdd69e491d7f3d7c",
+  "seed": 20261111,
+  "selection": "Python random.Random; sorted official annotations grouped by species/breed; shuffled breed order and candidates; equal breed quotas with seeded remainder; replace decode failures or duplicates only",
+  "sources": [
+    {
+      "archive": ".cache/datasets/oxford-iiit-pet/images.tar.gz",
+      "bytes": 791918971,
+      "md5": "5c4f3ee8e5d25df40f4fd59a7f44e54c",
+      "sha256": "67195c5e1c01f1ab5f9b6a5d22b8c27a580d896ece458917e61d459337fa318d",
+      "url": "https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz"
+    },
+    {
+      "archive": ".cache/datasets/oxford-iiit-pet/annotations.tar.gz",
+      "bytes": 19173078,
+      "md5": "95a8c909bbe2e81eed6a22bccdf3f68f",
+      "sha256": "52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91",
+      "url": "https://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz"
+    }
+  ],
+  "splits": {
+    "dev128": {
+      "breeds": {
+        "Abyssinian": 6,
+        "Bengal": 6,
+        "Birman": 5,
+        "Bombay": 6,
+        "British_Shorthair": 5,
+        "Egyptian_Mau": 5,
+        "Maine_Coon": 6,
+        "Persian": 5,
+        "Ragdoll": 5,
+        "Russian_Blue": 5,
+        "Siamese": 5,
+        "Sphynx": 5,
+        "american_bulldog": 3,
+        "american_pit_bull_terrier": 2,
+        "basset_hound": 3,
+        "beagle": 3,
+        "boxer": 2,
+        "chihuahua": 3,
+        "english_cocker_spaniel": 2,
+        "english_setter": 3,
+        "german_shorthaired": 3,
+        "great_pyrenees": 3,
+        "havanese": 3,
+        "japanese_chin": 3,
+        "keeshond": 2,
+        "leonberger": 3,
+        "miniature_pinscher": 2,
+        "newfoundland": 3,
+        "pomeranian": 3,
+        "pug": 2,
+        "saint_bernard": 2,
+        "samoyed": 2,
+        "scottish_terrier": 3,
+        "shiba_inu": 3,
+        "staffordshire_bull_terrier": 2,
+        "wheaten_terrier": 2,
+        "yorkshire_terrier": 2
+      },
+      "classes": {
+        "cat": 64,
+        "dog": 64
+      },
+      "manifest_sha256": "29366f75156de2b52677240a135bcd9a3809e038b89a0f4a4ba7215cdf226f4c",
+      "total": 128
+    },
+    "heldout256": {
+      "breeds": {
+        "Abyssinian": 10,
+        "Bengal": 10,
+        "Birman": 10,
+        "Bombay": 11,
+        "British_Shorthair": 10,
+        "Egyptian_Mau": 11,
+        "Maine_Coon": 11,
+        "Persian": 11,
+        "Ragdoll": 11,
+        "Russian_Blue": 11,
+        "Siamese": 11,
+        "Sphynx": 11,
+        "american_bulldog": 5,
+        "american_pit_bull_terrier": 5,
+        "basset_hound": 5,
+        "beagle": 5,
+        "boxer": 5,
+        "chihuahua": 6,
+        "english_cocker_spaniel": 5,
+        "english_setter": 5,
+        "german_shorthaired": 6,
+        "great_pyrenees": 5,
+        "havanese": 5,
+        "japanese_chin": 5,
+        "keeshond": 5,
+        "leonberger": 5,
+        "miniature_pinscher": 5,
+        "newfoundland": 5,
+        "pomeranian": 5,
+        "pug": 6,
+        "saint_bernard": 5,
+        "samoyed": 5,
+        "scottish_terrier": 5,
+        "shiba_inu": 5,
+        "staffordshire_bull_terrier": 5,
+        "wheaten_terrier": 5,
+        "yorkshire_terrier": 5
+      },
+      "classes": {
+        "cat": 128,
+        "dog": 128
+      },
+      "manifest_sha256": "8551fc112bccfd2d980ebc286bc3422cca7ad3178b0a7b3b4c3bc3b95b316dc8",
+      "total": 256
+    }
+  },
+  "validation": {
+    "duplicates_checked": "Across and within all selected splits; RGB pixel hashes include dimensions; no model-based filtering",
+    "issues": [],
+    "selected_decode_pass": 384,
+    "unique_original_sha256": 384,
+    "unique_rgb_pixel_sha256": 384
+  }
+}
